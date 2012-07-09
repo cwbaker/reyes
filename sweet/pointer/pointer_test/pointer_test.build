@@ -1,0 +1,17 @@
+
+Executable {
+    id = "pointer_test";
+    
+    libraries = {
+        "pointer/pointer",
+        "error/error",
+        "assert/assert",
+        "unit/libUnitTest"
+    };
+
+    Cc {
+        "main.cpp",
+        "TestPointer.cpp",
+        "TestPointerCast.cpp"
+    };
+}

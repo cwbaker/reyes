@@ -1,0 +1,791 @@
+
+:toc:
+:numbered:
+:theme: sweet
+:pygments:
+
+= Sweet Render
+
+== Overview
+
+Sweet Render is a toy micropolygon renderer based on the architecture 
+described in the original REYES paper and The RenderMan Interface v3.2.1 
+from Pixar.  It is implemented as a C++ library and requires Microsoft
+Visual Studio 2008 (MSVC 9.0).
+
+Sweet Render was created to better understand how micropolygon renderers and
+their shading languages work with the ultimate goal of producing easy to 
+follow source code and an associated article to describe how the renderer has 
+been implemented.
+
+This article (and the source code available on GitHub) make up the first alpha
+release.  For now I've stopped working on the renderer while I turn my focus 
+to the other projects.  I hope to return to work on the project in six to 
+nine months.  Your feedback would be much appreciated in the meantime!
+
+[grid="none",cols="^,^"]
+|====
+|image:render/render_examples/wavy_sphere.png[width=480] |image:render/render_examples/shaders.png[width=480]
+|image:render/render_examples/gumbo.png[width=480] |image:render/render_examples/teapot.png[width=480]
+|====
+
+Features:
+
+- A simple implementation of a micropolygon renderer based on the original 
+REYES paper and The RenderMan Interface Specification 3.2.1.
+
+- A compiler and virtual machine implementing the RenderMan Shading Language.
+
+- Complete hierarchical graphics state.
+
+- Orthographic and perspective projections.
+
+- Depth based hidden surface elimination.
+
+- Pixel filtering and anti-aliasing.
+
+- Gamma correction and dithering.
+
+- Output PNG or raw images in any combination of RGB, A, and Z at arbitrary
+resolutions.
+
+- Quadrics, linear patches, cubic patches, and polygons.
+
+- Texture, shadow, and environment mapping.
+
+- Standard surface, light, and displacement shaders supported.
+
+Anti-features:
+
+- No support for parsing scenes from RIB files.
+
+- The geometric primitives for general polygons, NURBS patches, subdivision 
+surfaces, points, curves, and blobs aren't implemented.
+
+- Bucketing isn't implemented.
+
+- Transparency isn't implemented.
+
+- Retained geometry isn't implemented.
+
+- Imager shaders aren't implemented.
+
+- The built-in functions filterstep(), spline(), noise(), cnoise(), and
+cellnoise() aren't implemented.
+
+- The shading language doesn't support user defined functions.
+
+- The shading language doesn't support variadic argument lists.
+
+- The shading language doesn't support arrays.
+
+- Arbitrary geometric parameters aren't implemented.
+
+- None of the optional features are implemented.  Among other things this 
+means that depth of field, motion blur, ray-tracing, and global illumination
+aren't supported.
+
+=== Sweet Render vs Other Renderers
+
+Sweet Render is a toy project built as a study of how micropolygon renderers
+and their shading languages work.  It has enough features to understand how
+the shading language compiler and virtual machine work together with the 
+renderer but not much more than that.  It has not been optimized but is 
+(hopefully) not horrifically slow.
+
+Sweet Render is similar to other educational experiments in micropolygon 
+rendering like David Pasca's http://ribtools.com/wiki/Main_Page[RIBTools], 
+Alexander Boswell's blog entries at http://www.steckles.com/reyes1.html[steckles.com] 
+and the book http://www.amazon.com/Production-Rendering-Implementation-Ian-Stephenson/dp/1852338210[Production 
+Rendering: Design and Implementation] by Ian Stephenson and several people
+with years of experience building and using renderers in production.
+
+If you're looking for more complete open source implementations or if you're
+looking to contribute to an ongoing project then you might be more interested
+in http://www.aqsis.org/[Aqsis] and http://www.renderpixie.com/[Pixie].  Both
+are open source renderers with far more features and better performance than
+Sweet Render.
+
+If you're looking for a production quality renderer then you're probably
+better off looking at http://renderman.pixar.com/view/renderman[Pixar's RenderMan], 
+http://www.3delight.com/[3delight], or 
+http://www.guerillarender.com/[Guerilla Render].
+
+== Installation
+
+Sweet Render is built and installed by downloading the latest version from
+http://www.sweetsoftware.co.nz/, extracting the archive onto your computer,
+and then running "`build`" from the top level directory.  This builds all 
+variants for the host platform into the library directory.
+
+You'll need to add the top level directory (e.g. "`c:\sweet\sweet_render-2012.07.07`") 
+and the library directory (e.g. "`c:\sweet\sweet_render-2012.07.07\lib`") to your
+compiler's header and library search paths respectively.
+
+If you want Sweet Render built to another location or with different variants 
+and/or settings then you'll need to edit the settings in "`sweet/build.lua`".
+
+Once you've successfully built the source code you can generate the example
+images by changing to the "`./sweet/render/render_examples`" directory and
+running one of the render examples executables (e.g. 
+"`../../../bin/render_examples_msvc_shipping.exe`").  This needs to be run
+from the "`render_examples`" directory so that the shaders and textures can be
+found correctly by relative path.
+
+== Usage
+
+Sweet Render is a C++ library that generates images from geometry, textures,
+and shaders based on the architecture described in the original REYES paper
+and The RenderMan Interface v3.2.1 from Pixar. 
+
+The *Renderer*, *Grid*, *Value*, and *Options* classes form the public 
+interface to the renderer.  The *Renderer* class provides the main interface 
+to the library for application code.  The *Options* class allows application 
+code to override the default per-frame options used by the renderer.  The 
+*Grid* and *Value* classes are used to provide a collection of values that is
+used to represent the parameters passed to shaders and the vertices in a 
+piece of diced geometry.
+
+Other classes are used behind the scenes to represent geometry as it is passed
+through the bound and split phase of the renderer (*Cone*, *CubicPatch*, 
+*Cylinder*, *Disk*, *Hyperboloid*, *LinearPatch*, *Paraboloid*, *Sphere*, 
+*Torus*, and *Geometry*); to support compilation and execution of shaders 
+(*ShaderParser*, *SemanticAnalyzer*, *CodeGenerator*, *SymbolTable*, *Symbol*, 
+*SyntaxNode*, and *VirtualMacine*); to represent a level of hierarchical 
+graphics state (*Attributes*); to represent sample and image buffers 
+(*SampleBuffer* and *ImageBuffer*); to handle sampling a diced grid into a 
+sample buffer (*Sampler*); and to dump out various information that is useful
+when debugging the renderer (*Debugger*).
+
+The library needs no special initialization.  Constructing a *Renderer* object
+and then making a valid sequence of calls on it generates an image of some
+kind.  Default options can be overridden by constructing an *Options* object, 
+setting the desired options values on it, and passing it to the *Renderer* 
+before the begin function is called.
+
+[source,cpp]
+----
+include::render/render_examples/render_wavy_sphere_example.cpp[]
+----
+
+== Renderer Implementation
+
+In the interests of simplicity the renderer doesn't do any bucketing and 
+doesn't use any threads.  This allows calls to render geometry to process 
+all the way through to adding samples to the sample buffer in one call stack
+to allow for easier debugging and understanding.
+
+=== Attributes
+
+The render state is represented by the vector of Attributes objects maintained
+in the Renderer.  Pushing new render state pushes a new Attribute object that
+contains a copy of the Attribute object that was previously at the top of the 
+stack.  Popping a render state pops the Attribute object off the top leaving
+the previous Attribute object as the current render state.
+
+All calls made on the Renderer object that affect render state (shading rate,
+orientation, active shaders and lights, etc) are passed through to the 
+Attribute object on top of the stack.
+
+The transforms stack is maintained as part of the render state by being a 
+member of an Attribute object.  Changes made to the transform stack affect 
+only the transform stack that is part of the Attribute object at the top of
+the stack.
+
+=== Named Transforms
+
+The shading language provides access to transforms from and to various spaces
+by name.  This is implemented by storing transforms to a common space (camera 
+space) mapped against the names of those spaces.  Transforms between any two
+spaces are then able to be calculated by concatenating one of these transforms
+with the inverse of another.
+
+=== Geometry
+
+The different geometric primitives supported by the renderer are implemented
+using various classes derived from the Geometry class.  The Geometry class
+provides a common interface that is implemented as necessary by the concrete
+geometric primitive classes that derive from it.  This allows the renderer to
+deal with bounding, splitting, and dicing geometry in a general way.
+
+=== Bounding
+
+Each piece of geometry currently in the pipeline for rendering is bounded
+in screen space to determine whether or not that piece of geometry needs to
+be culled and, if it's not culled, how many micropolygons it would need to be 
+diced into to achieve the current shading rate.
+
+Because the bounds are calculated in screen space culling is simply checking
+the minimum or maximum screen space coordinates of the piece of geometry 
+against the right or left edges of the screen window respectively.  If either
+of the screen space coordinates is beyond the bounds of the screen window
+then the piece of geometry is culled.
+
+The screen space bounds also include a depth coordinate in camera space that
+is used to cull the piece of geometry against the near and far clipping 
+planes.  If the minimum or maximum screen space depth of the piece of geometry
+is beyond the far or near clipping planes respectively then the geometry is 
+culled.
+
+If the minimum and maximum screen space depth spans the near plane (the 
+minimum depth is less than and the maximum depth greater than the near
+plane depth) then the geometry is passed to the splitting stage to be further
+split to avoid perspective division by negative depths.
+
+If the piece of geometry is not culled by any of the previous steps then its
+screen space bounds is used to calculate how many micropolygons the geometry 
+would need to be diced into to achieve the current shading rate.  If the 
+number of micropolygons required is less than the configured maximum number 
+of micropolygons per grid then the piece of geometry is passed through to 
+the dicing stage otherwise it is considered too large and is passed to the
+splitting stage.
+
+Bounding is currently implemented for all geometry types by dicing the 
+geometry into a grid containing 64 vertices and taking the bounds covered by
+those to be the bounds of the geometry.  This is probably not the best way to
+do it for reasons of both efficiency and accuracy.  Dicing the geometry into 
+64 vertices is unlikely to be as efficient as calculating the bounds 
+analytically with knowledge of the geometry's properties.  There are 
+definitely problems with culling on the edges of the screen window that are 
+probably caused by the bounds not being accurate enough as the underlying 
+geometry may extend further in a particular direction than is captured 
+between two adjacent vertices.  The bounding implementation does have the 
+benefit of being simple and working in most cases.
+
+=== Splitting
+
+Each piece of geometry is represented by a 2D parametric equation and bounds
+on the u and v parameters used to evaluate that equation.  Each piece of 
+geometry initially starts with bounds of [0, 1] in both u and v.  As the 
+geometry is passed through the pipeline it can be determined that a piece of
+geometry is too big to be effectively diced and so that piece of geometry is
+split.  The split is implemented by creating new pieces of geometry that each
+cover a smaller area in parameter space but that in total cover the same 
+bounds as the original piece of geometry.
+
+Splitting is implemented by always splitting a piece of geometry into quarters
+in its parameter space.  This is again simple and avoids having to determine 
+which of two directions is better to split in and it seems to work well enough
+in practice.  This might not be dicing grids very evenly though and that could
+be a performance problem if grids are being diced more finely than the shading
+rate dictates.
+
+=== Dicing
+
+Dicing is implemented by iterating over the geometry in parameter space and 
+generating positions using the equation that defines the geometry.  The 
+topology of the geometry and generation of indices are able to be ignored 
+right up until the grid is sampled down to the sample buffer.
+
+Other attributes (texture coordinates, colors, normals, etc) associated with 
+the geometry are bi-linearly interpolated over the parameter space to generate
+the other vertex data in the grid.
+
+=== Shading
+
+Shading passes the vertices in a grid through one or more shader programs.  
+The general flow through the shading stage is displacement shading, followed 
+by light shading, followed by surface shading.
+
+Displacement shading moves the positions of the vertices in the grid in 
+arbitrary directions.
+
+Light shading calculates the color and opacity of light from each active light
+to each vertex in the grid.
+
+Surface shading calculates the color and opacity of each vertex in the grid
+using the color and opacity of active lights calculated during the light
+shading step and any other parameters provided to the shader (normals, texture
+maps, etc).
+
+Shaders are compiled into byte code that is then interpreted in a virtual 
+machine inside the renderer.  The virtual machine achieves decent efficiency 
+by dealing with all of the vertices in a grid in a single instruction.  It's 
+really a large scale case of a single instruction multiple data architecture.
+
+For example the calculation of `Ci` in the constant shader involves a 
+multiplication of `Os` with `Cs` and then an assignment of the result to
+`Ci`.  Each of the variables `Os`, `Cs`, and `Ci` contain multiple values, 
+one value for each vertex in the diced grid, and the virtual machine operates
+on all of those values at once.  The multiplication becomes a loop that 
+iterates over all of the values in `Os` and multiplies them with the 
+corresponding value in `Cs`.  The assignment becomes a loop that assigns each
+value in the result to the corresponding value in `Ci`.
+
+[source, cpp]
+----
+include::render/shaders/constant.sl[]
+----
+
+The virtual machine deals with conditional statements (`if`, `while`, etc) 
+using a conditional mask that specifies which of the multiple values the 
+condition evaluated to true for.  The mask is then used when processing 
+assignment instructions and assignments for values whose conditions evaluated
+to false are ignored.
+
+=== Sampling
+
+Sampling takes a diced grid and treats it as being made up of small 
+micropolygons with the vertices at each corner.  Each of these micropolygons
+is bounded in screen space and then tested for intersection with all of the
+raster space samples that fall within those bounds.  Any samples that 
+intersect with the micropolygon have the depth of their intersection point 
+interpolated for use in the depth test.  If the intersection point is nearer
+than any other  as pushed into the sample color calculation queue.
+
+When the sampling color calculation queue fills up it is emptied by 
+interpolating the colors of all the intersection points in the queue and 
+assigning them to their appropriate samples.
+
+=== Filtering
+
+Once all of the geometry has been pushed through the geometry queue the sample
+buffer is filtered down into an image buffer but still maintained as floating 
+point values.
+
+The sample buffer was deliberately generated with overflow regions to take 
+into account the size of the filter kernel that is applied.
+
+=== Gamma Correction
+
+Gamma correction operates on the filtered image buffer similarly to the 
+brightness and contrast controls on a monitor.  Each element of the RGB color
+is multiplied by a constant value and then raised to the power of another 
+constant value.
+
+=== Dithering And Quantization
+
+The final step in image generation is dithering and quantization.  This is
+simply converting the RGB color elements from floating point to integer
+values.
+
+Dithering is achieved by adding a small random amount to each element just 
+before it is converted to an integer - this gives a nice organic or natural 
+look to the final image - almost as if the renderer used some fancy 
+illumination algorithm.
+
+== Shading Language Implementation
+
+=== Parsing
+
+Shaders are parsed using an LALR parse table generated by the 
+http://www.sweetsoftware.co.nz/parser_overview.html[Sweet Parser] library.
+
+A symbol table is used to identify the global symbols that are available for
+use within shaders.
+
+Parsing transforms the arbitrary source code in a shader into a tree of
+SyntaxNode objects that represent the structure of the shader program.  This
+syntax tree is then further processed during the semantic analysis phase to
+propagate type information and perform extra type checking before being
+processed a final time to generate the actual code for the shader.
+
+=== Semantic Analysis
+
+Semantic analysis walks the syntax tree generated in the parsing phase to 
+propagate type information that can only be inferred after parsing has
+finished.
+
+Light shaders are specifically analyzed to determine how many global 
+assignments to `Cl` and/or `Ol` are made and how many `solar` and/or
+`illuminate` statements they contain.  This is used to determine what type
+of light the light shader describes and to check for errors such as the use
+of multiple lighting statements or using both lighting statements and
+global assignment to `Cl` or `Ol` that imply a light shader is simultaneously
+representing multiple types of light.
+
+Further analysis is generally applied to all types of shaders to propagate
+type information; resolve overloaded function calls; and check for errors that
+are only apparent after type information has been propagated.
+
+The analysis of type information propagates the type and storage of 
+expressions in the syntax tree both up and down the syntax tree.  
+
+Type information that is propagated down the tree is referred to as 
+expectations.  This is the type and storage of expression expected at a syntax
+node from the expressions that occur lower down in the syntax tree.  This
+information is necessary for correctly resolving function calls that are
+only overloaded by return type.  Expectations are propagated in a pre-order
+pass over the syntax tree in which syntax nodes are visited before their
+children are visited.
+
+The type information that is propagated back up the tree is used to determine
+type conversion and storage promotion, resolve function calls that are 
+overloaded by parameter type, and check for errors that involved the invalid
+use of types and/or storage.  This type information is propagated in a 
+post-order pass over the syntax tree in which syntax nodes are visited after
+their children are visited.
+
+==== Type Conversion And Storage Promotion
+
+Once type information has been propagated type conversion and storage 
+promotion analysis boils down to a check to determine whether the source and
+destination types of an expression match - and where they don't match setting
+the type or storage for conversion in the source node to match that of the
+destination node.  The original type and storage of the syntax node are kept
+so that the code generation phase can easily check to see whether or not 
+conversion is required and generate the appropriate code.
+
+==== Statements
+
+Type analysis of statements involves setting the expected types and/or 
+storages of the expressions involved in the statement.
+
+For example the expressions in `if` and `while` statements are always expected
+to be boolean typed with varying storage.  Analysis for `if` and `while` 
+statements consists of checking to see whether or not their expressions have 
+varying storage and if they don't setting those expression nodes to be 
+promoted to varying storage during code generation.
+
+Another example is the `solar` and `illuminate` statements that expect their
+expressions to have uniform storage and report an error if they aren't.
+
+==== Expressions
+
+Analysis of binary expressions (including assignment) is carried out using
+tables that define the valid types on the left and right hand sides of the
+expression, the resulting type and storage, and the instruction required to
+carry out the operation.  Type conversion and storage promotion is carried out
+between the left and right hand sides *before* the table lookup occurs.  Then
+the table lookup is really just used to determine the resulting type and 
+instruction.  The storage always ends up being the maximum of the storage of
+the left and right hand side.
+
+==== Overloaded Function Calls
+
+Function call analysis is probably the most involved part.  Firstly the 
+correct function call symbol is looked up using the type and storage 
+information that is available at the function call node and its children.
+Once the function symbol has been resolved the type and storage of the 
+function call node is able to be set (to the type and storage of the return
+type of the function) and any type conversion and storage promotion can
+be set on the expressions that provide the parameters to the function.  Type
+conversion and storage promotion may still be necessary even though the
+function has been looked up based on the type and storage of the parameter
+expressions because the look up takes into account valid conversions and
+promotions and also because not all functions are overloaded.
+
+=== Code Generation
+
+==== Register Allocation
+
+The virtual machine is a register based virtual machine like the Lua virtual
+machine or Google's Dalvik virtual machine for Android devices.  Instructions
+are passed zero or more register indices to operate on rather than always 
+operating on the data at the top of a stack.
+
+The number of registers isn't limited in any theoretical way.  A shader will
+use as many registers as it needs to represent constants, uniform parameters,
+variables declared in the shader itself, and temporaries used when evaluating
+expressions.
+
+Registers are allocated for parameters, globals, and constants (in that order)
+for a shader.  For example the registers numbered 0 to _n_ (for a shader with
+_n_ parameters) are used to store the shader's parameter values; following 
+registers contain the global and local symbols that are referenced by the 
+shader and then any constant literal values used in the shader.
+
+Further registers are dynamically allocated and released as needed during the
+evaluation of expressions by having each temporary expression store its result
+in the next available register.  This dynamic allocation of registers 
+continues until the next semi-colon in the source at which point the temporary
+expressions don't need to be referenced again.  Any values that need to 
+referenced again will have been stored in registers that have been allocated 
+to store globals or locals.
+
+==== Statements
+
+All statements generate slightly different combinations of jump, expression,
+and general instructions based on their exact semantics.  In general they
+involve generating one or more expressions, generating mask instructions that
+mask assignment in following instructions, and generating jump instructions
+that continue or break out of loops.
+
+For example an `if` statement generates code to evaluate and promote its
+expression to generate a varying boolean expression; then it generates a mask
+instruction that updates the conditional assignment mask based on any existing
+condition assignment mask and the value of the boolean expression that was 
+just evaluated; then it generates code for the body of the statement; finally
+it generates a clear mask instruction to restore the conditional assignment
+mask to its previous state.
+
+Jump code is generated by maintaining a stack of loops and keeping track of
+the addresses of jump instructions generated to jump to the top of and out
+of the loop from the loop body.  When the code for the loop has been generated
+the jumps are patched so that their parameter (the amount to add to the 
+instruction counter) is correct based on the place in the code that the jump
+is trying to get to.
+
+For example a `while` statement generates code by pushing a new loop; 
+immediately marking the current instruction genertion address as the address
+that continue instructions should jump to; then generating code for the 
+`while` expression and mask (similar to the `if` statement); then it generates
+a conditional jump instruction to be patched to jump to the end of the loop 
+once the code has been generated for the entire loop; then it generates code 
+for the body of the loop; clears the mask; and generates a jump instruction to
+be patched to the beginning of the loop; finally it pops the loop off the
+loop stack.  When the loop is popped from the loop stack the addresses for the
+jump instructions and beginning and end of the loop are known and so all of 
+the jumps in the loop can then be patched to jump to the correct locations.
+
+A `for` statement has similar but slightly more involved code generation.  Its
+continue point is placed *after* the code generated for the body of the loop.
+This is because a `continue` statement from within a `for` loop must jump to
+the code to evaluate the increment expression in the `for` statement and this
+code generally happens at the end of the loop before jumping back to the 
+beginning for the next.
+
+Code generation for `break` and `continue` instruction then simply generates
+a jump instruction to be patched to either the continue point or out of the
+loop entirely and relies on the addresses to be patched when the code 
+generation for the current loop has finished.
+
+==== Expressions
+
+Code is generated for expressions by generating the code for the child
+expressions and then generating the instruction and register index parameters
+for the expression.
+
+Code generation for an expression returns the register index that the 
+expression was generated into for use further up the code generation call
+stack.  This means that expressions that generate temporary values return the
+register index that they were allocated while expressions that refer to values
+of variables or constants can simply return the register index that the value
+is stored in without having to generate any code at all.
+
+==== Constants
+
+Constants are generated for the literal values that appear in a shader.  
+They're converted from their literal values into Value objects that are then 
+stored within the shader.  The register index that the constant value is 
+stored in is stored in the syntax nodes for the constant and thus the code 
+generation for that constant expression can simply return the register index 
+that the constant is stored in - no actual code needs to be generated.
+
+==== Type Conversion
+
+Type conversion code is generated anywhere that code for an expression node is
+generated and that expression node's type is not the same as its original 
+type.  This is setup during the analysis phase.  Code generation is then
+simply a matter of looking up the correct instruction based on the source
+and destination types and allocating a new temporary register if code
+generation was required (some conversions, e.g. between point and normal, are
+purely logical and require no actual conversion at runtime).
+
+==== Storage Promotion
+
+Storage promotion code generation is similar to type conversion code 
+generation.  Storage promotion requirements have already been determined in
+the analysis phase and all that the code generator does is determine whether
+or not to carry out storage promotion and, if it determines that promotion is
+necessary, generate the correct promotion instruction (based on the type of
+value being promoted) and allocate a temporary register to hold the result.
+
+==== Default Parameter Values
+
+Code is generated to assign values to default parameters because they can
+be assigned values from expressions that can potentially involve function
+calls.  See the "spotlight.sl" shader's parameters where points are assigned
+values involving a cast from the space where the shader was activated and
+the `coneangle` and `conedeltaangle` parameters that are assigned values 
+involving calls to the `radians()` function.
+
+This gives to blocks of code that can be executed in a shader.  The first is
+executed whenever a shader is made active in the renderer (set as the current
+displacement or surface shader or made an active light shader) and assigns
+the shader parameter their default values.  The second is executed whenever
+the shader is required to calculate its results.
+
+=== Execution
+
+To execute a shader the virtual machine steps through the shader's byte code, 
+dispatching instructions and parameters in a large switch statement.  Most 
+instructions are straight mappings of some functionality (add two points, call
+a function, etc) to parameters and a result.  There are a few instructions 
+with more interesting behaviour that relate to register allocation, 
+conditional processing, jumping, calls, and lighting loops.
+
+==== Register Allocation
+
+Register allocation is implemented so that the majority of the management
+and calculation for it happens in the code generation phase.  During execution
+any expression *always* allocates a new temporary register to store its 
+result.  The temporary register index is reset back to a specific value, 
+determined during code generation, by the RESET instruction.  The RESET 
+instruction resets the register index used for the next temporary value to
+its parameter.  This instruction is generated by the code generator
+to each time a semi-colon is reached in the code.
+
+==== Conditional Processing
+
+The conditional processing instructions all deal with generation and clearing
+of a mask that specifies which values in varying variables assignments are 
+valid for.  The mask is just an array of integers that dictates whether or not
+the value at the same index in a varying variable should be assigned in an
+assignment statement or not.  
+
+The mask is generated at the beginning of any statement that requires 
+conditional processing (`if`, `while`, `do`, and `for` and the conditional 
+variations of `solar`, `illuminate`, and `illuminance`).
+
+Masks are maintained in a stack by the virtual machine to allow for the 
+recursive conditional assignments that can occur when loops or conditional
+statements are nested.  Generating a mask while another mask is already 
+active/on the stack pushes a new mask onto the stack that allows assignment
+only where both the previous mask and the new mask's condition allow it.
+
+The GENERATE_MASK, CLEAR_MASK, and INVERT_MASK instructions manipulate the
+mask stack.  The GENERATE_MASK instruction pushes a new mask based on the 
+boolean/integer value of its parameter and any current mask.  The CLEAR_MASK
+instruction pops the current mask.  The INVERT_MASK instruction inverts the
+current mask.  This is used to handle the `else` block in an `if-else` 
+statement.
+
+==== Jumps
+
+The JUMP instruction is a simple non-conditional jump.  Its parameter is the
+value to add to the current instruction pointer.
+
+The JUMP_EMPTY and JUMP_NOT_EMPTY instructions are conditional jumps that jump
+if the mask is empty (or not).  Like the non-conditional JUMP their parameter 
+is the value to add to the current instruction pointer.  They provide enough 
+functionality to implement looping and masking for multi-valued loops.  A loop
+statement generates a mask using its condition expression and then uses 
+JUMP_EMPTY or JUMP_NOT_EMPTY to keep executing its body until the condition 
+evaluates to false for all vertices in a value.
+
+==== Calls
+
+The CALL instructions call built-in functions.  The first parameter to this
+instruction is the index of the symbol in the shader of the function to call.
+This symbol is then used to retrieve a function pointer to call; parameters to
+the call are retrieved using the register indices passed to the instruction
+in its remaining parameters; and the function is called.  Function calls 
+*always* allocate a temporary register to store their result, even if they
+don't return anything, this register is then discarded at the next reset
+if it isn't used.
+
+==== Lighting
+
+The lighting instructions AMBIENT, SOLAR, and ILLUMINATE setup the values for
+the `Ps`, `L`, `Cs`, and `Os` variables and allocate a Light object to pass
+the `Cs` and `Os` values back to any surface shader that needs them.
+
+The lighting instructions SOLAR_AXIS_ANGLE and ILLUMINATE_AXIS_ANGLE are 
+conditional versions of the solar and illuminate instructions.  They behave
+the same as their non-conditional versions and setup variables and a Light 
+to pass those variables back to surface shaders.  They also pass back an axis
+and angle that is used in the surface shader's `illuminate` statement to 
+setup a condition mask to ignore lighting contributions from directions that 
+fall outside the cone defined by the axis and angle.
+
+The lighting instructions ILLUMINANCE and ILLUMINANCE_AXIS_ANGLE set up the
+values of the `L`, `Cl`, and `Ol` variables for the current light and set up 
+the condition mask based on the axis and angle passed to the `illuminance` 
+statement and the axis and angle passed to the `solar` or `illuminate` 
+statement that generated the lighting information in a light shader.
+
+The JUMP_ILLUMINANCE instruction is a conditional jump that also increments
+to the next Light object that has been provided by light shaders.  It is used
+in conjunction with an ILLUMINANCE or ILLUMINANCE_AXIS_ANGLE instruction to 
+implement an `illuminance` loop.  Once all of the Light objects have been 
+iterated over the jump is made to the end of the loop.
+
+== Roadmap
+
+This is part description of the envisioned future direction of Sweet Render 
+and part apology for lack of completeness by way of exercises for the 
+interested reader.
+
+=== Renderer
+
+- Allow arbitrary parameters when specifying geometry.
+
+- Use a stack based allocator to handle memory allocation for Values.
+
+- Remove the use of smart pointers.
+
+- Parse RIB files to generate images.
+
+- Retained geometry.
+
+- Bucketing.
+
+- Transparent materials.
+
+- Save arbitrary values in the sample buffer, image buffer, and out to files.
+
+- Imager shaders.
+
+- Texture filtering.
+
+- Motion blur.
+
+- Depth of field.
+
+- Search paths for shaders and textures.
+
+=== Geometry
+
+- General polygons.
+
+- NURBS patches.
+
+- Subdivision surfaces.
+
+- Points.
+
+- Curves.
+
+- Blobs.
+
+=== Shading Language
+
+- Better detection and reporting of syntax errors.
+
+- Variable length argument lists.
+
+- User defined functions.
+
+- Arrays.
+
+- Add the built-in filterstep() function.
+
+- Add the built-in spline() function.
+
+- Add the built-in noise(), cnoise(), and cellnoise() functions.
+
+== Acknowledgements and Licensing
+
+=== Software
+
+The Sweet Render source code contains slightly modified versions of the 
+following libraries:
+
+- http://gamesfromwithin.com/unittest-v10-released[UnitTest++] written by 
+Noel Llopis (released under the http://www.opensource.org/licenses/MIT[MIT license]).
+
+- http://zlib.net/[zlib] (released under the 
+http://www.opensource.org/licenses/zlib-license.php[zlib/libpng license]).
+
+- http://www.libpng.org/pub/png/libpng.html[libpng] (released under the 
+http://www.opensource.org/licenses/zlib-license.php[zlib/libpng license]).
+
+- http://www.ijg.org/[libjpeg] (released under its own license).
+
+The remainder of the source code in Sweet Render is written by me and 
+contained in the source archive for Sweet Render is released under the terms
+of the http://www.opensource.org/licenses/zlib-license.php[zlib/libpng license].
+
+=== Models And Images
+
+The examples use a texture and some models created by other people:
+
+The St Eutropius environment map is Copyright (c) 2002, Computer Graphics 
+Research Group of the K.U.Leuven.  Available from 
+http://graphics.cs.kuleuven.be/index.php/environment-maps.
+
+The famous Utah Teapot is modeled by Martin Newell and originally rendered 
+by Jim Blinn.
+
+The famous Gumbo is by Ed Catmull.

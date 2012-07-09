@@ -1,0 +1,20 @@
+
+Executable {
+    id = "math_test";
+    
+    libraries = {
+        "assert/assert", 
+        "unit/libUnitTest"
+    };
+
+    Cc {
+        pch = "stdafx.hpp";
+        "main.cpp",
+        "TestMat4x4.cpp",
+        "TestQuat.cpp",
+        "TestVec2.cpp",
+        "TestVec3.cpp",
+        "TestVec4.cpp",
+        "TestFloatx4.cpp"
+    };
+}

@@ -1,0 +1,39 @@
+
+Executable {
+    id = "render_test";
+    
+    libraries = {
+        "assert/assert",
+        "error/error",
+        "jpeg/jpeg",
+        "png/libpng",
+        "pointer/pointer",
+        "render/render",
+        "unit/libUnitTest",
+        "zlib/zlib"
+    };
+
+    Cc {
+        "main.cpp",
+        "AssignExpressions.cpp",
+        "BreakStatements.cpp",
+        "CodeGeneration.cpp",
+        "ColorFunctions.cpp",
+        "ContinueStatements.cpp",
+        "ForLoops.cpp",
+        "FunctionCalls.cpp",
+        "GeometricFunctions.cpp",
+        "IfStatements.cpp",
+        "LightShaders.cpp",
+        "LogicalExpressions.cpp",
+        "IfStatements.cpp",
+        "IlluminanceStatements.cpp",
+        "MathematicalFunctions.cpp",
+        "MatrixFunctions.cpp",
+        "NamedCoordinateSystems.cpp",
+        "Projection.cpp",
+        "ShaderParser.cpp",
+        "TypeConversion.cpp",
+        "WhileLoops.cpp"
+    };
+}

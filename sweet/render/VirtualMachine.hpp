@@ -1,0 +1,162 @@
+//
+// VirtualMachine.hpp
+// Copyright (c) 2012 Charles Baker.  All rights reserved.
+//
+
+#ifndef SWEET_RENDER_VIRTUALMACHINE_HPP_INCLUDED
+#define SWEET_RENDER_VIRTUALMACHINE_HPP_INCLUDED
+
+#include "declspec.hpp"
+#include <sweet/pointer/ptr.hpp>
+#include <sweet/math/vec4.hpp>
+#include <sweet/math/vec3.hpp>
+#include <vector>
+#include <map>
+
+namespace sweet
+{
+
+namespace render
+{
+
+class Grid;
+class Value;
+class Shader;
+class Renderer;
+
+/**
+// A virtual machine that interprets the code generated for shaders to execute
+// those shaders.
+*/
+class SWEET_RENDER_DECLSPEC VirtualMachine
+{
+    struct ConditionMask
+    {
+        std::vector<unsigned char> mask_; ///< The mask that specifies whether or not an element is to be processed.
+        int processed_; ///< The number of elements that are to be processed by this mask.
+
+        ConditionMask();
+        void generate( ptr<Value> value );
+        void generate( const ConditionMask& condition_mask, ptr<Value> value );
+        void invert();
+        bool empty() const;
+    };
+
+    const Renderer* renderer_; ///< The Renderer that this virtual machine is part of.
+    Grid* grid_; ///< The grid of micropolygon vertices that is currently being shaded (null if no shader is being executed).
+    Shader* shader_; ///< The shader that is currently being executed (null if no shader is being executed).
+    std::vector<ptr<Value>> values_; ///< The values allocated for use as temporary registers by this virtual machine.
+    std::vector<ptr<Value>> registers_; ///< The values loaded into registers by this virtual machine (some from grid, some temporary).
+    int register_index_; ///< The index of the next available register.
+    int light_index_; ///< The index of the current light (or INT_MAX if there is no current light).
+    const short* code_begin_; ///< The address of the beginning of loaded code.
+    const short* code_end_; ///< The address one past the end of loaded code.
+    std::vector<ConditionMask> masks_; ///< The stack of condition masks that specify which elements to use during assignment.
+    const short* code_; ///< The currently executed instruction.
+    
+public:
+    VirtualMachine();
+    VirtualMachine( const Renderer& renderer );
+    void initialize( Grid& parameters, Shader& shader );
+    void shade( Grid& globals, Grid& parameters, Shader& shader );
+    
+private:
+    void construct( int start, int finish );
+    void initialize_registers( Grid& grid );
+    void execute();
+    void jump_illuminance( int distance );
+    void jump( int distance );
+    int instruction();
+    int argument();
+    
+    void execute_halt();
+    void execute_reset();
+    void execute_clear_mask();
+    void execute_generate_mask();
+    void execute_invert_mask();
+    void execute_jump_empty();
+    void execute_jump_not_empty();
+    void execute_jump_illuminance();
+    void execute_jump();
+    void execute_transform();
+    void execute_transform_vector();
+    void execute_transform_normal();
+    void execute_transform_color();
+    void execute_transform_matrix();
+    void execute_dot();
+    void execute_multiply_float();
+    void execute_multiply_vec3();
+    void execute_divide_float();
+    void execute_divide_vec3();
+    void execute_add_float();
+    void execute_add_vec3();
+    void execute_subtract_float();
+    void execute_subtract_vec3();
+    void execute_greater();
+    void execute_greater_equal();
+    void execute_less();
+    void execute_less_equal();
+    void execute_and();
+    void execute_or();
+    void execute_equal_float();
+    void execute_equal_vec3();
+    void execute_not_equal_float();
+    void execute_not_equal_vec3();
+    void execute_negate_float();
+    void execute_negate_vec3();
+    void execute_promote_integer();
+    void execute_promote_float();
+    void execute_promote_vec3();
+    void execute_float_to_color();
+    void execute_float_to_point();
+    void execute_float_to_vector();
+    void execute_float_to_normal();
+    void execute_float_to_matrix();
+    void execute_assign_float();
+    void execute_assign_vec3();
+    void execute_assign_mat4x4();
+    void execute_assign_integer();
+    void execute_assign_string();
+    void execute_add_assign_float();
+    void execute_add_assign_vec3();
+    void execute_multiply_assign_float();
+    void execute_multiply_assign_vec3();
+    void execute_float_texture();
+    void execute_vec3_texture();
+    void execute_float_environment();
+    void execute_vec3_environment();
+    void execute_shadow();
+    void execute_call_0();
+    void execute_call_1();
+    void execute_call_2();
+    void execute_call_3();
+    void execute_call_4();
+    void execute_call_5();
+    void execute_ambient();
+    void execute_solar();
+    void execute_solar_axis_angle();
+    void execute_illuminate();
+    void execute_illuminate_axis_angle();
+    void execute_illuminance_axis_angle();
+
+    void float_texture( const Renderer& renderer, ptr<Value> result, ptr<Value> texturename, ptr<Value> s, ptr<Value> t ) const;
+    void vec3_texture( const Renderer& renderer, ptr<Value> result, ptr<Value> texturename, ptr<Value> s, ptr<Value> t ) const;
+    void float_environment( const Renderer& renderer, ptr<Value> result, ptr<Value> texturename, ptr<Value> direction ) const;
+    void vec3_environment( const Renderer& renderer, ptr<Value> result, ptr<Value> texturename, ptr<Value> direction ) const;
+    void shadow( const Renderer& renderer, ptr<Value> result, ptr<Value> texturename, ptr<Value> position, ptr<Value> bias ) const;
+    
+    void push_mask( ptr<Value> value );
+    void pop_mask();
+    void invert_mask();
+    bool mask_empty() const;
+    const unsigned char* get_mask() const;
+        
+    void reset_register( int index );
+    int allocate_register();
+};
+
+}
+
+}
+
+#endif
