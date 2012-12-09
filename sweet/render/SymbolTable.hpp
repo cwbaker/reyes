@@ -29,7 +29,7 @@ class SyntaxNode;
 */
 class SWEET_RENDER_DECLSPEC SymbolTable
 {
-    std::list<std::multimap<std::string, ptr<Symbol>>> symbols_; ///< The stack of symbols used to represent the symbol hierarchy.
+    std::list<std::multimap<std::string, ptr<Symbol> > > symbols_; ///< The stack of symbols used to represent the symbol hierarchy.
 
 public:
     SymbolTable();
@@ -39,7 +39,7 @@ public:
     ptr<Symbol> add_symbol( const std::string& identifier );
     ptr<Symbol> find_symbol( const std::string& identifier ) const;
     ptr<Symbol> find_symbol( const SyntaxNode* node ) const;
-    static bool matches( const ptr<Symbol>& symbol, const SyntaxNode* node, const std::vector<ptr<SyntaxNode>>& node_parameters );
+    static bool matches( const ptr<Symbol>& symbol, const SyntaxNode* node, const std::vector<ptr<SyntaxNode> >& node_parameters );
 };
 
 }

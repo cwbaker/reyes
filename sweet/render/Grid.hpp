@@ -11,6 +11,7 @@
 #include "ValueStorage.hpp"
 #include <sweet/math/mat4x4.hpp>
 #include <sweet/pointer/ptr.hpp>
+#include <string>
 #include <vector>
 #include <map>
 
@@ -45,9 +46,9 @@ public:
     int height_; ///< The number of vertices down the v direction of this grid.
     float du_; ///< Size of increments in u for this grid.
     float dv_; ///< Size of increments in v for this grid.
-    std::vector<ptr<Value>> values_; // The values stored in this grid.
-    std::map<std::string, ptr<Value>> values_by_identifier_; ///< The values stored in this grid by their identifier.
-    std::vector<ptr<Light>> lights_; ///< The lighting values for this grid.
+    std::vector<ptr<Value> > values_; // The values stored in this grid.
+    std::map<std::string, ptr<Value> > values_by_identifier_; ///< The values stored in this grid by their identifier.
+    std::vector<ptr<Light> > lights_; ///< The lighting values for this grid.
     math::mat4x4 transform_; ///< The object to camera space transform at the time this Grid was bound to a Shader.
     Shader* shader_; ///< The light shader that this Grid stores parameters for or null if this Grid doesn't store parameters.
     
@@ -74,13 +75,13 @@ public:
         void insert_value( const std::string& identifier, ptr<Value> value );
         ptr<Value> add_value( const std::string& identifier, ValueType type, ValueStorage storage = STORAGE_VARYING );
         ptr<Value> find_value( const std::string& identifier ) const;
-        const std::vector<ptr<Value>>& values() const;
-        const std::map<std::string, ptr<Value>>& values_by_identifier() const;
+        const std::vector<ptr<Value> >& values() const;
+        const std::map<std::string, ptr<Value> >& values_by_identifier() const;
         
         void reserve_lights( unsigned int lights );
         void add_light( ptr<Light> light );
         const Light* get_light( int index ) const;
-        const std::vector<ptr<Light>>& lights() const;
+        const std::vector<ptr<Light> >& lights() const;
         
         void set_transform( const math::mat4x4& transform );
         const math::mat4x4& get_transform() const;

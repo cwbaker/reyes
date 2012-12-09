@@ -9,6 +9,8 @@
 #include "Shader.hpp"
 #include "Instruction.hpp"
 #include "ValueStorage.hpp"
+#include <sweet/math/vec3.ipp>
+#include <sweet/math/mat4x4.ipp>
 #include <stdio.h>
 #include <stdarg.h>
 #define _USE_MATH_DEFINES
@@ -134,8 +136,8 @@ void Debugger::dump_syntax_tree( const SyntaxNode* node, int level ) const
         }        
         printf( "\n" );
         
-        const vector<ptr<SyntaxNode>>& nodes = node->get_nodes();
-        for ( vector<ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+        const vector<ptr<SyntaxNode> >& nodes = node->get_nodes();
+        for ( vector<ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
         {
             const SyntaxNode* node = i->get();
             SWEET_ASSERT( node );
@@ -160,10 +162,10 @@ void Debugger::dump_shader( Shader& shader ) const
     dump_code( shader.code() );
 }
 
-void Debugger::dump_registers( int parameters, const std::vector<ptr<Symbol>>& symbols, const std::vector<ptr<Value>>& values ) const
+void Debugger::dump_registers( int parameters, const std::vector<ptr<Symbol> >& symbols, const std::vector<ptr<Value> >& values ) const
 {
-    vector<ptr<Symbol>>::const_iterator i = symbols.begin();
-    vector<ptr<Value>>::const_iterator j = values.begin();
+    vector<ptr<Symbol> >::const_iterator i = symbols.begin();
+    vector<ptr<Value> >::const_iterator j = values.begin();
 
     int register_index = 0;                
     while ( i != symbols.end() && j != values.end() && register_index < parameters )
@@ -196,9 +198,9 @@ void Debugger::dump_registers( int parameters, const std::vector<ptr<Symbol>>& s
     printf( "\n\n" );
 }
 
-void Debugger::dump_symbols( const std::vector<ptr<Symbol>>& symbols ) const
+void Debugger::dump_symbols( const std::vector<ptr<Symbol> >& symbols ) const
 {
-    for ( vector<ptr<Symbol>>::const_iterator i = symbols.begin(); i != symbols.end(); ++i )
+    for ( vector<ptr<Symbol> >::const_iterator i = symbols.begin(); i != symbols.end(); ++i )
     {
         const Symbol* symbol = i->get();
         SWEET_ASSERT( symbol );
@@ -208,10 +210,10 @@ void Debugger::dump_symbols( const std::vector<ptr<Symbol>>& symbols ) const
     printf( "\n\n" );
 }
 
-void Debugger::dump_values( const std::vector<ptr<Value>>& values ) const
+void Debugger::dump_values( const std::vector<ptr<Value> >& values ) const
 {
     int index = 0;
-    for ( vector<ptr<Value>>::const_iterator i = values.begin(); i != values.end(); ++i )
+    for ( vector<ptr<Value> >::const_iterator i = values.begin(); i != values.end(); ++i )
     {
         const Value* value = i->get();
         SWEET_ASSERT( value );
@@ -337,14 +339,14 @@ void Debugger::dump_code( const std::vector<short>& code ) const
         SWEET_ASSERT( instruction >= INSTRUCTION_NULL && instruction <= INSTRUCTION_COUNT );
         const char* name = INSTRUCTIONS[instruction].name;
         int size = INSTRUCTIONS[instruction].size;        
-        printf( "%d: %s", i - &code[0], name );
+        printf( "%ld: %s", i - &code[0], name );
         ++i;
         if ( instruction == INSTRUCTION_JUMP || instruction == INSTRUCTION_JUMP_EMPTY || instruction == INSTRUCTION_JUMP_NOT_EMPTY || instruction == INSTRUCTION_JUMP_ILLUMINANCE )
         {
             SWEET_ASSERT( size == 1 );
             int jump_distance = *i;
             ++i;
-            printf( ", %d (%d)", jump_distance, i + jump_distance - &code[0] );
+            printf( ", %d (%ld)", jump_distance, i + jump_distance - &code[0] );
         }
         else
         {

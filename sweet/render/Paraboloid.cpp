@@ -75,7 +75,7 @@ bool Paraboloid::splittable() const
     return true;
 }
 
-void Paraboloid::split( std::list<ptr<Geometry>>* primitives ) const
+void Paraboloid::split( std::list<ptr<Geometry> >* primitives ) const
 {
     SWEET_ASSERT( primitives );
     SWEET_ASSERT( u_range().y >= u_range().x );

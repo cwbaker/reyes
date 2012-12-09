@@ -1,6 +1,6 @@
 //
 // vec2.ipp
-// Copyright (c) 2008 - 2011 Charles Baker.  All rights reserved.
+// Copyright (c) 2008 - 2012 Charles Baker.  All rights reserved.
 //
 
 #ifndef SWEET_MATH_VEC2_IPP_INCLUDED
@@ -8,6 +8,8 @@
 
 #include "vec2.hpp"
 #include "vec3.ipp"
+#include <math.h>
+#include <sweet/assert/assert.hpp>
 
 namespace sweet
 {

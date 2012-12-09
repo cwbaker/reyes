@@ -7,6 +7,7 @@
 #include "Error.hpp"
 #include "ErrorPolicy.hpp"
 #include <sweet/math/scalar.ipp>
+#include <sweet/math/vec2.ipp>
 #include <sweet/math/vec3.ipp>
 #include <sweet/assert/assert.hpp>
 

@@ -7,6 +7,7 @@
 #include <sweet/render/Error.hpp>
 #include <sweet/assert/assert.hpp>
 #include <vector>
+#include <string.h>
 
 using std::vector;
 using namespace sweet::pointer;
@@ -16,7 +17,7 @@ SUITE( ShaderParser )
 {
     struct BuildSyntaxTree
     {
-        std::vector<ptr<SyntaxNode>> nodes_;
+        std::vector<ptr<SyntaxNode> > nodes_;
         
         BuildSyntaxTree()
         : nodes_()

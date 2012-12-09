@@ -5,10 +5,13 @@
 
 #include "stdafx.hpp"
 #include "SyntaxNode.hpp"
+#include <sweet/math/vec2.ipp>
 #include <sweet/math/vec3.ipp>
+#include <sweet/math/mat4x4.ipp>
 #include <sweet/assert/assert.hpp>
 #include <algorithm>
 
+using std::equal;
 using std::string;
 using std::vector;
 using namespace sweet;
@@ -167,7 +170,7 @@ void SyntaxNode::add_node_at_front( ptr<SyntaxNode> node )
     nodes_.insert( nodes_.begin(), node );
 }
 
-void SyntaxNode::add_nodes_at_end( const std::vector<ptr<SyntaxNode>>::const_iterator begin, const std::vector<ptr<SyntaxNode>>::const_iterator end )
+void SyntaxNode::add_nodes_at_end( const std::vector<ptr<SyntaxNode> >::const_iterator begin, const std::vector<ptr<SyntaxNode> >::const_iterator end )
 {
     nodes_.insert( nodes_.end(), begin, end );
 }
@@ -179,7 +182,7 @@ SyntaxNode* SyntaxNode::node( int index ) const
     return nodes_[index].get();
 }
 
-const std::vector<ptr<SyntaxNode>>& SyntaxNode::get_nodes() const
+const std::vector<ptr<SyntaxNode> >& SyntaxNode::get_nodes() const
 {
     return nodes_;
 }
@@ -283,18 +286,23 @@ Instruction SyntaxNode::get_instruction() const
     return instruction_;
 }
 
+namespace 
+{
+
+struct indirect_equal
+{
+    bool operator()( const ptr<SyntaxNode>& lhs, const ptr<SyntaxNode>& rhs ) const
+    {
+        SWEET_ASSERT( lhs );
+        SWEET_ASSERT( rhs );
+        return *lhs == *rhs;
+    }
+};
+
+}
+
 bool SyntaxNode::operator==( const SyntaxNode& node ) const
 {
-    struct indirect_equal
-    {
-        bool operator()( const ptr<SyntaxNode>& lhs, const ptr<SyntaxNode>& rhs ) const
-        {
-            SWEET_ASSERT( lhs );
-            SWEET_ASSERT( rhs );
-            return *lhs == *rhs;
-        }
-    };
-
     return node_type_ == node.node_type_
         && lexeme_ == node.lexeme_
         && nodes_.size() == node.nodes_.size()

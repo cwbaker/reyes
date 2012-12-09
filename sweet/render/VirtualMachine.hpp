@@ -45,8 +45,8 @@ class SWEET_RENDER_DECLSPEC VirtualMachine
     const Renderer* renderer_; ///< The Renderer that this virtual machine is part of.
     Grid* grid_; ///< The grid of micropolygon vertices that is currently being shaded (null if no shader is being executed).
     Shader* shader_; ///< The shader that is currently being executed (null if no shader is being executed).
-    std::vector<ptr<Value>> values_; ///< The values allocated for use as temporary registers by this virtual machine.
-    std::vector<ptr<Value>> registers_; ///< The values loaded into registers by this virtual machine (some from grid, some temporary).
+    std::vector<ptr<Value> > values_; ///< The values allocated for use as temporary registers by this virtual machine.
+    std::vector<ptr<Value> > registers_; ///< The values loaded into registers by this virtual machine (some from grid, some temporary).
     int register_index_; ///< The index of the next available register.
     int light_index_; ///< The index of the current light (or INT_MAX if there is no current light).
     const short* code_begin_; ///< The address of the beginning of loaded code.

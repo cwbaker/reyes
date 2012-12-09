@@ -11,6 +11,9 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <stdio.h>
+#include <string.h>
+#include <stdarg.h>
 
 namespace sweet
 {
@@ -166,7 +169,7 @@ struct LexerStateMachine
 /**
 // A lexical analyzer.
 */
-template <class Iterator, class Char = std::iterator_traits<Iterator>::value_type, class Traits = std::char_traits<Char>, class Allocator = std::allocator<Char>>
+template <class Iterator, class Char = typename std::iterator_traits<Iterator>::value_type, class Traits = typename std::char_traits<Char>, class Allocator = typename std::allocator<Char> >
 class Lexer
 {
     typedef void (*LexerActionFunction)( Iterator* begin, Iterator end, std::basic_string<Char, Traits, Allocator>* lexeme, int* symbol );
@@ -266,7 +269,7 @@ struct ParserStateMachine
 
 
 template <class Iterator, class UserData, class Char, class Traits, class Allocator> class Parser;
-template <class Iterator, class UserData = ptr<ParserUserData<std::iterator_traits<Iterator>::value_type>>, class Char = std::iterator_traits<Iterator>::value_type, class Traits = std::char_traits<Char>, class Allocator = std::allocator<Char>>
+template <class Iterator, class UserData, class Char = typename std::iterator_traits<Iterator>::value_type, class Traits = std::char_traits<Char>, class Allocator = typename std::allocator<Char> >
 class ParserEventSink
 {
     public:
@@ -276,7 +279,7 @@ class ParserEventSink
 };
 
 
-template <class UserData, class Char, class Traits = std::char_traits<Char>, class Allocator = std::allocator<Char>>
+template <class UserData, class Char, class Traits = typename std::char_traits<Char>, class Allocator = typename std::allocator<Char> >
 struct ParserNode
 {
     const ParserState* state_;
@@ -326,7 +329,7 @@ class AddParserActionHandler
 /**
 // A parser.
 */
-template <class Iterator, class UserData, class Char = std::iterator_traits<Iterator>::value_type, class Traits = std::char_traits<Char>, class Allocator = std::allocator<Char>>
+template <class Iterator, class UserData, class Char = typename std::iterator_traits<Iterator>::value_type, class Traits = typename std::char_traits<Char>, class Allocator = typename std::allocator<Char> >
 class Parser
 {
     public:
@@ -375,7 +378,7 @@ class Parser
         
     private:
         const ParserTransition* find_transition( int symbol, const ParserState* state ) const;
-        typename std::vector<ParserNode>::const_iterator find_node_to_reduce_to( const ParserProduction* production, const std::vector<ParserNode>& nodes ) const;
+        typename std::vector<ParserNode>::iterator find_node_to_reduce_to( const ParserProduction* production, std::vector<ParserNode>& nodes );
         typename std::vector<ParserNode>::const_iterator find_start_node( const std::vector<ParserNode>& nodes ) const;
         void debug_shift( const ParserNode& node ) const;
         void debug_reduce( const ParserProduction* reduced_production, const ParserNode* start, const ParserNode* finish ) const;
@@ -431,7 +434,7 @@ Lexer<Iterator, Char, Traits, Allocator>::set_action_handler( const char* identi
 {
     SWEET_ASSERT( identifier != NULL );
     
-    std::vector<LexerActionHandler>::iterator action_handler = action_handlers_.begin();
+    typename std::vector<LexerActionHandler>::iterator action_handler = action_handlers_.begin();
     while ( action_handler != action_handlers_.end() && strcmp(action_handler->action_->identifier_, identifier) != 0 )
     {
         ++action_handler;
@@ -812,7 +815,7 @@ Parser<Iterator, UserData, Char, Traits, Allocator>::set_action_handler( const c
     SWEET_ASSERT( identifier != NULL );
     SWEET_ASSERT( function != NULL );
     
-    std::vector<ParserActionHandler>::iterator action_handler = action_handlers_.begin();
+    typename std::vector<ParserActionHandler>::iterator action_handler = action_handlers_.begin();
     while ( action_handler != action_handlers_.end() && strcmp(action_handler->action_->identifier_, identifier) != 0 )
     {
         ++action_handler;
@@ -900,20 +903,20 @@ Parser<Iterator, UserData, Char, Traits, Allocator>::find_transition( int symbol
 
 
 template <class Iterator, class UserData, class Char, class Traits, class Allocator>
-typename std::vector<ParserNode<UserData, Char, Traits, Allocator>>::const_iterator 
-Parser<Iterator, UserData, Char, Traits, Allocator>::find_node_to_reduce_to( const ParserProduction* production, const std::vector<ParserNode>& nodes ) const
+typename std::vector<ParserNode<UserData, Char, Traits, Allocator> >::iterator 
+Parser<Iterator, UserData, Char, Traits, Allocator>::find_node_to_reduce_to( const ParserProduction* production, std::vector<ParserNode>& nodes )
 {
     SWEET_ASSERT( production->length_ < nodes.size() );
-    std::vector<ParserNode>::const_reverse_iterator node = nodes.rbegin() + production->length_;
+    typename std::vector<ParserNode>::reverse_iterator node = nodes.rbegin() + production->length_;
     return node != nodes.rend() ? node.base() : nodes_.begin();
 }
 
 
 template <class Iterator, class UserData, class Char, class Traits, class Allocator>
-typename std::vector<ParserNode<UserData, Char, Traits, Allocator>>::const_iterator 
+typename std::vector<ParserNode<UserData, Char, Traits, Allocator> >::const_iterator 
 Parser<Iterator, UserData, Char, Traits, Allocator>::find_start_node( const std::vector<ParserNode>& nodes ) const
 {
-    std::vector<ParserNode>::const_reverse_iterator node = nodes.rbegin();    
+    typename std::vector<ParserNode>::const_reverse_iterator node = nodes.rbegin();    
     while ( node != nodes.rend() && node.symbol_ != NULL )
     {
         ++node;
@@ -1002,7 +1005,7 @@ Parser<Iterator, UserData, Char, Traits, Allocator>::parse( const ParserState* p
     SWEET_ASSERT( state_machine_ != NULL );
     SWEET_ASSERT( parser_start_state != NULL );
     
-    nodes_.push_back( ParserNode(parser_start_state, NULL, 0, UserData()) );
+    nodes_.push_back( ParserNode(parser_start_state, 0, 0, UserData()) );
     lexer_.advance();
 
     bool accepted = false;
@@ -1065,7 +1068,7 @@ Parser<Iterator, UserData, Char, Traits, Allocator>::reduce( const ParserTransit
     if ( symbol != state_machine_->start_symbol_ )
     {
         const ParserProduction* reduced_production = transition->reduced_production_;
-        typename std::vector<ParserNode>::const_iterator i = find_node_to_reduce_to( reduced_production, nodes_ );
+        typename std::vector<ParserNode>::iterator i = find_node_to_reduce_to( reduced_production, nodes_ );
         const ParserNode* start = i != nodes_.end() ? &(*i) : &nodes_.back() + 1;
         const ParserNode* finish = &nodes_.back() + 1;
 

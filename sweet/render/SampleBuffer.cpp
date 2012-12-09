@@ -9,6 +9,7 @@
 #include "DisplayMode.hpp"
 #include "ImageBufferFormat.hpp"
 #include "Error.hpp"
+#include <sweet/math/vec2.ipp>
 #include <sweet/math/vec4.ipp>
 #include <sweet/math/mat4x4.ipp>
 #include <sweet/math/scalar.ipp>

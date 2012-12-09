@@ -84,7 +84,7 @@ bool Sphere::splittable() const
     return true;
 }
 
-void Sphere::split( std::list<ptr<Geometry>>* primitives ) const
+void Sphere::split( std::list<ptr<Geometry> >* primitives ) const
 {
     SWEET_ASSERT( primitives );
     SWEET_ASSERT( u_range().y >= u_range().x );

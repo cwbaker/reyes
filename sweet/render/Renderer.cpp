@@ -41,10 +41,13 @@
 #include <sweet/assert/assert.hpp>
 #include <vector>
 #include <list>
+#include <algorithm>
+#include <string.h>
 #include <stdarg.h>
+#include <stdio.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include <algorithm>
+#include <limits.h>
 
 using std::max;
 using std::swap;
@@ -1279,7 +1282,7 @@ void Renderer::split( const Geometry& geometry )
     const float HEIGHT = float(sample_buffer_->height() - 1);
     const float SAMPLES_PER_PIXEL = float(options_->horizontal_sampling_rate() * options_->vertical_sampling_rate());
 
-    list<ptr<Geometry>> geometries;
+    list<ptr<Geometry> > geometries;
     geometries.push_back( ptr<Geometry>(const_cast<Geometry*>(&geometry), pointer::NullDeleter<Geometry>()) );
     while ( !geometries.empty() )
     {

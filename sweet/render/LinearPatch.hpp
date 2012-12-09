@@ -34,7 +34,7 @@ public:
     bool boundable() const;
     void bound( const math::mat4x4& transform, math::vec3* minimum, math::vec3* maximum ) const;
     bool splittable() const;
-    void split( std::list<ptr<Geometry>>* primitives ) const;
+    void split( std::list<ptr<Geometry> >* primitives ) const;
     bool diceable() const;
     void dice( const math::mat4x4& transform, int width, int height, Grid* grid ) const;        
 

@@ -3,7 +3,10 @@
 // Copyright (c) 2012 Charles Baker.  All rights reserved
 //
 
+
 #include "stdafx.hpp"
+
+#if defined(BUILD_PLATFORM_MSVC)
 #include <sweet/unit/UnitTest.h>
 #include <sweet/math/vec3.ipp>
 #include <sweet/math/floatx4.ipp>
@@ -239,3 +242,5 @@ SUITE( Floatx4 )
         CHECK_CLOSE( -0.001f, r[2], TOLERANCE );
     }
 }
+
+#endif

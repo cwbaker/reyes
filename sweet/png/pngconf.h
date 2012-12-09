@@ -27,13 +27,15 @@
 #  ifndef PNG_USER_PRIVATEBUILD
 #    define PNG_USER_PRIVATEBUILD
 #  endif
-#include "pngusr.h"
+// Comment out #include "pngusr.h" because the build tool fails to scan it.
+//#include "pngusr.h"
 #endif
 
 /* PNG_CONFIGURE_LIBPNG is set by the "configure" script. */
 #ifdef PNG_CONFIGURE_LIBPNG
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+// Comment out #include "config.h" because the build tool fails to scan it.
+//#include "config.h"
 #endif
 #endif
 

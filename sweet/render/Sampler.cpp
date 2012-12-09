@@ -41,29 +41,28 @@ Sampler::Sampler( float width, float height, int maximum_vertices, const math::v
 {
     const unsigned int MAXIMUM_VERTICES = maximum_vertices_;
     const unsigned int MAXIMUM_TRIANGLES = 2 * 63 * 63;
-    const unsigned int ALIGNMENT = 16;
-    raster_positions_ = reinterpret_cast<vec3*>( _aligned_malloc(sizeof(vec3) * MAXIMUM_VERTICES, ALIGNMENT) );
-    origins_and_edges_ = reinterpret_cast<vec3*>( _aligned_malloc(3 * sizeof(vec3) * MAXIMUM_TRIANGLES, ALIGNMENT) );
-    indices_ = reinterpret_cast<int*>( _aligned_malloc(3 * sizeof(int) * MAXIMUM_TRIANGLES, ALIGNMENT) );
-    bounds_ = reinterpret_cast<int*>( _aligned_malloc(4 * sizeof(int) * MAXIMUM_TRIANGLES, ALIGNMENT) );    
-    samples_ = reinterpret_cast<Sample*>( _aligned_malloc(sizeof(Sample) * MAXIMUM_SAMPLES, ALIGNMENT) );
+    raster_positions_ = reinterpret_cast<vec3*>( malloc(sizeof(vec3) * MAXIMUM_VERTICES) );
+    origins_and_edges_ = reinterpret_cast<vec3*>( malloc(3 * sizeof(vec3) * MAXIMUM_TRIANGLES) );
+    indices_ = reinterpret_cast<int*>( malloc(3 * sizeof(int) * MAXIMUM_TRIANGLES) );
+    bounds_ = reinterpret_cast<int*>( malloc(4 * sizeof(int) * MAXIMUM_TRIANGLES) );    
+    samples_ = reinterpret_cast<Sample*>( malloc(sizeof(Sample) * MAXIMUM_SAMPLES) );
 }
 
 Sampler::~Sampler()
 {
-    _aligned_free( samples_ );
+    free( samples_ );
     samples_ = NULL;
 
-    _aligned_free( bounds_ );
+    free( bounds_ );
     bounds_ = NULL;
 
-    _aligned_free( indices_ );
+    free( indices_ );
     indices_ = NULL;
     
-    _aligned_free( origins_and_edges_ );
+    free( origins_and_edges_ );
     origins_and_edges_ = NULL;
     
-    _aligned_free( raster_positions_ );
+    free( raster_positions_ );
     raster_positions_ = NULL;
 }
 

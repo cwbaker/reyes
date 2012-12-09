@@ -317,7 +317,7 @@ AddSymbolHelper SymbolTable::add_symbols()
 
 void SymbolTable::push_scope()
 {
-    symbols_.push_back( multimap<string, ptr<Symbol>>() );
+    symbols_.push_back( multimap<string, ptr<Symbol> >() );
 }
 
 void SymbolTable::pop_scope()
@@ -340,8 +340,8 @@ ptr<Symbol> SymbolTable::find_symbol( const std::string& identifier ) const
 {
     SWEET_ASSERT( !symbols_.empty() );
 
-    list<multimap<string, ptr<Symbol>>>::const_reverse_iterator i = symbols_.rbegin();
-    multimap<string, ptr<Symbol>>::const_iterator j = i->find( identifier );
+    list<multimap<string, ptr<Symbol> > >::const_reverse_iterator i = symbols_.rbegin();
+    multimap<string, ptr<Symbol> >::const_iterator j = i->find( identifier );
     
     while ( i != symbols_.rend() && j == i->end() )
     {
@@ -361,8 +361,8 @@ ptr<Symbol> SymbolTable::find_symbol( const SyntaxNode* node ) const
     SWEET_ASSERT( node->node_type() == SHADER_NODE_CALL );
     SWEET_ASSERT( !symbols_.empty() );
     
-    list<multimap<string, ptr<Symbol>>>::const_reverse_iterator i = symbols_.rbegin();
-    multimap<string, ptr<Symbol>>::const_iterator j = i->find( node->lexeme() );
+    list<multimap<string, ptr<Symbol> > >::const_reverse_iterator i = symbols_.rbegin();
+    multimap<string, ptr<Symbol> >::const_iterator j = i->find( node->lexeme() );
 
     while ( i != symbols_.rend() && j == i->end() )
     {
@@ -375,7 +375,7 @@ ptr<Symbol> SymbolTable::find_symbol( const SyntaxNode* node ) const
 
     if ( i != symbols_.rend() )
     {
-        const vector<ptr<SyntaxNode>>& parameters = node->get_nodes();        
+        const vector<ptr<SyntaxNode> >& parameters = node->get_nodes();        
         while ( j != i->end() && j->first == node->lexeme() && !matches(j->second, node, parameters) )
         {
             ++j;
@@ -385,7 +385,7 @@ ptr<Symbol> SymbolTable::find_symbol( const SyntaxNode* node ) const
     return i != symbols_.rend() && j != i->end() && j->first == node->lexeme() ? j->second : ptr<Symbol>();
 }
 
-bool SymbolTable::matches( const ptr<Symbol>& symbol, const SyntaxNode* node, const std::vector<ptr<SyntaxNode>>& node_parameters )
+bool SymbolTable::matches( const ptr<Symbol>& symbol, const SyntaxNode* node, const std::vector<ptr<SyntaxNode> >& node_parameters )
 {
     SWEET_ASSERT( symbol );
     SWEET_ASSERT( node );
@@ -394,7 +394,7 @@ bool SymbolTable::matches( const ptr<Symbol>& symbol, const SyntaxNode* node, co
     bool matches_return = symbol->matches_return( node->get_expected_type(), node->get_expected_storage() );
     const vector<SymbolParameter>& symbol_parameters = symbol->parameters();
     vector<SymbolParameter>::const_iterator i = symbol_parameters.begin();
-    vector<ptr<SyntaxNode>>::const_iterator j = node_parameters.begin();
+    vector<ptr<SyntaxNode> >::const_iterator j = node_parameters.begin();
     while ( i != symbol_parameters.end() && j != node_parameters.end() && i->matches((*j)->get_type(), (*j)->get_storage()) )
     {
         ++i;

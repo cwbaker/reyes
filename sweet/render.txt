@@ -10,8 +10,8 @@
 
 Sweet Render is a toy micropolygon renderer based on the architecture 
 described in the original REYES paper and The RenderMan Interface v3.2.1 
-from Pixar.  It is implemented as a C++ library and requires Microsoft
-Visual Studio 2008 (MSVC 9.0).
+from Pixar.  It is implemented as a C++ library and compiles with Microsoft
+Visual Studio 2008 (MSVC 9.0), MinGW (GCC 4.6.2), and Xcode (LLVM-GCC 4.2.1).
 
 Sweet Render was created to better understand how micropolygon renderers and
 their shading languages work with the ultimate goal of producing easy to 
@@ -114,13 +114,15 @@ http://www.guerillarender.com/[Guerilla Render].
 == Installation
 
 Sweet Render is built and installed by downloading the latest version from
-http://www.sweetsoftware.co.nz/, extracting the archive onto your computer,
-and then running "`build`" from the top level directory.  This builds all 
-variants for the host platform into the library directory.
+http://www.sweetsoftware.co.nz/, extracting the archive onto your computer, 
+and then running "`build.bat`" (on Windows) or "`sh ./build.sh`" (on MacOSX)
+from the top level directory.  This builds all variants and a Visual Studio 
+solution or Xcode project to browse through the source.
 
-You'll need to add the top level directory (e.g. "`c:\sweet\sweet_render-2012.07.07`") 
-and the library directory (e.g. "`c:\sweet\sweet_render-2012.07.07\lib`") to your
-compiler's header and library search paths respectively.
+You'll need to add the top level directory (e.g. "`c:\sweet\sweet_render`") 
+and the library directory (e.g. "`c:\sweet\sweet_render\lib`") to your
+compiler's header and library search paths respectively if you're planning on
+including headers and linking to the library from another project.
 
 If you want Sweet Render built to another location or with different variants 
 and/or settings then you'll need to edit the settings in "`sweet/build.lua`".
@@ -774,8 +776,8 @@ http://www.opensource.org/licenses/zlib-license.php[zlib/libpng license]).
 - http://www.ijg.org/[libjpeg] (released under its own license).
 
 The remainder of the source code in Sweet Render is written by me and 
-contained in the source archive for Sweet Render is released under the terms
-of the http://www.opensource.org/licenses/zlib-license.php[zlib/libpng license].
+is released under the terms of the 
+http://www.opensource.org/licenses/zlib-license.php[zlib/libpng license].
 
 === Models And Images
 

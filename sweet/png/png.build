@@ -6,10 +6,13 @@ Library {
         "zlib/zlib"
     };
 
-    Cc {
+    Source {
         settings = {
             compile_as_c = true;
         };                        
+        defines = { 
+            "PNG_NO_MMX_CODE" 
+        };
         "png.c",
         "pngerror.c",
         "pngget.c",

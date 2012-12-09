@@ -12,8 +12,9 @@
 #include <sweet/math/scalar.ipp>
 #include <sweet/jpeg/jpeglib.h>
 #include <sweet/assert/assert.hpp>
+#include <string>
 #include <stdio.h>
-#include <malloc.h>
+#include <memory.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -21,6 +22,10 @@ using std::string;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
+
+#if defined(BUILD_OS_WINDOWS)
+#define snprintf _snprintf
+#endif
 
 namespace
 {
@@ -176,8 +181,9 @@ void Texture::load( const std::string& filename, TextureType type )
             image_buffers_ = new ImageBuffer [FACES];
             for ( int i = 0; i < FACES; ++i )
             {
-                char buffer [TMP_MAX + 1];
-                _snprintf( buffer, sizeof(buffer), filename.c_str(), FILENAME_BY_FACE[i] );
+                static const int MAXIMUM_FILENAME_LENGTH = 1024;
+                char buffer [MAXIMUM_FILENAME_LENGTH];
+                snprintf( buffer, sizeof(buffer), filename.c_str(), FILENAME_BY_FACE[i] );
                 buffer[sizeof(buffer) - 1] = 0;
                                 
                 if ( extension == ".jpeg" || extension == ".jpg" )

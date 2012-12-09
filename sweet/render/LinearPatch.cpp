@@ -13,6 +13,7 @@
 #include <sweet/math/scalar.ipp>
 #include <sweet/assert/assert.hpp>
 #include <vector>
+#include <memory.h>
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -79,7 +80,7 @@ bool LinearPatch::splittable() const
     return true;
 }
 
-void LinearPatch::split( std::list<ptr<Geometry>>* primitives ) const
+void LinearPatch::split( std::list<ptr<Geometry> >* primitives ) const
 {
     SWEET_ASSERT( primitives );
     SWEET_ASSERT( u_range().y >= u_range().x );

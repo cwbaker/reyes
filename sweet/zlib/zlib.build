@@ -2,7 +2,7 @@
 Library {
     id = "zlib";
     
-    Cc {
+    Source {
         settings = {
             compile_as_c = true;
         };        

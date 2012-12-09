@@ -46,7 +46,7 @@ ImageBuffer::~ImageBuffer()
 {
     if ( data_ )
     {
-        _aligned_free( data_ );
+        free( data_ );
         data_ = NULL;
     }
 }
@@ -156,7 +156,7 @@ void ImageBuffer::reset( int width, int height, int elements, int format, const 
     {
         if ( data_ )
         {
-            _aligned_free( data_ );
+            free( data_ );
             data_ = NULL;
         }
                 
@@ -168,7 +168,7 @@ void ImageBuffer::reset( int width, int height, int elements, int format, const 
 
         if ( width_ > 0 && height_ > 0 )
         {
-            data_ = reinterpret_cast<unsigned char*>( _aligned_malloc(width_ * height_ * pixel_size_, 16) );
+            data_ = reinterpret_cast<unsigned char*>( malloc(width_ * height_ * pixel_size_) );
         }
     }
             

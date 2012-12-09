@@ -11,6 +11,7 @@
 #include "Light.hpp"
 #include "Renderer.hpp"
 #include <sweet/math/scalar.ipp>
+#include <sweet/math/vec2.ipp>
 #include <sweet/math/vec3.ipp>
 #include <sweet/assert/assert.hpp>
 #include <algorithm>
@@ -34,8 +35,8 @@ void ambient( const Renderer& renderer, const Grid& grid, ptr<Value> color )
     color->reset( TYPE_COLOR, STORAGE_VARYING, grid.size() );
     color->zero();
 
-    const vector<ptr<Light>>& lights = grid.lights();
-    for ( vector<ptr<Light>>::const_iterator i = lights.begin(); i != lights.end(); ++i )
+    const vector<ptr<Light> >& lights = grid.lights();
+    for ( vector<ptr<Light> >::const_iterator i = lights.begin(); i != lights.end(); ++i )
     {
         Light* light = i->get();
         SWEET_ASSERT( light );
@@ -70,8 +71,8 @@ void diffuse( const Renderer& renderer, const Grid& grid, ptr<Value> color, ptr<
     SWEET_ASSERT( P->storage() == STORAGE_VARYING );
     SWEET_ASSERT( P->size() == color->size() );
 
-    const vector<ptr<Light>>& lights = grid.lights();
-    for ( vector<ptr<Light>>::const_iterator i = lights.begin(); i != lights.end(); ++i )
+    const vector<ptr<Light> >& lights = grid.lights();
+    for ( vector<ptr<Light> >::const_iterator i = lights.begin(); i != lights.end(); ++i )
     {
         Light* light = i->get();
         SWEET_ASSERT( light );
@@ -181,8 +182,8 @@ void specular( const Renderer& renderer, const Grid& grid, ptr<Value> color, ptr
     SWEET_ASSERT( P->storage() == STORAGE_VARYING );
     SWEET_ASSERT( P->size() == color->size() );
     
-    const vector<ptr<Light>>& lights = grid.lights();
-    for ( vector<ptr<Light>>::const_iterator i = lights.begin(); i != lights.end(); ++i )
+    const vector<ptr<Light> >& lights = grid.lights();
+    for ( vector<ptr<Light> >::const_iterator i = lights.begin(); i != lights.end(); ++i )
     {
         Light* light = i->get();
         SWEET_ASSERT( light );
@@ -322,8 +323,8 @@ void phong( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<V
     SWEET_ASSERT( P->storage() == STORAGE_VARYING );
     SWEET_ASSERT( P->size() == result->size() );
     
-    const vector<ptr<Light>>& lights = grid.lights();
-    for ( vector<ptr<Light>>::const_iterator i = lights.begin(); i != lights.end(); ++i )
+    const vector<ptr<Light> >& lights = grid.lights();
+    for ( vector<ptr<Light> >::const_iterator i = lights.begin(); i != lights.end(); ++i )
     {
         Light* light = i->get();
         SWEET_ASSERT( light );

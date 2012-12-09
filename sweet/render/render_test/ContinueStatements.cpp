@@ -11,6 +11,7 @@
 #include <sweet/assert/assert.hpp>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <string.h>
 
 using std::vector;
 using namespace sweet;
@@ -136,7 +137,8 @@ SUITE( ContinueStatements )
             "   } \n"
             "}"
         ;
-        CHECK_THROW( test(source, ExpectLineAndMessage(4, "Continue to a level outside of a loop")), CodeGenerationFailedError );
+        ExpectLineAndMessage expect_line_and_message( 4, "Continue to a level outside of a loop" );
+        CHECK_THROW( test(source, expect_line_and_message), CodeGenerationFailedError );
     }
 
     TEST_FIXTURE( ContinueStatementTest, continue_statement_in_while_loop )
@@ -192,7 +194,8 @@ SUITE( ContinueStatements )
             "   } \n"
             "}"
         ;
-        CHECK_THROW( test(source, ExpectLineAndMessage(4, "Continue to a level outside of a loop")), CodeGenerationFailedError );
+        ExpectLineAndMessage expect_line_and_message( 4, "Continue to a level outside of a loop" );
+        CHECK_THROW( test(source, expect_line_and_message), CodeGenerationFailedError );
     }
 
     TEST_FIXTURE( ContinueStatementTest, continue_out_of_first_level_of_nested_for_loop )
@@ -246,7 +249,8 @@ SUITE( ContinueStatements )
             "   continue; \n"
             "}"
         ;
-        CHECK_THROW( test(source, ExpectLineAndMessage(2, "Continue outside of a loop")), CodeGenerationFailedError );
+        ExpectLineAndMessage expect_line_and_message( 2, "Continue outside of a loop" );
+        CHECK_THROW( test(source, expect_line_and_message), CodeGenerationFailedError );
     }
 
     TEST_FIXTURE( ContinueStatementTest, continue_statement_with_level_outside_of_loop )
@@ -256,6 +260,7 @@ SUITE( ContinueStatements )
             "   continue 2; \n"
             "}"
         ;
-        CHECK_THROW( test(source, ExpectLineAndMessage(2, "Continue outside of a loop")), CodeGenerationFailedError );
+        ExpectLineAndMessage expect_line_and_message( 2, "Continue outside of a loop" );
+        CHECK_THROW( test(source, expect_line_and_message), CodeGenerationFailedError );
     }
 }

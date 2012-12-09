@@ -5,9 +5,11 @@
 #include <sweet/render/Shader.hpp>
 #include <sweet/render/Grid.hpp>
 #include <sweet/render/Value.hpp>
+#include <sweet/math/vec3.ipp>
 #include <sweet/assert/assert.hpp>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <string.h>
 
 using std::vector;
 using namespace sweet;

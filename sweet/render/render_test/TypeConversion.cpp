@@ -6,9 +6,12 @@
 #include <sweet/render/ErrorPolicy.hpp>
 #include <sweet/render/SymbolTable.hpp>
 #include <sweet/render/VirtualMachine.hpp>
+#include <sweet/math/vec2.ipp>
+#include <sweet/math/vec3.ipp>
 #include <sweet/assert/assert.hpp>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <string.h>
 
 using std::vector;
 using namespace sweet;

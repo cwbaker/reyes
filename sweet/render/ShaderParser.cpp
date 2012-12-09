@@ -383,8 +383,8 @@ public:
         ValueStorage storage = storage_from_syntax_node( start[1].user_data_, STORAGE_UNIFORM );
         ValueType type = type_from_syntax_node( start[2].user_data_ );
         
-        const vector<ptr<SyntaxNode>>& nodes = start[3].user_data_->get_nodes();
-        for ( vector<ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+        const vector<ptr<SyntaxNode> >& nodes = start[3].user_data_->get_nodes();
+        for ( vector<ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
         {
             SyntaxNode* variable_node = i->get();
             SWEET_ASSERT( variable_node );
@@ -411,8 +411,8 @@ public:
         ValueStorage storage = storage_from_syntax_node( start[1].user_data_, STORAGE_VARYING );
         ValueType type = type_from_syntax_node( start[2].user_data_ );
         
-        const vector<ptr<SyntaxNode>>& nodes = start[3].user_data_->get_nodes();
-        for ( vector<ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+        const vector<ptr<SyntaxNode> >& nodes = start[3].user_data_->get_nodes();
+        for ( vector<ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
         {
             SyntaxNode* variable_node = i->get();
             SWEET_ASSERT( variable_node );
@@ -1158,7 +1158,7 @@ public:
     ptr<SyntaxNode> texture_expression_( int symbol, const ParserNode<ptr<SyntaxNode>, char>* start, const ParserNode<ptr<SyntaxNode>, char>* finish )
     {
         ptr<SyntaxNode> texture( new SyntaxNode(SHADER_NODE_TEXTURE, start[0].line_) );
-        const vector<ptr<SyntaxNode>>& parameters = start[2].user_data_->get_nodes();
+        const vector<ptr<SyntaxNode> >& parameters = start[2].user_data_->get_nodes();
         texture->add_nodes_at_end( parameters.begin(), parameters.end() );
         if ( parameters.size() == 1 )
         {
@@ -1181,7 +1181,7 @@ public:
     ptr<SyntaxNode> shadow_expression_( const ParserNode<ptr<SyntaxNode>, char>* start, const ParserNode<ptr<SyntaxNode>, char>* finish )
     {
         ptr<SyntaxNode> shadow( new SyntaxNode(SHADER_NODE_SHADOW, start[0].line_) );
-        const vector<ptr<SyntaxNode>>& parameters = start[2].user_data_->get_nodes();
+        const vector<ptr<SyntaxNode> >& parameters = start[2].user_data_->get_nodes();
         shadow->add_nodes_at_end( parameters.begin(), parameters.end() );
         return shadow;
     }
@@ -1195,7 +1195,7 @@ public:
     ptr<SyntaxNode> environment_expression_( const ParserNode<ptr<SyntaxNode>, char>* start, const ParserNode<ptr<SyntaxNode>, char>* finish )
     {
         ptr<SyntaxNode> environment( new SyntaxNode(SHADER_NODE_ENVIRONMENT, start[0].line_) );
-        const vector<ptr<SyntaxNode>>& parameters = start[2].user_data_->get_nodes();
+        const vector<ptr<SyntaxNode> >& parameters = start[2].user_data_->get_nodes();
         environment->add_nodes_at_end( parameters.begin(), parameters.end() );
         return environment;
     }
@@ -1337,7 +1337,7 @@ ptr<SyntaxNode> ShaderParser::parse( const char* filename )
     {
         stream.unsetf( std::iostream::skipws );
         stream.exceptions( std::iostream::badbit );        
-        ShaderParserContext<istream_iterator<char>> shader_parser_context( symbol_table_, error_policy_ );
+        ShaderParserContext<istream_iterator<char> > shader_parser_context( symbol_table_, error_policy_ );
         syntax_node = shader_parser_context.parse( istream_iterator<char>(stream), istream_iterator<char>(), filename );
     }
     else if ( error_policy_ )

@@ -2,7 +2,7 @@
 Library {
     id = "jpeg";
     
-    Cc {
+    Source {
         settings = {
             compile_as_c = true;
         };                        

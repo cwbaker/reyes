@@ -77,7 +77,7 @@ bool Torus::splittable() const
     return true;
 }
 
-void Torus::split( std::list<ptr<Geometry>>* primitives ) const
+void Torus::split( std::list<ptr<Geometry> >* primitives ) const
 {
     SWEET_ASSERT( primitives );
     SWEET_ASSERT( u_range().y >= u_range().x );

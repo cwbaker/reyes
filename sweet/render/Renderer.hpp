@@ -53,7 +53,7 @@ class SWEET_RENDER_DECLSPEC Renderer
     std::map<std::string, Texture*> textures_; ///< The textures that have been loaded (by filename).
     std::map<std::string, Shader*> shaders_; ///< The shaders that have been loaded (by filename).
     Options* options_; /// The options used for this renderer.
-    std::vector<ptr<Attributes>> attributes_; ///< The attributes stack.
+    std::vector<ptr<Attributes> > attributes_; ///< The attributes stack.
 
     public:
         Renderer();

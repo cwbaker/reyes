@@ -39,7 +39,7 @@ public:
     virtual bool boundable() const;
     virtual void bound( const math::mat4x4& transform, math::vec3* minimum, math::vec3* maximum ) const;
     virtual bool splittable() const;
-    virtual void split( std::list<ptr<Geometry>>* primitives ) const;
+    virtual void split( std::list<ptr<Geometry> >* primitives ) const;
     virtual bool diceable() const;
     virtual void dice( const math::mat4x4& transform, int width, int height, Grid* grid ) const;
 };

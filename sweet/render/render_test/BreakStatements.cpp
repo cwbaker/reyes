@@ -11,6 +11,7 @@
 #include <sweet/assert/assert.hpp>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <string.h>
 
 using std::vector;
 using namespace sweet;
@@ -134,7 +135,9 @@ SUITE( BreakStatements )
             "   } \n"
             "}"
         ;
-        CHECK_THROW( test(source, ExpectLineAndMessage(4, "Break to a level outside of a loop")), CodeGenerationFailedError );
+
+        ExpectLineAndMessage expect_line_and_message( 4, "Break to a level outside of a loop" );
+        CHECK_THROW( test(source, expect_line_and_message), CodeGenerationFailedError );
     }
 
     TEST_FIXTURE( BreakStatementTest, break_statement_in_while_loop )
@@ -188,7 +191,8 @@ SUITE( BreakStatements )
             "   } \n"
             "}"
         ;
-        CHECK_THROW( test(source, ExpectLineAndMessage(4, "Break to a level outside of a loop")), CodeGenerationFailedError );
+        ExpectLineAndMessage expect_line_and_message( 4, "Break to a level outside of a loop" );
+        CHECK_THROW( test(source, expect_line_and_message), CodeGenerationFailedError );
     }
 
     TEST_FIXTURE( BreakStatementTest, break_out_of_first_level_of_nested_for_loop )
@@ -240,7 +244,8 @@ SUITE( BreakStatements )
             "   break; \n"
             "}"
         ;
-        CHECK_THROW( test(source, ExpectLineAndMessage(2, "Break outside of a loop")), CodeGenerationFailedError );
+        ExpectLineAndMessage expect_line_and_message( 2, "Break outside of a loop" );
+        CHECK_THROW( test(source, expect_line_and_message), CodeGenerationFailedError );
     }
 
     TEST_FIXTURE( BreakStatementTest, break_statement_with_level_outside_of_loop )
@@ -250,6 +255,7 @@ SUITE( BreakStatements )
             "   break 2; \n"
             "}"
         ;
-        CHECK_THROW( test(source, ExpectLineAndMessage(2, "Break outside of a loop")), CodeGenerationFailedError );
+        ExpectLineAndMessage expect_line_and_message( 2, "Break outside of a loop" );
+        CHECK_THROW( test(source, expect_line_and_message), CodeGenerationFailedError );
     }
 }

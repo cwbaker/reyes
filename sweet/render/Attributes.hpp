@@ -45,7 +45,7 @@ class SWEET_RENDER_DECLSPEC Attributes
     Shader* displacement_shader_; ///< The currently active displacement shader or null if there is no displacement shader.
     Grid* surface_parameters_; ///< The parameters for the currently active surface shader.
     Shader* surface_shader_; ///< The currently active surface shader or null if there is no surface shader.
-    std::vector<std::pair<Shader*, ptr<Grid>>> light_shaders_; ///< The currently allocated light shaders.
+    std::vector<std::pair<Shader*, ptr<Grid> > > light_shaders_; ///< The currently allocated light shaders.
     std::vector<Grid*> active_light_shaders_; ///< The currently active light shaders.
     std::vector<math::mat4x4> transforms_; ///< The transform stack.
     std::map<std::string, math::mat4x4> named_transforms_; ///< Transform from camera space to the named space.

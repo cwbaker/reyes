@@ -54,7 +54,7 @@ bool Geometry::splittable() const
     return false;
 }
 
-void Geometry::split( std::list<ptr<Geometry>>* primitives ) const
+void Geometry::split( std::list<ptr<Geometry> >* primitives ) const
 {
     SWEET_ASSERT( false );
 }

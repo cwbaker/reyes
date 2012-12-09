@@ -56,8 +56,8 @@ Grid::Grid( const Grid& grid )
   shader_( grid.shader_ )
 {
     values_.reserve( grid.values_by_identifier_.size() );
-    const map<string, ptr<Value>>& values_by_identifier = grid.values_by_identifier_;
-    for ( map<string, ptr<Value>>::const_iterator i = values_by_identifier.begin(); i != values_by_identifier.end(); ++i )
+    const map<string, ptr<Value> >& values_by_identifier = grid.values_by_identifier_;
+    for ( map<string, ptr<Value> >::const_iterator i = values_by_identifier.begin(); i != values_by_identifier.end(); ++i )
     {
         copy_value( i->first, i->second );
     }
@@ -218,16 +218,16 @@ ptr<Value> Grid::add_value( const std::string& identifier, ValueType type, Value
 
 ptr<Value> Grid::find_value( const std::string& identifier ) const
 {
-    map<string, ptr<Value>>::const_iterator i = values_by_identifier_.find( identifier );
+    map<string, ptr<Value> >::const_iterator i = values_by_identifier_.find( identifier );
     return i != values_by_identifier_.end() ? i->second : ptr<Value>();
 }
 
-const std::vector<ptr<Value>>& Grid::values() const
+const std::vector<ptr<Value> >& Grid::values() const
 {
     return values_;
 }
 
-const std::map<std::string, ptr<Value>>& Grid::values_by_identifier() const
+const std::map<std::string, ptr<Value> >& Grid::values_by_identifier() const
 {
     return values_by_identifier_;
 }
@@ -248,7 +248,7 @@ const Light* Grid::get_light( int index ) const
     return lights_[index].get();
 }
 
-const std::vector<ptr<Light>>& Grid::lights() const
+const std::vector<ptr<Light> >& Grid::lights() const
 {
     return lights_;
 }

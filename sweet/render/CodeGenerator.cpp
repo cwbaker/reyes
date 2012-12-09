@@ -12,9 +12,11 @@
 #include "SymbolTable.hpp"
 #include "Error.hpp"
 #include "ErrorPolicy.hpp"
+#include <sweet/math/vec2.ipp>
 #include <sweet/math/vec3.ipp>
 #include <sweet/assert/assert.hpp>
 #include <algorithm>
+#include <stdio.h>
 
 using std::min;
 using std::max;
@@ -131,7 +133,7 @@ void CodeGenerator::generate( SyntaxNode* node, const char* name )
 
 ptr<Symbol> CodeGenerator::find_symbol( const std::string& identifier ) const
 {
-    vector<ptr<Symbol>>::const_iterator i = symbols_.begin();
+    vector<ptr<Symbol> >::const_iterator i = symbols_.begin();
     while ( i != symbols_.end() && (*i)->identifier() != identifier )
     {
         ++i;
@@ -175,22 +177,22 @@ int CodeGenerator::constants() const
     return constants_;
 }
 
-std::vector<ptr<Symbol>>& CodeGenerator::symbols()
+std::vector<ptr<Symbol> >& CodeGenerator::symbols()
 {
     return symbols_;
 }
 
-const std::vector<ptr<Symbol>>& CodeGenerator::symbols() const
+const std::vector<ptr<Symbol> >& CodeGenerator::symbols() const
 {
     return symbols_;
 }
 
-std::vector<ptr<Value>>& CodeGenerator::values()
+std::vector<ptr<Value> >& CodeGenerator::values()
 {
     return values_;
 }
 
-const std::vector<ptr<Value>>& CodeGenerator::values() const
+const std::vector<ptr<Value> >& CodeGenerator::values() const
 {
     return values_;
 }
@@ -258,8 +260,8 @@ void CodeGenerator::generate_symbols( const SyntaxNode& node )
         symbols_.push_back( symbol );
     }
     
-    const vector<ptr<SyntaxNode>>& nodes = node.get_nodes();
-    for ( vector<ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+    const vector<ptr<SyntaxNode> >& nodes = node.get_nodes();
+    for ( vector<ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
     {
         const SyntaxNode& node = *(*i);
         generate_symbols( node );
@@ -271,8 +273,8 @@ void CodeGenerator::generate_symbols_for_parameters( SyntaxNode* list_node )
     SWEET_ASSERT( list_node );
     SWEET_ASSERT( list_node->node_type() == SHADER_NODE_LIST );
     
-    const vector<ptr<SyntaxNode>>& parameters = list_node->get_nodes();
-    for ( vector<ptr<SyntaxNode>>::const_iterator i = parameters.begin(); i != parameters.end(); ++i )
+    const vector<ptr<SyntaxNode> >& parameters = list_node->get_nodes();
+    for ( vector<ptr<SyntaxNode> >::const_iterator i = parameters.begin(); i != parameters.end(); ++i )
     {
         const SyntaxNode* parameter_node = i->get();
         SWEET_ASSERT( parameter_node );
@@ -319,8 +321,8 @@ ptr<Value> CodeGenerator::generate_constants( SyntaxNode* node )
         
         default:
         {
-            const vector<ptr<SyntaxNode>>& nodes = node->get_nodes();
-            for ( vector<ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+            const vector<ptr<SyntaxNode> >& nodes = node->get_nodes();
+            for ( vector<ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
             {
                 SyntaxNode* syntax_node = i->get();
                 SWEET_ASSERT( syntax_node );
@@ -336,7 +338,7 @@ ptr<Value> CodeGenerator::generate_constants( SyntaxNode* node )
 void CodeGenerator::generate_indexes_for_symbols()
 {
     int index = 0;
-    for ( vector<ptr<Symbol>>::const_iterator i = symbols_.begin(); i != symbols_.end(); ++i )
+    for ( vector<ptr<Symbol> >::const_iterator i = symbols_.begin(); i != symbols_.end(); ++i )
     {
         Symbol* symbol = i->get();
         SWEET_ASSERT( symbol );
@@ -345,7 +347,7 @@ void CodeGenerator::generate_indexes_for_symbols()
     }
 
     int register_index = constants_;
-    vector<ptr<Symbol>>::const_iterator i = symbols_.begin(); 
+    vector<ptr<Symbol> >::const_iterator i = symbols_.begin(); 
     
     while ( i != symbols_.end() && register_index < constants_ + parameters_ )
     {
@@ -562,8 +564,8 @@ void CodeGenerator::generate_code_for_list( const SyntaxNode& node )
 {
     SWEET_ASSERT( node.node_type() == SHADER_NODE_LIST );
     
-    const vector<ptr<SyntaxNode>>& nodes = node.get_nodes();
-    for ( vector<ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+    const vector<ptr<SyntaxNode> >& nodes = node.get_nodes();
+    for ( vector<ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
     {
         const SyntaxNode& node = *(*i);
         push_register();
@@ -592,8 +594,8 @@ void CodeGenerator::generate_code_for_parameters( const SyntaxNode& node )
 {
     SWEET_ASSERT( node.node_type() == SHADER_NODE_LIST );
     
-    const vector<ptr<SyntaxNode>>& parameters = node.get_nodes();
-    for ( vector<ptr<SyntaxNode>>::const_iterator i = parameters.begin(); i != parameters.end(); ++i )
+    const vector<ptr<SyntaxNode> >& parameters = node.get_nodes();
+    for ( vector<ptr<SyntaxNode> >::const_iterator i = parameters.begin(); i != parameters.end(); ++i )
     {
         const SyntaxNode* variable_node = i->get();
         SWEET_ASSERT( variable_node );

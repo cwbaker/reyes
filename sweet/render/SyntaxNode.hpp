@@ -31,12 +31,12 @@ class Symbol;
 class SWEET_RENDER_DECLSPEC SyntaxNode
 {
 public:
-    static const int REGISTER_NULL = INT_MAX; ///< Indicates that no register has been assigned.
+    static const int REGISTER_NULL = ~0; ///< Indicates that no register has been assigned.
 
 private:
     SyntaxNodeType node_type_; ///< The node type of this SyntaxNode.
     std::string lexeme_; ///< The lexeme at this SyntaxNode.
-    std::vector<ptr<SyntaxNode>> nodes_; ///< The SyntaxNodes that are children of this SyntaxNode.
+    std::vector<ptr<SyntaxNode> > nodes_; ///< The SyntaxNodes that are children of this SyntaxNode.
     ptr<Symbol> symbol_; ///< The Symbol at this SyntaxNode (or null if there is no Symbol at this SyntaxNode).
     int constant_index_; ///< The index of the register that this SyntaxNode's constant value is stored in (or REGISTER_NULL if this SyntaxNode is not a constant).
     ValueType expected_type_; ///< The type that is expected at this SyntaxNode by other SyntaxNodes above it in the syntax tree (or TYPE_NULL if there is no expectation of type).
@@ -68,9 +68,9 @@ public:
     
     void add_node( ptr<SyntaxNode> node );
     void add_node_at_front( ptr<SyntaxNode> node );
-    void add_nodes_at_end( const std::vector<ptr<SyntaxNode>>::const_iterator begin, const std::vector<ptr<SyntaxNode>>::const_iterator end );
+    void add_nodes_at_end( const std::vector<ptr<SyntaxNode> >::const_iterator begin, const std::vector<ptr<SyntaxNode> >::const_iterator end );
     SyntaxNode* node( int index ) const;
-    const std::vector<ptr<SyntaxNode>>& get_nodes() const;
+    const std::vector<ptr<SyntaxNode> >& get_nodes() const;
     
     void set_symbol( ptr<Symbol> symbol );
     ptr<Symbol> get_symbol() const;

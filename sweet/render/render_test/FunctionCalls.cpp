@@ -8,6 +8,7 @@
 #include <sweet/assert/assert.hpp>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <string.h>
 
 using namespace sweet;
 using namespace sweet::render;

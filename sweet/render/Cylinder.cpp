@@ -75,7 +75,7 @@ bool Cylinder::splittable() const
     return true;
 }
 
-void Cylinder::split( std::list<ptr<Geometry>>* primitives ) const
+void Cylinder::split( std::list<ptr<Geometry> >* primitives ) const
 {
     SWEET_ASSERT( primitives );
     SWEET_ASSERT( u_range().y >= u_range().x );

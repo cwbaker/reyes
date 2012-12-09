@@ -14,7 +14,7 @@ Library {
         "zlib/zlib"
     };
     
-    Cc {
+    Source {
         pch = "stdafx.hpp";
         "AddSymbolHelper.cpp",
         "Attributes.cpp",

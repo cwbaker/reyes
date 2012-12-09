@@ -14,6 +14,7 @@
 #include "ErrorPolicy.hpp"
 #include <sweet/assert/assert.hpp>
 #include <algorithm>
+#include <stdio.h>
 
 using std::max;
 using std::string;
@@ -107,8 +108,8 @@ void SemanticAnalyzer::analyze_ambient_lighting( SyntaxNode* node )
         int solar_statements = 0;
         int illuminate_statements = 0;
         
-        const vector<ptr<SyntaxNode>>& statements = node->node(1)->get_nodes();        
-        for ( vector<ptr<SyntaxNode>>::const_iterator i = statements.begin(); i != statements.end(); ++i )
+        const vector<ptr<SyntaxNode> >& statements = node->node(1)->get_nodes();        
+        for ( vector<ptr<SyntaxNode> >::const_iterator i = statements.begin(); i != statements.end(); ++i )
         {
             const SyntaxNode* node = i->get();
             SWEET_ASSERT( node );
@@ -167,8 +168,8 @@ void SemanticAnalyzer::analyze_node( SyntaxNode* node ) const
             break;
     }
     
-    const vector<ptr<SyntaxNode>>& nodes = node->get_nodes();
-    for ( vector<ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+    const vector<ptr<SyntaxNode> >& nodes = node->get_nodes();
+    for ( vector<ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
     {
         SyntaxNode* syntax_node = i->get();
         SWEET_ASSERT( syntax_node );
@@ -324,8 +325,8 @@ void SemanticAnalyzer::analyze_assign_expectations( SyntaxNode* node ) const
     {
         ValueStorage expected_storage = symbol->storage();
         
-        const vector<ptr<SyntaxNode>>& nodes = node->get_nodes();
-        for ( vector<ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+        const vector<ptr<SyntaxNode> >& nodes = node->get_nodes();
+        for ( vector<ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
         {
             SyntaxNode* syntax_node = i->get();
             SWEET_ASSERT( syntax_node );
@@ -342,8 +343,8 @@ void SemanticAnalyzer::analyze_typecast_expectations( SyntaxNode* node ) const
     ValueType expected_type = type_from_type_node( node->node(0) );
     ValueStorage expected_storage = node->get_expected_storage();
     
-    const vector<ptr<SyntaxNode>>& nodes = node->get_nodes();
-    for ( vector<ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+    const vector<ptr<SyntaxNode> >& nodes = node->get_nodes();
+    for ( vector<ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
     {
         SyntaxNode* syntax_node = i->get();
         SWEET_ASSERT( syntax_node );
@@ -359,8 +360,8 @@ void SemanticAnalyzer::analyze_expectations( SyntaxNode* node ) const
     ValueType expected_type = node->get_expected_type();
     ValueStorage expected_storage = node->get_expected_storage();
     
-    const vector<ptr<SyntaxNode>>& nodes = node->get_nodes();
-    for ( vector<ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+    const vector<ptr<SyntaxNode> >& nodes = node->get_nodes();
+    for ( vector<ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
     {
         SyntaxNode* syntax_node = i->get();
         SWEET_ASSERT( syntax_node );
@@ -437,7 +438,7 @@ void SemanticAnalyzer::analyze_call( SyntaxNode* node ) const
         node->set_storage( symbol->storage() );
         
         const vector<SymbolParameter>& parameters = symbol->parameters();
-        const vector<ptr<SyntaxNode>>& nodes = node->get_nodes();
+        const vector<ptr<SyntaxNode> >& nodes = node->get_nodes();
         SWEET_ASSERT( parameters.size() == nodes.size() );
         const int MAXIMUM_PARAMETERS = 5;
         error( parameters.size() > MAXIMUM_PARAMETERS, node->line(), "The call '%s' has more than the %d parameters", symbol->identifier().c_str(), MAXIMUM_PARAMETERS );
@@ -463,10 +464,10 @@ void SemanticAnalyzer::analyze_assign( SyntaxNode* node ) const
             { POINT | VECTOR | NORMAL, FLOAT | POINT | VECTOR | NORMAL, TYPE_NULL, INSTRUCTION_NULL },
             { MATRIX, FLOAT | MATRIX },
             { STRING, STRING },
-            { NULL, NULL, TYPE_NULL, INSTRUCTION_NULL }
+            { 0, 0, TYPE_NULL, INSTRUCTION_NULL }
         };        
         const OperationMetadata* metadata = find_metadata( ASSIGNMENT_METADATA, symbol->type(), node->node(0)->get_type() );
-        error( !metadata && node->node(0)->get_type() != SHADER_NODE_NULL, node->line(), "Invalid types in assignment to '%s'", node->lexeme().c_str() );        
+        error( !metadata && node->node(0)->node_type() != SHADER_NODE_NULL, node->line(), "Invalid types in assignment to '%s'", node->lexeme().c_str() );        
         error( symbol->storage() == STORAGE_CONSTANT, node->line(), "Assignment to constant '%s'", symbol->identifier().c_str() );
         
         analyze_type_conversion( node->node(0), symbol->type() );
@@ -482,7 +483,7 @@ void SemanticAnalyzer::analyze_dot( SyntaxNode* node ) const
     {
         { COLOR, COLOR, TYPE_FLOAT, INSTRUCTION_DOT },
         { POINT | VECTOR | NORMAL, POINT | VECTOR | NORMAL, TYPE_FLOAT, INSTRUCTION_DOT },
-        { NULL, NULL, TYPE_NULL, INSTRUCTION_NULL }
+        { 0, 0, TYPE_NULL, INSTRUCTION_NULL }
     };
     analyze_binary_operator( DOT_METADATA, ".", node );
 }
@@ -492,7 +493,7 @@ void SemanticAnalyzer::analyze_cross( SyntaxNode* node ) const
     static const OperationMetadata CROSS_METADATA[] =
     {
         { POINT | VECTOR | NORMAL, POINT | VECTOR | NORMAL, TYPE_VECTOR, INSTRUCTION_NULL },
-        { NULL, NULL, TYPE_NULL }
+        { 0, 0, TYPE_NULL }
     };
     analyze_binary_operator( CROSS_METADATA, "%", node );
 }
@@ -506,7 +507,7 @@ void SemanticAnalyzer::analyze_multiply( SyntaxNode* node ) const
         { POINT, POINT, TYPE_POINT, INSTRUCTION_MULTIPLY_VEC3 },
         { POINT | NORMAL | VECTOR, POINT | NORMAL | VECTOR, TYPE_VECTOR, INSTRUCTION_MULTIPLY_VEC3 },
         { MATRIX, MATRIX, TYPE_MATRIX, INSTRUCTION_NULL },
-        { NULL, NULL, TYPE_NULL }
+        { 0, 0, TYPE_NULL }
     };            
     analyze_binary_operator( MULTIPLY_METADATA, "*", node );
 }
@@ -522,7 +523,7 @@ void SemanticAnalyzer::analyze_divide( SyntaxNode* node ) const
         { VECTOR, FLOAT, TYPE_VECTOR, INSTRUCTION_DIVIDE_VEC3 },
         { FLOAT, MATRIX, TYPE_MATRIX, INSTRUCTION_NULL },
         { MATRIX, MATRIX, TYPE_MATRIX, INSTRUCTION_NULL },
-        { NULL, NULL, TYPE_NULL }
+        { 0, 0, TYPE_NULL }
     };            
 
     analyze_storage_promotion( node->node(0), node->node(1)->get_storage() );
@@ -546,7 +547,7 @@ void SemanticAnalyzer::analyze_add( SyntaxNode* node ) const
         { VECTOR | NORMAL, VECTOR | NORMAL, TYPE_VECTOR, INSTRUCTION_ADD_VEC3 },
         { POINT | VECTOR | NORMAL, POINT | VECTOR | NORMAL, TYPE_POINT, INSTRUCTION_ADD_VEC3 },
         { MATRIX, MATRIX, TYPE_MATRIX, INSTRUCTION_NULL },
-        { NULL, NULL, TYPE_NULL }
+        { 0, 0, TYPE_NULL }
     };
     analyze_binary_operator( ADD_METADATA, "+", node );
 }
@@ -568,7 +569,7 @@ void SemanticAnalyzer::analyze_less( SyntaxNode* node ) const
     const OperationMetadata LESS_METADATA[] =
     {
         { FLOAT, FLOAT, TYPE_INTEGER, INSTRUCTION_LESS },
-        { NULL, NULL, TYPE_NULL }
+        { 0, 0, TYPE_NULL }
     };
     analyze_binary_operator( LESS_METADATA, "<", node );
 }
@@ -578,7 +579,7 @@ void SemanticAnalyzer::analyze_less_equal( SyntaxNode* node ) const
     const OperationMetadata LESS_EQUAL_METADATA[] =
     {
         { FLOAT, FLOAT, TYPE_INTEGER, INSTRUCTION_LESS_EQUAL },
-        { NULL, NULL, TYPE_NULL }
+        { 0, 0, TYPE_NULL }
     };
     analyze_binary_operator( LESS_EQUAL_METADATA, "<=", node );
 }
@@ -588,7 +589,7 @@ void SemanticAnalyzer::analyze_greater( SyntaxNode* node ) const
     const OperationMetadata GREATER_METADATA[] =
     {
         { FLOAT, FLOAT, TYPE_INTEGER, INSTRUCTION_GREATER },
-        { NULL, NULL, TYPE_NULL }
+        { 0, 0, TYPE_NULL }
     };
     analyze_binary_operator( GREATER_METADATA, ">", node );
 }
@@ -598,7 +599,7 @@ void SemanticAnalyzer::analyze_greater_equal( SyntaxNode* node ) const
     const OperationMetadata GREATER_EQUAL_METADATA[] =
     {
         { FLOAT, FLOAT, TYPE_INTEGER, INSTRUCTION_GREATER_EQUAL },
-        { NULL, NULL, TYPE_NULL }
+        { 0, 0, TYPE_NULL }
     };
     analyze_binary_operator( GREATER_EQUAL_METADATA, ">=", node );
 }
@@ -612,7 +613,7 @@ void SemanticAnalyzer::analyze_equal( SyntaxNode* node ) const
         { POINT | NORMAL | VECTOR, POINT | NORMAL | VECTOR, TYPE_INTEGER, INSTRUCTION_EQUAL_VEC3 },
         { MATRIX, MATRIX, TYPE_INTEGER, INSTRUCTION_NULL },
         { STRING, STRING, TYPE_INTEGER, INSTRUCTION_NULL },
-        { NULL, NULL, TYPE_NULL }
+        { 0, 0, TYPE_NULL }
     };
     analyze_binary_operator( EQUAL_METADATA, "==", node );
 }
@@ -626,7 +627,7 @@ void SemanticAnalyzer::analyze_not_equal( SyntaxNode* node ) const
         { POINT | NORMAL | VECTOR, POINT | NORMAL | VECTOR, TYPE_INTEGER, INSTRUCTION_NOT_EQUAL_VEC3 },
         { MATRIX, MATRIX, TYPE_INTEGER, INSTRUCTION_NULL },
         { STRING, STRING, TYPE_INTEGER, INSTRUCTION_NULL },
-        { NULL, NULL, TYPE_NULL }
+        { 0, 0, TYPE_NULL }
     };
     analyze_binary_operator( NOT_EQUAL_METADATA, "!=", node );
 }
@@ -636,7 +637,7 @@ void SemanticAnalyzer::analyze_and( SyntaxNode* node ) const
     const OperationMetadata AND_METADATA[] =            
     {
         { INTEGER, INTEGER, TYPE_INTEGER, INSTRUCTION_AND },
-        { NULL, NULL, TYPE_NULL }
+        { 0, 0, TYPE_NULL }
     };
     analyze_binary_operator( AND_METADATA, "&&", node );
 }
@@ -646,7 +647,7 @@ void SemanticAnalyzer::analyze_or( SyntaxNode* node ) const
     const OperationMetadata OR_METADATA[] =            
     {
         { INTEGER, INTEGER, TYPE_INTEGER, INSTRUCTION_OR },
-        { NULL, NULL, TYPE_NULL }
+        { 0, 0, TYPE_NULL }
     };
     analyze_binary_operator( OR_METADATA, "||", node );
 }
@@ -673,7 +674,7 @@ void SemanticAnalyzer::analyze_ternary( SyntaxNode* node ) const
         { VECTOR | NORMAL, VECTOR | NORMAL, TYPE_VECTOR, INSTRUCTION_NULL },
         { POINT | VECTOR | NORMAL, POINT | VECTOR | NORMAL, TYPE_POINT, INSTRUCTION_NULL },
         { MATRIX, MATRIX, TYPE_MATRIX, INSTRUCTION_NULL },
-        { NULL, NULL, TYPE_NULL, INSTRUCTION_NULL }
+        { 0, 0, TYPE_NULL, INSTRUCTION_NULL }
     };
 
     SWEET_ASSERT( node );
@@ -769,11 +770,11 @@ void SemanticAnalyzer::analyze_binary_operator( const OperationMetadata* operati
 
 const OperationMetadata* SemanticAnalyzer::find_metadata( const OperationMetadata* metadata, ValueType lhs, ValueType rhs ) const
 {
-    while ( metadata->lhs != NULL && ((metadata->lhs & (1 << lhs)) == 0 || (metadata->rhs & (1 << rhs)) == 0) )
+    while ( metadata->lhs != 0 && ((metadata->lhs & (1 << lhs)) == 0 || (metadata->rhs & (1 << rhs)) == 0) )
     {
         ++metadata;
     }
-    return metadata->lhs != NULL ? metadata : NULL;
+    return metadata->lhs != 0 ? metadata : NULL;
 }
 
 ValueType SemanticAnalyzer::type_from_type_node( const SyntaxNode* type_node ) const

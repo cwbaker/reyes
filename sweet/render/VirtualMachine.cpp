@@ -14,10 +14,13 @@
 #include "Light.hpp"
 #include "Instruction.hpp"
 #include "color_functions.hpp"
-#include <sweet/math/vec4.ipp>
+#include <sweet/math/vec2.ipp>
 #include <sweet/math/vec3.ipp>
+#include <sweet/math/vec4.ipp>
+#include <sweet/math/mat4x4.ipp>
 #include <sweet/assert/assert.hpp>
 #include <algorithm>
+#include <limits.h>
 
 using std::max;
 using std::swap;
@@ -134,7 +137,7 @@ void VirtualMachine::initialize( Grid& parameters, Shader& shader )
     grid_ = &parameters;
     shader_ = &shader;
 
-    const vector<ptr<Symbol>>& symbols = shader.symbols();
+    const vector<ptr<Symbol> >& symbols = shader.symbols();
     for ( int i = 0; i < shader.parameters(); ++i )
     {
         const ptr<Symbol>& symbol = symbols[i];
@@ -215,8 +218,8 @@ void VirtualMachine::construct( int start, int finish )
 
 void VirtualMachine::initialize_registers( Grid& grid )
 {
-    const map<string, ptr<Value>>& values = grid.values_by_identifier();
-    for ( map<string, ptr<Value>>::const_iterator i = values.begin(); i != values.end(); ++i )
+    const map<string, ptr<Value> >& values = grid.values_by_identifier();
+    for ( map<string, ptr<Value> >::const_iterator i = values.begin(); i != values.end(); ++i )
     {
         Symbol* symbol = shader_->find_symbol( i->first ).get();
         if ( symbol )

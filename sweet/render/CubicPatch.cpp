@@ -74,7 +74,7 @@ bool CubicPatch::splittable() const
     return true;
 }
 
-void CubicPatch::split( std::list<ptr<Geometry>>* primitives ) const
+void CubicPatch::split( std::list<ptr<Geometry> >* primitives ) const
 {
     SWEET_ASSERT( primitives );
     SWEET_ASSERT( u_range().y >= u_range().x );

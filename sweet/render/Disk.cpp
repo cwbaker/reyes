@@ -73,7 +73,7 @@ bool Disk::splittable() const
     return true;
 }
 
-void Disk::split( std::list<ptr<Geometry>>* primitives ) const
+void Disk::split( std::list<ptr<Geometry> >* primitives ) const
 {
     SWEET_ASSERT( primitives );
     SWEET_ASSERT( u_range().y >= u_range().x );

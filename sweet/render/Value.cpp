@@ -17,6 +17,7 @@
 #include <sweet/math/scalar.ipp>
 #include <sweet/assert/assert.hpp>
 #include <math.h>
+#include <memory.h>
 
 using std::min;
 using std::max;

@@ -107,12 +107,12 @@ Shader::Shader( const char* start, const char* finish, SymbolTable& symbol_table
     registers_ = code_generator.registers();
 }
 
-const std::vector<ptr<Symbol>>& Shader::symbols() const
+const std::vector<ptr<Symbol> >& Shader::symbols() const
 {
     return symbols_;
 }
 
-const std::vector<ptr<Value>>& Shader::values() const
+const std::vector<ptr<Value> >& Shader::values() const
 {
     return values_;
 }

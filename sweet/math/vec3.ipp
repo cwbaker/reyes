@@ -7,6 +7,7 @@
 #define SWEET_MATH_VEC3_IPP_INCLUDED
 
 #include "vec3.hpp"
+#include "vec2.ipp"
 #include "vec4.ipp"
 #include <sweet/assert/assert.hpp>
 #include <float.h>

@@ -7,7 +7,7 @@ Executable {
         "unit/libUnitTest"
     };
 
-    Cc {
+    Source {
         pch = "stdafx.hpp";
         "main.cpp",
         "TestMat4x4.cpp",

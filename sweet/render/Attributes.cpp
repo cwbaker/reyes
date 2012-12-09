@@ -9,6 +9,7 @@
 #include "Grid.hpp"
 #include "Shader.hpp"
 #include "VirtualMachine.hpp"
+#include <sweet/math/vec2.ipp>
 #include <sweet/math/vec3.ipp>
 #include <sweet/math/mat4x4.ipp>
 #include <sweet/assert/assert.hpp>
@@ -310,8 +311,8 @@ void Attributes::light_shade( Grid& grid )
         remove_coordinate_system( "shader" );
         remove_coordinate_system( "current" );
         
-        const vector<ptr<Light>>& lights = light_grid.lights();
-        for ( vector<ptr<Light>>::const_iterator i = lights.begin(); i != lights.end(); ++i )
+        const vector<ptr<Light> >& lights = light_grid.lights();
+        for ( vector<ptr<Light> >::const_iterator i = lights.begin(); i != lights.end(); ++i )
         {
             const ptr<Light>& light = *i;      
             grid.add_light( light );
