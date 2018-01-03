@@ -1,0 +1,21 @@
+build:all {
+    build:Executable "render_examples" {
+        libraries = {
+            "sweet/render/render",
+            "sweet/assert/assert",
+            "sweet/error/error",
+            "jpeg/jpeg",
+            "png/libpng",
+            "sweet/pointer/pointer",
+            "zlib/zlib"
+        };
+        
+        build:Cxx () {
+            "main.cpp",
+            "render_gumbo_example.cpp",
+            "render_shaders_example.cpp",
+            "render_wavy_sphere_example.cpp",
+            "render_teapot_example.cpp",
+        };
+    };    
+};

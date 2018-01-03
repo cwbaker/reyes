@@ -1,0 +1,20 @@
+
+for _, build in build:default_builds("cc_.*") do
+    build:Library "math_lua" {
+    	libraries = {
+            "sweet/lua/lua",
+            "sweet/rtti/rtti",
+    		"lua/liblua",
+    		"sweet/assert/assert"
+    	};
+
+        build:Cxx () {
+            "LuaMat4x4.cpp",
+            "LuaMath.cpp",
+            "LuaVec2.cpp",
+            "LuaVec3.cpp",
+            "LuaVec4.cpp",
+            "LuaQuat.cpp"
+        };
+    };
+end

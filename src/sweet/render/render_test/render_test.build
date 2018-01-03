@@ -1,0 +1,39 @@
+
+build:all {
+    build:Executable "render_test" {
+        libraries = {
+            "sweet/render/render",
+            "sweet/assert/assert",
+            "sweet/error/error",
+            "jpeg/jpeg",
+            "png/libpng",
+            "sweet/pointer/pointer",
+            "unit/libUnitTest",
+            "zlib/zlib"
+        };
+
+        build:Cxx () {
+            "main.cpp",
+            "AssignExpressions.cpp",
+            "BreakStatements.cpp",
+            "CodeGeneration.cpp",
+            "ColorFunctions.cpp",
+            "ContinueStatements.cpp",
+            "ForLoops.cpp",
+            "FunctionCalls.cpp",
+            "GeometricFunctions.cpp",
+            "IfStatements.cpp",
+            "LightShaders.cpp",
+            "LogicalExpressions.cpp",
+            "IfStatements.cpp",
+            "IlluminanceStatements.cpp",
+            "MathematicalFunctions.cpp",
+            "MatrixFunctions.cpp",
+            "NamedCoordinateSystems.cpp",
+            "Projection.cpp",
+            "ShaderParser.cpp",
+            "TypeConversion.cpp",
+            "WhileLoops.cpp"
+        };
+    };    
+};

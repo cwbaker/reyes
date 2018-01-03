@@ -1,0 +1,20 @@
+
+build:all {
+    build:Executable "${bin}/math_test" {
+        libraries = {
+            "sweet/assert/assert", 
+            "unit/libUnitTest"
+        };
+
+        build:Cxx () {
+            precompiled_header = "stdafx.hpp";
+            "main.cpp",
+            "TestMat4x4.cpp",
+            "TestQuat.cpp",
+            "TestVec2.cpp",
+            "TestVec3.cpp",
+            "TestVec4.cpp",
+            "TestFloatx4.cpp"
+        };
+    };
+};

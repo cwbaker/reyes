@@ -1,6 +1,0 @@
-
-buildfile "math_test/math_test.build";
-
-Library {
-    id = "math";
-}
