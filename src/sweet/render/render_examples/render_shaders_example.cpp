@@ -17,6 +17,7 @@ using namespace sweet::render;
 void render_shaders_example()
 {  
     Options options;
+    options.set_gamma( 1.0f / 2.2f );
     options.set_resolution( 640, 480, 1.0f );
     options.set_dither( 1.0f );
     options.set_filter( &Options::gaussian_filter, 2.0f, 2.0f );
@@ -30,7 +31,7 @@ void render_shaders_example()
     renderer.begin_world();
 
     Grid& ambientlight = renderer.light_shader( SHADERS_PATH "ambientlight.sl" );
-    ambientlight["intensity"] = 0.3f;
+    ambientlight["intensity"] = 0.1f;
     ambientlight["lightcolor"] = vec3( 1.0f, 1.0f, 1.0f );
 
     Grid& pointlight = renderer.light_shader( SHADERS_PATH "pointlight.sl" );
@@ -115,7 +116,10 @@ void render_shaders_example()
     renderer.texture( RENDER_EXAMPLES_PATH "bumpy.jpg" );
     Grid& bumpy = renderer.displacement_shader( SHADERS_PATH "bumpy.sl" );
     bumpy["texturename"] = RENDER_EXAMPLES_PATH "bumpy.jpg";
-    renderer.surface_shader( SHADERS_PATH "plastic.sl" );    
+    Grid& bumpy_plastic = renderer.surface_shader( SHADERS_PATH "plastic.sl" );    
+    bumpy_plastic["Ka"] = 0.2f;
+    bumpy_plastic["Kd"] = 0.4f;
+    bumpy_plastic["Ks"] = 0.4f;
     for ( int i = 0; i < 8; ++i )
     {
         renderer.identity();
@@ -132,8 +136,8 @@ void render_shaders_example()
     renderer.environment( RENDER_EXAMPLES_PATH "st-eutropius.jpg" );
     Grid& shinymetal = renderer.surface_shader( SHADERS_PATH "shinymetal.sl" );
     shinymetal["Ka"] = 0.2f;
-    shinymetal["Ks"] = 0.8f;
-    shinymetal["Kr"] = 0.6f;
+    shinymetal["Ks"] = 0.4f;
+    shinymetal["Kr"] = 0.4f;
     shinymetal["roughness"] = 0.01f;
     shinymetal["texturename"] = RENDER_EXAMPLES_PATH "st-eutropius.jpg";
     for ( int i = 0; i < 8; ++i )

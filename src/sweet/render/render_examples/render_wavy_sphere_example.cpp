@@ -14,6 +14,7 @@ using namespace sweet::render;
 void render_wavy_sphere_example()
 {  
     Options options;
+    options.set_gamma( 1.0f / 2.2f );
     options.set_resolution( 640, 480, 1.0f );
     options.set_dither( 1.0f );
     options.set_filter( &Options::gaussian_filter, 2.0f, 2.0f );
@@ -27,7 +28,7 @@ void render_wavy_sphere_example()
     renderer.begin_world();
 
     Grid& ambientlight = renderer.light_shader( SHADERS_PATH "ambientlight.sl" );
-    ambientlight["intensity"] = 0.4f;
+    ambientlight["intensity"] = 0.2f;
     ambientlight["lightcolor"] = vec3( 1.0f, 1.0f, 1.0f );
 
     Grid& pointlight = renderer.light_shader( SHADERS_PATH "pointlight.sl" );
@@ -41,7 +42,7 @@ void render_wavy_sphere_example()
     wavy["tfreq"] = 32.0f;
     
     Grid& plastic = renderer.surface_shader( SHADERS_PATH "plastic.sl" );
-    plastic["Ka"] = 0.5f;
+    plastic["Ka"] = 0.2f;
     plastic["Kd"] = 0.4f;
     plastic["Ks"] = 0.4f;
     plastic["roughness"] = 0.05f;

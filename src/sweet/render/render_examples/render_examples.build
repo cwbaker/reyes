@@ -17,7 +17,6 @@ build:all {
                 ('RENDER_EXAMPLES_PATH=\\"%s/\\"'):format( build:absolute('.') );
             };
             "main.cpp",
-            "render_gumbo_example.cpp",
             "render_shaders_example.cpp",
             "render_wavy_sphere_example.cpp",
             "render_teapot_example.cpp",

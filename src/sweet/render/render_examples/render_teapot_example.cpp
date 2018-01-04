@@ -36,12 +36,12 @@ void render_teapot_example()
     renderer.end();
     renderer.shadow_from_framebuffer( "shadow_map" );
 
+    options.set_gamma( 1.0f / 2.2f );
     options.set_resolution( 640, 480, 1.0f );
     options.set_near_clip_distance( 2.0f );
     options.set_far_clip_distance( 256.0f );    
     options.set_dither( 2.0f );
     options.set_gain( 1.5f );
-    options.set_gamma( 1.25f );
     options.set_filter( &Options::gaussian_filter, 2.0f, 2.0f );
 
     renderer.set_options( options );
@@ -53,15 +53,15 @@ void render_teapot_example()
     renderer.begin_world();
 
     Grid& ambientlight = renderer.light_shader( SHADERS_PATH "ambientlight.sl" );
-    ambientlight["intensity"] = 0.3f;
+    ambientlight["intensity"] = 0.1f;
     ambientlight["lightcolor"] = vec3( 1.0f, 1.0f, 1.0f );
 
     Grid& shadowpointlight = renderer.light_shader( SHADERS_PATH "shadowpointlight.sl" );
-    shadowpointlight["intensity"] = 2500.0f;
+    shadowpointlight["intensity"] = 2048.0f;
     shadowpointlight["lightcolor"] = vec3( 1.0f, 1.0f, 1.0f );
     shadowpointlight["from"] = light_position;
     shadowpointlight["shadowname"] = "shadow_map";
-    shadowpointlight["bias"] = 0.05f;
+    shadowpointlight["bias"] = 0.15f;
 
     render_teapot( renderer );
 
