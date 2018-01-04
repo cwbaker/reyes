@@ -26,21 +26,21 @@ void render_wavy_sphere_example()
     renderer.translate( 0.0f, 0.0f, 24.0f );
     renderer.begin_world();
 
-    Grid& ambientlight = renderer.light_shader( "../shaders/ambientlight.sl" );
+    Grid& ambientlight = renderer.light_shader( SHADERS_PATH "ambientlight.sl" );
     ambientlight["intensity"] = 0.4f;
     ambientlight["lightcolor"] = vec3( 1.0f, 1.0f, 1.0f );
 
-    Grid& pointlight = renderer.light_shader( "../shaders/pointlight.sl" );
+    Grid& pointlight = renderer.light_shader( SHADERS_PATH "pointlight.sl" );
     pointlight["intensity"] = 4096.0f;
     pointlight["lightcolor"] = vec3( 1.0f, 1.0f, 1.0f );
     pointlight["from"] = vec3( 25.0f, 25.0f, -50.0f );
 
-    Grid& wavy = renderer.displacement_shader( "../shaders/wavy.sl" );
+    Grid& wavy = renderer.displacement_shader( SHADERS_PATH "wavy.sl" );
     wavy["Km"] = 0.2f;
     wavy["sfreq"] = 24.0f;
     wavy["tfreq"] = 32.0f;
     
-    Grid& plastic = renderer.surface_shader( "../shaders/plastic.sl" );
+    Grid& plastic = renderer.surface_shader( SHADERS_PATH "plastic.sl" );
     plastic["Ka"] = 0.5f;
     plastic["Kd"] = 0.4f;
     plastic["Ks"] = 0.4f;
@@ -55,5 +55,5 @@ void render_wavy_sphere_example()
 
     renderer.end_world();
     renderer.end();
-    renderer.save_image_as_png( "wavy_sphere.png" );
+    renderer.save_image_as_png( RENDER_EXAMPLES_PATH "wavy_sphere.png" );
 }

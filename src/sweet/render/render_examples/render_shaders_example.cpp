@@ -29,11 +29,11 @@ void render_shaders_example()
     renderer.translate( 0.0f, 0.0f, 24.0f );
     renderer.begin_world();
 
-    Grid& ambientlight = renderer.light_shader( "../shaders/ambientlight.sl" );
+    Grid& ambientlight = renderer.light_shader( SHADERS_PATH "ambientlight.sl" );
     ambientlight["intensity"] = 0.3f;
     ambientlight["lightcolor"] = vec3( 1.0f, 1.0f, 1.0f );
 
-    Grid& pointlight = renderer.light_shader( "../shaders/pointlight.sl" );
+    Grid& pointlight = renderer.light_shader( SHADERS_PATH "pointlight.sl" );
     pointlight["intensity"] = 4096.0f;
     pointlight["lightcolor"] = vec3( 1.0f, 1.0f, 1.0f );
     pointlight["from"] = vec3( 25.0f, 25.0f, -50.0f );
@@ -45,7 +45,7 @@ void render_shaders_example()
 
     float y = HEIGHT / 2.0f - HEIGHT / DOWN * float(0);
     renderer.push_attributes();
-    renderer.surface_shader( "../shaders/constant.sl" );
+    renderer.surface_shader( SHADERS_PATH "constant.sl" );
     for ( int i = 0; i < 8; ++i )
     {
         renderer.identity();
@@ -57,7 +57,7 @@ void render_shaders_example()
     
     y = HEIGHT / 2.0f - HEIGHT / DOWN * float(1);
     renderer.push_attributes();
-    renderer.surface_shader( "../shaders/matte.sl" );    
+    renderer.surface_shader( SHADERS_PATH "matte.sl" );    
     for ( int i = 0; i < 8; ++i )
     {
         renderer.identity();
@@ -69,7 +69,7 @@ void render_shaders_example()
     
     y = HEIGHT / 2.0f - HEIGHT / DOWN * float(2);
     renderer.push_attributes();
-    Grid& metal = renderer.surface_shader( "../shaders/metal.sl" );    
+    Grid& metal = renderer.surface_shader( SHADERS_PATH "metal.sl" );    
     for ( int i = 0; i < 8; ++i )
     {
         renderer.identity();
@@ -82,7 +82,7 @@ void render_shaders_example()
     
     y = HEIGHT / 2.0f - HEIGHT / DOWN * float(3);
     renderer.push_attributes();
-    Grid& plastic = renderer.surface_shader( "../shaders/plastic.sl" );    
+    Grid& plastic = renderer.surface_shader( SHADERS_PATH "plastic.sl" );    
     for ( int i = 0; i < 8; ++i )
     {
         renderer.identity();
@@ -95,10 +95,10 @@ void render_shaders_example()
 
     y = HEIGHT / 2.0f - HEIGHT / DOWN * float(4);
     renderer.push_attributes();
-    renderer.texture( "bumpy.jpg" );
+    renderer.texture( RENDER_EXAMPLES_PATH "bumpy.jpg" );
     renderer.color( vec3(1.0f, 1.0f, 1.0f) );
-    Grid& paintedplastic = renderer.surface_shader( "../shaders/paintedplastic.sl" );    
-    paintedplastic["texturename"] = "bumpy.jpg";
+    Grid& paintedplastic = renderer.surface_shader( SHADERS_PATH "paintedplastic.sl" );    
+    paintedplastic["texturename"] = RENDER_EXAMPLES_PATH "bumpy.jpg";
     for ( int i = 0; i < 8; ++i )
     {
         renderer.identity();
@@ -112,10 +112,10 @@ void render_shaders_example()
     y = HEIGHT / 2.0f - HEIGHT / DOWN * float(5);
     renderer.push_attributes();
     renderer.two_sided( true );
-    renderer.texture( "bumpy.jpg" );
-    Grid& bumpy = renderer.displacement_shader( "../shaders/bumpy.sl" );
-    bumpy["texturename"] = "bumpy.jpg";
-    renderer.surface_shader( "../shaders/plastic.sl" );    
+    renderer.texture( RENDER_EXAMPLES_PATH "bumpy.jpg" );
+    Grid& bumpy = renderer.displacement_shader( SHADERS_PATH "bumpy.sl" );
+    bumpy["texturename"] = RENDER_EXAMPLES_PATH "bumpy.jpg";
+    renderer.surface_shader( SHADERS_PATH "plastic.sl" );    
     for ( int i = 0; i < 8; ++i )
     {
         renderer.identity();
@@ -129,13 +129,13 @@ void render_shaders_example()
 
     y = HEIGHT / 2.0f - HEIGHT / DOWN * float(6);
     renderer.push_attributes();
-    renderer.environment( "st-eutropius.jpg" );
-    Grid& shinymetal = renderer.surface_shader( "../shaders/shinymetal.sl" );
+    renderer.environment( RENDER_EXAMPLES_PATH "st-eutropius.jpg" );
+    Grid& shinymetal = renderer.surface_shader( SHADERS_PATH "shinymetal.sl" );
     shinymetal["Ka"] = 0.2f;
     shinymetal["Ks"] = 0.8f;
     shinymetal["Kr"] = 0.6f;
     shinymetal["roughness"] = 0.01f;
-    shinymetal["texturename"] = "st-eutropius.jpg";
+    shinymetal["texturename"] = RENDER_EXAMPLES_PATH "st-eutropius.jpg";
     for ( int i = 0; i < 8; ++i )
     {
         renderer.identity();
@@ -148,5 +148,5 @@ void render_shaders_example()
 
     renderer.end_world();
     renderer.end();
-    renderer.save_image_as_png( "shaders.png" );
+    renderer.save_image_as_png( RENDER_EXAMPLES_PATH "shaders.png" );
 }

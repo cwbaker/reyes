@@ -52,11 +52,11 @@ void render_teapot_example()
     renderer.translate( 0.5f, -2.4f, 6.0f );
     renderer.begin_world();
 
-    Grid& ambientlight = renderer.light_shader( "../shaders/ambientlight.sl" );
+    Grid& ambientlight = renderer.light_shader( SHADERS_PATH "ambientlight.sl" );
     ambientlight["intensity"] = 0.3f;
     ambientlight["lightcolor"] = vec3( 1.0f, 1.0f, 1.0f );
 
-    Grid& shadowpointlight = renderer.light_shader( "../shaders/shadowpointlight.sl" );
+    Grid& shadowpointlight = renderer.light_shader( SHADERS_PATH "shadowpointlight.sl" );
     shadowpointlight["intensity"] = 2500.0f;
     shadowpointlight["lightcolor"] = vec3( 1.0f, 1.0f, 1.0f );
     shadowpointlight["from"] = light_position;
@@ -76,7 +76,7 @@ void render_teapot_example()
     const vec2 T3( 0.0f, 0.0f );    
     renderer.identity();
     renderer.color( vec3(0.6f, 0.6f, 0.6f) );
-    renderer.surface_shader( "../shaders/matte.sl" );
+    renderer.surface_shader( SHADERS_PATH "matte.sl" );
     vec3 positions[] = { P0, P1, P2, P3 };
     vec3 normals[] = { N, N, N, N };
     vec2 texture_coordinates[] = { T0, T1, T2, T3 };
@@ -85,7 +85,7 @@ void render_teapot_example()
 
     renderer.end_world();
     renderer.end();
-    renderer.save_image_as_png( "teapot.png" );
+    renderer.save_image_as_png( RENDER_EXAMPLES_PATH "teapot.png" );
 }
 
 static void render_teapot( Renderer& renderer )
@@ -96,7 +96,7 @@ static void render_teapot( Renderer& renderer )
     renderer.rotate( -0.1f * float(M_PI), 1.0f, 0.0f, 0.0f );
     renderer.rotate( 0.85f * float(M_PI), 0.0f, 1.0f, 0.0f );
 
-    Grid& plastic = renderer.surface_shader( "../shaders/plastic.sl" );
+    Grid& plastic = renderer.surface_shader( SHADERS_PATH "plastic.sl" );
     plastic["Ka"] = 1.0f;
     plastic["roughness"] = 0.0125f;
 

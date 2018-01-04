@@ -55,11 +55,11 @@ void render_gumbo_example()
     renderer.translate( 3.0f, -12.0f, 12.0f );
     renderer.begin_world();
 
-    Grid& ambientlight = renderer.light_shader( "../shaders/ambientlight.sl" );
+    Grid& ambientlight = renderer.light_shader( SHADERS_PATH "ambientlight.sl" );
     ambientlight["intensity"] = 0.3f;
     ambientlight["lightcolor"] = vec3( 1.0f, 1.0f, 1.0f );
 
-    Grid& shadowpointlight = renderer.light_shader( "../shaders/shadowpointlight.sl" );
+    Grid& shadowpointlight = renderer.light_shader( SHADERS_PATH "shadowpointlight.sl" );
     shadowpointlight["intensity"] = 16384.0f;
     shadowpointlight["lightcolor"] = vec3( 1.0f, 1.0f, 1.0f );
     shadowpointlight["from"] = light_position;
@@ -84,7 +84,7 @@ void render_gumbo_example()
     const vec2 T3( 0.0f, 0.0f );    
     renderer.identity();
     renderer.color( vec3(0.6f, 0.6f, 0.6f) );
-    renderer.surface_shader( "../shaders/matte.sl" );
+    renderer.surface_shader( SHADERS_PATH "matte.sl" );
     vec3 positions[] = { P0, P1, P2, P3 };
     vec3 normals[] = { N, N, N, N };
     vec2 texture_coordinates[] = { T0, T1, T2, T3 };
@@ -92,14 +92,14 @@ void render_gumbo_example()
 
     renderer.end_world();
     renderer.end();
-    renderer.save_image_as_png( "gumbo.png" );
+    renderer.save_image_as_png( RENDER_EXAMPLES_PATH "gumbo.png" );
 }
 
 static void render_gumbo( Renderer& renderer )
 {
     renderer.push_attributes();
     renderer.color( vec3(0.1f, 0.4f, 0.2f) );
-    Grid& plastic = renderer.surface_shader( "../shaders/plastic.sl" );
+    Grid& plastic = renderer.surface_shader( SHADERS_PATH "plastic.sl" );
     plastic["Ka"] = 1.0f;
     plastic["roughness"] = 0.0125f;
 
@@ -2753,7 +2753,7 @@ static void render_gumbo( Renderer& renderer )
     renderer.end_transform();
 
     renderer.color( vec3(0.75f, 0.75f, 0.75f) );
-    renderer.surface_shader( renderer.shader("../shaders/matte.sl") );
+    renderer.surface_shader( renderer.shader(SHADERS_PATH "matte.sl") );
     renderer.begin_transform();
     renderer.translate( 7.29999f, 3.5f, 10.0f );
     renderer.rotate( radians(18.0f), 0.0f, 0.0f, 1.0f );
