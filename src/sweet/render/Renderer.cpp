@@ -710,7 +710,7 @@ void Renderer::scale( float x, float y, float z )
 */
 void Renderer::look_at( const math::vec3& at, const math::vec3& eye, const math::vec3& up )
 {
-    concat_transform( math::look_at(at, eye, up) );
+    concat_transform( math::renderman_look_at(at, eye, up) );
 }
 
 /**
