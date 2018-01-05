@@ -4,6 +4,8 @@ require "build.cc";
 require "build.Parser";
 require "build.macos";
 require "build.windows";
+require "build.xcode";
+require "build.visual_studio";
 
 platform = platform or build:operating_system();
 variant = build:lower( variant or 'debug' );
@@ -22,8 +24,12 @@ local settings = build:initialize {
     library_directories = {
         build:root( ("../%s/lib"):format(variant) ),
     };
-    sln = build:root( "../sweet_render.sln" );
-    xcodeproj = build:root( "../sweet_render.xcodeproj" );
+    visual_studio = {
+        sln = build:root( "../sweet_render.sln" );
+    };
+    xcode = {
+        xcodeproj = build:root( "../sweet_render.xcodeproj" );
+    };
 };
 
 build:default_targets {
