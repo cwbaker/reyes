@@ -433,6 +433,8 @@ inline mat4x4 orient( const math::vec3& xx, const math::vec3& yy, const math::ve
 
 /**
 // Look at \e at from \e eye with \e up as up.
+//
+// This creates a right handed view space looking towards -ive z.
 */
 inline mat4x4 look_at( const vec3& at, const vec3& eye, const vec3& up )
 {
@@ -526,6 +528,26 @@ inline mat4x4 direct3d_perspective( float l, float r, float b, float t, float n,
                        0.0f,               0.0f,       -f / (f - n), -f * n / (f - n),
                        0.0f,               0.0f,              -1.0f,             0.0f
     );    
+}
+
+/**
+// Look at ala RenderMan (left-handed, +ive z) \e at from \e eye with \e up
+// as up.
+//
+// This creates a left handed view space looking towards +ive z ala RenderMan.
+*/
+inline mat4x4 renderman_look_at( const vec3& at, const vec3& eye, const vec3& up )
+{
+    vec3 z = normalize( at - eye );
+    vec3 x = normalize( cross(z, up) );
+    vec3 y = cross( z, x );
+
+    return mat4x4(
+        x.x,   x.y,  x.z, -dot(x, eye), 
+        y.x,   y.y,  y.z, -dot(y, eye),
+        z.x,   z.y,  z.z, -dot(z, eye),
+        0.0f, 0.0f, 0.0f,         1.0f
+    );
 }
 
 /**
