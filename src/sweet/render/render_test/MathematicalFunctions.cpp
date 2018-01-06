@@ -40,7 +40,7 @@ SUITE( MathematicalFunctions )
           Ci( NULL )
         {
             renderer.begin();
-            renderer.perspective( float(M_PI) / 2.0f );
+            renderer.perspective( float(float(M_PI)) / 2.0f );
             renderer.projection();
             renderer.begin_world();
 
@@ -79,12 +79,12 @@ SUITE( MathematicalFunctions )
         
         float radians( float degrees ) const
         {
-            return degrees * M_PI / 180.0f;
+            return degrees * float(M_PI) / 180.0f;
         }
         
         float degrees( float radians ) const
         {
-            return radians * 180.0f / M_PI;
+            return radians * 180.0f / float(M_PI);
         }
     };
 
@@ -95,10 +95,10 @@ SUITE( MathematicalFunctions )
             "   y = radians( 3.14159 ); \n"
             "}"
         );
-        CHECK_CLOSE( radians(M_PI), y[0], TOLERANCE );
-        CHECK_CLOSE( radians(M_PI), y[1], TOLERANCE );
-        CHECK_CLOSE( radians(M_PI), y[2], TOLERANCE );
-        CHECK_CLOSE( radians(M_PI), y[3], TOLERANCE );
+        CHECK_CLOSE( radians(float(M_PI)), y[0], TOLERANCE );
+        CHECK_CLOSE( radians(float(M_PI)), y[1], TOLERANCE );
+        CHECK_CLOSE( radians(float(M_PI)), y[2], TOLERANCE );
+        CHECK_CLOSE( radians(float(M_PI)), y[3], TOLERANCE );
     }
 
     TEST_FIXTURE( MathematicalFunctionTest, radians_uniform )
@@ -108,18 +108,18 @@ SUITE( MathematicalFunctions )
             "   y = radians( pi ); \n"
             "}"
         );
-        CHECK_CLOSE( radians(M_PI), y[0], TOLERANCE );
-        CHECK_CLOSE( radians(M_PI), y[1], TOLERANCE );
-        CHECK_CLOSE( radians(M_PI), y[2], TOLERANCE );
-        CHECK_CLOSE( radians(M_PI), y[3], TOLERANCE );
+        CHECK_CLOSE( radians(float(M_PI)), y[0], TOLERANCE );
+        CHECK_CLOSE( radians(float(M_PI)), y[1], TOLERANCE );
+        CHECK_CLOSE( radians(float(M_PI)), y[2], TOLERANCE );
+        CHECK_CLOSE( radians(float(M_PI)), y[3], TOLERANCE );
     }
 
     TEST_FIXTURE( MathematicalFunctionTest, radians_varying )
     {
-        x[0] = M_PI / 2.0f;
-        x[1] = M_PI;
-        x[2] = 2.0f * M_PI;
-        x[3] = 4.0f * M_PI;
+        x[0] = float(M_PI) / 2.0f;
+        x[1] = float(M_PI);
+        x[2] = 2.0f * float(M_PI);
+        x[3] = 4.0f * float(M_PI);
         
         test(
             "surface radians_varying() { \n"
@@ -139,10 +139,10 @@ SUITE( MathematicalFunctions )
             "   y = degrees( 3.14159 ); \n"
             "}"
         );
-        CHECK_CLOSE( degrees(M_PI), y[0], TOLERANCE );
-        CHECK_CLOSE( degrees(M_PI), y[1], TOLERANCE );
-        CHECK_CLOSE( degrees(M_PI), y[2], TOLERANCE );
-        CHECK_CLOSE( degrees(M_PI), y[3], TOLERANCE );
+        CHECK_CLOSE( degrees(float(M_PI)), y[0], TOLERANCE );
+        CHECK_CLOSE( degrees(float(M_PI)), y[1], TOLERANCE );
+        CHECK_CLOSE( degrees(float(M_PI)), y[2], TOLERANCE );
+        CHECK_CLOSE( degrees(float(M_PI)), y[3], TOLERANCE );
     }
 
     TEST_FIXTURE( MathematicalFunctionTest, degrees_uniform )
@@ -152,18 +152,18 @@ SUITE( MathematicalFunctions )
             "   y = degrees( pi ); \n"
             "}"
         );
-        CHECK_CLOSE( degrees(M_PI), y[0], TOLERANCE );
-        CHECK_CLOSE( degrees(M_PI), y[1], TOLERANCE );
-        CHECK_CLOSE( degrees(M_PI), y[2], TOLERANCE );
-        CHECK_CLOSE( degrees(M_PI), y[3], TOLERANCE );
+        CHECK_CLOSE( degrees(float(M_PI)), y[0], TOLERANCE );
+        CHECK_CLOSE( degrees(float(M_PI)), y[1], TOLERANCE );
+        CHECK_CLOSE( degrees(float(M_PI)), y[2], TOLERANCE );
+        CHECK_CLOSE( degrees(float(M_PI)), y[3], TOLERANCE );
     }
 
     TEST_FIXTURE( MathematicalFunctionTest, degrees_varying )
     {
-        x[0] = M_PI / 2.0f;
-        x[1] = M_PI;
-        x[2] = 2.0f * M_PI;
-        x[3] = 4.0f * M_PI;
+        x[0] = float(M_PI) / 2.0f;
+        x[1] = float(M_PI);
+        x[2] = 2.0f * float(M_PI);
+        x[3] = 4.0f * float(M_PI);
         
         test(
             "surface degrees_varying() { \n"
@@ -183,10 +183,10 @@ SUITE( MathematicalFunctions )
             "   y = sin( 3.14159 ); \n"
             "}"
         );
-        CHECK_CLOSE( sinf(M_PI), y[0], TOLERANCE );
-        CHECK_CLOSE( sinf(M_PI), y[1], TOLERANCE );
-        CHECK_CLOSE( sinf(M_PI), y[2], TOLERANCE );
-        CHECK_CLOSE( sinf(M_PI), y[3], TOLERANCE );
+        CHECK_CLOSE( sinf(float(M_PI)), y[0], TOLERANCE );
+        CHECK_CLOSE( sinf(float(M_PI)), y[1], TOLERANCE );
+        CHECK_CLOSE( sinf(float(M_PI)), y[2], TOLERANCE );
+        CHECK_CLOSE( sinf(float(M_PI)), y[3], TOLERANCE );
     }
 
     TEST_FIXTURE( MathematicalFunctionTest, sin_uniform )
@@ -196,18 +196,18 @@ SUITE( MathematicalFunctions )
             "   y = sin( pi ); \n"
             "}"
         );
-        CHECK_CLOSE( sinf(M_PI), y[0], TOLERANCE );
-        CHECK_CLOSE( sinf(M_PI), y[1], TOLERANCE );
-        CHECK_CLOSE( sinf(M_PI), y[2], TOLERANCE );
-        CHECK_CLOSE( sinf(M_PI), y[3], TOLERANCE );
+        CHECK_CLOSE( sinf(float(M_PI)), y[0], TOLERANCE );
+        CHECK_CLOSE( sinf(float(M_PI)), y[1], TOLERANCE );
+        CHECK_CLOSE( sinf(float(M_PI)), y[2], TOLERANCE );
+        CHECK_CLOSE( sinf(float(M_PI)), y[3], TOLERANCE );
     }
 
     TEST_FIXTURE( MathematicalFunctionTest, sin_varying )
     {
-        x[0] = M_PI / 2.0f;
-        x[1] = M_PI;
-        x[2] = 2.0f * M_PI;
-        x[3] = 4.0f * M_PI;
+        x[0] = float(M_PI) / 2.0f;
+        x[1] = float(M_PI);
+        x[2] = 2.0f * float(M_PI);
+        x[3] = 4.0f * float(M_PI);
         
         test(
             "surface sin_varying() { \n"
@@ -227,10 +227,10 @@ SUITE( MathematicalFunctions )
             "   y = asin( sin(3.14159 / 2) ); \n"
             "}"
         );
-        CHECK_CLOSE( M_PI / 2.0f, y[0], TOLERANCE );
-        CHECK_CLOSE( M_PI / 2.0f, y[1], TOLERANCE );
-        CHECK_CLOSE( M_PI / 2.0f, y[2], TOLERANCE );
-        CHECK_CLOSE( M_PI / 2.0f, y[3], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[0], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[1], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[2], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[3], TOLERANCE );
 
         test(
             "surface asin_constant() { \n"
@@ -250,10 +250,10 @@ SUITE( MathematicalFunctions )
             "   y = asin( sin(pi / 2) ); \n"
             "}"
         );
-        CHECK_CLOSE( M_PI / 2.0f, y[0], TOLERANCE );
-        CHECK_CLOSE( M_PI / 2.0f, y[1], TOLERANCE );
-        CHECK_CLOSE( M_PI / 2.0f, y[2], TOLERANCE );
-        CHECK_CLOSE( M_PI / 2.0f, y[3], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[0], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[1], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[2], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[3], TOLERANCE );
 
         test(
             "surface asin_uniform(uniform float zero = 0;) { \n"
@@ -268,10 +268,10 @@ SUITE( MathematicalFunctions )
 
     TEST_FIXTURE( MathematicalFunctionTest, asin_varying )
     {
-        x[0] = M_PI / 2.0f;
-        x[1] = M_PI;
-        x[2] = 2.0f * M_PI;
-        x[3] = 4.0f * M_PI;
+        x[0] = float(M_PI) / 2.0f;
+        x[1] = float(M_PI);
+        x[2] = 2.0f * float(M_PI);
+        x[3] = 4.0f * float(M_PI);
         
         test(
             "surface asin_varying() { \n"
@@ -291,10 +291,10 @@ SUITE( MathematicalFunctions )
             "   y = cos( 3.14159 ); \n"
             "}"
         );
-        CHECK_CLOSE( cosf(M_PI), y[0], TOLERANCE );
-        CHECK_CLOSE( cosf(M_PI), y[1], TOLERANCE );
-        CHECK_CLOSE( cosf(M_PI), y[2], TOLERANCE );
-        CHECK_CLOSE( cosf(M_PI), y[3], TOLERANCE );
+        CHECK_CLOSE( cosf(float(M_PI)), y[0], TOLERANCE );
+        CHECK_CLOSE( cosf(float(M_PI)), y[1], TOLERANCE );
+        CHECK_CLOSE( cosf(float(M_PI)), y[2], TOLERANCE );
+        CHECK_CLOSE( cosf(float(M_PI)), y[3], TOLERANCE );
     }
 
     TEST_FIXTURE( MathematicalFunctionTest, cos_uniform )
@@ -304,18 +304,18 @@ SUITE( MathematicalFunctions )
             "   y = cos( pi ); \n"
             "}"
         );
-        CHECK_CLOSE( cosf(M_PI), y[0], TOLERANCE );
-        CHECK_CLOSE( cosf(M_PI), y[1], TOLERANCE );
-        CHECK_CLOSE( cosf(M_PI), y[2], TOLERANCE );
-        CHECK_CLOSE( cosf(M_PI), y[3], TOLERANCE );
+        CHECK_CLOSE( cosf(float(M_PI)), y[0], TOLERANCE );
+        CHECK_CLOSE( cosf(float(M_PI)), y[1], TOLERANCE );
+        CHECK_CLOSE( cosf(float(M_PI)), y[2], TOLERANCE );
+        CHECK_CLOSE( cosf(float(M_PI)), y[3], TOLERANCE );
     }
 
     TEST_FIXTURE( MathematicalFunctionTest, cos_varying )
     {
-        x[0] = M_PI / 2.0f;
-        x[1] = M_PI;
-        x[2] = 2.0f * M_PI;
-        x[3] = 4.0f * M_PI;
+        x[0] = float(M_PI) / 2.0f;
+        x[1] = float(M_PI);
+        x[2] = 2.0f * float(M_PI);
+        x[3] = 4.0f * float(M_PI);
         
         test(
             "surface cos_varying() { \n"
@@ -335,10 +335,10 @@ SUITE( MathematicalFunctions )
             "   y = acos( cos(3.14159 / 2) ); \n"
             "}"
         );
-        CHECK_CLOSE( M_PI / 2.0f, y[0], TOLERANCE );
-        CHECK_CLOSE( M_PI / 2.0f, y[1], TOLERANCE );
-        CHECK_CLOSE( M_PI / 2.0f, y[2], TOLERANCE );
-        CHECK_CLOSE( M_PI / 2.0f, y[3], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[0], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[1], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[2], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[3], TOLERANCE );
 
         test(
             "surface acos_constant() { \n"
@@ -358,10 +358,10 @@ SUITE( MathematicalFunctions )
             "   y = acos( cos(pi / 2) ); \n"
             "}"
         );
-        CHECK_CLOSE( M_PI / 2.0f, y[0], TOLERANCE );
-        CHECK_CLOSE( M_PI / 2.0f, y[1], TOLERANCE );
-        CHECK_CLOSE( M_PI / 2.0f, y[2], TOLERANCE );
-        CHECK_CLOSE( M_PI / 2.0f, y[3], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[0], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[1], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[2], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[3], TOLERANCE );
 
         test(
             "surface acos_uniform(uniform float zero = 0;) { \n"
@@ -376,10 +376,10 @@ SUITE( MathematicalFunctions )
 
     TEST_FIXTURE( MathematicalFunctionTest, acos_varying )
     {
-        x[0] = M_PI / 2.0f;
-        x[1] = M_PI;
-        x[2] = 2.0f * M_PI;
-        x[3] = 4.0f * M_PI;
+        x[0] = float(M_PI) / 2.0f;
+        x[1] = float(M_PI);
+        x[2] = 2.0f * float(M_PI);
+        x[3] = 4.0f * float(M_PI);
         
         test(
             "surface acos_varying() { \n"
@@ -399,10 +399,10 @@ SUITE( MathematicalFunctions )
             "   y = tan( 3.14159 ); \n"
             "}"
         );
-        CHECK_CLOSE( tanf(M_PI), y[0], TOLERANCE );
-        CHECK_CLOSE( tanf(M_PI), y[1], TOLERANCE );
-        CHECK_CLOSE( tanf(M_PI), y[2], TOLERANCE );
-        CHECK_CLOSE( tanf(M_PI), y[3], TOLERANCE );
+        CHECK_CLOSE( tanf(float(M_PI)), y[0], TOLERANCE );
+        CHECK_CLOSE( tanf(float(M_PI)), y[1], TOLERANCE );
+        CHECK_CLOSE( tanf(float(M_PI)), y[2], TOLERANCE );
+        CHECK_CLOSE( tanf(float(M_PI)), y[3], TOLERANCE );
     }
 
     TEST_FIXTURE( MathematicalFunctionTest, tan_uniform )
@@ -412,18 +412,18 @@ SUITE( MathematicalFunctions )
             "   y = tan( pi ); \n"
             "}"
         );
-        CHECK_CLOSE( tanf(M_PI), y[0], TOLERANCE );
-        CHECK_CLOSE( tanf(M_PI), y[1], TOLERANCE );
-        CHECK_CLOSE( tanf(M_PI), y[2], TOLERANCE );
-        CHECK_CLOSE( tanf(M_PI), y[3], TOLERANCE );
+        CHECK_CLOSE( tanf(float(M_PI)), y[0], TOLERANCE );
+        CHECK_CLOSE( tanf(float(M_PI)), y[1], TOLERANCE );
+        CHECK_CLOSE( tanf(float(M_PI)), y[2], TOLERANCE );
+        CHECK_CLOSE( tanf(float(M_PI)), y[3], TOLERANCE );
     }
 
     TEST_FIXTURE( MathematicalFunctionTest, tan_varying )
     {
-        x[0] = M_PI / 2.0f;
-        x[1] = M_PI;
-        x[2] = 2.0f * M_PI;
-        x[3] = 4.0f * M_PI;
+        x[0] = float(M_PI) / 2.0f;
+        x[1] = float(M_PI);
+        x[2] = 2.0f * float(M_PI);
+        x[3] = 4.0f * float(M_PI);
         
         test(
             "surface tan_varying() { \n"
@@ -443,10 +443,10 @@ SUITE( MathematicalFunctions )
             "   y = atan( tan(3.14159 / 2) ); \n"
             "}"
         );
-        CHECK_CLOSE( M_PI / 2.0f, y[0], TOLERANCE );
-        CHECK_CLOSE( M_PI / 2.0f, y[1], TOLERANCE );
-        CHECK_CLOSE( M_PI / 2.0f, y[2], TOLERANCE );
-        CHECK_CLOSE( M_PI / 2.0f, y[3], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[0], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[1], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[2], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[3], TOLERANCE );
 
         test(
             "surface atan_constant() { \n"
@@ -466,10 +466,10 @@ SUITE( MathematicalFunctions )
             "   y = atan( tan(pi / 2) ); \n"
             "}"
         );
-        CHECK_CLOSE( M_PI / 2.0f, y[0], TOLERANCE );
-        CHECK_CLOSE( M_PI / 2.0f, y[1], TOLERANCE );
-        CHECK_CLOSE( M_PI / 2.0f, y[2], TOLERANCE );
-        CHECK_CLOSE( M_PI / 2.0f, y[3], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[0], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[1], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[2], TOLERANCE );
+        CHECK_CLOSE( float(M_PI) / 2.0f, y[3], TOLERANCE );
 
         test(
             "surface atan_uniform(uniform float zero = 0;) { \n"
@@ -484,10 +484,10 @@ SUITE( MathematicalFunctions )
 
     TEST_FIXTURE( MathematicalFunctionTest, atan_varying )
     {
-        x[0] = M_PI / 2.0f;
-        x[1] = M_PI;
-        x[2] = 2.0f * M_PI;
-        x[3] = 4.0f * M_PI;
+        x[0] = float(M_PI) / 2.0f;
+        x[1] = float(M_PI);
+        x[2] = 2.0f * float(M_PI);
+        x[3] = 4.0f * float(M_PI);
         
         test(
             "surface atan_varying() { \n"
