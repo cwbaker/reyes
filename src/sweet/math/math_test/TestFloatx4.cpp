@@ -7,7 +7,7 @@
 #include "stdafx.hpp"
 
 #if defined(BUILD_PLATFORM_MSVC)
-#include <unit/UnitTest.h>
+#include <UnitTest++/UnitTest++.h>
 #include <sweet/math/vec3.ipp>
 #include <sweet/math/floatx4.ipp>
 #define _USE_MATH_DEFINES

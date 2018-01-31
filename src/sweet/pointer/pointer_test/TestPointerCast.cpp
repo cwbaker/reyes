@@ -3,7 +3,7 @@
 // Copyright (c) Charles Baker. All rights reserved.
 //
 
-#include <unit/UnitTest.h>
+#include <UnitTest++/UnitTest++.h>
 #include <sweet/pointer/ptr.hpp>
 
 using namespace sweet::pointer;

@@ -22,6 +22,7 @@ local settings = build:initialize {
         build:root(),
         build:root( 'zlib' ),
         build:root( 'png' ),
+        build:root( 'unittest-cpp' );
     };
     library_directories = {
         build:root( ("../%s/lib"):format(variant) ),
@@ -47,5 +48,5 @@ buildfile "sweet/error/error.build";
 buildfile "sweet/math/math.build";
 buildfile "sweet/pointer/pointer.build";
 buildfile "sweet/render/render.build";
-buildfile "unit/unit.build";
+buildfile "unittest-cpp/unittest-cpp.build";
 buildfile "zlib/zlib.build";

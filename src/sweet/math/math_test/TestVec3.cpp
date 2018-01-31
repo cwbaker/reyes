@@ -4,7 +4,7 @@
 //
 
 #include "stdafx.hpp"
-#include <unit/UnitTest.h>
+#include <UnitTest++/UnitTest++.h>
 #include <sweet/math/vec3.ipp>
 
 using namespace sweet::math;

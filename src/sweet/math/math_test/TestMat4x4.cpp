@@ -4,7 +4,7 @@
 //
 
 #include "stdafx.hpp"
-#include <unit/UnitTest.h>
+#include <UnitTest++/UnitTest++.h>
 #include <sweet/math/mat4x4.ipp>
 #include <sweet/math/vec3.ipp>
 

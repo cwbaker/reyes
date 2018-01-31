@@ -1,5 +1,5 @@
 
-#include <unit/UnitTest.h>
+#include <UnitTest++/UnitTest++.h>
 #include <sweet/render/Shader.hpp>
 #include <sweet/render/Symbol.hpp>
 #include <sweet/render/ErrorPolicy.hpp>

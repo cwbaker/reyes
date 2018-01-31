@@ -8,7 +8,7 @@ build:all {
             "jpeg/jpeg",
             "png/libpng",
             "sweet/pointer/pointer",
-            "unit/libUnitTest",
+            "unittest-cpp/UnitTest++/UnitTest++",
             "zlib/zlib"
         };
 
