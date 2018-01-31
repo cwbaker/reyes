@@ -4,8 +4,8 @@
 //
 
 #include "stdafx.hpp"
-#include <unit/UnitTest.h>
-#include <unit/TestReporterStdout.h>
+#include <UnitTest++/UnitTest++.h>
+#include <UnitTest++/TestReporterStdout.h>
 
 int main( int argc, char** argv )
 {
