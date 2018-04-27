@@ -1,0 +1,1712 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"shader",
+				"shader_definition_"
+			],
+			[
+				"ShaderPar",
+				"ShaderParserContext"
+			],
+			[
+				"for",
+				"fortnightly_pay_settings"
+			],
+			[
+				"outgoing",
+				"outgoing_account"
+			],
+			[
+				"non_oper",
+				"non_operating_expenses_account"
+			],
+			[
+				"di",
+				"differences"
+			],
+			[
+				"incom",
+				"income_actuals"
+			],
+			[
+				"other_Ac",
+				"other_actuals"
+			],
+			[
+				"other_ac",
+				"other_account"
+			],
+			[
+				"first_",
+				"first_actuals"
+			],
+			[
+				"second",
+				"second_account"
+			],
+			[
+				"second_Ac",
+				"second_actuals"
+			],
+			[
+				"first_ac",
+				"first_actuals"
+			],
+			[
+				"first_Ac",
+				"first_account"
+			],
+			[
+				"finis",
+				"finish_row"
+			],
+			[
+				"second_ac",
+				"second_account"
+			],
+			[
+				"budget",
+				"budget_periods"
+			],
+			[
+				"mort",
+				"mortgage_accounts"
+			],
+			[
+				"sta",
+				"stacked_balance_chart"
+			],
+			[
+				"filte",
+				"filtered_headings"
+			],
+			[
+				"cont",
+				"container_fluid"
+			],
+			[
+				"bud",
+				"budget_periods"
+			],
+			[
+				"detailed",
+				"detailed_report_depth"
+			],
+			[
+				"start_",
+				"start_of_year"
+			],
+			[
+				"cash_flo",
+				"cash_flow_and_balance_report"
+			],
+			[
+				"first",
+				"first_actuals"
+			],
+			[
+				"st",
+				"start_date"
+			],
+			[
+				"START",
+				"start_period"
+			],
+			[
+				"CASH_FLOW",
+				"CASH_FLOW_IN"
+			],
+			[
+				"gnuca",
+				"gnucash_filename"
+			],
+			[
+				"balan",
+				"balance_results"
+			],
+			[
+				"mor",
+				"mortgage_accounts"
+			],
+			[
+				"flex",
+				"flexible_home_loan"
+			],
+			[
+				"fl",
+				"flexible_home_loan"
+			],
+			[
+				"cash_b",
+				"cash_balances"
+			],
+			[
+				"balance_repo",
+				"balance_report2"
+			],
+			[
+				"accon",
+				"account_hierarchy"
+			],
+			[
+				"ac",
+				"account_hierarchy"
+			],
+			[
+				"acc",
+				"account_hierarchy"
+			],
+			[
+				"lib",
+				"liabilities_in_account"
+			],
+			[
+				"actuals",
+				"actuals_row"
+			],
+			[
+				"inve",
+				"investment_in_account"
+			],
+			[
+				"inc",
+				"income_actuals"
+			],
+			[
+				"cash_fl",
+				"cash_flow_in_results"
+			],
+			[
+				"income_Ac",
+				"income_actuals"
+			],
+			[
+				"finih",
+				"finish_row"
+			],
+			[
+				"actu",
+				"actuals_row"
+			],
+			[
+				"name",
+				"NAME"
+			],
+			[
+				"id",
+				"ID"
+			],
+			[
+				"max",
+				"maximum_depth"
+			],
+			[
+				"min",
+				"minimum_depth"
+			],
+			[
+				"select_hier",
+				"select_hierarchical_budget_out_statement_"
+			],
+			[
+				"cash",
+				"cash_flow_out_account"
+			],
+			[
+				"income_",
+				"income_budget_results"
+			],
+			[
+				"bug",
+				"budget_account"
+			],
+			[
+				"budget_a",
+				"budget_accounts"
+			],
+			[
+				"account",
+				"account_hierarchy"
+			],
+			[
+				"update_a",
+				"update_account_parent_statement"
+			],
+			[
+				"budg",
+				"budgeted_amount"
+			],
+			[
+				"add_bud",
+				"add_budget_to_sqlite"
+			],
+			[
+				"INSERT_BUDGE",
+				"INSERT_BUDGET_PERIOD_SQL"
+			],
+			[
+				"insert_bud",
+				"insert_budget_statement"
+			],
+			[
+				"bu",
+				"budget_period"
+			],
+			[
+				"CREATE_BUDGE_",
+				"CREATE_BUDGET_PERIOD_SQL"
+			],
+			[
+				"CREATE",
+				"CREATE_BUDGET_SQL"
+			],
+			[
+				"CRE",
+				"CREATE_ENTRY_SQL"
+			],
+			[
+				"toolti",
+				"tooltipItem"
+			],
+			[
+				"total",
+				"total_mortgage_balances"
+			],
+			[
+				"mortgage_b",
+				"mortgage_balance"
+			],
+			[
+				"other",
+				"other_cash_by_period"
+			],
+			[
+				"cash_out",
+				"cash_out_by_period"
+			],
+			[
+				"query",
+				"query_statement"
+			],
+			[
+				"BALA",
+				"BALANCES_BY_ACCOUNT_LIST_SQL"
+			],
+			[
+				"anz_",
+				"anz_credit_balances"
+			],
+			[
+				"bal",
+				"balance_report"
+			],
+			[
+				"reul",
+				"results"
+			],
+			[
+				"reusl",
+				"results"
+			],
+			[
+				"bala",
+				"balance_results"
+			],
+			[
+				"contain",
+				"container-fluid"
+			],
+			[
+				"fun",
+				"function\tfunction"
+			],
+			[
+				"account_",
+				"account_by_period"
+			],
+			[
+				"cas",
+				"cash_accounts"
+			],
+			[
+				"previ",
+				"previous_period"
+			],
+			[
+				"previous",
+				"previous_account"
+			],
+			[
+				"select_bu",
+				"select_budget_out_statement"
+			],
+			[
+				"insert_",
+				"insert_account_list_statement_"
+			],
+			[
+				"insert_Ac",
+				"insert_account_list_account_statement"
+			],
+			[
+				"insert_Acc",
+				"insert_account_list_account_statement"
+			],
+			[
+				"INSERT_AC",
+				"INSERT_ACCOUNT_LIST_ACCOUNT_SQL"
+			],
+			[
+				"CREATE_ACCOUNT_",
+				"CREATE_ACCOUNT_LIST_ACCOUNT_SQL"
+			],
+			[
+				"a",
+				"accounts_this_period"
+			],
+			[
+				"other_",
+				"other_by_period"
+			],
+			[
+				"da",
+				"database"
+			],
+			[
+				"ACCOUN",
+				"ACCOUNT_BY_GUID_SQL"
+			],
+			[
+				"select_a",
+				"select_accounts_statement_"
+			],
+			[
+				"selec",
+				"select_accounts_statement_"
+			],
+			[
+				"sele",
+				"select_accounts_statement_"
+			],
+			[
+				"cash_in_Acc",
+				"cash_in_accounts_by_period"
+			],
+			[
+				"accounts",
+				"accounts_by_period"
+			],
+			[
+				"quer",
+				"query_statement"
+			],
+			[
+				"select_c",
+				"select_cash_flow_in_statement"
+			],
+			[
+				"gnu",
+				"gnucash_filename"
+			],
+			[
+				"in",
+				"insert_entry_statement"
+			],
+			[
+				"insert_split",
+				"insert_split_statement_"
+			],
+			[
+				"se",
+				"select_account_by_guid_statement_"
+			],
+			[
+				"inser",
+				"insert_account_statement_"
+			],
+			[
+				"Gnu",
+				"GnuCashParser"
+			],
+			[
+				"tme",
+				"timestamp"
+			],
+			[
+				"insert_en",
+				"insert_entry_statement"
+			],
+			[
+				"insert_spl",
+				"insert_split_statement"
+			],
+			[
+				"insert",
+				"insert_transaction_statement"
+			],
+			[
+				"bind",
+				"bind_values"
+			],
+			[
+				"find_a",
+				"find_account_by_guid_statement"
+			],
+			[
+				"ins",
+				"insert_split_statement"
+			],
+			[
+				"done",
+				"DONE"
+			],
+			[
+				"sq",
+				"sqlite3"
+			],
+			[
+				"insert_tr",
+				"insert_transaction_statement"
+			],
+			[
+				"err",
+				"errmsg"
+			],
+			[
+				"sqli",
+				"sqlite_error_codes"
+			],
+			[
+				"sql",
+				"sqlite_error_codes"
+			],
+			[
+				"trans",
+				"transaction"
+			],
+			[
+				"cou",
+				"coroutine"
+			],
+			[
+				"par",
+				"parsing_coroutine"
+			],
+			[
+				"dep",
+				"dependencies_filter"
+			],
+			[
+				"nab",
+				"navbar_html"
+			],
+			[
+				"nav",
+				"navbar_html"
+			],
+			[
+				"star",
+				"start_tag"
+			],
+			[
+				"styl",
+				"stylesheet"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "src/lalr/lalr/lalr/GrammarParser.cpp",
+			"settings":
+			{
+				"buffer_size": 8647,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/lalr/lalr/lalr/GrammarParser.hpp",
+			"settings":
+			{
+				"buffer_size": 1246,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/lalr/lalr/lalr/Grammar.hpp",
+			"settings":
+			{
+				"buffer_size": 2803,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/lalr/lalr/lalr/Grammar.cpp",
+			"settings":
+			{
+				"buffer_size": 11112,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/lalr/lalr/lalr/GrammarSymbol.hpp",
+			"settings":
+			{
+				"buffer_size": 2716,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/lalr/lalr/lalr/GrammarSymbol.cpp",
+			"settings":
+			{
+				"buffer_size": 12555,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 89.0,
+		"last_filter": "syn: c++",
+		"selected_items":
+		[
+			[
+				"syn: c++",
+				"Set Syntax: C++"
+			],
+			[
+				"css",
+				"Set Syntax: CSS"
+			],
+			[
+				"syn: css",
+				"Set Syntax: CSS"
+			],
+			[
+				"syn: lua",
+				"Set Syntax: Lua"
+			],
+			[
+				"lua",
+				"Build With: Lua"
+			],
+			[
+				"syn: sql",
+				"Set Syntax: SQL"
+			],
+			[
+				"scss",
+				"Set Syntax: CSS"
+			],
+			[
+				"SYN: SQL",
+				"Set Syntax: SQL"
+			],
+			[
+				"syn: scs",
+				"Set Syntax: CSS"
+			],
+			[
+				"syn:cs",
+				"Set Syntax: CSS"
+			],
+			[
+				"syn",
+				"Set Syntax: Lua"
+			],
+			[
+				"syn: C++",
+				"Set Syntax: C++"
+			],
+			[
+				"",
+				"Git: Add Current File"
+			],
+			[
+				"git ad",
+				"Git: Add Current File"
+			],
+			[
+				"git add",
+				"Git: Add Current File"
+			],
+			[
+				"git log",
+				"Git: Quick Log Current File"
+			],
+			[
+				"git blame",
+				"Git: Blame"
+			],
+			[
+				"syn:",
+				"Set Syntax: Lua"
+			],
+			[
+				"syn: ula",
+				"Set Syntax: Lua"
+			],
+			[
+				"syn: lu",
+				"Set Syntax: Lua"
+			],
+			[
+				"syn: ",
+				"Set Syntax: Lua"
+			],
+			[
+				"syn:lua ",
+				"Set Syntax: Lua"
+			],
+			[
+				"pack",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 444.0
+	},
+	"console":
+	{
+		"height": 615.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = 'eb2297e1a458f27d836c04bb0cbaf282' + 'd0e7a3098092775ccb37ca9d6b2e4b7d'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by)",
+			"{"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/charles/sweet/github/sweet_render",
+		"/Users/charles/sweet/github/sweet_render/src",
+		"/Users/charles/sweet_build/lua/build",
+		"/Users/charles/sweet_build/lua/build/windows",
+		"/Users/charles/sweet_build/lua/build/xcode"
+	],
+	"file_history":
+	[
+		"/Users/charles/sweet/github/sweet_render/src/build.lua",
+		"/Users/charles/sweet/github/sweet_render/src/lalr/lalr/lalr_test/lalr_test.build",
+		"/Users/charles/sweet/github/sweet_render/src/lalr/lalr/lalrc/lalrc.cpp",
+		"/Users/charles/sweet/github/sweet_render/src/lalr/lalr/build/lalr/Lalrc.lua",
+		"/Users/charles/sweet/github/sweet_render/src/sweet/render/shader_parser.g.cpp",
+		"/Users/charles/sweet/github/sweet_render/src/sweet/render/ErrorPolicy.cpp",
+		"/Users/charles/sweet/github/sweet_render/src/lalr/lalr/lalr/ErrorPolicy.cpp",
+		"/Users/charles/sweet/github/sweet_render/src/sweet/render/render_test/BreakStatements.cpp",
+		"/Users/charles/sweet/github/sweet_render/src/sweet/render/render_test/AssignExpressions.cpp",
+		"/Users/charles/sweet/github/sweet_render/src/lalr/lalr/lalr/Parser.hpp",
+		"/Users/charles/sweet/github/sweet_render/src/sweet/render/render.build",
+		"/Users/charles/sweet/github/sweet_render/src/lalr/lalr/lalr/Parser.ipp",
+		"/Users/charles/sweet/github/sweet_render/src/sweet/render/ShaderParser.cpp",
+		"/Users/charles/sweet/github/sweet_render/src/sweet/render/shader_parser.g",
+		"/Users/charles/sweet/github/sweet_render/src/sweet/render/render_test/render_test.build",
+		"/Users/charles/sweet_build/lua/build/init.lua",
+		"/Users/charles/sweet/github/sweet_render/src/lalr/lalr/lalr/ErrorPolicy.hpp",
+		"/Users/charles/sweet/github/sweet_render/src/lalr/lalr/lalr/AddLexerActionHandler.hpp",
+		"/Users/charles/sweet/github/sweet_render/src/lalr/lalr/lalr/AddParserActionHandler.hpp",
+		"/Users/charles/sweet/github/sweet_render/src/lalr/lalr/lalr/ParserTransition.hpp",
+		"/Users/charles/sweet/github/sweet_render/src/lalr/lalr/lalr/ParserNode.ipp",
+		"/Users/charles/sweet/github/sweet_render/src/lalr/lalr/lalr/untitled.cpp",
+		"/Users/charles/sweet/github/sweet_render/src/sweet/render/render_examples/render_examples.build",
+		"/Users/charles/sweet/github/sweet_render/src/lalr/lalr/lalr_examples/lalr_hello_world_example.cpp",
+		"/Users/charles/sweet/github/sweet_render/src/lalr/lalr/lalr_examples/lalr_calculator_example.cpp",
+		"/Users/charles/sweet/github/sweet_render/src/lalr/lalr/lalr_examples/lalr_xml_example.cpp",
+		"/Users/charles/sweet/github/sweet_render/src/lalr/lalr/lalr_examples/lalr_json_example.cpp",
+		"/Users/charles/sweet/github/sweet_render/src/sweet/render/...et/github/sweet_render/src/sweet/render/ShaderParser.cpp",
+		"/Users/charles/sweet/github/sweet_render/src/sweet/render/parser.hpp",
+		"/Users/charles/sweet/github/sweet_render/src/lalr/lalr/build/lalr/init.lua",
+		"/Users/charles/temp/zzcb.txt",
+		"/Users/charles/sweet_build/lua/build/Copy.lua",
+		"/Users/charles/sweet_build/lua/build/macos/init.lua",
+		"/Users/charles/sweet_build/lua/build/TargetPrototype.lua",
+		"/Users/charles/sweet/github/sweet_render/src/sweet/render/shader_parser.hpp",
+		"/Users/charles/sweet_build/lua/build/cc/gcc.lua",
+		"/Users/charles/sweet/accounts/src/accounts/db.lua",
+		"/Users/charles/sweet/accounts/src/accounts/gnucash.lua",
+		"/Users/charles/sweet/accounts/src/accounts/html.lua",
+		"/Users/charles/sweet/accounts/src/importer/accounts/process-exports.py",
+		"/Users/charles/sweet/accounts/src/accounts/accounts.lua",
+		"/Users/charles/sweet/accounts/src/importer/accounts/9554-xxxx-xxxx-6141_Transactions_2017-10-19_2018-03-31.csv",
+		"/Users/charles/sweet/accounts/src/scss/_sweet.scss",
+		"/Users/charles/sweet/accounts/src/build.lua",
+		"/Users/charles/sweet/accounts/src/scss/all.scss",
+		"/Users/charles/sweet/accounts/html/all.css",
+		"/Users/charles/sweet/accounts/src/bootstrap-4.0.0-alpha.6/scss/_print.scss",
+		"/Users/charles/sweet/accounts/src/bootstrap-4.0.0-alpha.6/scss/_variables.scss",
+		"/Users/charles/sweet/accounts/src/bootstrap-4.0.0-alpha.6/scss/_tables.scss",
+		"/Users/charles/sweet/accounts/src/bootstrap-4.0.0-alpha.6/scss/_type.scss",
+		"/Users/charles/sweet/accounts/src/accounts.build",
+		"/Users/charles/sweet/accounts/src/bootstrap-4.0.0-alpha.6/scss/_custom.scss",
+		"/Users/charles/sweet/accounts/src/bootstrap-4.0.0-alpha.6/scss/bootstrap.scss",
+		"/Users/charles/sweet/accounts/src/scss/_variables.scss",
+		"/Users/charles/sweet/accounts/src/scss/_override.scss",
+		"/Users/charles/sweet/accounts/src/bootstrap-4.0.0-alpha.6/scss/bootstrap-grid.scss",
+		"/Users/charles/sweet/accounts/src/bootstrap-4.0.0-alpha.6/scss/bootstrap-reboot.scss",
+		"/Users/charles/sweet/accounts/src/accounts/period.lua",
+		"/Users/charles/sweet/accounts/src/accounts/CASH_FLOW_IN.lua",
+		"/Users/charles/sweet/accounts/src/accounts/CASH_FLOW_OUT.lua",
+		"/Users/charles/sweet/accounts/src/accounts/BALANCE.lua",
+		"/Users/charles/sweet/accounts/src/accounts/cash_flow.lua",
+		"/Users/charles/sweet/accounts/src/accounts/monthly_period.lua",
+		"/Users/charles/sweet/accounts/src/accounts/pay_period.lua",
+		"/Users/charles/sweet/accounts/src/accounts/fortnightly_period.lua",
+		"/Users/charles/sweet/accounts/src/accounts/double_pay_period.lua",
+		"/Users/charles/sweet/accounts/src/accounts/CASH_FLOW.lua",
+		"/Users/charles/sweet/accounts/src/accounts/two_pay_period.lua",
+		"/Users/charles/sweet/accounts/src/accounts/PERIOD.lua",
+		"/Users/charles/sweet/accounts/src/accounts/START_PERIOD.lua",
+		"/Users/charles/sweet/accounts/src/accounts/FIRST_THURSDAY_OF_YEAR.lua",
+		"/Users/charles/sweet/accounts/src/accounts/END_PERIOD.lua",
+		"/Users/charles/sweet/accounts/src/accounts/liluat.lua",
+		"/Users/charles/sweet/accounts/src/accounts/template.lua",
+		"/Users/charles/sweet/accounts/src/accounts/HIERARCHICAL_CASH_FLOW_IN.lua",
+		"/Users/charles/sweet/accounts/src/accounts/HIERARCHICAL_CASH_FLOW_OUT.lua",
+		"/Users/charles/sweet/accounts/src/accounts/CURRENT_ASSETS_ACCOUNT.lua",
+		"/Users/charles/sweet/accounts/src/accounts/CASH_FLOW_ENTRIES.lua",
+		"/Users/charles/sweet/accounts/src/accounts/BALANCES_BY_ACCOUNT_LIST_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/BALANCE_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/HIERARCHICAL_BALANCE.sql",
+		"/Users/charles/sweet/accounts/src/accounts/MULTI_ACCOUNT_BALANCE_SQL.lua",
+		"/Users/charles/sweet/accounts/src/scss/_bootswatch.scss",
+		"/Users/charles/sweet/accounts/obj/.sass-cache/dd8c17b4efdf3fd74baccf806a52e7c9a207162f/all.scssc",
+		"/Users/charles/sweet/accounts/src/accounts/BUDGET_TOTAL_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/BUDGET_OUT_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/HIERARCHICAL_BUDGET_OUT.lua",
+		"/Users/charles/sweet/accounts/src/accounts/ACCOUNT_HIERARCHY.lua",
+		"/Users/charles/sweet/accounts/src/accounts/CASH_FLOW_OUT_ACCOUNT.lua",
+		"/Users/charles/sweet/accounts/src/accounts/BUDGET_IN_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/CASH_FLOW_IN_ACCOUNT.lua",
+		"/Users/charles/sweet/accounts/src/accounts/BUDGETED_ACCOUNT.lua",
+		"/Users/charles/sweet/accounts/src/accounts/BUDGETED_AMOUNT.lua",
+		"/Users/charles/sweet/accounts/src/accounts/BUDGETED_ACCOUNT.sql",
+		"/Users/charles/sweet/accounts/src/accounts/EXPENSES_ACCOUNT.lua",
+		"/Users/charles/sweet/sweet_publish/src/journal/ACCOUNT_HIERARCHY.lua",
+		"/Users/charles/sweet/accounts/src/accounts/CASH_FLOW_OUT_ACCOUNT.sql",
+		"/Users/charles/sweet/accounts/src/accounts/CASH_FLOW_IN_ACCOUNT.sql",
+		"/Users/charles/sweet/accounts/src/accounts/INCOME_ACCOUNT.lua",
+		"/Users/charles/sweet/accounts/src/accounts/CURRENT_ASSET_ACCOUNT.lua",
+		"/Users/charles/sweet/accounts/src/accounts/NON_OPERATING_EXPENSES_ACCOUNT.lua",
+		"/Users/charles/sweet/accounts/src/accounts/NON_OPERATING_INCOME_ACCOUNT.lua",
+		"/Users/charles/sweet/accounts/src/accounts/CREATE_NON_OPERATING_INCOME_ACCOUNT_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/UPDATE_ACCOUNT_PARENT_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/CREATE_ACCOUNT_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/CREATE_ACCOUNT_LIST_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/CREATE_ACCOUNT_LIST_ACCOUNT_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/INSERT_ACCOUNT_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/untitled.sql",
+		"/Users/charles/sweet/accounts/src/accounts/CREATE_BUDGET_ACCOUNT_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/INSERT_BUDGET_PERIOD_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/INSERT_BUDGET_ACCOUNT_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/CREATE_BUDGET_PERIOD_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/BUDGET_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/CREATE_BUDGET_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/INSERT_SPLIT_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/INSERT_ACCOUNT_LIST_ACCOUNT_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/INSERT_ACCOUNT_LIST_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/INSERT_BUDGET_SQL.lua",
+		"/Users/charles/sweet/sweet_publish/src/journal/CREATE_BUDGET_PERIOD_SQL.lua",
+		"/Users/charles/sweet/sweet_publish/src/journal/CREATE_BUDGET_SQL.lua",
+		"/Users/charles/sweet/accounts/src/bootstrap-sass-3.3.7/assets/stylesheets/bootstrap/_print.scss",
+		"/Users/charles/sweet/accounts/src/accounts/INSERT_ENTRY_SQL.lua",
+		"/Users/charles/sweet/accounts/src/CREATE_ENTRY_SQL.lua",
+		"/Users/charles/sweet/accounts/src/accounts/CREATE_SPLIT_SQL.lua",
+		"/Users/charles/Desktop/accounts/process-exports.py",
+		"/Users/charles/sweet/accounts/src/build/lua/build/sass/Css.lua",
+		"/Users/charles/sweet/accounts/src/accounts/BOOTSTRAP_BASIC_TEMPLATE_HTML.lua"
+	],
+	"find":
+	{
+		"height": 41.0
+	},
+	"find_in_files":
+	{
+		"height": 102.0,
+		"where_history":
+		[
+			"*.cpp,*.hpp",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": true,
+		"find_history":
+		[
+			"lalrc",
+			"m_symbol",
+			"m_lexeme",
+			"extern",
+			"debug_enabled_",
+			"lalrc",
+			", 3}",
+			"&symbols[62]",
+			"\"statements\"",
+			"int symbol, ",
+			"&parser",
+			"start",
+			"ParserNode",
+			"LALR_ADDHANDLER_HPP_INCLUDED",
+			"ParserNode",
+			"_2, _3",
+			"function_",
+			"ParserActionFunction",
+			"parser",
+			"ParserEventSink",
+			"definition_expression",
+			"bind(&",
+			"call_expression",
+			"static ",
+			"identifier_expression",
+			"static ",
+			"solar_keyword",
+			"static ",
+			"imager_shader",
+			"light_shader",
+			"variable_definition",
+			"formal",
+			"lexeme_",
+			"line_",
+			"user_data_",
+			"error",
+			"ParserNode",
+			"PositionIterator",
+			"assign_expression",
+			"assign_operator",
+			", context",
+			"assign_operator",
+			", ParserEventSink<PositionIterator<Iterator>, ptr<SyntaxNode>, char>* context",
+			"context",
+			"function_definition",
+			"shader_definition",
+			"Parser",
+			"shader_parser_state_machine",
+			"message",
+			"ParserEventSink",
+			"parser",
+			"shader_parser.g.cpp",
+			"cache",
+			"empty_list",
+			"larlc",
+			"Parser",
+			"xcode",
+			"Plist",
+			"xcode",
+			"windows",
+			"Copy"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"lexeme()",
+			"line()",
+			"user_data()"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 3,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "src/lalr/lalr/lalr/GrammarParser.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8647,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/lalr/lalr/lalr/GrammarParser.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1246,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/lalr/lalr/lalr/Grammar.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2803,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2361,
+								2565
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 543.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/lalr/lalr/lalr/Grammar.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 11112,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								9152,
+								9152
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 6117.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "src/lalr/lalr/lalr/GrammarSymbol.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2716,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1733,
+								1733
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 410.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "src/lalr/lalr/lalr/GrammarSymbol.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 12555,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2843,
+								2843
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 1877.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 27.0
+	},
+	"input":
+	{
+		"height": 35.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 438.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "Packages/User/Sweet Build.sublime-build",
+	"project": "reyes.sublime-project",
+	"replace":
+	{
+		"height": 73.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"build.la",
+				"sweet_render/src/build.lua"
+			],
+			[
+				"lalr_te",
+				"sweet_render/src/lalr/lalr/lalr_test/lalr_test.build"
+			],
+			[
+				"buid",
+				"sweet_render/src/build.lua"
+			],
+			[
+				"grammarsym",
+				"sweet_render/src/lalr/lalr/lalr/GrammarSymbol.hpp"
+			],
+			[
+				"grammar",
+				"sweet_render/src/lalr/lalr/lalr/Grammar.hpp"
+			],
+			[
+				"grammarpar",
+				"sweet_render/src/lalr/lalr/lalr/GrammarParser.cpp"
+			],
+			[
+				"shader_par",
+				"sweet_render/src/sweet/render/shader_parser.g"
+			],
+			[
+				"assignex",
+				"sweet_render/src/sweet/render/render_test/AssignExpressions.cpp"
+			],
+			[
+				"breakst",
+				"sweet_render/src/sweet/render/render_test/BreakStatements.cpp"
+			],
+			[
+				"errorpolicy",
+				"sweet_render/src/lalr/lalr/lalr/ErrorPolicy.cpp"
+			],
+			[
+				"errorpolcy",
+				"sweet_render/src/sweet/render/ErrorPolicy.cpp"
+			],
+			[
+				"shaderpar",
+				"sweet_render/src/sweet/render/ShaderParser.cpp"
+			],
+			[
+				"render_test.bui",
+				"sweet_render/src/sweet/render/render_test/render_test.build"
+			],
+			[
+				"parser.ipp",
+				"sweet_render/src/lalr/lalr/lalr/Parser.ipp"
+			],
+			[
+				"render.build",
+				"sweet_render/src/sweet/render/render.build"
+			],
+			[
+				"shader_parser.g.cpp",
+				"sweet_render/src/sweet/render/shader_parser.g.cpp"
+			],
+			[
+				"build/init",
+				"build/init.lua"
+			],
+			[
+				"lalrc.lua",
+				"sweet_render/src/lalr/lalr/build/lalr/Lalrc.lua"
+			],
+			[
+				"lalrc.cpp",
+				"sweet_render/src/lalr/lalr/lalrc/lalrc.cpp"
+			],
+			[
+				"parsernode",
+				"sweet_render/src/lalr/lalr/lalr/ParserNode.ipp"
+			],
+			[
+				"parsertr",
+				"sweet_render/src/lalr/lalr/lalr/ParserTransition.hpp"
+			],
+			[
+				"shader_apr",
+				"sweet_render/src/sweet/render/shader_parser.g"
+			],
+			[
+				"render.bui",
+				"sweet_render/src/sweet/render/render.build"
+			],
+			[
+				"render_test",
+				"sweet_render/src/sweet/render/render_test/render_test.build"
+			],
+			[
+				"render_exampl",
+				"sweet_render/src/sweet/render/render_examples/render_examples.build"
+			],
+			[
+				"parser.",
+				"sweet_render/src/lalr/lalr/lalr/Parser.hpp"
+			],
+			[
+				"lalr_hell",
+				"sweet_render/src/lalr/lalr/lalr_examples/lalr_hello_world_example.cpp"
+			],
+			[
+				"lalr_json",
+				"sweet_render/src/lalr/lalr/lalr_examples/lalr_json_example.cpp"
+			],
+			[
+				"lalr_xml",
+				"sweet_render/src/lalr/lalr/lalr_examples/lalr_xml_example.cpp"
+			],
+			[
+				"lalr_calc",
+				"sweet_render/src/lalr/lalr/lalr_examples/lalr_calculator_example.cpp"
+			],
+			[
+				"parser.hpp",
+				"sweet_render/src/lalr/lalr/lalr/Parser.hpp"
+			],
+			[
+				"addparser",
+				"sweet_render/src/lalr/lalr/lalr/AddParserActionHandler.hpp"
+			],
+			[
+				"addlexe",
+				"sweet_render/src/lalr/lalr/lalr/AddLexerActionHandler.hpp"
+			],
+			[
+				"lalr/par",
+				"sweet_render/src/lalr/lalr/lalr/Parser.hpp"
+			],
+			[
+				"lalr/errorpolicy",
+				"sweet_render/src/lalr/lalr/lalr/ErrorPolicy.hpp"
+			],
+			[
+				"shaderparser",
+				"sweet_render/src/sweet/render/ShaderParser.cpp"
+			],
+			[
+				"lalr/ini",
+				"sweet_render/src/lalr/lalr/build/lalr/init.lua"
+			],
+			[
+				"build.lua",
+				"sweet_render/src/build.lua"
+			],
+			[
+				"render.bu",
+				"sweet_render/src/sweet/render/render.build"
+			],
+			[
+				"shader_parser.hpp",
+				"sweet_render/src/sweet/render/shader_parser.hpp"
+			],
+			[
+				"macos/in",
+				"build/macos/init.lua"
+			],
+			[
+				"gcc.lau",
+				"build/cc/gcc.lua"
+			],
+			[
+				"target.p",
+				"build/TargetPrototype.lua"
+			],
+			[
+				"html",
+				"src/accounts/html.lua"
+			],
+			[
+				"gnuc",
+				"src/accounts/gnucash.lua"
+			],
+			[
+				"db.",
+				"src/accounts/db.lua"
+			],
+			[
+				"accounts.lua",
+				"src/accounts/accounts.lua"
+			],
+			[
+				"proces",
+				"src/importer/accounts/process-exports.py"
+			],
+			[
+				"sweet.sc",
+				"src/scss/_sweet.scss"
+			],
+			[
+				"accounts",
+				"src/accounts/accounts.lua"
+			],
+			[
+				"process-",
+				"src/importer/accounts/process-exports.py"
+			],
+			[
+				"swee",
+				"src/scss/_sweet.scss"
+			],
+			[
+				"all.sc",
+				"src/scss/all.scss"
+			],
+			[
+				"all.css",
+				"html/all.css"
+			],
+			[
+				"_swee",
+				"src/scss/_sweet.scss"
+			],
+			[
+				"html.lu",
+				"src/accounts/html.lua"
+			],
+			[
+				"_tables",
+				"src/bootstrap-4.0.0-alpha.6/scss/_tables.scss"
+			],
+			[
+				"_type.s",
+				"src/bootstrap-4.0.0-alpha.6/scss/_type.scss"
+			],
+			[
+				"_vari",
+				"src/bootstrap-4.0.0-alpha.6/scss/_variables.scss"
+			],
+			[
+				"bootstrap.sc",
+				"src/bootstrap-4.0.0-alpha.6/scss/bootstrap.scss"
+			],
+			[
+				"all.cs",
+				"html/all.css"
+			],
+			[
+				"variables",
+				"src/bootstrap-4.0.0-alpha.6/scss/_variables.scss"
+			],
+			[
+				"_custom.sc",
+				"src/bootstrap-4.0.0-alpha.6/scss/_custom.scss"
+			],
+			[
+				"override",
+				"src/scss/_override.scss"
+			],
+			[
+				"_varia",
+				"src/bootstrap-4.0.0-alpha.6/scss/_variables.scss"
+			],
+			[
+				"html.",
+				"src/accounts/html.lua"
+			],
+			[
+				"all",
+				"src/scss/all.scss"
+			],
+			[
+				"acocunts.bui",
+				"src/accounts.build"
+			],
+			[
+				"variabl",
+				"src/scss/_variables.scss"
+			],
+			[
+				"bootstrap-reboo",
+				"src/bootstrap-4.0.0-alpha.6/scss/bootstrap-reboot.scss"
+			],
+			[
+				"bootstrap-grid",
+				"src/bootstrap-4.0.0-alpha.6/scss/bootstrap-grid.scss"
+			],
+			[
+				"bootstr",
+				"src/bootstrap-4.0.0-alpha.6/scss/bootstrap.scss"
+			],
+			[
+				"balance",
+				"src/accounts/BALANCE.lua"
+			],
+			[
+				"cash_f",
+				"src/accounts/CASH_FLOW_OUT.lua"
+			],
+			[
+				"cash_in",
+				"src/accounts/CASH_FLOW_IN.lua"
+			],
+			[
+				"period",
+				"src/accounts/period.lua"
+			],
+			[
+				"period.lua",
+				"src/accounts/fortnightly_period.lua"
+			],
+			[
+				"fortni",
+				"src/accounts/fortnightly_period.lua"
+			],
+			[
+				"db.lu",
+				"src/accounts/db.lua"
+			],
+			[
+				"db.lua",
+				"src/accounts/db.lua"
+			],
+			[
+				"db",
+				"src/accounts/db.lua"
+			],
+			[
+				"balan",
+				"src/accounts/BALANCE.lua"
+			],
+			[
+				"cash_fl",
+				"src/accounts/CASH_FLOW_OUT.lua"
+			],
+			[
+				"month",
+				"src/accounts/monthly_period.lua"
+			],
+			[
+				"pay",
+				"src/accounts/pay_period.lua"
+			],
+			[
+				"cash",
+				"src/accounts/CASH_FLOW.lua"
+			],
+			[
+				"mon",
+				"src/accounts/monthly_period.lua"
+			],
+			[
+				"pay_per",
+				"src/accounts/pay_period.lua"
+			],
+			[
+				"end_p",
+				"src/accounts/END_PERIOD.lua"
+			],
+			[
+				"start_",
+				"src/accounts/START_PERIOD.lua"
+			],
+			[
+				"first",
+				"src/accounts/FIRST_THURSDAY_OF_YEAR.lua"
+			],
+			[
+				"liluat",
+				"src/accounts/liluat.lua"
+			],
+			[
+				"bala",
+				"src/accounts/BALANCE.lua"
+			],
+			[
+				"cash_flo",
+				"src/accounts/CASH_FLOW_IN.lua"
+			],
+			[
+				"tempalte.",
+				"src/accounts/template.lua"
+			],
+			[
+				"hier",
+				"src/accounts/HIERARCHICAL_CASH_FLOW_OUT.lua"
+			],
+			[
+				"cahs_flow_",
+				"src/accounts/CASH_FLOW_IN.lua"
+			],
+			[
+				"start",
+				"src/accounts/START_PERIOD.lua"
+			],
+			[
+				"current",
+				"src/accounts/CURRENT_ASSETS_ACCOUNT.lua"
+			],
+			[
+				"start_p",
+				"src/accounts/START_PERIOD.lua"
+			],
+			[
+				"hierah",
+				"src/accounts/HIERARCHICAL_CASH_FLOW_IN.lua"
+			],
+			[
+				"cash_flow_in",
+				"src/accounts/CASH_FLOW_IN.lua"
+			],
+			[
+				"account_list",
+				"src/accounts/BALANCES_BY_ACCOUNT_LIST_SQL.lua"
+			],
+			[
+				"bal",
+				"src/accounts/BALANCES_BY_ACCOUNT_LIST_SQL.lua"
+			],
+			[
+				"hml",
+				"src/accounts/html.lua"
+			],
+			[
+				"cash_flow",
+				"src/accounts/HIERARCHICAL_CASH_FLOW_OUT.lua"
+			],
+			[
+				"multi",
+				"src/accounts/MULTI_ACCOUNT_BALANCE_SQL.lua"
+			],
+			[
+				"balnce",
+				"src/accounts/BALANCE_SQL.lua"
+			],
+			[
+				"hiera",
+				"src/accounts/HIERARCHICAL_CASH_FLOW_OUT.lua"
+			],
+			[
+				"perio",
+				"src/accounts/PERIOD.lua"
+			],
+			[
+				"varia",
+				"src/scss/_variables.scss"
+			],
+			[
+				"hei",
+				"src/accounts/HIERARCHICAL_CASH_FLOW_OUT.lua"
+			],
+			[
+				"_boot",
+				"src/scss/_bootswatch.scss"
+			],
+			[
+				"_variables.scss",
+				"src/bootstrap-4.0.0-alpha.6/scss/_variables.scss"
+			],
+			[
+				"variab",
+				"src/scss/_variables.scss"
+			],
+			[
+				"all.",
+				"obj/.sass-cache/dd8c17b4efdf3fd74baccf806a52e7c9a207162f/all.scssc"
+			],
+			[
+				"hierar",
+				"src/accounts/HIERARCHICAL_CASH_FLOW_OUT.lua"
+			],
+			[
+				"db.la",
+				"src/accounts/db.lua"
+			],
+			[
+				"overr",
+				"src/scss/_override.scss"
+			],
+			[
+				"budget",
+				"src/accounts/BUDGET_OUT_SQL.lua"
+			],
+			[
+				"cash_flow_out",
+				"src/accounts/CASH_FLOW_OUT.lua"
+			],
+			[
+				"budget_out",
+				"src/accounts/BUDGET_OUT_SQL.lua"
+			],
+			[
+				"budget_to",
+				"src/accounts/BUDGET_TOTAL_SQL.lua"
+			],
+			[
+				"cash_",
+				"src/accounts/CASH_FLOW_OUT_ACCOUNT.lua"
+			],
+			[
+				"account_hier",
+				"src/accounts/ACCOUNT_HIERARCHY.lua"
+			],
+			[
+				"budget_tot",
+				"src/accounts/BUDGET_TOTAL_SQL.lua"
+			],
+			[
+				"budget_in",
+				"src/accounts/BUDGET_IN_SQL.lua"
+			],
+			[
+				"cash_flow_out_",
+				"src/accounts/CASH_FLOW_OUT_ACCOUNT.lua"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"~/sweet/github/lalr/lalr.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 482.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

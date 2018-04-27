@@ -1,7 +1,9 @@
 
+package.path = ('%s;%s;%s'):format( package.path, build:root('lalr/lalr/?.lua'), build:root('lalr/lalr/?/init.lua') );
+
 require "build";
 require "build.cc";
-require "build.Parser";
+require "build.lalr";
 require "build.macos";
 require "build.windows";
 require "build.xcode";
@@ -23,6 +25,7 @@ local settings = build:initialize {
         build:root( 'zlib' ),
         build:root( 'png' ),
         build:root( 'unittest-cpp' );
+        build:root( 'lalr/lalr' );
     };
     library_directories = {
         build:root( ("../%s/lib"):format(variant) ),
@@ -33,13 +36,23 @@ local settings = build:initialize {
     xcode = {
         xcodeproj = build:root( "../sweet_render.xcodeproj" );
     };
+    lalr = {
+        lalrc = build:switch {
+            build:operating_system();
+            linux = build:root( '../%s/bin/lalrc' );
+            macos = build:root( '../%s/bin/lalrc' );
+            windows = build:root( '../%s/bin/lalrc.exe' );
+        };
+    };
 };
 
 build:default_targets {
+    'lalr/lalr/lalrc',
     'sweet/render/render_examples',
     'sweet/render/render_test'
 };
 
+buildfile 'lalr/lalr/lalr.build';
 buildfile "jpeg/jpeg.build";
 buildfile "png/png.build";
 buildfile "sweet/assert/assert.build";

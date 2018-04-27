@@ -6,6 +6,7 @@ build:all {
             "sweet/assert/assert",
             "sweet/error/error",
             "jpeg/jpeg",
+            'lalr/lalr/lalr/lalr',
             "png/libpng",
             "sweet/pointer/pointer",
             "zlib/zlib"
