@@ -55,11 +55,7 @@ for _, build in build:default_builds("cc_.*") do
             "mathematical_functions.cpp",
             "matrix_functions.cpp",
             "shading_and_lighting_functions.cpp",
-            "shader_parser.cpp"
+            'shader_parser.g.cpp'
         };    
-
-        -- Parser {
-        --     "shader_parser.g"
-        -- };
     }
 end
