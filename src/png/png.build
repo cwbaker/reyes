@@ -4,10 +4,7 @@ for _, build in build:default_builds("cc_.*") do
         warning_level = 0;
     };
 
-    build:StaticLibrary "libpng" {
-        libraries = {
-            "zlib/zlib"
-        };
+    build:StaticLibrary '${lib}/libpng_${architecture}' {
         build:Cc () {
             defines = { 
                 "PNG_NO_MMX_CODE" 

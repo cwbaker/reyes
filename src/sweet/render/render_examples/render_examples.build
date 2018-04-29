@@ -1,16 +1,14 @@
 
 build:all {
-    build:Executable "render_examples" {
-        libraries = {
-            "sweet/render/render",
-            "sweet/assert/assert",
-            "sweet/error/error",
-            "jpeg/jpeg",
-            'lalr/lalr/lalr/lalr',
-            "png/libpng",
-            "sweet/pointer/pointer",
-            "zlib/zlib"
-        };
+    build:Executable '${bin}/render_examples' {
+        '${lib}/render_${architecture}';
+        '${lib}/assert_${architecture}';
+        '${lib}/error_${architecture}';
+        '${lib}/jpeg_${architecture}';
+        '${lib}/lalr_${architecture}';
+        '${lib}/libpng_${architecture}';
+        '${lib}/pointer_${architecture}';
+        '${lib}/zlib_${architecture}';
         
         build:Cxx () {
             defines = {

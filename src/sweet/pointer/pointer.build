@@ -2,14 +2,11 @@
 buildfile "pointer_test/pointer_test.build";
 
 for _, build in build:default_builds("cc_.*") do
-    build:Library "pointer" {
-        libraries = {
-            "sweet/assert/assert",
-            "sweet/error/error"
-        };
+    build:Library '${lib}/pointer_${architecture}' {
+        '${lib}/assert_${architecture}';
+        '${lib}/error_${architecture}';
 
         build:Cxx () {
-            precompiled_header = "stdafx.hpp";
             "ReferenceCount.cpp"
         };
     };

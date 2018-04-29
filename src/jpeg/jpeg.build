@@ -4,7 +4,7 @@ for _, build in build:default_builds("cc_.*") do
         warning_level = 0;
     };
 
-    build:Library "jpeg" {
+    build:Library '${lib}/jpeg_${architecture}' {
         build:Cc () {
             "jaricom.c",
             "jcapimin.c",

@@ -6,16 +6,8 @@ for _, build in build:default_builds("cc_.*") do
     local build = build:configure {
         warning_level = 0;
     };
-    build:Library "render" {
-        libraries = {
-            "sweet/assert/assert",
-            "sweet/error/error",
-            "jpeg/jpeg",
-            "png/libpng",
-            "sweet/pointer/pointer",
-            "zlib/zlib"
-        };
-        
+
+    build:Library '${lib}/render_${architecture}' {
         build:Cxx () {
             "AddSymbolHelper.cpp",
             "Attributes.cpp",
