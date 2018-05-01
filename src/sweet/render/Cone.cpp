@@ -20,6 +20,7 @@ using std::min;
 using std::max;
 using std::list;
 using std::vector;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -73,7 +74,7 @@ bool Cone::splittable() const
     return true;
 }
 
-void Cone::split( std::list<ptr<Geometry> >* primitives ) const
+void Cone::split( std::list<std::shared_ptr<Geometry> >* primitives ) const
 {
     SWEET_ASSERT( primitives );
     SWEET_ASSERT( u_range().y >= u_range().x );
@@ -89,7 +90,7 @@ void Cone::split( std::list<ptr<Geometry> >* primitives ) const
     float v1 = (v_range.x + v_range.y) / 2.0f;
     float v2 = v_range.y;
 
-    ptr<Geometry> cone;
+    shared_ptr<Geometry> cone;
     cone.reset( new Cone(*this, vec2(u0, u1), vec2(v0, v1)) );
     primitives->push_back( cone );
     cone.reset( new Cone(*this, vec2(u0, u1), vec2(v1, v2)) );

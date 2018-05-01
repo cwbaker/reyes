@@ -1,6 +1,6 @@
 //
 // mathematical_functions.cpp
-// Copyright (c) 2012 Charles Baker.  All rights reserved.
+// Copyright (c) Charles Baker. All rights reserved.
 //
 
 #include "stdafx.hpp"
@@ -22,7 +22,7 @@ namespace sweet
 namespace render
 {
 
-void radians( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> degrees )
+void radians( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> degrees )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( degrees );
@@ -38,7 +38,7 @@ void radians( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr
     }
 }
 
-void degrees( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> radians )
+void degrees( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> radians )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( radians );
@@ -54,7 +54,7 @@ void degrees( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr
     }
 }
 
-void sin( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> a )
+void sin( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> a )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( a );
@@ -70,7 +70,7 @@ void sin( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Val
     }
 }
 
-void asin( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> a )
+void asin( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> a )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( a );
@@ -86,7 +86,7 @@ void asin( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Va
     }
 }
 
-void cos( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> a )
+void cos( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> a )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( a );
@@ -102,7 +102,7 @@ void cos( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Val
     }
 }
 
-void acos( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> a )
+void acos( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> a )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( a );
@@ -118,7 +118,7 @@ void acos( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Va
     }
 }
 
-void tan( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> a )
+void tan( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> a )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( a );
@@ -134,7 +134,7 @@ void tan( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Val
     }
 }
 
-void atan( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> yoverx )
+void atan( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> yoverx )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( yoverx );
@@ -150,7 +150,7 @@ void atan( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Va
     }
 }
 
-void atan2( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> y, ptr<Value> x )
+void atan2( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> y, std::shared_ptr<Value> x )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( y );
@@ -169,7 +169,7 @@ void atan2( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<V
     }
 }
 
-void pow( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> x, ptr<Value> y )
+void pow( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x, std::shared_ptr<Value> y )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( x );
@@ -188,7 +188,7 @@ void pow( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Val
     }
 }
 
-void exp( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> x )
+void exp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( x );
@@ -204,7 +204,7 @@ void exp( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Val
     }
 }
 
-void sqrt( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> x )
+void sqrt( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( x );
@@ -220,7 +220,7 @@ void sqrt( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Va
     }
 }
 
-void inversesqrt( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> x )
+void inversesqrt( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( x );
@@ -236,7 +236,7 @@ void inversesqrt( const Renderer& renderer, const Grid& grid, ptr<Value> result,
     }
 }
 
-void log( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> x )
+void log( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( x );
@@ -252,7 +252,7 @@ void log( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Val
     }
 }
 
-void logb( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> x, ptr<Value> base )
+void logb( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x, std::shared_ptr<Value> base )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( x );
@@ -271,7 +271,7 @@ void logb( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Va
     }
 }
 
-void mod( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> a, ptr<Value> b )
+void mod( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> a, std::shared_ptr<Value> b )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( a );
@@ -290,7 +290,7 @@ void mod( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Val
     }
 }
 
-void abs( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> x )
+void abs( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( x );
@@ -306,7 +306,7 @@ void abs( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Val
     }
 }
 
-void sign( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> x )
+void sign( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( x );
@@ -322,7 +322,7 @@ void sign( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Va
     }
 }
 
-void mix_float( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> x, ptr<Value> y, ptr<Value> alpha )
+void mix_float( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x, std::shared_ptr<Value> y, std::shared_ptr<Value> alpha )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( x );
@@ -342,7 +342,7 @@ void mix_float( const Renderer& renderer, const Grid& grid, ptr<Value> result, p
     }
 }
 
-void mix_vec3( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> x, ptr<Value> y, ptr<Value> alpha )
+void mix_vec3( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x, std::shared_ptr<Value> y, std::shared_ptr<Value> alpha )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( x );
@@ -364,7 +364,7 @@ void mix_vec3( const Renderer& renderer, const Grid& grid, ptr<Value> result, pt
     }
 }
 
-void floor( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> x )
+void floor( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( x );
@@ -380,7 +380,7 @@ void floor( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<V
     }
 }
 
-void ceil( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> x )
+void ceil( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( x );
@@ -396,7 +396,7 @@ void ceil( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Va
     }
 }
 
-void round( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> x )
+void round( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( x );
@@ -412,7 +412,7 @@ void round( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<V
     }
 }
 
-void step( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> min, ptr<Value> x )
+void step( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> min, std::shared_ptr<Value> x )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( min );
@@ -430,7 +430,7 @@ void step( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Va
     }
 }
 
-void smoothstep( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> min, ptr<Value> max, ptr<Value> x )
+void smoothstep( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> min, std::shared_ptr<Value> max, std::shared_ptr<Value> x )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( min );
@@ -451,7 +451,7 @@ void smoothstep( const Renderer& renderer, const Grid& grid, ptr<Value> result, 
     }
 }
 
-void du_float( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> p )
+void du_float( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( p );
     SWEET_ASSERT( p->type() >= TYPE_COLOR && p->type() <= TYPE_NORMAL );
@@ -486,7 +486,7 @@ void du_float( const Renderer& renderer, const Grid& grid, ptr<Value> result, pt
     }
 }
 
-void du_vec3( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> p )
+void du_vec3( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( p );
     SWEET_ASSERT( p->type() >= TYPE_COLOR && p->type() <= TYPE_NORMAL );
@@ -521,7 +521,7 @@ void du_vec3( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr
     }
 }
 
-void dv_float( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> p )
+void dv_float( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( p );
     SWEET_ASSERT( p->type() >= TYPE_COLOR && p->type() <= TYPE_NORMAL );
@@ -561,7 +561,7 @@ void dv_float( const Renderer& renderer, const Grid& grid, ptr<Value> result, pt
     }                            
 }
 
-void dv_vec3( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> p )
+void dv_vec3( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( p );
     SWEET_ASSERT( p->type() >= TYPE_COLOR && p->type() <= TYPE_NORMAL );
@@ -601,7 +601,7 @@ void dv_vec3( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr
     }                            
 }
 
-void deriv_float( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> y, ptr<Value> x )
+void deriv_float( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> y, std::shared_ptr<Value> x )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( y );
@@ -664,7 +664,7 @@ void deriv_float( const Renderer& renderer, const Grid& grid, ptr<Value> result,
     }                            
 }
 
-void deriv_vec3( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> y, ptr<Value> x )
+void deriv_vec3( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> y, std::shared_ptr<Value> x )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( y );
@@ -727,14 +727,14 @@ void deriv_vec3( const Renderer& renderer, const Grid& grid, ptr<Value> result, 
     }                            
 }
 
-void uniform_float_random( const Renderer& renderer, const Grid& grid, ptr<Value> result )
+void uniform_float_random( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result )
 {
     SWEET_ASSERT( result );
     result->reset( TYPE_FLOAT, STORAGE_UNIFORM, 1 );
     result->float_values()[0] = (float(rand()) / (RAND_MAX / 2) - 1.0f);
 }
 
-void uniform_vec3_random( const Renderer& renderer, const Grid& grid, ptr<Value> result )
+void uniform_vec3_random( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result )
 {
     SWEET_ASSERT( result );
     result->reset( TYPE_POINT, STORAGE_UNIFORM, 1 );
@@ -745,7 +745,7 @@ void uniform_vec3_random( const Renderer& renderer, const Grid& grid, ptr<Value>
     );
 }
 
-void float_random( const Renderer& renderer, const Grid& grid, ptr<Value> result )
+void float_random( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result )
 {
     SWEET_ASSERT( result );
     
@@ -758,7 +758,7 @@ void float_random( const Renderer& renderer, const Grid& grid, ptr<Value> result
     }    
 }
 
-void vec3_random( const Renderer& renderer, const Grid& grid, ptr<Value> result )
+void vec3_random( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result )
 {
     SWEET_ASSERT( result );
 

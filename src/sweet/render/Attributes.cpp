@@ -20,6 +20,7 @@ using std::string;
 using std::vector;
 using std::swap;
 using std::make_pair;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -311,10 +312,10 @@ void Attributes::light_shade( Grid& grid )
         remove_coordinate_system( "shader" );
         remove_coordinate_system( "current" );
         
-        const vector<ptr<Light> >& lights = light_grid.lights();
-        for ( vector<ptr<Light> >::const_iterator i = lights.begin(); i != lights.end(); ++i )
+        const vector<shared_ptr<Light> >& lights = light_grid.lights();
+        for ( vector<shared_ptr<Light> >::const_iterator i = lights.begin(); i != lights.end(); ++i )
         {
-            const ptr<Light>& light = *i;      
+            const shared_ptr<Light>& light = *i;      
             grid.add_light( light );
         }
     }
@@ -324,7 +325,7 @@ Grid& Attributes::add_light_shader( Shader* light_shader, const math::mat4x4& ca
 {
     SWEET_ASSERT( light_shader );
     
-    ptr<Grid> light_parameters( new Grid(light_shader) );
+    shared_ptr<Grid> light_parameters( new Grid(light_shader) );
     light_shaders_.push_back( make_pair(light_shader, light_parameters) );
     active_light_shaders_.push_back( light_parameters.get() );
 

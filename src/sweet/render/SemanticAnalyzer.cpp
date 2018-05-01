@@ -1,6 +1,6 @@
 //
 // SemanticAnalyzer.cpp
-// Copyright (c) 2012 Charles Baker.  All rights reserved.
+// Copyright (c) Charles Baker.  All rights reserved.
 //
 
 #include "stdafx.hpp"
@@ -19,6 +19,7 @@
 using std::max;
 using std::string;
 using std::vector;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::render;
 
@@ -108,8 +109,8 @@ void SemanticAnalyzer::analyze_ambient_lighting( SyntaxNode* node )
         int solar_statements = 0;
         int illuminate_statements = 0;
         
-        const vector<ptr<SyntaxNode> >& statements = node->node(1)->get_nodes();        
-        for ( vector<ptr<SyntaxNode> >::const_iterator i = statements.begin(); i != statements.end(); ++i )
+        const vector<shared_ptr<SyntaxNode>>& statements = node->node(1)->get_nodes();        
+        for ( vector<shared_ptr<SyntaxNode>>::const_iterator i = statements.begin(); i != statements.end(); ++i )
         {
             const SyntaxNode* node = i->get();
             SWEET_ASSERT( node );
@@ -168,8 +169,8 @@ void SemanticAnalyzer::analyze_node( SyntaxNode* node ) const
             break;
     }
     
-    const vector<ptr<SyntaxNode> >& nodes = node->get_nodes();
-    for ( vector<ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+    const vector<shared_ptr<SyntaxNode>>& nodes = node->get_nodes();
+    for ( vector<shared_ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
     {
         SyntaxNode* syntax_node = i->get();
         SWEET_ASSERT( syntax_node );
@@ -320,13 +321,13 @@ void SemanticAnalyzer::analyze_assign_expectations( SyntaxNode* node ) const
 {
     SWEET_ASSERT( node );
 
-    ptr<Symbol> symbol = node->get_symbol();
+    shared_ptr<Symbol> symbol = node->get_symbol();
     if ( symbol )
     {
         ValueStorage expected_storage = symbol->storage();
         
-        const vector<ptr<SyntaxNode> >& nodes = node->get_nodes();
-        for ( vector<ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+        const vector<shared_ptr<SyntaxNode>>& nodes = node->get_nodes();
+        for ( vector<shared_ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
         {
             SyntaxNode* syntax_node = i->get();
             SWEET_ASSERT( syntax_node );
@@ -343,8 +344,8 @@ void SemanticAnalyzer::analyze_typecast_expectations( SyntaxNode* node ) const
     ValueType expected_type = type_from_type_node( node->node(0) );
     ValueStorage expected_storage = node->get_expected_storage();
     
-    const vector<ptr<SyntaxNode> >& nodes = node->get_nodes();
-    for ( vector<ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+    const vector<shared_ptr<SyntaxNode>>& nodes = node->get_nodes();
+    for ( vector<shared_ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
     {
         SyntaxNode* syntax_node = i->get();
         SWEET_ASSERT( syntax_node );
@@ -360,8 +361,8 @@ void SemanticAnalyzer::analyze_expectations( SyntaxNode* node ) const
     ValueType expected_type = node->get_expected_type();
     ValueStorage expected_storage = node->get_expected_storage();
     
-    const vector<ptr<SyntaxNode> >& nodes = node->get_nodes();
-    for ( vector<ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+    const vector<shared_ptr<SyntaxNode>>& nodes = node->get_nodes();
+    for ( vector<shared_ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
     {
         SyntaxNode* syntax_node = i->get();
         SWEET_ASSERT( syntax_node );
@@ -429,7 +430,7 @@ void SemanticAnalyzer::analyze_illuminance_statement( SyntaxNode* node ) const
 
 void SemanticAnalyzer::analyze_call( SyntaxNode* node ) const
 {
-    ptr<Symbol> symbol = symbol_table_.find_symbol( node );
+    shared_ptr<Symbol> symbol = symbol_table_.find_symbol( node );
     error( !symbol, node->line(), "Unrecognized function '%s'", node->lexeme().c_str() );
     if ( symbol )
     {
@@ -438,7 +439,7 @@ void SemanticAnalyzer::analyze_call( SyntaxNode* node ) const
         node->set_storage( symbol->storage() );
         
         const vector<SymbolParameter>& parameters = symbol->parameters();
-        const vector<ptr<SyntaxNode> >& nodes = node->get_nodes();
+        const vector<shared_ptr<SyntaxNode>>& nodes = node->get_nodes();
         SWEET_ASSERT( parameters.size() == nodes.size() );
         const int MAXIMUM_PARAMETERS = 5;
         error( parameters.size() > MAXIMUM_PARAMETERS, node->line(), "The call '%s' has more than the %d parameters", symbol->identifier().c_str(), MAXIMUM_PARAMETERS );
@@ -452,7 +453,7 @@ void SemanticAnalyzer::analyze_call( SyntaxNode* node ) const
 
 void SemanticAnalyzer::analyze_assign( SyntaxNode* node ) const
 {
-    ptr<Symbol> symbol = node->get_symbol();
+    shared_ptr<Symbol> symbol = node->get_symbol();
     error( !symbol, node->line(), "Unrecognized symbol '%s' in assignment", node->lexeme().c_str() );
     if ( symbol )
     {
@@ -693,7 +694,7 @@ void SemanticAnalyzer::analyze_ternary( SyntaxNode* node ) const
 
 void SemanticAnalyzer::analyze_identifier( SyntaxNode* node ) const
 {
-    ptr<Symbol> symbol = node->get_symbol();
+    shared_ptr<Symbol> symbol = node->get_symbol();
     error( !symbol, node->line(), "Unrecognized symbol '%s'", node->lexeme().c_str() );
     if ( symbol )
     {

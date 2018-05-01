@@ -18,42 +18,42 @@ SUITE( TestLightShaders )
     {
         SymbolTable symbol_table;
         ErrorPolicy error_policy;
-        Shader shader( "../shaders/ambientlight.sl", symbol_table, error_policy );
+        Shader shader( SHADERS_PATH "ambientlight.sl", symbol_table, error_policy );
     }
 
     TEST( DistantLight )
     {
         SymbolTable symbol_table;
         ErrorPolicy error_policy;
-        Shader shader( "../shaders/distantlight.sl", symbol_table, error_policy );
+        Shader shader( SHADERS_PATH "distantlight.sl", symbol_table, error_policy );
     }
     
     TEST( PointLight )
     {
         SymbolTable symbol_table;
         ErrorPolicy error_policy;
-        Shader shader( "../shaders/pointlight.sl", symbol_table, error_policy );
+        Shader shader( SHADERS_PATH "pointlight.sl", symbol_table, error_policy );
     }
     
     TEST( SpotLight )
     {
         SymbolTable symbol_table;
         ErrorPolicy error_policy;
-        Shader shader( "../shaders/spotlight.sl", symbol_table, error_policy );
+        Shader shader( SHADERS_PATH "spotlight.sl", symbol_table, error_policy );
     }
     
     TEST( TestShadowPointLight )
     {
         SymbolTable symbol_table;
         ErrorPolicy error_policy;
-        Shader shader( "../shaders/shadowpointlight.sl", symbol_table, error_policy );
+        Shader shader( SHADERS_PATH "shadowpointlight.sl", symbol_table, error_policy );
     }
     
     TEST( active_light_list )
     {
         Renderer renderer;
 
-        Shader shader( "../shaders/ambientlight.sl", renderer.symbol_table(), renderer.error_policy() );
+        Shader shader( SHADERS_PATH "ambientlight.sl", renderer.symbol_table(), renderer.error_policy() );
 
         renderer.begin();
         Grid& light = renderer.light_shader( &shader );

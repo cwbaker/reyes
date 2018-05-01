@@ -1,13 +1,8 @@
-//
-// ShaderParser.hpp
-// Copyright (c) 2011 - 2012 Charles Baker.  All rights reserved.
-//
-
 #ifndef SWEET_RENDER_SHADERPARSER_HPP_INCLUDED
 #define SWEET_RENDER_SHADERPARSER_HPP_INCLUDED
 
 #include "declspec.hpp"
-#include <sweet/pointer/ptr.hpp>
+#include <memory>
 
 namespace sweet
 {
@@ -30,8 +25,8 @@ class SWEET_RENDER_DECLSPEC ShaderParser
 
 public:
     ShaderParser( SymbolTable& symbol_table, ErrorPolicy* error_policy = 0 );
-    ptr<SyntaxNode> parse( const char* filename );
-    ptr<SyntaxNode> parse( const char* begin, const char* end );
+    std::shared_ptr<SyntaxNode> parse( const char* filename );
+    std::shared_ptr<SyntaxNode> parse( const char* begin, const char* end );
 };
 
 }

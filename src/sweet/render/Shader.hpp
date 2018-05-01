@@ -1,13 +1,8 @@
-//
-// Shader.hpp
-// Copyright (c) 2011 - 2012 Charles Baker.  All rights reserved.
-//
-
 #ifndef SWEET_RENDER_SHADER_HPP_INCLUDED
 #define SWEET_RENDER_SHADER_HPP_INCLUDED
 
 #include "declspec.hpp"
-#include <sweet/pointer/ptr.hpp>
+#include <memory>
 #include <string>
 #include <vector>
 #include <map>
@@ -31,8 +26,8 @@ class ErrorPolicy;
 */
 class SWEET_RENDER_DECLSPEC Shader
 {
-    std::vector<ptr<Symbol> > symbols_; ///< The symbols that are used in the shader.
-    std::vector<ptr<Value> > values_; ///< The values of any constants used in the shader (including default parameter values).
+    std::vector<std::shared_ptr<Symbol>> symbols_; ///< The symbols that are used in the shader.
+    std::vector<std::shared_ptr<Value>> values_; ///< The values of any constants used in the shader (including default parameter values).
     std::vector<short> code_; ///< The byte code generated for the shader.
     int initialize_address_; ///< The index of the start of the initialize code fragment.
     int shade_address_; ///< The index of the start of the shade code fragment.
@@ -47,8 +42,8 @@ public:
     Shader( const char* filename, SymbolTable& symbol_table, ErrorPolicy& error_policy );
     Shader( const char* start, const char* finish, SymbolTable& symbol_table, ErrorPolicy& error_policy );
     
-    const std::vector<ptr<Symbol> >& symbols() const;
-    const std::vector<ptr<Value> >& values() const;
+    const std::vector<std::shared_ptr<Symbol> >& symbols() const;
+    const std::vector<std::shared_ptr<Value> >& values() const;
     const std::vector<short>& code() const;
     int initialize_address() const;
     int shade_address() const;
@@ -59,7 +54,7 @@ public:
     int permanent_registers() const;
     int registers() const;
 
-    ptr<Symbol> find_symbol( const std::string& identitifer ) const;
+    std::shared_ptr<Symbol> find_symbol( const std::string& identitifer ) const;
 };
 
 }

@@ -14,6 +14,7 @@
 #include <string.h>
 
 using std::vector;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -56,11 +57,11 @@ SUITE( ContinueStatements )
           y( NULL )
         {
             grid.resize( 2, 2 );
-            ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
+            shared_ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
             x_value->zero();
             x = x_value->float_values();
             
-            ptr<Value> y_value = grid.add_value( "y", TYPE_FLOAT );
+            shared_ptr<Value> y_value = grid.add_value( "y", TYPE_FLOAT );
             y_value->zero();
             y = y_value->float_values();
         }

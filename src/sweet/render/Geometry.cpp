@@ -16,6 +16,7 @@ using std::min;
 using std::max;
 using std::list;
 using std::vector;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -54,7 +55,7 @@ bool Geometry::splittable() const
     return false;
 }
 
-void Geometry::split( std::list<ptr<Geometry> >* /*primitives*/ ) const
+void Geometry::split( std::list<std::shared_ptr<Geometry>>* /*primitives*/ ) const
 {
     SWEET_ASSERT( false );
 }

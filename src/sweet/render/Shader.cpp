@@ -1,6 +1,6 @@
 //
 // Shader.cpp
-// Copyright (c) 2011 - 2012 Charles Baker.  All rights reserved.
+// Copyright (c) Charles Baker. All rights reserved.
 //
 
 #include "stdafx.hpp"
@@ -16,6 +16,7 @@
 using std::map;
 using std::string;
 using std::vector;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::render;
 
@@ -48,7 +49,7 @@ Shader::Shader( const char* filename, SymbolTable& symbol_table, ErrorPolicy& er
     SWEET_ASSERT( filename );
     
     ShaderParser shader_parser( symbol_table, &error_policy );
-    ptr<SyntaxNode> syntax_node = shader_parser.parse( filename );
+    shared_ptr<SyntaxNode> syntax_node = shader_parser.parse( filename );
 
     SemanticAnalyzer semantic_analyzer( symbol_table, &error_policy );
     semantic_analyzer.analyze( syntax_node.get(), filename );
@@ -86,7 +87,7 @@ Shader::Shader( const char* start, const char* finish, SymbolTable& symbol_table
     SWEET_ASSERT( start <= finish );
     
     ShaderParser shader_parser( symbol_table, &error_policy );
-    ptr<SyntaxNode> syntax_node = shader_parser.parse( start, finish );
+    shared_ptr<SyntaxNode> syntax_node = shader_parser.parse( start, finish );
 
     SemanticAnalyzer semantic_analyzer( symbol_table, &error_policy );
     semantic_analyzer.analyze( syntax_node.get(), "from memory" );
@@ -107,12 +108,12 @@ Shader::Shader( const char* start, const char* finish, SymbolTable& symbol_table
     registers_ = code_generator.registers();
 }
 
-const std::vector<ptr<Symbol> >& Shader::symbols() const
+const std::vector<std::shared_ptr<Symbol> >& Shader::symbols() const
 {
     return symbols_;
 }
 
-const std::vector<ptr<Value> >& Shader::values() const
+const std::vector<std::shared_ptr<Value> >& Shader::values() const
 {
     return values_;
 }
@@ -162,12 +163,12 @@ int Shader::registers() const
     return registers_;
 }
 
-ptr<Symbol> Shader::find_symbol( const std::string& identifier ) const
+std::shared_ptr<Symbol> Shader::find_symbol( const std::string& identifier ) const
 {
-    vector<ptr<Symbol> >::const_iterator i = symbols_.begin();
+    vector<shared_ptr<Symbol>>::const_iterator i = symbols_.begin();
     while ( i != symbols_.end() && (*i)->identifier() != identifier )
     {
         ++i;
     }
-    return i != symbols_.end() ? *i : ptr<Symbol>();
+    return i != symbols_.end() ? *i : shared_ptr<Symbol>();
 }

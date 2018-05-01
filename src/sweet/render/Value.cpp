@@ -1,6 +1,6 @@
 //
 // Value.cpp
-// Copyright (c) 2011 - 2012 Charles Baker.  All rights reserved.
+// Copyright (c) Charles Baker. All rights reserved.
 //
 
 #include "stdafx.hpp"
@@ -334,7 +334,7 @@ math::vec3 Value::vec3_value() const
     return *(const vec3*) values_;
 }
 
-void Value::float_to_vec3( ValueType type, ptr<Value> value )
+void Value::float_to_vec3( ValueType type, std::shared_ptr<Value> value )
 {
     SWEET_ASSERT( value );
     SWEET_ASSERT( value->type() == TYPE_FLOAT );
@@ -352,7 +352,7 @@ void Value::float_to_vec3( ValueType type, ptr<Value> value )
     }
 }
 
-void Value::float_to_mat4x4( ptr<Value> value )
+void Value::float_to_mat4x4( std::shared_ptr<Value> value )
 {
     SWEET_ASSERT( value );
     SWEET_ASSERT( value->type() == TYPE_FLOAT );
@@ -382,7 +382,7 @@ void Value::float_to_mat4x4( ptr<Value> value )
 //
 // This is used to calculate "L" in a light shader's illuminate statement.
 */
-void Value::light_to_surface_vector( ptr<Value> position, const math::vec3& light_position )
+void Value::light_to_surface_vector( std::shared_ptr<Value> position, const math::vec3& light_position )
 {
     SWEET_ASSERT( position );
     SWEET_ASSERT( position->storage() == STORAGE_VARYING );
@@ -406,7 +406,7 @@ void Value::light_to_surface_vector( ptr<Value> position, const math::vec3& ligh
 // This is used to calculate "L" in a surface shader's illuminance statement 
 // from the surface position and the currently active light.
 */
-void Value::surface_to_light_vector( ptr<Value> position, const Light* light )
+void Value::surface_to_light_vector( std::shared_ptr<Value> position, const Light* light )
 {
     SWEET_ASSERT( position );
     SWEET_ASSERT( position->storage() == STORAGE_VARYING );
@@ -429,7 +429,7 @@ void Value::surface_to_light_vector( ptr<Value> position, const Light* light )
 // Calculate a mask based on the axis and angle passed to an illuminance 
 // statement and the light from \e light.
 */
-void Value::illuminance_axis_angle( ptr<Value> position, ptr<Value> axis, ptr<Value> angle, const Light* light )
+void Value::illuminance_axis_angle( std::shared_ptr<Value> position, std::shared_ptr<Value> axis, std::shared_ptr<Value> angle, const Light* light )
 {
     SWEET_ASSERT( position );
     SWEET_ASSERT( position->storage() == STORAGE_VARYING );
@@ -474,7 +474,7 @@ void Value::illuminance_axis_angle( ptr<Value> position, ptr<Value> axis, ptr<Va
     }        
 }
 
-void Value::logical_and( ptr<Value> lhs, ptr<Value> rhs)
+void Value::logical_and( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs)
 {
     SWEET_ASSERT( lhs );
     SWEET_ASSERT( rhs );
@@ -493,7 +493,7 @@ void Value::logical_and( ptr<Value> lhs, ptr<Value> rhs)
     }
 }
 
-void Value::logical_or( ptr<Value> lhs, ptr<Value> rhs )
+void Value::logical_or( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     SWEET_ASSERT( lhs );
     SWEET_ASSERT( rhs );
@@ -512,7 +512,7 @@ void Value::logical_or( ptr<Value> lhs, ptr<Value> rhs )
     }
 }
 
-void Value::transform( const math::mat4x4& m, ptr<Value> p )
+void Value::transform( const math::mat4x4& m, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( p );
     SWEET_ASSERT( p->type() == TYPE_POINT || p->type() == TYPE_VECTOR || p->type() == TYPE_NORMAL );
@@ -527,7 +527,7 @@ void Value::transform( const math::mat4x4& m, ptr<Value> p )
     }
 }
 
-void Value::vtransform( const math::mat4x4& m, ptr<Value> v )
+void Value::vtransform( const math::mat4x4& m, std::shared_ptr<Value> v )
 {
     SWEET_ASSERT( v );
     SWEET_ASSERT( v->type() == TYPE_POINT || v->type() == TYPE_VECTOR || v->type() == TYPE_NORMAL );
@@ -542,7 +542,7 @@ void Value::vtransform( const math::mat4x4& m, ptr<Value> v )
     }
 }
 
-void Value::ntransform( const math::mat4x4& mm, ptr<Value> n )
+void Value::ntransform( const math::mat4x4& mm, std::shared_ptr<Value> n )
 {
     SWEET_ASSERT( n );
     SWEET_ASSERT( n->type() == TYPE_POINT || n->type() == TYPE_VECTOR || n->type() == TYPE_NORMAL );
@@ -558,7 +558,7 @@ void Value::ntransform( const math::mat4x4& mm, ptr<Value> n )
     }
 }
 
-void Value::transform_matrix( const math::mat4x4& m, ptr<Value> value )
+void Value::transform_matrix( const math::mat4x4& m, std::shared_ptr<Value> value )
 {
     SWEET_ASSERT( value );
     SWEET_ASSERT( value->type() == TYPE_MATRIX );
@@ -574,7 +574,7 @@ void Value::transform_matrix( const math::mat4x4& m, ptr<Value> value )
     }
 }
 
-void Value::promote_integer( int size, ptr<Value> other_value )
+void Value::promote_integer( int size, std::shared_ptr<Value> other_value )
 {
     SWEET_ASSERT( size >= 1 );
     SWEET_ASSERT( other_value );
@@ -591,7 +591,7 @@ void Value::promote_integer( int size, ptr<Value> other_value )
     }
 }
  
-void Value::promote_float( int size, ptr<Value> other_value )
+void Value::promote_float( int size, std::shared_ptr<Value> other_value )
 {
     SWEET_ASSERT( size >= 1 );
     SWEET_ASSERT( other_value );
@@ -608,7 +608,7 @@ void Value::promote_float( int size, ptr<Value> other_value )
     }
 }
  
-void Value::promote_vec3( int size, ptr<Value> other_value )
+void Value::promote_vec3( int size, std::shared_ptr<Value> other_value )
 {           
     SWEET_ASSERT( size >= 1 );
     SWEET_ASSERT( other_value );
@@ -625,7 +625,7 @@ void Value::promote_vec3( int size, ptr<Value> other_value )
     }
 }
 
-void Value::assign_integer( ptr<Value> value, const unsigned char* mask )
+void Value::assign_integer( std::shared_ptr<Value> value, const unsigned char* mask )
 {
     SWEET_ASSERT( value );
 
@@ -654,7 +654,7 @@ void Value::assign_integer( ptr<Value> value, const unsigned char* mask )
     }
 }
 
-void Value::assign_float( ptr<Value> value, const unsigned char* mask )
+void Value::assign_float( std::shared_ptr<Value> value, const unsigned char* mask )
 {
     SWEET_ASSERT( value );
 
@@ -683,7 +683,7 @@ void Value::assign_float( ptr<Value> value, const unsigned char* mask )
     }
 }
 
-void Value::assign_vec3( ptr<Value> value, const unsigned char* mask )
+void Value::assign_vec3( std::shared_ptr<Value> value, const unsigned char* mask )
 {
     SWEET_ASSERT( value );
     
@@ -712,7 +712,7 @@ void Value::assign_vec3( ptr<Value> value, const unsigned char* mask )
     }
 }
 
-void Value::assign_mat4x4( ptr<Value> value, const unsigned char* mask )
+void Value::assign_mat4x4( std::shared_ptr<Value> value, const unsigned char* mask )
 {
     SWEET_ASSERT( value );
     
@@ -741,7 +741,7 @@ void Value::assign_mat4x4( ptr<Value> value, const unsigned char* mask )
     }
 }
 
-void Value::assign_string( ptr<Value> value, const unsigned char* mask )
+void Value::assign_string( std::shared_ptr<Value> value, const unsigned char* mask )
 {
     SWEET_ASSERT( value );
     SWEET_ASSERT( value->storage() != STORAGE_VARYING );
@@ -751,7 +751,7 @@ void Value::assign_string( ptr<Value> value, const unsigned char* mask )
     string_value_ = value->string_value_;
 }
 
-void Value::add_assign_float( ptr<Value> value, const unsigned char* mask )
+void Value::add_assign_float( std::shared_ptr<Value> value, const unsigned char* mask )
 {
     SWEET_ASSERT( value );
     
@@ -778,7 +778,7 @@ void Value::add_assign_float( ptr<Value> value, const unsigned char* mask )
     }
 }
 
-void Value::add_assign_vec3( ptr<Value> value, const unsigned char* mask )
+void Value::add_assign_vec3( std::shared_ptr<Value> value, const unsigned char* mask )
 {
     SWEET_ASSERT( value );
 
@@ -805,7 +805,7 @@ void Value::add_assign_vec3( ptr<Value> value, const unsigned char* mask )
     }
 }
 
-void Value::multiply_assign_float( ptr<Value> value, const unsigned char* mask )
+void Value::multiply_assign_float( std::shared_ptr<Value> value, const unsigned char* mask )
 {
     SWEET_ASSERT( value );
     
@@ -832,7 +832,7 @@ void Value::multiply_assign_float( ptr<Value> value, const unsigned char* mask )
     }
 }
 
-void Value::multiply_assign_vec3( ptr<Value> value, const unsigned char* mask )
+void Value::multiply_assign_vec3( std::shared_ptr<Value> value, const unsigned char* mask )
 {
     SWEET_ASSERT( value );
 
@@ -859,7 +859,7 @@ void Value::multiply_assign_vec3( ptr<Value> value, const unsigned char* mask )
     }
 }
 
-void Value::equal_float( ptr<Value> lhs, ptr<Value> rhs )
+void Value::equal_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     SWEET_ASSERT( lhs );
     SWEET_ASSERT( rhs );
@@ -877,7 +877,7 @@ void Value::equal_float( ptr<Value> lhs, ptr<Value> rhs )
     }
 }
 
-void Value::equal_vec3( ptr<Value> lhs, ptr<Value> rhs )
+void Value::equal_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     SWEET_ASSERT( lhs );
     SWEET_ASSERT( rhs );
@@ -895,7 +895,7 @@ void Value::equal_vec3( ptr<Value> lhs, ptr<Value> rhs )
     }
 }
 
-void Value::not_equal_float( ptr<Value> lhs, ptr<Value> rhs )
+void Value::not_equal_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     SWEET_ASSERT( lhs );
     SWEET_ASSERT( rhs );
@@ -913,7 +913,7 @@ void Value::not_equal_float( ptr<Value> lhs, ptr<Value> rhs )
     }
 }
 
-void Value::not_equal_vec3( ptr<Value> lhs, ptr<Value> rhs )
+void Value::not_equal_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     SWEET_ASSERT( lhs );
     SWEET_ASSERT( rhs );
@@ -931,7 +931,7 @@ void Value::not_equal_vec3( ptr<Value> lhs, ptr<Value> rhs )
     }
 }
 
-void Value::greater_float( ptr<Value> lhs, ptr<Value> rhs )
+void Value::greater_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     SWEET_ASSERT( lhs );
     SWEET_ASSERT( rhs );
@@ -951,7 +951,7 @@ void Value::greater_float( ptr<Value> lhs, ptr<Value> rhs )
     }
 }
 
-void Value::greater_equal_float( ptr<Value> lhs, ptr<Value> rhs )
+void Value::greater_equal_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     SWEET_ASSERT( lhs );
     SWEET_ASSERT( rhs );
@@ -971,7 +971,7 @@ void Value::greater_equal_float( ptr<Value> lhs, ptr<Value> rhs )
     }
 }
 
-void Value::less_float( ptr<Value> lhs, ptr<Value> rhs )
+void Value::less_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     SWEET_ASSERT( lhs );
     SWEET_ASSERT( rhs );
@@ -991,7 +991,7 @@ void Value::less_float( ptr<Value> lhs, ptr<Value> rhs )
     }
 }
 
-void Value::less_equal_float( ptr<Value> lhs, ptr<Value> rhs )
+void Value::less_equal_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     SWEET_ASSERT( lhs );
     SWEET_ASSERT( rhs );
@@ -1011,7 +1011,7 @@ void Value::less_equal_float( ptr<Value> lhs, ptr<Value> rhs )
     }
 }
 
-void Value::inside_cone( ptr<Value> direction, const math::vec3& axis, float angle )
+void Value::inside_cone( std::shared_ptr<Value> direction, const math::vec3& axis, float angle )
 {
     SWEET_ASSERT( direction );
     SWEET_ASSERT( direction->type() == TYPE_VECTOR );
@@ -1030,7 +1030,7 @@ void Value::inside_cone( ptr<Value> direction, const math::vec3& axis, float ang
     }
 }
 
-void Value::negate_float( ptr<Value> value )
+void Value::negate_float( std::shared_ptr<Value> value )
 {
     SWEET_ASSERT( value );
     
@@ -1043,7 +1043,7 @@ void Value::negate_float( ptr<Value> value )
     }
 }
             
-void Value::negate_vec3( ptr<Value> value )
+void Value::negate_vec3( std::shared_ptr<Value> value )
 {
     SWEET_ASSERT( value );
     
@@ -1056,7 +1056,7 @@ void Value::negate_vec3( ptr<Value> value )
     }
 }
 
-void Value::add_float( ptr<Value> lhs, ptr<Value> rhs )
+void Value::add_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     SWEET_ASSERT( lhs );
     SWEET_ASSERT( rhs );
@@ -1076,7 +1076,7 @@ void Value::add_float( ptr<Value> lhs, ptr<Value> rhs )
     }
 }
 
-void Value::add_vec3( ptr<Value> lhs, ptr<Value> rhs )
+void Value::add_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     SWEET_ASSERT( lhs );
     SWEET_ASSERT( rhs );
@@ -1096,7 +1096,7 @@ void Value::add_vec3( ptr<Value> lhs, ptr<Value> rhs )
     }
 }
 
-void Value::subtract_float( ptr<Value> lhs, ptr<Value> rhs )
+void Value::subtract_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     SWEET_ASSERT( lhs );
     SWEET_ASSERT( rhs );
@@ -1116,7 +1116,7 @@ void Value::subtract_float( ptr<Value> lhs, ptr<Value> rhs )
     }
 }
 
-void Value::subtract_vec3( ptr<Value> lhs, ptr<Value> rhs )
+void Value::subtract_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     SWEET_ASSERT( lhs );
     SWEET_ASSERT( rhs );
@@ -1134,7 +1134,7 @@ void Value::subtract_vec3( ptr<Value> lhs, ptr<Value> rhs )
     }
 }
 
-void Value::dot_vec3( ptr<Value> lhs, ptr<Value> rhs )
+void Value::dot_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     SWEET_ASSERT( lhs );
     SWEET_ASSERT( rhs );
@@ -1152,7 +1152,7 @@ void Value::dot_vec3( ptr<Value> lhs, ptr<Value> rhs )
     }
 }
 
-void Value::multiply_float( ptr<Value> lhs, ptr<Value> rhs )
+void Value::multiply_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     SWEET_ASSERT( lhs );
     SWEET_ASSERT( rhs );
@@ -1172,7 +1172,7 @@ void Value::multiply_float( ptr<Value> lhs, ptr<Value> rhs )
     }
 }
 
-void Value::multiply_vec3( ptr<Value> lhs, ptr<Value> rhs )
+void Value::multiply_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     SWEET_ASSERT( lhs );
     SWEET_ASSERT( rhs );
@@ -1190,7 +1190,7 @@ void Value::multiply_vec3( ptr<Value> lhs, ptr<Value> rhs )
     }
 }
 
-void Value::divide_float( ptr<Value> lhs, ptr<Value> rhs )
+void Value::divide_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     SWEET_ASSERT( lhs );
     SWEET_ASSERT( rhs );
@@ -1210,7 +1210,7 @@ void Value::divide_float( ptr<Value> lhs, ptr<Value> rhs )
     }
 }
 
-void Value::divide_vec3( ptr<Value> lhs, ptr<Value> rhs )
+void Value::divide_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     SWEET_ASSERT( lhs );
     SWEET_ASSERT( rhs );

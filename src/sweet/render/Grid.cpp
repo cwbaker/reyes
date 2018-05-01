@@ -13,6 +13,7 @@
 using std::map;
 using std::string;
 using std::vector;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -56,8 +57,8 @@ Grid::Grid( const Grid& grid )
   shader_( grid.shader_ )
 {
     values_.reserve( grid.values_by_identifier_.size() );
-    const map<string, ptr<Value> >& values_by_identifier = grid.values_by_identifier_;
-    for ( map<string, ptr<Value> >::const_iterator i = values_by_identifier.begin(); i != values_by_identifier.end(); ++i )
+    const map<string, shared_ptr<Value>>& values_by_identifier = grid.values_by_identifier_;
+    for ( map<string, shared_ptr<Value>>::const_iterator i = values_by_identifier.begin(); i != values_by_identifier.end(); ++i )
     {
         copy_value( i->first, i->second );
     }
@@ -158,7 +159,7 @@ void Grid::generate_normals( bool left_handed, bool force )
 
 Value& Grid::value( const std::string& identifier, ValueType type )
 {
-    ptr<Value> value = find_value( identifier );
+    shared_ptr<Value> value = find_value( identifier );
     if ( !value )
     {
         value = add_value( identifier, type );
@@ -168,7 +169,7 @@ Value& Grid::value( const std::string& identifier, ValueType type )
 
 const Value& Grid::value( const std::string& identifier ) const
 {
-    ptr<Value> value = find_value( identifier );
+    shared_ptr<Value> value = find_value( identifier );
     SWEET_ASSERT( value );
     return *value;
 }
@@ -183,19 +184,19 @@ const Value& Grid::operator[]( const std::string& identifier ) const
     return value( identifier );
 }
 
-void Grid::copy_value( const std::string& identifier, ptr<Value> value )
+void Grid::copy_value( const std::string& identifier, std::shared_ptr<Value> value )
 {
     SWEET_ASSERT( !identifier.empty() );
     SWEET_ASSERT( !find_value(identifier) );
     SWEET_ASSERT( value );
     SWEET_ASSERT( int(value->size()) <= width_ * height_ );
 
-    ptr<Value> copied_value( new Value(*value) );
+    shared_ptr<Value> copied_value( new Value(*value) );
     values_.push_back( copied_value );
     values_by_identifier_.insert( make_pair(identifier, copied_value) );
 }
 
-void Grid::insert_value( const std::string& identifier, ptr<Value> value )
+void Grid::insert_value( const std::string& identifier, std::shared_ptr<Value> value )
 {
     SWEET_ASSERT( !identifier.empty() );
     SWEET_ASSERT( !find_value(identifier) );
@@ -205,29 +206,29 @@ void Grid::insert_value( const std::string& identifier, ptr<Value> value )
     values_by_identifier_.insert( make_pair(identifier, value) );
 }
 
-ptr<Value> Grid::add_value( const std::string& identifier, ValueType type, ValueStorage storage )
+std::shared_ptr<Value> Grid::add_value( const std::string& identifier, ValueType type, ValueStorage storage )
 {
     SWEET_ASSERT( !identifier.empty() );
     SWEET_ASSERT( !find_value(identifier) );
     
-    ptr<Value> value( new Value(type, storage, size()) );
+    shared_ptr<Value> value( new Value(type, storage, size()) );
     values_.push_back( value );
     values_by_identifier_.insert( make_pair(identifier, value) );
     return value;
 }
 
-ptr<Value> Grid::find_value( const std::string& identifier ) const
+std::shared_ptr<Value> Grid::find_value( const std::string& identifier ) const
 {
-    map<string, ptr<Value> >::const_iterator i = values_by_identifier_.find( identifier );
-    return i != values_by_identifier_.end() ? i->second : ptr<Value>();
+    map<string, shared_ptr<Value> >::const_iterator i = values_by_identifier_.find( identifier );
+    return i != values_by_identifier_.end() ? i->second : std::shared_ptr<Value>();
 }
 
-const std::vector<ptr<Value> >& Grid::values() const
+const std::vector<std::shared_ptr<Value>>& Grid::values() const
 {
     return values_;
 }
 
-const std::map<std::string, ptr<Value> >& Grid::values_by_identifier() const
+const std::map<std::string, std::shared_ptr<Value>>& Grid::values_by_identifier() const
 {
     return values_by_identifier_;
 }
@@ -237,7 +238,7 @@ void Grid::reserve_lights( unsigned int lights )
     lights_.reserve( lights );
 }
 
-void Grid::add_light( ptr<Light> light )
+void Grid::add_light( std::shared_ptr<Light> light )
 {
     lights_.push_back( light );
 }
@@ -248,7 +249,7 @@ const Light* Grid::get_light( int index ) const
     return lights_[index].get();
 }
 
-const std::vector<ptr<Light> >& Grid::lights() const
+const std::vector<std::shared_ptr<Light> >& Grid::lights() const
 {
     return lights_;
 }

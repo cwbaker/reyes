@@ -1,6 +1,6 @@
 //
 // VirtualMachine.cpp
-// Copyright (c) 2012 Charles Baker.  All rights reserved.
+// Copyright (c) Charles Baker. All rights reserved.
 //
 
 #include "stdafx.hpp"
@@ -28,6 +28,7 @@ using std::make_pair;
 using std::map;
 using std::string;
 using std::vector;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -38,7 +39,7 @@ VirtualMachine::ConditionMask::ConditionMask()
 {
 }
 
-void VirtualMachine::ConditionMask::generate( ptr<Value> value )
+void VirtualMachine::ConditionMask::generate( std::shared_ptr<Value> value )
 {
     SWEET_ASSERT( value );
     SWEET_ASSERT( value->type() == TYPE_INTEGER );
@@ -57,7 +58,7 @@ void VirtualMachine::ConditionMask::generate( ptr<Value> value )
     }
 }
 
-void VirtualMachine::ConditionMask::generate( const ConditionMask& condition_mask, ptr<Value> value )
+void VirtualMachine::ConditionMask::generate( const ConditionMask& condition_mask, std::shared_ptr<Value> value )
 {
     SWEET_ASSERT( value );
     SWEET_ASSERT( value->type() == TYPE_INTEGER );
@@ -137,10 +138,10 @@ void VirtualMachine::initialize( Grid& parameters, Shader& shader )
     grid_ = &parameters;
     shader_ = &shader;
 
-    const vector<ptr<Symbol> >& symbols = shader.symbols();
+    const vector<shared_ptr<Symbol>>& symbols = shader.symbols();
     for ( int i = 0; i < shader.parameters(); ++i )
     {
-        const ptr<Symbol>& symbol = symbols[i];
+        const shared_ptr<Symbol>& symbol = symbols[i];
         SWEET_ASSERT( symbol );
         parameters.add_value( symbol->identifier(), symbol->type() );
     }
@@ -182,20 +183,20 @@ void VirtualMachine::construct( int start, int finish )
     values_.reserve( shader_->registers() );
     while ( values_.size() < shader_->registers() )
     {
-        ptr<Value> value( new Value() );
+        shared_ptr<Value> value( new Value() );
         values_.push_back( value );
     }
     
     registers_.clear();
     registers_.reserve( shader_->registers() );
-    registers_.insert( registers_.end(), max(shader_->registers() - int(registers_.size()), 0), ptr<Value>() );
+    registers_.insert( registers_.end(), max(shader_->registers() - int(registers_.size()), 0), shared_ptr<Value>() );
 
     // Initialize registers for constants.
     SWEET_ASSERT( shader_->constants() == int(shader_->values().size()) );
     unsigned int register_index = 0;
     while ( register_index < shader_->values().size() )
     {
-        ptr<Value>& value = values_[register_index];
+        shared_ptr<Value>& value = values_[register_index];
         registers_[register_index] = shader_->values()[register_index];
         ++register_index;
     }
@@ -218,8 +219,8 @@ void VirtualMachine::construct( int start, int finish )
 
 void VirtualMachine::initialize_registers( Grid& grid )
 {
-    const map<string, ptr<Value> >& values = grid.values_by_identifier();
-    for ( map<string, ptr<Value> >::const_iterator i = values.begin(); i != values.end(); ++i )
+    const map<string, shared_ptr<Value>>& values = grid.values_by_identifier();
+    for ( map<string, shared_ptr<Value>>::const_iterator i = values.begin(); i != values.end(); ++i )
     {
         Symbol* symbol = shader_->find_symbol( i->first ).get();
         if ( symbol )
@@ -627,7 +628,7 @@ void VirtualMachine::execute_jump()
 
 void VirtualMachine::execute_transform()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int fromspace = argument();
     int point = argument();
     SWEET_ASSERT( renderer_ );
@@ -636,7 +637,7 @@ void VirtualMachine::execute_transform()
 
 void VirtualMachine::execute_transform_vector()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int fromspace = argument();
     int vector = argument();
     SWEET_ASSERT( renderer_ );
@@ -645,7 +646,7 @@ void VirtualMachine::execute_transform_vector()
 
 void VirtualMachine::execute_transform_normal()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int fromspace = argument();
     int vector = argument();
     SWEET_ASSERT( renderer_ );
@@ -654,7 +655,7 @@ void VirtualMachine::execute_transform_normal()
 
 void VirtualMachine::execute_transform_color()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int fromspace = argument();
     int color = argument();
     SWEET_ASSERT( renderer_ );
@@ -663,7 +664,7 @@ void VirtualMachine::execute_transform_color()
 
 void VirtualMachine::execute_transform_matrix()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int tospace = argument();
     int matrix = argument();
     SWEET_ASSERT( renderer_ );
@@ -672,7 +673,7 @@ void VirtualMachine::execute_transform_matrix()
 
 void VirtualMachine::execute_dot()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
     result->dot_vec3( registers_[lhs], registers_[rhs] );
@@ -680,7 +681,7 @@ void VirtualMachine::execute_dot()
 
 void VirtualMachine::execute_multiply_float()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
     result->multiply_float( registers_[lhs], registers_[rhs] );
@@ -688,7 +689,7 @@ void VirtualMachine::execute_multiply_float()
 
 void VirtualMachine::execute_multiply_vec3()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
     result->multiply_vec3( registers_[lhs], registers_[rhs] );
@@ -696,7 +697,7 @@ void VirtualMachine::execute_multiply_vec3()
 
 void VirtualMachine::execute_divide_float()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
     result->divide_float( registers_[lhs], registers_[rhs] );
@@ -704,7 +705,7 @@ void VirtualMachine::execute_divide_float()
 
 void VirtualMachine::execute_divide_vec3()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
     result->divide_vec3( registers_[lhs], registers_[rhs] );
@@ -712,7 +713,7 @@ void VirtualMachine::execute_divide_vec3()
 
 void VirtualMachine::execute_add_float()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
     result->add_float( registers_[lhs], registers_[rhs] );
@@ -720,7 +721,7 @@ void VirtualMachine::execute_add_float()
 
 void VirtualMachine::execute_add_vec3()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
     result->add_vec3( registers_[lhs], registers_[rhs] );
@@ -728,7 +729,7 @@ void VirtualMachine::execute_add_vec3()
 
 void VirtualMachine::execute_subtract_float()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
     result->subtract_float( registers_[lhs], registers_[rhs] );
@@ -736,7 +737,7 @@ void VirtualMachine::execute_subtract_float()
 
 void VirtualMachine::execute_subtract_vec3()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
     result->subtract_vec3( registers_[lhs], registers_[rhs] );
@@ -744,7 +745,7 @@ void VirtualMachine::execute_subtract_vec3()
 
 void VirtualMachine::execute_greater()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
     result->greater_float( registers_[lhs], registers_[rhs] );
@@ -752,7 +753,7 @@ void VirtualMachine::execute_greater()
 
 void VirtualMachine::execute_greater_equal()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
     result->greater_equal_float( registers_[lhs], registers_[rhs] );
@@ -760,7 +761,7 @@ void VirtualMachine::execute_greater_equal()
 
 void VirtualMachine::execute_less()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
     result->less_float( registers_[lhs], registers_[rhs] );
@@ -768,7 +769,7 @@ void VirtualMachine::execute_less()
 
 void VirtualMachine::execute_less_equal()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
     result->less_equal_float( registers_[lhs], registers_[rhs] );
@@ -776,7 +777,7 @@ void VirtualMachine::execute_less_equal()
 
 void VirtualMachine::execute_and()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
     result->logical_and( registers_[lhs], registers_[rhs] );
@@ -784,7 +785,7 @@ void VirtualMachine::execute_and()
 
 void VirtualMachine::execute_or()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
     result->logical_or( registers_[lhs], registers_[rhs] );
@@ -792,7 +793,7 @@ void VirtualMachine::execute_or()
 
 void VirtualMachine::execute_equal_float()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
     result->equal_float( registers_[lhs], registers_[rhs] );
@@ -800,7 +801,7 @@ void VirtualMachine::execute_equal_float()
 
 void VirtualMachine::execute_equal_vec3()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
     result->equal_vec3( registers_[lhs], registers_[rhs] );
@@ -808,7 +809,7 @@ void VirtualMachine::execute_equal_vec3()
 
 void VirtualMachine::execute_not_equal_float()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
     result->not_equal_float( registers_[lhs], registers_[rhs] );
@@ -816,7 +817,7 @@ void VirtualMachine::execute_not_equal_float()
 
 void VirtualMachine::execute_not_equal_vec3()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
     result->not_equal_vec3( registers_[lhs], registers_[rhs] );
@@ -824,149 +825,149 @@ void VirtualMachine::execute_not_equal_vec3()
 
 void VirtualMachine::execute_negate_float()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->negate_float( registers_[rhs] );
 }
 
 void VirtualMachine::execute_negate_vec3()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->negate_vec3( registers_[rhs] );
 }
 
 void VirtualMachine::execute_promote_integer()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->promote_integer( grid_->size(), registers_[rhs] );
 }
 
 void VirtualMachine::execute_promote_float()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->promote_float( grid_->size(), registers_[rhs] );
 }
 
 void VirtualMachine::execute_promote_vec3()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->promote_vec3( grid_->size(), registers_[rhs] );
 }
 
 void VirtualMachine::execute_float_to_color()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->float_to_vec3( TYPE_COLOR, registers_[rhs] );
 }
 
 void VirtualMachine::execute_float_to_point()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->float_to_vec3( TYPE_POINT, registers_[rhs] );
 }
 
 void VirtualMachine::execute_float_to_vector()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->float_to_vec3( TYPE_VECTOR, registers_[rhs] );
 }
 
 void VirtualMachine::execute_float_to_normal()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->float_to_vec3( TYPE_NORMAL, registers_[rhs] );
 }
 
 void VirtualMachine::execute_float_to_matrix()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->float_to_mat4x4( registers_[rhs] );
 }
 
 void VirtualMachine::execute_assign_float()
 {
-    ptr<Value> result = registers_[argument()];
-    ptr<Value> value = registers_[argument()];
+    shared_ptr<Value> result = registers_[argument()];
+    shared_ptr<Value> value = registers_[argument()];
     const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
     result->assign_float( value, mask );
 }
 
 void VirtualMachine::execute_assign_vec3()
 {
-    ptr<Value> result = registers_[argument()];
-    ptr<Value> value = registers_[argument()];
+    shared_ptr<Value> result = registers_[argument()];
+    shared_ptr<Value> value = registers_[argument()];
     const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
     result->assign_vec3( value, mask );
 }
 
 void VirtualMachine::execute_assign_mat4x4()
 {
-    ptr<Value> result = registers_[argument()];
-    ptr<Value> value = registers_[argument()];
+    shared_ptr<Value> result = registers_[argument()];
+    shared_ptr<Value> value = registers_[argument()];
     const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
     result->assign_mat4x4( value, mask );
 }
 
 void VirtualMachine::execute_assign_integer()
 {
-    ptr<Value> result = registers_[argument()];
-    ptr<Value> value = registers_[argument()];
+    shared_ptr<Value> result = registers_[argument()];
+    shared_ptr<Value> value = registers_[argument()];
     const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
     result->assign_integer( value, mask );
 }
 
 void VirtualMachine::execute_assign_string()
 {
-    ptr<Value> result = registers_[argument()];
-    ptr<Value> value = registers_[argument()];
+    shared_ptr<Value> result = registers_[argument()];
+    shared_ptr<Value> value = registers_[argument()];
     const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
     result->assign_string( value, mask );
 }
 
 void VirtualMachine::execute_add_assign_float()
 {
-    ptr<Value> result = registers_[argument()];
-    ptr<Value> value = registers_[argument()];
+    shared_ptr<Value> result = registers_[argument()];
+    shared_ptr<Value> value = registers_[argument()];
     const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
     result->add_assign_float( value, mask );
 }
 
 void VirtualMachine::execute_add_assign_vec3()
 {
-    ptr<Value> result = registers_[argument()];
-    ptr<Value> value = registers_[argument()];
+    shared_ptr<Value> result = registers_[argument()];
+    shared_ptr<Value> value = registers_[argument()];
     const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
     result->add_assign_vec3( value, mask );
 }
 
 void VirtualMachine::execute_multiply_assign_float()
 {
-    ptr<Value> result = registers_[argument()];
-    ptr<Value> value = registers_[argument()];
+    shared_ptr<Value> result = registers_[argument()];
+    shared_ptr<Value> value = registers_[argument()];
     const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
     result->multiply_assign_float( value, mask );
 }
 
 void VirtualMachine::execute_multiply_assign_vec3()
 {
-    ptr<Value> result = registers_[argument()];
-    ptr<Value> value = registers_[argument()];
+    shared_ptr<Value> result = registers_[argument()];
+    shared_ptr<Value> value = registers_[argument()];
     const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
     result->multiply_assign_vec3( value, mask );
 }
 
 void VirtualMachine::execute_float_texture()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int texturename = argument();
     int s = argument();
     int t = argument();
@@ -976,7 +977,7 @@ void VirtualMachine::execute_float_texture()
 
 void VirtualMachine::execute_vec3_texture()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int texturename = argument();
     int s = argument();
     int t = argument();
@@ -986,7 +987,7 @@ void VirtualMachine::execute_vec3_texture()
 
 void VirtualMachine::execute_float_environment()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int texturename = argument();
     int direction = argument();
     SWEET_ASSERT( renderer_ );
@@ -995,7 +996,7 @@ void VirtualMachine::execute_float_environment()
 
 void VirtualMachine::execute_vec3_environment()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int texturename = argument();
     int direction = argument();
     SWEET_ASSERT( renderer_ );
@@ -1004,7 +1005,7 @@ void VirtualMachine::execute_vec3_environment()
 
 void VirtualMachine::execute_shadow()
 {
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> result = registers_[allocate_register()];
     int texturename = argument();
     int position = argument();
     int bias = argument();
@@ -1014,10 +1015,10 @@ void VirtualMachine::execute_shadow()
 
 void VirtualMachine::execute_call_0()
 {
-    ptr<Value> result = registers_[allocate_register()];
-    ptr<Symbol> symbol = shader_->symbols()[argument()];
+    shared_ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Symbol> symbol = shader_->symbols()[argument()];
     SWEET_ASSERT( symbol->function() );
-    typedef void (*FunctionType)( const Renderer&, const Grid&, ptr<Value> );
+    typedef void (*FunctionType)( const Renderer&, const Grid&, shared_ptr<Value> );
     FunctionType function = reinterpret_cast<FunctionType>( symbol->function() );
     SWEET_ASSERT( renderer_ );
     (*function)( *renderer_, *grid_, result );
@@ -1025,10 +1026,10 @@ void VirtualMachine::execute_call_0()
 
 void VirtualMachine::execute_call_1()
 {
-    ptr<Value> result = registers_[allocate_register()];
-    ptr<Symbol> symbol = shader_->symbols()[argument()];
-    ptr<Value> arg0 = registers_[argument()];
-    typedef void (*FunctionType)( const Renderer&, const Grid&, ptr<Value>, ptr<Value> );
+    shared_ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Symbol> symbol = shader_->symbols()[argument()];
+    shared_ptr<Value> arg0 = registers_[argument()];
+    typedef void (*FunctionType)( const Renderer&, const Grid&, shared_ptr<Value>, shared_ptr<Value> );
     FunctionType function = reinterpret_cast<FunctionType>( symbol->function() );
     SWEET_ASSERT( renderer_ );
     (*function)( *renderer_, *grid_, result, arg0 );
@@ -1036,11 +1037,11 @@ void VirtualMachine::execute_call_1()
 
 void VirtualMachine::execute_call_2()
 {
-    ptr<Value> result = registers_[allocate_register()];
-    ptr<Symbol> symbol = shader_->symbols()[argument()];
-    ptr<Value> arg0 = registers_[argument()];
-    ptr<Value> arg1 = registers_[argument()];
-    typedef void (*FunctionType)( const Renderer&, const Grid&, ptr<Value>, ptr<Value>, ptr<Value> );
+    shared_ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Symbol> symbol = shader_->symbols()[argument()];
+    shared_ptr<Value> arg0 = registers_[argument()];
+    shared_ptr<Value> arg1 = registers_[argument()];
+    typedef void (*FunctionType)( const Renderer&, const Grid&, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value> );
     FunctionType function = reinterpret_cast<FunctionType>( symbol->function() );
     SWEET_ASSERT( renderer_ );
     (*function)( *renderer_, *grid_, result, arg0, arg1 );
@@ -1048,12 +1049,12 @@ void VirtualMachine::execute_call_2()
 
 void VirtualMachine::execute_call_3()
 {
-    ptr<Value> result = registers_[allocate_register()];
-    ptr<Symbol> symbol = shader_->symbols()[argument()];
-    ptr<Value> arg0 = registers_[argument()];
-    ptr<Value> arg1 = registers_[argument()];
-    ptr<Value> arg2 = registers_[argument()];
-    typedef void (*FunctionType)( const Renderer&, const Grid&, ptr<Value>, ptr<Value>, ptr<Value>, ptr<Value> );
+    shared_ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Symbol> symbol = shader_->symbols()[argument()];
+    shared_ptr<Value> arg0 = registers_[argument()];
+    shared_ptr<Value> arg1 = registers_[argument()];
+    shared_ptr<Value> arg2 = registers_[argument()];
+    typedef void (*FunctionType)( const Renderer&, const Grid&, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value> );
     FunctionType function = reinterpret_cast<FunctionType>( symbol->function() );
     SWEET_ASSERT( renderer_ );
     (*function)( *renderer_, *grid_, result, arg0, arg1, arg2 );
@@ -1061,13 +1062,13 @@ void VirtualMachine::execute_call_3()
 
 void VirtualMachine::execute_call_4()
 {
-    ptr<Value> result = registers_[allocate_register()];
-    ptr<Symbol> symbol = shader_->symbols()[argument()];
-    ptr<Value> arg0 = registers_[argument()];
-    ptr<Value> arg1 = registers_[argument()];
-    ptr<Value> arg2 = registers_[argument()];
-    ptr<Value> arg3 = registers_[argument()];
-    typedef void (*FunctionType)( const Renderer&, const Grid&, ptr<Value>, ptr<Value>, ptr<Value>, ptr<Value>, ptr<Value> );
+    shared_ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Symbol> symbol = shader_->symbols()[argument()];
+    shared_ptr<Value> arg0 = registers_[argument()];
+    shared_ptr<Value> arg1 = registers_[argument()];
+    shared_ptr<Value> arg2 = registers_[argument()];
+    shared_ptr<Value> arg3 = registers_[argument()];
+    typedef void (*FunctionType)( const Renderer&, const Grid&, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value> );
     FunctionType function = reinterpret_cast<FunctionType>( symbol->function() );
     SWEET_ASSERT( renderer_ );
     (*function)( *renderer_, *grid_, result, arg0, arg1, arg2, arg3 );
@@ -1075,14 +1076,14 @@ void VirtualMachine::execute_call_4()
 
 void VirtualMachine::execute_call_5()
 {
-    ptr<Value> result = registers_[allocate_register()];
-    ptr<Symbol> symbol = shader_->symbols()[argument()];
-    ptr<Value> arg0 = registers_[argument()];
-    ptr<Value> arg1 = registers_[argument()];
-    ptr<Value> arg2 = registers_[argument()];
-    ptr<Value> arg3 = registers_[argument()];
-    ptr<Value> arg4 = registers_[argument()];
-    typedef void (*FunctionType)( const Renderer&, const Grid&, ptr<Value>, ptr<Value>, ptr<Value>, ptr<Value>, ptr<Value>, ptr<Value> );
+    shared_ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Symbol> symbol = shader_->symbols()[argument()];
+    shared_ptr<Value> arg0 = registers_[argument()];
+    shared_ptr<Value> arg1 = registers_[argument()];
+    shared_ptr<Value> arg2 = registers_[argument()];
+    shared_ptr<Value> arg3 = registers_[argument()];
+    shared_ptr<Value> arg4 = registers_[argument()];
+    typedef void (*FunctionType)( const Renderer&, const Grid&, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value> );
     FunctionType function = reinterpret_cast<FunctionType>( symbol->function() );
     SWEET_ASSERT( renderer_ );
     (*function)( *renderer_, *grid_, result, arg0, arg1, arg2, arg3, arg4 );
@@ -1090,84 +1091,84 @@ void VirtualMachine::execute_call_5()
 
 void VirtualMachine::execute_ambient()
 {
-    ptr<Value>& light_color = registers_[argument()];
+    shared_ptr<Value>& light_color = registers_[argument()];
     light_color.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
     light_color->zero();
     
-    ptr<Value>& light_opacity = registers_[argument()];
+    shared_ptr<Value>& light_opacity = registers_[argument()];
     light_opacity.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
     light_opacity->zero();
     
-    ptr<Light> light( new Light(LIGHT_AMBIENT, light_color, light_opacity, vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), 0.0f) );
+    shared_ptr<Light> light( new Light(LIGHT_AMBIENT, light_color, light_opacity, vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), 0.0f) );
     grid_->add_light( light );                
 }
 
 void VirtualMachine::execute_solar_axis_angle()
 {
-    ptr<Value> axis = registers_[argument()];
-    ptr<Value> angle = registers_[argument()];
+    shared_ptr<Value> axis = registers_[argument()];
+    shared_ptr<Value> angle = registers_[argument()];
     
-    ptr<Value>& light_color = registers_[argument()];
+    shared_ptr<Value>& light_color = registers_[argument()];
     light_color.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
     light_color->zero();
     
-    ptr<Value>& light_opacity = registers_[argument()];
+    shared_ptr<Value>& light_opacity = registers_[argument()];
     light_opacity.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
     light_opacity->zero();
     
-    ptr<Light> light( new Light(LIGHT_SOLAR_AXIS_ANGLE, light_color, light_opacity, axis->vec3_value(), axis->vec3_value(), angle->float_value()) );
+    shared_ptr<Light> light( new Light(LIGHT_SOLAR_AXIS_ANGLE, light_color, light_opacity, axis->vec3_value(), axis->vec3_value(), angle->float_value()) );
     grid_->add_light( light );                
 }
 
 void VirtualMachine::execute_illuminate()
 {
-    ptr<Value> P = registers_[argument()];
-    ptr<Value> Ps = registers_[argument()];
-    ptr<Value> L = registers_[argument()];
+    shared_ptr<Value> P = registers_[argument()];
+    shared_ptr<Value> Ps = registers_[argument()];
+    shared_ptr<Value> L = registers_[argument()];
     L->light_to_surface_vector( Ps, P->vec3_value() );
 
-    ptr<Value>& light_color = registers_[argument()];
+    shared_ptr<Value>& light_color = registers_[argument()];
     light_color.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
     light_color->zero();
 
-    ptr<Value>& light_opacity = registers_[argument()];
+    shared_ptr<Value>& light_opacity = registers_[argument()];
     light_opacity.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
     light_opacity->zero();
 
-    ptr<Light> light( new Light(LIGHT_ILLUMINATE, light_color, light_opacity, P->vec3_value(), vec3(0.0f, 0.0f, 0.0f), 0.0f) );
+    shared_ptr<Light> light( new Light(LIGHT_ILLUMINATE, light_color, light_opacity, P->vec3_value(), vec3(0.0f, 0.0f, 0.0f), 0.0f) );
     grid_->add_light( light );
 }
 
 void VirtualMachine::execute_illuminate_axis_angle()
 {
-    ptr<Value> P = registers_[argument()];
-    ptr<Value> axis = registers_[argument()];
-    ptr<Value> angle = registers_[argument()];                
-    ptr<Value> Ps = registers_[argument()];
-    ptr<Value> L = registers_[argument()];
+    shared_ptr<Value> P = registers_[argument()];
+    shared_ptr<Value> axis = registers_[argument()];
+    shared_ptr<Value> angle = registers_[argument()];                
+    shared_ptr<Value> Ps = registers_[argument()];
+    shared_ptr<Value> L = registers_[argument()];
     L->light_to_surface_vector( Ps, P->vec3_value() );
 
-    ptr<Value>& light_color = registers_[argument()];
+    shared_ptr<Value>& light_color = registers_[argument()];
     light_color.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
     light_color->zero();
 
-    ptr<Value>& light_opacity = registers_[argument()];
+    shared_ptr<Value>& light_opacity = registers_[argument()];
     light_opacity.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
     light_opacity->zero();
 
-    ptr<Light> light( new Light(LIGHT_ILLUMINATE_AXIS_ANGLE, light_color, light_opacity, P->vec3_value(), axis->vec3_value(), angle->float_value()) );
+    shared_ptr<Light> light( new Light(LIGHT_ILLUMINATE_AXIS_ANGLE, light_color, light_opacity, P->vec3_value(), axis->vec3_value(), angle->float_value()) );
     grid_->add_light( light );
 }
 
 void VirtualMachine::execute_illuminance_axis_angle()
 {
-    ptr<Value> P = registers_[argument()];
-    ptr<Value> axis = registers_[argument()];
-    ptr<Value> angle = registers_[argument()];
-    ptr<Value> L = registers_[argument()];
-    ptr<Value> light_color = registers_[argument()];
-    ptr<Value> light_opacity = registers_[argument()];                
-    ptr<Value> result = registers_[allocate_register()];
+    shared_ptr<Value> P = registers_[argument()];
+    shared_ptr<Value> axis = registers_[argument()];
+    shared_ptr<Value> angle = registers_[argument()];
+    shared_ptr<Value> L = registers_[argument()];
+    shared_ptr<Value> light_color = registers_[argument()];
+    shared_ptr<Value> light_opacity = registers_[argument()];                
+    shared_ptr<Value> result = registers_[allocate_register()];
     const Light* light = grid_->get_light( light_index_ );                
     result->illuminance_axis_angle( P, axis, angle, light );
     L->surface_to_light_vector( P, light );
@@ -1176,7 +1177,7 @@ void VirtualMachine::execute_illuminance_axis_angle()
 }
 
 
-void VirtualMachine::float_texture( const Renderer& renderer, ptr<Value> result, ptr<Value> texturename, ptr<Value> s, ptr<Value> t ) const
+void VirtualMachine::float_texture( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> s, std::shared_ptr<Value> t ) const
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( texturename );
@@ -1208,7 +1209,7 @@ void VirtualMachine::float_texture( const Renderer& renderer, ptr<Value> result,
     }
 }
 
-void VirtualMachine::vec3_texture( const Renderer& renderer, ptr<Value> result, ptr<Value> texturename, ptr<Value> s, ptr<Value> t ) const
+void VirtualMachine::vec3_texture( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> s, std::shared_ptr<Value> t ) const
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( texturename );
@@ -1240,7 +1241,7 @@ void VirtualMachine::vec3_texture( const Renderer& renderer, ptr<Value> result, 
     }
 }
 
-void VirtualMachine::float_environment( const Renderer& renderer, ptr<Value> result, ptr<Value> texturename, ptr<Value> direction ) const
+void VirtualMachine::float_environment( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> direction ) const
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( texturename );
@@ -1266,7 +1267,7 @@ void VirtualMachine::float_environment( const Renderer& renderer, ptr<Value> res
     }
 }
 
-void VirtualMachine::vec3_environment( const Renderer& renderer, ptr<Value> result, ptr<Value> texturename, ptr<Value> direction ) const
+void VirtualMachine::vec3_environment( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> direction ) const
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( texturename );
@@ -1292,7 +1293,7 @@ void VirtualMachine::vec3_environment( const Renderer& renderer, ptr<Value> resu
     }
 }
 
-void VirtualMachine::shadow( const Renderer& renderer, ptr<Value> result, ptr<Value> texturename, ptr<Value> position, ptr<Value> bias ) const
+void VirtualMachine::shadow( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> position, std::shared_ptr<Value> bias ) const
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( texturename );
@@ -1323,7 +1324,7 @@ void VirtualMachine::shadow( const Renderer& renderer, ptr<Value> result, ptr<Va
     }
 }
 
-void VirtualMachine::push_mask( ptr<Value> value )
+void VirtualMachine::push_mask( std::shared_ptr<Value> value )
 {
     SWEET_ASSERT( value );
     SWEET_ASSERT( value->type() == TYPE_INTEGER );

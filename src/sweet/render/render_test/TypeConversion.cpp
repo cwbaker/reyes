@@ -14,6 +14,7 @@
 #include <string.h>
 
 using std::vector;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -40,23 +41,23 @@ SUITE( TypeConversion )
           Lx( NULL )
         {
             grid.resize( 2, 2 );            
-            ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
+            shared_ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
             x_value->zero();
             x = x_value->float_values();
 
-            ptr<Value> Cx_value = grid.add_value( "Cx", TYPE_COLOR );
+            shared_ptr<Value> Cx_value = grid.add_value( "Cx", TYPE_COLOR );
             Cx_value->zero();
             Cx = Cx_value->vec3_values();
             
-            ptr<Value> Px_value = grid.add_value( "Px", TYPE_POINT );
+            shared_ptr<Value> Px_value = grid.add_value( "Px", TYPE_POINT );
             Px_value->zero();
             Px = Px_value->vec3_values();
             
-            ptr<Value> Nx_value = grid.add_value( "Nx", TYPE_NORMAL );
+            shared_ptr<Value> Nx_value = grid.add_value( "Nx", TYPE_NORMAL );
             Nx_value->zero();
             Nx = Nx_value->vec3_values();
             
-            ptr<Value> Lx_value = grid.add_value( "Lx", TYPE_VECTOR );
+            shared_ptr<Value> Lx_value = grid.add_value( "Lx", TYPE_VECTOR );
             Lx_value->zero();
             Lx = Lx_value->vec3_values();            
         }

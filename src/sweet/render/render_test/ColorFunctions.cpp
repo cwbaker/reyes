@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <string.h>
 
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -44,18 +45,18 @@ SUITE( ColorFunctions )
 
             grid.resize( 2, 2 );
             
-            ptr<Value> P_value = grid.add_value( "P", TYPE_POINT );
+            shared_ptr<Value> P_value = grid.add_value( "P", TYPE_POINT );
             P_value->zero();
             
-            ptr<Value> C_value = grid.add_value( "C", TYPE_COLOR );
+            shared_ptr<Value> C_value = grid.add_value( "C", TYPE_COLOR );
             C_value->zero();
             C = C_value->vec3_values();
             
-            ptr<Value> Ci_value = grid.add_value( "Ci", TYPE_COLOR );
+            shared_ptr<Value> Ci_value = grid.add_value( "Ci", TYPE_COLOR );
             Ci_value->zero();
             Ci = Ci_value->vec3_values();
             
-            ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
+            shared_ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
             x_value->zero();
             x = x_value->float_values();
         }

@@ -1,8 +1,3 @@
-//
-// Symbol.hpp
-// Copyright (c) 2011 - 2012 Charles Baker.  All rights reserved.
-//
-
 #ifndef SWEET_RENDER_SYMBOL_HPP_INCLUDED
 #define SWEET_RENDER_SYMBOL_HPP_INCLUDED
 
@@ -10,8 +5,6 @@
 #include "ValueType.hpp"
 #include "ValueStorage.hpp"
 #include "SymbolParameter.hpp"
-#include <sweet/pointer/ptr.hpp>
-#include <sweet/pointer/ptr_less.hpp>
 #include <string>
 #include <vector>
 

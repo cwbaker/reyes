@@ -1,6 +1,6 @@
 //
 // geometric_functions.cpp
-// Copyright (c) 2012 Charles Baker.  All rights reserved.
+// Copyright (c) Charles Baker. All rights reserved.
 //
 
 #include "stdafx.hpp"
@@ -19,6 +19,7 @@
 #include <math.h>
 
 using std::max;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 
@@ -28,7 +29,7 @@ namespace sweet
 namespace render
 {
 
-void xcomp( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> p )
+void xcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( p );
@@ -44,7 +45,7 @@ void xcomp( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<V
     }
 }
 
-void ycomp( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> p )
+void ycomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( p );
@@ -60,7 +61,7 @@ void ycomp( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<V
     }
 }
 
-void zcomp( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> p )
+void zcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( p );
@@ -76,7 +77,7 @@ void zcomp( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<V
     }
 }
 
-void setxcomp( const Renderer& renderer, const Grid& grid, ptr<Value> p, ptr<Value> x )
+void setxcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> p, std::shared_ptr<Value> x )
 {
     SWEET_ASSERT( p );
     SWEET_ASSERT( x );
@@ -91,7 +92,7 @@ void setxcomp( const Renderer& renderer, const Grid& grid, ptr<Value> p, ptr<Val
     }
 }
 
-void setycomp( const Renderer& renderer, const Grid& grid, ptr<Value> p, ptr<Value> y )
+void setycomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> p, std::shared_ptr<Value> y )
 {
     SWEET_ASSERT( p );
     SWEET_ASSERT( y );
@@ -106,7 +107,7 @@ void setycomp( const Renderer& renderer, const Grid& grid, ptr<Value> p, ptr<Val
     }
 }
 
-void setzcomp( const Renderer& renderer, const Grid& grid, ptr<Value> p, ptr<Value> z )
+void setzcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> p, std::shared_ptr<Value> z )
 {
     SWEET_ASSERT( p );
     SWEET_ASSERT( z );
@@ -121,7 +122,7 @@ void setzcomp( const Renderer& renderer, const Grid& grid, ptr<Value> p, ptr<Val
     }
 }
 
-void length( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> x )
+void length( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( x );
@@ -137,7 +138,7 @@ void length( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<
     }
 }
 
-void normalize( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> n )
+void normalize( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> n )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( n );
@@ -166,7 +167,7 @@ void normalize( const Renderer& renderer, const Grid& grid, ptr<Value> result, p
     }    
 }
 
-void distance( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> p0, ptr<Value> p1 )
+void distance( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p0, std::shared_ptr<Value> p1 )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( p0 );
@@ -185,7 +186,7 @@ void distance( const Renderer& renderer, const Grid& grid, ptr<Value> result, pt
     }
 }
 
-void rotate( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> q, ptr<Value> angle, ptr<Value> p0, ptr<Value> p1 )
+void rotate( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> q, std::shared_ptr<Value> angle, std::shared_ptr<Value> p0, std::shared_ptr<Value> p1 )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( q );
@@ -208,7 +209,7 @@ void rotate( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<
     }    
 }
 
-void area( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> p )
+void area( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( p );
@@ -241,12 +242,12 @@ void area( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Va
     }
 }
 
-void faceforward_vv( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> n, ptr<Value> i )
+void faceforward_vv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> n, std::shared_ptr<Value> i )
 {
     faceforward_vvv( renderer, grid, result, n, i, n );
 }
 
-void faceforward_vvv( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> n, ptr<Value> i, ptr<Value> nref )
+void faceforward_vvv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> n, std::shared_ptr<Value> i, std::shared_ptr<Value> nref )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( n );
@@ -281,7 +282,7 @@ void faceforward_vvv( const Renderer& renderer, const Grid& grid, ptr<Value> res
     }    
 }
 
-void reflect( const Renderer& render, const Grid& grid, ptr<Value> result, ptr<Value> i, ptr<Value> n )
+void reflect( const Renderer& render, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> i, std::shared_ptr<Value> n )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( i );
@@ -299,7 +300,7 @@ void reflect( const Renderer& render, const Grid& grid, ptr<Value> result, ptr<V
     }
 }
 
-void refract( const Renderer& render, const Grid& grid, ptr<Value> result, ptr<Value> incident, ptr<Value> normal, ptr<Value> eta_value )
+void refract( const Renderer& render, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> incident, std::shared_ptr<Value> normal, std::shared_ptr<Value> eta_value )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( incident );
@@ -325,7 +326,7 @@ void refract( const Renderer& render, const Grid& grid, ptr<Value> result, ptr<V
     }
 }
 
-void fresnel( const Renderer& render, const Grid& grid, ptr<Value> result, ptr<Value> incident, ptr<Value> normal, ptr<Value> eta_value, ptr<Value> Kr, ptr<Value> Kt )
+void fresnel( const Renderer& render, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> incident, std::shared_ptr<Value> normal, std::shared_ptr<Value> eta_value, std::shared_ptr<Value> Kr, std::shared_ptr<Value> Kt )
 {
     SWEET_ASSERT( incident );
     SWEET_ASSERT( normal );
@@ -370,7 +371,7 @@ void fresnel( const Renderer& render, const Grid& grid, ptr<Value> result, ptr<V
     }
 }
 
-void transform_sv( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> tospace, ptr<Value> p )
+void transform_sv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( tospace );
@@ -390,7 +391,7 @@ void transform_sv( const Renderer& renderer, const Grid& grid, ptr<Value> result
     }
 }
 
-void transform_ssv( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> fromspace, ptr<Value> tospace, ptr<Value> p )
+void transform_ssv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( fromspace );
@@ -412,7 +413,7 @@ void transform_ssv( const Renderer& renderer, const Grid& grid, ptr<Value> resul
     }
 }
 
-void transform_mv( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> m, ptr<Value> p )
+void transform_mv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( m );
@@ -423,7 +424,7 @@ void transform_mv( const Renderer& renderer, const Grid& grid, ptr<Value> result
     result->transform( m->mat4x4_values()[0], p );
 }
 
-void transform_smv( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> fromspace, ptr<Value> m, ptr<Value> p )
+void transform_smv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( fromspace );
@@ -446,7 +447,7 @@ void transform_smv( const Renderer& renderer, const Grid& grid, ptr<Value> resul
     }
 }
 
-void vtransform_sv( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> tospace, ptr<Value> p )
+void vtransform_sv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( tospace );
@@ -456,7 +457,7 @@ void vtransform_sv( const Renderer& renderer, const Grid& grid, ptr<Value> resul
     result->vtransform( renderer.transform_to(tospace->string_value()), p );
 }
 
-void vtransform_ssv( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> fromspace, ptr<Value> tospace, ptr<Value> p )
+void vtransform_ssv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( fromspace );
@@ -468,7 +469,7 @@ void vtransform_ssv( const Renderer& renderer, const Grid& grid, ptr<Value> resu
     result->vtransform( renderer.transform_between(fromspace->string_value(), tospace->string_value()), p );
 }
 
-void vtransform_mv( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> m, ptr<Value> p )
+void vtransform_mv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( m );
@@ -479,7 +480,7 @@ void vtransform_mv( const Renderer& renderer, const Grid& grid, ptr<Value> resul
     result->vtransform( m->mat4x4_value(), p );
 }
 
-void vtransform_smv( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> fromspace, ptr<Value> m, ptr<Value> p )
+void vtransform_smv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( fromspace );
@@ -492,7 +493,7 @@ void vtransform_smv( const Renderer& renderer, const Grid& grid, ptr<Value> resu
     result->vtransform( m->mat4x4_value() * renderer.transform_from(fromspace->string_value()), p );
 }
 
-void ntransform_sv( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> tospace, ptr<Value> p )
+void ntransform_sv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( tospace );
@@ -502,7 +503,7 @@ void ntransform_sv( const Renderer& renderer, const Grid& grid, ptr<Value> resul
     result->ntransform( renderer.transform_to(tospace->string_value()), p );
 }
 
-void ntransform_ssv( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> fromspace, ptr<Value> tospace, ptr<Value> p )
+void ntransform_ssv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( fromspace );
@@ -514,7 +515,7 @@ void ntransform_ssv( const Renderer& renderer, const Grid& grid, ptr<Value> resu
     result->ntransform( renderer.transform_between(fromspace->string_value(), tospace->string_value()), p );
 }
 
-void ntransform_mv( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> m, ptr<Value> p )
+void ntransform_mv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( m );
@@ -525,7 +526,7 @@ void ntransform_mv( const Renderer& renderer, const Grid& grid, ptr<Value> resul
     result->ntransform( m->mat4x4_value(), p );
 }
 
-void ntransform_smv( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> fromspace, ptr<Value> m, ptr<Value> p )
+void ntransform_smv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( fromspace );
@@ -538,7 +539,7 @@ void ntransform_smv( const Renderer& renderer, const Grid& grid, ptr<Value> resu
     result->ntransform( m->mat4x4_value() * renderer.transform_from(fromspace->string_value()), p );
 }
 
-void depth( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> p )
+void depth( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( p );
@@ -554,15 +555,15 @@ void depth( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<V
     }
 }
 
-void calculatenormal( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> p )
+void calculatenormal( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( p );
     
-    ptr<Value> dpdu( new Value() );
+    shared_ptr<Value> dpdu( new Value() );
     du_vec3( renderer, grid, dpdu, p );
 
-    ptr<Value> dpdv( new Value() );
+    shared_ptr<Value> dpdv( new Value() );
     dv_vec3( renderer, grid, dpdv, p );
     
     result->reset( p->type(), p->storage(), p->size() );

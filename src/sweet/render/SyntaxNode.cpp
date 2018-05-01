@@ -1,6 +1,6 @@
 //
 // SyntaxNode.cpp
-// Copyright (c) 2011 - 2012 Charles Baker.  All rights reserved.
+// Copyright (c) Charles Baker. All rights reserved.
 //
 
 #include "stdafx.hpp"
@@ -14,8 +14,8 @@
 using std::equal;
 using std::string;
 using std::vector;
+using std::shared_ptr;
 using namespace sweet;
-using namespace sweet::pointer;
 using namespace sweet::render;
 
 SyntaxNode::SyntaxNode()
@@ -158,19 +158,19 @@ math::mat4x4 SyntaxNode::mat4x4() const
     );    
 }
 
-void SyntaxNode::add_node( ptr<SyntaxNode> node )
+void SyntaxNode::add_node( std::shared_ptr<SyntaxNode> node )
 {
     SWEET_ASSERT( node );
     nodes_.push_back( node );
 }
 
-void SyntaxNode::add_node_at_front( ptr<SyntaxNode> node )
+void SyntaxNode::add_node_at_front( std::shared_ptr<SyntaxNode> node )
 {
     SWEET_ASSERT( node );
     nodes_.insert( nodes_.begin(), node );
 }
 
-void SyntaxNode::add_nodes_at_end( const std::vector<ptr<SyntaxNode> >::const_iterator begin, const std::vector<ptr<SyntaxNode> >::const_iterator end )
+void SyntaxNode::add_nodes_at_end( const std::vector<std::shared_ptr<SyntaxNode>>::const_iterator begin, const std::vector<std::shared_ptr<SyntaxNode>>::const_iterator end )
 {
     nodes_.insert( nodes_.end(), begin, end );
 }
@@ -182,17 +182,17 @@ SyntaxNode* SyntaxNode::node( int index ) const
     return nodes_[index].get();
 }
 
-const std::vector<ptr<SyntaxNode> >& SyntaxNode::get_nodes() const
+const std::vector<std::shared_ptr<SyntaxNode>>& SyntaxNode::get_nodes() const
 {
     return nodes_;
 }
 
-void SyntaxNode::set_symbol( ptr<Symbol> symbol )
+void SyntaxNode::set_symbol( std::shared_ptr<Symbol> symbol )
 {
     symbol_ = symbol;
 }
 
-ptr<Symbol> SyntaxNode::get_symbol() const
+std::shared_ptr<Symbol> SyntaxNode::get_symbol() const
 {
     return symbol_;
 }
@@ -291,7 +291,7 @@ namespace
 
 struct indirect_equal
 {
-    bool operator()( const ptr<SyntaxNode>& lhs, const ptr<SyntaxNode>& rhs ) const
+    bool operator()( const shared_ptr<SyntaxNode>& lhs, const shared_ptr<SyntaxNode>& rhs ) const
     {
         SWEET_ASSERT( lhs );
         SWEET_ASSERT( rhs );

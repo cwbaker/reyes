@@ -15,6 +15,7 @@
 #include <math.h>
 #include <string.h>
 
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -45,19 +46,19 @@ SUITE( GeometricFunctions )
             renderer.begin_world();
 
             grid.resize( 2, 2 );
-            ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
+            shared_ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
             x_value->zero();
             x = x_value->float_values();
             
-            ptr<Value> y_value = grid.add_value( "y", TYPE_FLOAT );
+            shared_ptr<Value> y_value = grid.add_value( "y", TYPE_FLOAT );
             y_value->zero();
             y = y_value->float_values();
             
-            ptr<Value> z_value = grid.add_value( "z", TYPE_VECTOR );
+            shared_ptr<Value> z_value = grid.add_value( "z", TYPE_VECTOR );
             z_value->zero();
             z = z_value->vec3_values();
 
-            ptr<Value> P_value = grid.add_value( "P", TYPE_POINT );
+            shared_ptr<Value> P_value = grid.add_value( "P", TYPE_POINT );
             P_value->zero();
             P = P_value->vec3_values();
         }

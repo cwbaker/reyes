@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -45,23 +46,23 @@ SUITE( MathematicalFunctions )
             renderer.begin_world();
 
             grid.resize( 2, 2 );
-            ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
+            shared_ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
             x_value->zero();
             x = x_value->float_values();
             
-            ptr<Value> y_value = grid.add_value( "y", TYPE_FLOAT );
+            shared_ptr<Value> y_value = grid.add_value( "y", TYPE_FLOAT );
             y_value->zero();
             y = y_value->float_values();
 
-            ptr<Value> P_value = grid.add_value( "P", TYPE_POINT );
+            shared_ptr<Value> P_value = grid.add_value( "P", TYPE_POINT );
             P_value->zero();
             P = P_value->vec3_values();
 
-            ptr<Value> N_value = grid.add_value( "N", TYPE_NORMAL );
+            shared_ptr<Value> N_value = grid.add_value( "N", TYPE_NORMAL );
             N_value->zero();
             N = N_value->vec3_values();
 
-            ptr<Value> Ci_value = grid.add_value( "Ci", TYPE_COLOR );
+            shared_ptr<Value> Ci_value = grid.add_value( "Ci", TYPE_COLOR );
             Ci_value->zero();
             Ci = Ci_value->vec3_values();
         }

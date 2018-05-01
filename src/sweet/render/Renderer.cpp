@@ -1,6 +1,6 @@
 //
 // Renderer.cpp
-// Copyright (c) 2010 - 2012 Charles Baker.  All rights reserved.
+// Copyright (c) Charles Baker. All rights reserved.
 //
 
 #include "stdafx.hpp"
@@ -37,7 +37,6 @@
 #include <sweet/math/vec4.ipp>
 #include <sweet/math/mat4x4.ipp>
 #include <sweet/math/scalar.ipp>
-#include <sweet/pointer/NullDeleter.hpp>
 #include <sweet/assert/assert.hpp>
 #include <vector>
 #include <list>
@@ -57,6 +56,7 @@ using std::vector;
 using std::string;
 using std::pair;
 using std::make_pair;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -193,7 +193,7 @@ const Options& Renderer::options() const
 void Renderer::push_attributes()
 {
     SWEET_ASSERT( !attributes_.empty() );
-    ptr<Attributes> attributes( new Attributes(*attributes_.back()) );
+    shared_ptr<Attributes> attributes( new Attributes(*attributes_.back()) );
     attributes_.push_back( attributes );
 }
 
@@ -359,7 +359,7 @@ void Renderer::begin()
     screen_transform_ = math::identity();
     camera_transform_ = math::identity();
 
-    ptr<Attributes> attributes( new Attributes(virtual_machine_) );
+    shared_ptr<Attributes> attributes( new Attributes(virtual_machine_) );
     attributes_.clear();
     attributes_.push_back( attributes );    
     attributes->set_surface_shader( null_surface_shader_, camera_transform_ );
@@ -1282,11 +1282,11 @@ void Renderer::split( const Geometry& geometry )
     const float HEIGHT = float(sample_buffer_->height() - 1);
     const float SAMPLES_PER_PIXEL = float(options_->horizontal_sampling_rate() * options_->vertical_sampling_rate());
 
-    list<ptr<Geometry> > geometries;
-    geometries.push_back( ptr<Geometry>(const_cast<Geometry*>(&geometry), pointer::NullDeleter<Geometry>()) );
+    list<shared_ptr<Geometry>> geometries;
+    geometries.push_back( shared_ptr<Geometry>(const_cast<Geometry*>(&geometry), [](Geometry* /*geometry*/){}) );
     while ( !geometries.empty() )
     {
-        const ptr<Geometry>& geometry = geometries.front();
+        const shared_ptr<Geometry>& geometry = geometries.front();
         SWEET_ASSERT( geometry );
 
         vec3 minimum = vec3( 0.0f, 0.0f, 0.0f );

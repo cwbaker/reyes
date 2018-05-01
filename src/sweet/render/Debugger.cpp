@@ -18,6 +18,7 @@
 
 using std::string;
 using std::vector;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -125,7 +126,7 @@ void Debugger::dump_syntax_tree( const SyntaxNode* node, int level ) const
         };
         
         printf( "%s %s'%s' ", NODE_TYPES[node->node_type()], STORAGES[node->get_storage()], node->lexeme().c_str() );
-        ptr<Symbol> symbol = node->get_symbol();
+        shared_ptr<Symbol> symbol = node->get_symbol();
         if ( symbol )
         {
             printf( "'%s' %s%s", symbol->identifier().c_str(), STORAGES[symbol->storage()], TYPES[symbol->type()] );
@@ -136,8 +137,8 @@ void Debugger::dump_syntax_tree( const SyntaxNode* node, int level ) const
         }        
         printf( "\n" );
         
-        const vector<ptr<SyntaxNode> >& nodes = node->get_nodes();
-        for ( vector<ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+        const vector<shared_ptr<SyntaxNode> >& nodes = node->get_nodes();
+        for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
         {
             const SyntaxNode* node = i->get();
             SWEET_ASSERT( node );
@@ -162,10 +163,10 @@ void Debugger::dump_shader( Shader& shader ) const
     dump_code( shader.code() );
 }
 
-void Debugger::dump_registers( int parameters, const std::vector<ptr<Symbol> >& symbols, const std::vector<ptr<Value> >& values ) const
+void Debugger::dump_registers( int parameters, const std::vector<shared_ptr<Symbol> >& symbols, const std::vector<shared_ptr<Value> >& values ) const
 {
-    vector<ptr<Symbol> >::const_iterator i = symbols.begin();
-    vector<ptr<Value> >::const_iterator j = values.begin();
+    vector<shared_ptr<Symbol> >::const_iterator i = symbols.begin();
+    vector<shared_ptr<Value> >::const_iterator j = values.begin();
 
     int register_index = 0;                
     while ( i != symbols.end() && j != values.end() && register_index < parameters )
@@ -198,9 +199,9 @@ void Debugger::dump_registers( int parameters, const std::vector<ptr<Symbol> >& 
     printf( "\n\n" );
 }
 
-void Debugger::dump_symbols( const std::vector<ptr<Symbol> >& symbols ) const
+void Debugger::dump_symbols( const std::vector<std::shared_ptr<Symbol> >& symbols ) const
 {
-    for ( vector<ptr<Symbol> >::const_iterator i = symbols.begin(); i != symbols.end(); ++i )
+    for ( vector<shared_ptr<Symbol> >::const_iterator i = symbols.begin(); i != symbols.end(); ++i )
     {
         const Symbol* symbol = i->get();
         SWEET_ASSERT( symbol );
@@ -210,10 +211,10 @@ void Debugger::dump_symbols( const std::vector<ptr<Symbol> >& symbols ) const
     printf( "\n\n" );
 }
 
-void Debugger::dump_values( const std::vector<ptr<Value> >& values ) const
+void Debugger::dump_values( const std::vector<std::shared_ptr<Value> >& values ) const
 {
     int index = 0;
-    for ( vector<ptr<Value> >::const_iterator i = values.begin(); i != values.end(); ++i )
+    for ( vector<shared_ptr<Value> >::const_iterator i = values.begin(); i != values.end(); ++i )
     {
         const Value* value = i->get();
         SWEET_ASSERT( value );

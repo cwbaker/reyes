@@ -1,12 +1,13 @@
 //
 // AddSymbolHelper.cpp
-// Copyright (c) 2012 Charles Baker.  All rights reserved.
+// Copyright (c) Charles Baker. All rights reserved.
 //
 
 #include "stdafx.hpp"
 #include "AddSymbolHelper.hpp"
 #include "SymbolTable.hpp"
 #include "Symbol.hpp"
+#include <sweet/assert/assert.hpp>
 
 using namespace sweet;
 using namespace sweet::render;
@@ -39,7 +40,7 @@ AddSymbolHelper& AddSymbolHelper::operator()( const char* identifier, void (*fun
     return *this;
 }
 
-AddSymbolHelper& AddSymbolHelper::operator()( const char* identifier, void (*function)(const Renderer&, const Grid&, ptr<Value> a0), ValueType type, ValueStorage storage )
+AddSymbolHelper& AddSymbolHelper::operator()( const char* identifier, void (*function)(const Renderer&, const Grid&, std::shared_ptr<Value> a0), ValueType type, ValueStorage storage )
 {
     SWEET_ASSERT( symbol_table_ );
 
@@ -50,7 +51,7 @@ AddSymbolHelper& AddSymbolHelper::operator()( const char* identifier, void (*fun
     return *this;
 }
 
-AddSymbolHelper& AddSymbolHelper::operator()( const char* identifier, void (*function)(const Renderer&, const Grid&, ptr<Value> a0, ptr<Value> a1), ValueType type, ValueStorage storage )
+AddSymbolHelper& AddSymbolHelper::operator()( const char* identifier, void (*function)(const Renderer&, const Grid&, std::shared_ptr<Value> a0, std::shared_ptr<Value> a1), ValueType type, ValueStorage storage )
 {
     SWEET_ASSERT( symbol_table_ );
 
@@ -61,7 +62,7 @@ AddSymbolHelper& AddSymbolHelper::operator()( const char* identifier, void (*fun
     return *this;
 }
 
-AddSymbolHelper& AddSymbolHelper::operator()( const char* identifier, void (*function)(const Renderer&, const Grid&, ptr<Value> a0, ptr<Value> a1, ptr<Value> a2), ValueType type, ValueStorage storage )
+AddSymbolHelper& AddSymbolHelper::operator()( const char* identifier, void (*function)(const Renderer&, const Grid&, std::shared_ptr<Value> a0, std::shared_ptr<Value> a1, std::shared_ptr<Value> a2), ValueType type, ValueStorage storage )
 {
     SWEET_ASSERT( symbol_table_ );
 
@@ -72,7 +73,7 @@ AddSymbolHelper& AddSymbolHelper::operator()( const char* identifier, void (*fun
     return *this;
 }
 
-AddSymbolHelper& AddSymbolHelper::operator()( const char* identifier, void (*function)(const Renderer&, const Grid&, ptr<Value> a0, ptr<Value> a1, ptr<Value> a2, ptr<Value> a3), ValueType type, ValueStorage storage )
+AddSymbolHelper& AddSymbolHelper::operator()( const char* identifier, void (*function)(const Renderer&, const Grid&, std::shared_ptr<Value> a0, std::shared_ptr<Value> a1, std::shared_ptr<Value> a2, std::shared_ptr<Value> a3), ValueType type, ValueStorage storage )
 {
     SWEET_ASSERT( symbol_table_ );
 
@@ -83,7 +84,7 @@ AddSymbolHelper& AddSymbolHelper::operator()( const char* identifier, void (*fun
     return *this;
 }
 
-AddSymbolHelper& AddSymbolHelper::operator()( const char* identifier, void (*function)(const Renderer&, const Grid&, ptr<Value> a0, ptr<Value> a1, ptr<Value> a2, ptr<Value> a3, ptr<Value> a4), ValueType type, ValueStorage storage )
+AddSymbolHelper& AddSymbolHelper::operator()( const char* identifier, void (*function)(const Renderer&, const Grid&, std::shared_ptr<Value> a0, std::shared_ptr<Value> a1, std::shared_ptr<Value> a2, std::shared_ptr<Value> a3, std::shared_ptr<Value> a4), ValueType type, ValueStorage storage )
 {
     SWEET_ASSERT( symbol_table_ );
 
@@ -94,7 +95,7 @@ AddSymbolHelper& AddSymbolHelper::operator()( const char* identifier, void (*fun
     return *this;
 }
 
-AddSymbolHelper& AddSymbolHelper::operator()( const char* identifier, void (*function)(const Renderer&, const Grid&, ptr<Value> a0, ptr<Value> a1, ptr<Value> a2, ptr<Value> a3, ptr<Value> a4, ptr<Value> a5), ValueType type, ValueStorage storage )
+AddSymbolHelper& AddSymbolHelper::operator()( const char* identifier, void (*function)(const Renderer&, const Grid&, std::shared_ptr<Value> a0, std::shared_ptr<Value> a1, std::shared_ptr<Value> a2, std::shared_ptr<Value> a3, std::shared_ptr<Value> a4, std::shared_ptr<Value> a5), ValueType type, ValueStorage storage )
 {
     SWEET_ASSERT( symbol_table_ );
     
