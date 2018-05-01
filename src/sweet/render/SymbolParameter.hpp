@@ -1,8 +1,3 @@
-//
-// SymbolParameter.hpp
-// Copyright (c) 2012 Charles Baker.  All rights reserved.
-//
-
 #ifndef SWEET_RENDER_SYMBOLPARAMETER_HPP_INCLUDED
 #define SWEET_RENDER_SYMBOLPARAMETER_HPP_INCLUDED
 

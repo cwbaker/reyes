@@ -23,6 +23,7 @@ using std::max;
 using std::find;
 using std::vector;
 using std::string;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -133,17 +134,17 @@ void CodeGenerator::generate( SyntaxNode* node, const char* name )
     }
 }
 
-ptr<Symbol> CodeGenerator::find_symbol( const std::string& identifier ) const
+shared_ptr<Symbol> CodeGenerator::find_symbol( const std::string& identifier ) const
 {
-    vector<ptr<Symbol> >::const_iterator i = symbols_.begin();
+    vector<shared_ptr<Symbol> >::const_iterator i = symbols_.begin();
     while ( i != symbols_.end() && (*i)->identifier() != identifier )
     {
         ++i;
     }
-    return i != symbols_.end() ? *i : ptr<Symbol>();
+    return i != symbols_.end() ? *i : shared_ptr<Symbol>();
 }
 
-ptr<Symbol> CodeGenerator::get_symbol( int index ) const
+shared_ptr<Symbol> CodeGenerator::get_symbol( int index ) const
 {
     SWEET_ASSERT( index < int(symbols_.size()) );
     return symbols_[index];
@@ -179,22 +180,22 @@ int CodeGenerator::constants() const
     return constants_;
 }
 
-std::vector<ptr<Symbol> >& CodeGenerator::symbols()
+std::vector<shared_ptr<Symbol> >& CodeGenerator::symbols()
 {
     return symbols_;
 }
 
-const std::vector<ptr<Symbol> >& CodeGenerator::symbols() const
+const std::vector<shared_ptr<Symbol> >& CodeGenerator::symbols() const
 {
     return symbols_;
 }
 
-std::vector<ptr<Value> >& CodeGenerator::values()
+std::vector<shared_ptr<Value> >& CodeGenerator::values()
 {
     return values_;
 }
 
-const std::vector<ptr<Value> >& CodeGenerator::values() const
+const std::vector<shared_ptr<Value> >& CodeGenerator::values() const
 {
     return values_;
 }
@@ -256,14 +257,14 @@ void CodeGenerator::generate_code_in_case_of_errors()
 
 void CodeGenerator::generate_symbols( const SyntaxNode& node )
 {
-    ptr<Symbol> symbol = node.get_symbol();
+    shared_ptr<Symbol> symbol = node.get_symbol();
     if ( symbol && symbol->storage() != STORAGE_CONSTANT && find(symbols_.begin(), symbols_.end(), symbol) == symbols_.end() )
     {
         symbols_.push_back( symbol );
     }
     
-    const vector<ptr<SyntaxNode> >& nodes = node.get_nodes();
-    for ( vector<ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+    const vector<shared_ptr<SyntaxNode> >& nodes = node.get_nodes();
+    for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
     {
         const SyntaxNode& node = *(*i);
         generate_symbols( node );
@@ -275,25 +276,25 @@ void CodeGenerator::generate_symbols_for_parameters( SyntaxNode* list_node )
     SWEET_ASSERT( list_node );
     SWEET_ASSERT( list_node->node_type() == SHADER_NODE_LIST );
     
-    const vector<ptr<SyntaxNode> >& parameters = list_node->get_nodes();
-    for ( vector<ptr<SyntaxNode> >::const_iterator i = parameters.begin(); i != parameters.end(); ++i )
+    const vector<shared_ptr<SyntaxNode> >& parameters = list_node->get_nodes();
+    for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = parameters.begin(); i != parameters.end(); ++i )
     {
         const SyntaxNode* parameter_node = i->get();
         SWEET_ASSERT( parameter_node );
         SWEET_ASSERT( parameter_node->node_type() == SHADER_NODE_VARIABLE );
         
-        ptr<Symbol> symbol = parameter_node->get_symbol();
+        shared_ptr<Symbol> symbol = parameter_node->get_symbol();
         SWEET_ASSERT( symbol );
         SWEET_ASSERT( find(symbols_.begin(), symbols_.end(), symbol) == symbols_.end() );
         symbols_.push_back( symbol );
     }
 }
 
-ptr<Value> CodeGenerator::generate_constants( SyntaxNode* node )
+shared_ptr<Value> CodeGenerator::generate_constants( SyntaxNode* node )
 {
     SWEET_ASSERT( node );
     
-    ptr<Value> value;
+    shared_ptr<Value> value;
     
     switch ( node->node_type() )
     {
@@ -323,8 +324,8 @@ ptr<Value> CodeGenerator::generate_constants( SyntaxNode* node )
         
         default:
         {
-            const vector<ptr<SyntaxNode> >& nodes = node->get_nodes();
-            for ( vector<ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+            const vector<shared_ptr<SyntaxNode> >& nodes = node->get_nodes();
+            for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
             {
                 SyntaxNode* syntax_node = i->get();
                 SWEET_ASSERT( syntax_node );
@@ -340,7 +341,7 @@ ptr<Value> CodeGenerator::generate_constants( SyntaxNode* node )
 void CodeGenerator::generate_indexes_for_symbols()
 {
     int index = 0;
-    for ( vector<ptr<Symbol> >::const_iterator i = symbols_.begin(); i != symbols_.end(); ++i )
+    for ( vector<shared_ptr<Symbol> >::const_iterator i = symbols_.begin(); i != symbols_.end(); ++i )
     {
         Symbol* symbol = i->get();
         SWEET_ASSERT( symbol );
@@ -349,7 +350,7 @@ void CodeGenerator::generate_indexes_for_symbols()
     }
 
     int register_index = constants_;
-    vector<ptr<Symbol> >::const_iterator i = symbols_.begin(); 
+    vector<shared_ptr<Symbol> >::const_iterator i = symbols_.begin(); 
     
     while ( i != symbols_.end() && register_index < constants_ + parameters_ )
     {
@@ -376,7 +377,7 @@ void CodeGenerator::generate_indexes_for_symbols()
     permanent_registers_ = register_index;
 }
 
-void CodeGenerator::evaluate_expression( ptr<Value> value, const SyntaxNode* node ) const
+void CodeGenerator::evaluate_expression( shared_ptr<Value> value, const SyntaxNode* node ) const
 {
     SWEET_ASSERT( value );
     SWEET_ASSERT( node );
@@ -566,8 +567,8 @@ void CodeGenerator::generate_code_for_list( const SyntaxNode& node )
 {
     SWEET_ASSERT( node.node_type() == SHADER_NODE_LIST );
     
-    const vector<ptr<SyntaxNode> >& nodes = node.get_nodes();
-    for ( vector<ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+    const vector<shared_ptr<SyntaxNode> >& nodes = node.get_nodes();
+    for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
     {
         const SyntaxNode& node = *(*i);
         push_register();
@@ -596,8 +597,8 @@ void CodeGenerator::generate_code_for_parameters( const SyntaxNode& node )
 {
     SWEET_ASSERT( node.node_type() == SHADER_NODE_LIST );
     
-    const vector<ptr<SyntaxNode> >& parameters = node.get_nodes();
-    for ( vector<ptr<SyntaxNode> >::const_iterator i = parameters.begin(); i != parameters.end(); ++i )
+    const vector<shared_ptr<SyntaxNode> >& parameters = node.get_nodes();
+    for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = parameters.begin(); i != parameters.end(); ++i )
     {
         const SyntaxNode* variable_node = i->get();
         SWEET_ASSERT( variable_node );

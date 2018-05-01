@@ -18,7 +18,7 @@ namespace sweet
 namespace render
 {
 
-void comp_matrix( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> matrix, ptr<Value> row_value, ptr<Value> column_value )
+void comp_matrix( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> matrix, std::shared_ptr<Value> row_value, std::shared_ptr<Value> column_value )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( matrix );
@@ -37,7 +37,7 @@ void comp_matrix( const Renderer& renderer, const Grid& grid, ptr<Value> result,
     values[0] = m.m[row * 4 + column];
 }
 
-void setcomp_matrix( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> matrix, ptr<Value> row_value, ptr<Value> column_value, ptr<Value> value )
+void setcomp_matrix( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> matrix, std::shared_ptr<Value> row_value, std::shared_ptr<Value> column_value, std::shared_ptr<Value> value )
 {
     SWEET_ASSERT( matrix );
     SWEET_ASSERT( matrix->storage() == STORAGE_UNIFORM );
@@ -55,7 +55,7 @@ void setcomp_matrix( const Renderer& renderer, const Grid& grid, ptr<Value> resu
     values[0].m[row * 4 + column] = value->float_value();
 }
 
-void determinant( const Renderer& render, const Grid& grid, ptr<Value> result, ptr<Value> matrix )
+void determinant( const Renderer& render, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> matrix )
 {
     SWEET_ASSERT( matrix );
     SWEET_ASSERT( matrix->storage() == STORAGE_UNIFORM );
@@ -66,7 +66,7 @@ void determinant( const Renderer& render, const Grid& grid, ptr<Value> result, p
     values[0] = math::determinant( m );
 }
 
-void translate_matrix( const Renderer& render, const Grid& grid, ptr<Value> result, ptr<Value> matrix, ptr<Value> t )
+void translate_matrix( const Renderer& render, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> matrix, std::shared_ptr<Value> t )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( matrix );
@@ -80,7 +80,7 @@ void translate_matrix( const Renderer& render, const Grid& grid, ptr<Value> resu
     values[0] = m * math::translate( t->vec3_value() );
 }
 
-void rotate_matrix( const Renderer& render, const Grid& grid, ptr<Value> result, ptr<Value> matrix, ptr<Value> angle, ptr<Value> axis )
+void rotate_matrix( const Renderer& render, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> matrix, std::shared_ptr<Value> angle, std::shared_ptr<Value> axis )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( matrix );
@@ -96,7 +96,7 @@ void rotate_matrix( const Renderer& render, const Grid& grid, ptr<Value> result,
     values[0] = m * math::rotate( axis->vec3_value(), angle->float_value() );
 }
 
-void scale_matrix( const Renderer& render, const Grid& grid, ptr<Value> result, ptr<Value> matrix, ptr<Value> s )
+void scale_matrix( const Renderer& render, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> matrix, std::shared_ptr<Value> s )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( matrix );

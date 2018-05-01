@@ -7,11 +7,13 @@ build:all {
         '${lib}/jpeg_${architecture}';
         '${lib}/lalr_${architecture}';
         '${lib}/libpng_${architecture}';
-        '${lib}/pointer_${architecture}';
         '${lib}/UnitTest++_${architecture}';
         '${lib}/zlib_${architecture}';
 
         build:Cxx () {
+            defines = {
+                ('SHADERS_PATH=\\"%s/\\"'):format( build:absolute('../shaders') );
+            };
             "main.cpp",
             "AssignExpressions.cpp",
             "BreakStatements.cpp",

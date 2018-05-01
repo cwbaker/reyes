@@ -1,8 +1,3 @@
-//
-// Renderer.hpp
-// Copyright (c) 2010 - 2012 Charles Baker.  All rights reserved.
-//
-
 #ifndef SWEET_RENDER_RENDERER_HPP_INCLUDED
 #define SWEET_RENDER_RENDERER_HPP_INCLUDED
 
@@ -10,7 +5,7 @@
 #include <sweet/math/vec3.hpp>
 #include <sweet/math/vec4.hpp>
 #include <sweet/math/mat4x4.hpp>
-#include <sweet/pointer/ptr.hpp>
+#include <memory>
 #include <utility>
 #include <vector>
 #include <map>
@@ -53,7 +48,7 @@ class SWEET_RENDER_DECLSPEC Renderer
     std::map<std::string, Texture*> textures_; ///< The textures that have been loaded (by filename).
     std::map<std::string, Shader*> shaders_; ///< The shaders that have been loaded (by filename).
     Options* options_; /// The options used for this renderer.
-    std::vector<ptr<Attributes> > attributes_; ///< The attributes stack.
+    std::vector<std::shared_ptr<Attributes>> attributes_; ///< The attributes stack.
 
     public:
         Renderer();

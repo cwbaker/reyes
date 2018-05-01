@@ -7,7 +7,6 @@ build:all {
         '${lib}/jpeg_${architecture}';
         '${lib}/lalr_${architecture}';
         '${lib}/libpng_${architecture}';
-        '${lib}/pointer_${architecture}';
         '${lib}/zlib_${architecture}';
         
         build:Cxx () {

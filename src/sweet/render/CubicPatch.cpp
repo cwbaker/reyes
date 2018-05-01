@@ -18,6 +18,7 @@
 using std::min;
 using std::max;
 using std::vector;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -74,7 +75,7 @@ bool CubicPatch::splittable() const
     return true;
 }
 
-void CubicPatch::split( std::list<ptr<Geometry> >* primitives ) const
+void CubicPatch::split( std::list<std::shared_ptr<Geometry> >* primitives ) const
 {
     SWEET_ASSERT( primitives );
     SWEET_ASSERT( u_range().y >= u_range().x );
@@ -90,7 +91,7 @@ void CubicPatch::split( std::list<ptr<Geometry> >* primitives ) const
     float v1 = (v_range.x + v_range.y) / 2.0f;
     float v2 = v_range.y;
 
-    ptr<Geometry> cubic_patch;
+    shared_ptr<Geometry> cubic_patch;
     cubic_patch.reset( new CubicPatch(*this, vec2(u0, u1), vec2(v0, v1)) );
     primitives->push_back( cubic_patch );
     cubic_patch.reset( new CubicPatch(*this, vec2(u0, u1), vec2(v1, v2)) );

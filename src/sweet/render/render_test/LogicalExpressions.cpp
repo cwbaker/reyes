@@ -12,6 +12,7 @@
 #include <string.h>
 
 using std::vector;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -36,23 +37,23 @@ SUITE( LogicalExpressions )
           c( NULL )
         {
             grid.resize( 2, 2 );
-            ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
+            shared_ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
             x_value->zero();
             x = x_value->float_values();
             
-            ptr<Value> y_value = grid.add_value( "y", TYPE_FLOAT );
+            shared_ptr<Value> y_value = grid.add_value( "y", TYPE_FLOAT );
             y_value->zero();
             y = y_value->float_values();
             
-            ptr<Value> a_value = grid.add_value( "a", TYPE_INTEGER );
+            shared_ptr<Value> a_value = grid.add_value( "a", TYPE_INTEGER );
             a_value->zero();
             a = a_value->int_values();
       
-            ptr<Value> b_value = grid.add_value( "b", TYPE_INTEGER );
+            shared_ptr<Value> b_value = grid.add_value( "b", TYPE_INTEGER );
             b_value->zero();
             b = b_value->int_values();
             
-            ptr<Value> c_value = grid.add_value( "c", TYPE_INTEGER );
+            shared_ptr<Value> c_value = grid.add_value( "c", TYPE_INTEGER );
             c_value->zero();
             c = c_value->int_values();
         }

@@ -1,17 +1,12 @@
-//
-// VirtualMachine.hpp
-// Copyright (c) 2012 Charles Baker.  All rights reserved.
-//
-
 #ifndef SWEET_RENDER_VIRTUALMACHINE_HPP_INCLUDED
 #define SWEET_RENDER_VIRTUALMACHINE_HPP_INCLUDED
 
 #include "declspec.hpp"
-#include <sweet/pointer/ptr.hpp>
 #include <sweet/math/vec4.hpp>
 #include <sweet/math/vec3.hpp>
 #include <vector>
 #include <map>
+#include <memory>
 
 namespace sweet
 {
@@ -36,8 +31,8 @@ class SWEET_RENDER_DECLSPEC VirtualMachine
         int processed_; ///< The number of elements that are to be processed by this mask.
 
         ConditionMask();
-        void generate( ptr<Value> value );
-        void generate( const ConditionMask& condition_mask, ptr<Value> value );
+        void generate( std::shared_ptr<Value> value );
+        void generate( const ConditionMask& condition_mask, std::shared_ptr<Value> value );
         void invert();
         bool empty() const;
     };
@@ -45,8 +40,8 @@ class SWEET_RENDER_DECLSPEC VirtualMachine
     const Renderer* renderer_; ///< The Renderer that this virtual machine is part of.
     Grid* grid_; ///< The grid of micropolygon vertices that is currently being shaded (null if no shader is being executed).
     Shader* shader_; ///< The shader that is currently being executed (null if no shader is being executed).
-    std::vector<ptr<Value> > values_; ///< The values allocated for use as temporary registers by this virtual machine.
-    std::vector<ptr<Value> > registers_; ///< The values loaded into registers by this virtual machine (some from grid, some temporary).
+    std::vector<std::shared_ptr<Value> > values_; ///< The values allocated for use as temporary registers by this virtual machine.
+    std::vector<std::shared_ptr<Value> > registers_; ///< The values loaded into registers by this virtual machine (some from grid, some temporary).
     int register_index_; ///< The index of the next available register.
     int light_index_; ///< The index of the current light (or INT_MAX if there is no current light).
     const short* code_begin_; ///< The address of the beginning of loaded code.
@@ -139,13 +134,13 @@ private:
     void execute_illuminate_axis_angle();
     void execute_illuminance_axis_angle();
 
-    void float_texture( const Renderer& renderer, ptr<Value> result, ptr<Value> texturename, ptr<Value> s, ptr<Value> t ) const;
-    void vec3_texture( const Renderer& renderer, ptr<Value> result, ptr<Value> texturename, ptr<Value> s, ptr<Value> t ) const;
-    void float_environment( const Renderer& renderer, ptr<Value> result, ptr<Value> texturename, ptr<Value> direction ) const;
-    void vec3_environment( const Renderer& renderer, ptr<Value> result, ptr<Value> texturename, ptr<Value> direction ) const;
-    void shadow( const Renderer& renderer, ptr<Value> result, ptr<Value> texturename, ptr<Value> position, ptr<Value> bias ) const;
+    void float_texture( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> s, std::shared_ptr<Value> t ) const;
+    void vec3_texture( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> s, std::shared_ptr<Value> t ) const;
+    void float_environment( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> direction ) const;
+    void vec3_environment( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> direction ) const;
+    void shadow( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> position, std::shared_ptr<Value> bias ) const;
     
-    void push_mask( ptr<Value> value );
+    void push_mask( std::shared_ptr<Value> value );
     void pop_mask();
     void invert_mask();
     bool mask_empty() const;

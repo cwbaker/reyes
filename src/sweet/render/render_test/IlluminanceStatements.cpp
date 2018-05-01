@@ -12,6 +12,7 @@
 #include <string.h>
 
 using std::vector;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -57,15 +58,15 @@ SUITE( IlluminanceStatements )
                        
             grid.resize( 2, 4 );
 
-            ptr<Value> P_value = grid.add_value( "P", TYPE_POINT );
+            shared_ptr<Value> P_value = grid.add_value( "P", TYPE_POINT );
             P_value->zero();
             P = P_value->vec3_values();
 
-            ptr<Value> N_value = grid.add_value( "N", TYPE_NORMAL );
+            shared_ptr<Value> N_value = grid.add_value( "N", TYPE_NORMAL );
             N_value->zero();
             N = N_value->vec3_values();
 
-            ptr<Value> Ci_value = grid.add_value( "Ci", TYPE_COLOR );
+            shared_ptr<Value> Ci_value = grid.add_value( "Ci", TYPE_COLOR );
             Ci_value->zero();
             Ci = Ci_value->vec3_values();
         }

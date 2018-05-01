@@ -1,15 +1,16 @@
 //
 // Light.cpp
-// Copyright (c) 2011 - 2012 Charles Baker.  All rights reserved.
+// Copyright (c) Charles Baker. All rights reserved.
 //
 
 #include "stdafx.hpp"
 #include "Light.hpp"
+#include <sweet/assert/assert.hpp>
 
 using namespace sweet;
 using namespace sweet::render;
 
-Light::Light( LightType type, ptr<Value> color, ptr<Value> opacity, const math::vec3& position, const math::vec3& axis, float angle )
+Light::Light( LightType type, std::shared_ptr<Value> color, std::shared_ptr<Value> opacity, const math::vec3& position, const math::vec3& axis, float angle )
 : type_( type ),
   color_( color ),
   opacity_( opacity ),
@@ -29,12 +30,12 @@ LightType Light::type() const
     return type_;
 }
 
-ptr<Value> Light::color() const
+std::shared_ptr<Value> Light::color() const
 {
     return color_;
 }
 
-ptr<Value> Light::opacity() const
+std::shared_ptr<Value> Light::opacity() const
 {
     return opacity_;
 }

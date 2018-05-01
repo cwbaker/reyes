@@ -1,3 +1,7 @@
+//
+// SymbolTable.cpp
+// Copyright (c) Charles Baker. All rights reserved.
+//
 
 #include "stdafx.hpp"
 #include "SymbolTable.hpp"
@@ -8,6 +12,7 @@
 #include "color_functions.hpp"
 #include "matrix_functions.hpp"
 #include "shading_and_lighting_functions.hpp"
+#include <sweet/assert/assert.hpp>
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -15,6 +20,7 @@ using std::multimap;
 using std::list;
 using std::vector;
 using std::string;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::render;
 
@@ -317,7 +323,7 @@ AddSymbolHelper SymbolTable::add_symbols()
 
 void SymbolTable::push_scope()
 {
-    symbols_.push_back( multimap<string, ptr<Symbol> >() );
+    symbols_.push_back( multimap<string, shared_ptr<Symbol> >() );
 }
 
 void SymbolTable::pop_scope()
@@ -326,22 +332,22 @@ void SymbolTable::pop_scope()
     symbols_.pop_back();
 }
 
-ptr<Symbol> SymbolTable::add_symbol( const std::string& identifier )
+std::shared_ptr<Symbol> SymbolTable::add_symbol( const std::string& identifier )
 {
     SWEET_ASSERT( !identifier.empty() );
     SWEET_ASSERT( !symbols_.empty() );
     
-    ptr<Symbol> symbol( new Symbol(identifier) );
+    shared_ptr<Symbol> symbol( new Symbol(identifier) );
     symbols_.back().insert( make_pair(identifier, symbol) );
     return symbol;
 }
 
-ptr<Symbol> SymbolTable::find_symbol( const std::string& identifier ) const
+std::shared_ptr<Symbol> SymbolTable::find_symbol( const std::string& identifier ) const
 {
     SWEET_ASSERT( !symbols_.empty() );
 
-    list<multimap<string, ptr<Symbol> > >::const_reverse_iterator i = symbols_.rbegin();
-    multimap<string, ptr<Symbol> >::const_iterator j = i->find( identifier );
+    list<multimap<string, shared_ptr<Symbol>>>::const_reverse_iterator i = symbols_.rbegin();
+    multimap<string, shared_ptr<Symbol>>::const_iterator j = i->find( identifier );
     
     while ( i != symbols_.rend() && j == i->end() )
     {
@@ -352,17 +358,17 @@ ptr<Symbol> SymbolTable::find_symbol( const std::string& identifier ) const
         }
     }
 
-    return i != symbols_.rend() ? j->second : ptr<Symbol>();
+    return i != symbols_.rend() ? j->second : shared_ptr<Symbol>();
 }
 
-ptr<Symbol> SymbolTable::find_symbol( const SyntaxNode* node ) const
+std::shared_ptr<Symbol> SymbolTable::find_symbol( const SyntaxNode* node ) const
 {
     SWEET_ASSERT( node );
     SWEET_ASSERT( node->node_type() == SHADER_NODE_CALL );
     SWEET_ASSERT( !symbols_.empty() );
     
-    list<multimap<string, ptr<Symbol> > >::const_reverse_iterator i = symbols_.rbegin();
-    multimap<string, ptr<Symbol> >::const_iterator j = i->find( node->lexeme() );
+    list<multimap<string, shared_ptr<Symbol>>>::const_reverse_iterator i = symbols_.rbegin();
+    multimap<string, shared_ptr<Symbol>>::const_iterator j = i->find( node->lexeme() );
 
     while ( i != symbols_.rend() && j == i->end() )
     {
@@ -375,17 +381,17 @@ ptr<Symbol> SymbolTable::find_symbol( const SyntaxNode* node ) const
 
     if ( i != symbols_.rend() )
     {
-        const vector<ptr<SyntaxNode> >& parameters = node->get_nodes();        
+        const vector<shared_ptr<SyntaxNode>>& parameters = node->get_nodes();        
         while ( j != i->end() && j->first == node->lexeme() && !matches(j->second, node, parameters) )
         {
             ++j;
         }
     }
     
-    return i != symbols_.rend() && j != i->end() && j->first == node->lexeme() ? j->second : ptr<Symbol>();
+    return i != symbols_.rend() && j != i->end() && j->first == node->lexeme() ? j->second : shared_ptr<Symbol>();
 }
 
-bool SymbolTable::matches( const ptr<Symbol>& symbol, const SyntaxNode* node, const std::vector<ptr<SyntaxNode> >& node_parameters )
+bool SymbolTable::matches( const std::shared_ptr<Symbol>& symbol, const SyntaxNode* node, const std::vector<std::shared_ptr<SyntaxNode>>& node_parameters )
 {
     SWEET_ASSERT( symbol );
     SWEET_ASSERT( node );
@@ -394,7 +400,7 @@ bool SymbolTable::matches( const ptr<Symbol>& symbol, const SyntaxNode* node, co
     bool matches_return = symbol->matches_return( node->get_expected_type(), node->get_expected_storage() );
     const vector<SymbolParameter>& symbol_parameters = symbol->parameters();
     vector<SymbolParameter>::const_iterator i = symbol_parameters.begin();
-    vector<ptr<SyntaxNode> >::const_iterator j = node_parameters.begin();
+    vector<shared_ptr<SyntaxNode>>::const_iterator j = node_parameters.begin();
     while ( i != symbol_parameters.end() && j != node_parameters.end() && i->matches((*j)->get_type(), (*j)->get_storage()) )
     {
         ++i;

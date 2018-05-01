@@ -1,8 +1,3 @@
-//
-// ValueStorage.hpp
-// Copyright (c) 2011 - 2012 Charles Baker.  All rights reserved.
-//
-
 #ifndef SWEET_RENDER_VALUESTORAGE_HPP_INCLUDED
 #define SWEET_RENDER_VALUESTORAGE_HPP_INCLUDED
 

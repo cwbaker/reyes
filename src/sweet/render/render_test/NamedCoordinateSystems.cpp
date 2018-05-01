@@ -13,6 +13,7 @@
 #include <string.h>
 
 using std::vector;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -33,7 +34,7 @@ SUITE( NamedCoordinateSystems )
             renderer.projection();
         }
 
-        ptr<Value> execute_shader( Shader& shader )
+        shared_ptr<Value> execute_shader( Shader& shader )
         {
             renderer.surface_shader( &shader );
 
@@ -76,7 +77,7 @@ SUITE( NamedCoordinateSystems )
                     mat4x4 camera_to_world = inverse( world_to_camera );             
                     const mat4x4& transform = transform_type == TRANSFORM_WORLD_TO_CAMERA ? world_to_camera : camera_to_world;
                     
-                    ptr<Value> positions = execute_shader( shader );
+                    shared_ptr<Value> positions = execute_shader( shader );
                     CHECK( positions );
                     if ( positions )
                     {

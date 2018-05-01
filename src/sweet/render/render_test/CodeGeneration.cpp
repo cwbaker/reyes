@@ -15,6 +15,7 @@
 #include <sweet/assert/assert.hpp>
 
 using std::vector;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -41,7 +42,7 @@ SUITE( CodeGeneration )
         {
             SWEET_ASSERT( filename );
 
-            ptr<SyntaxNode> syntax_node = shader_parser.parse( filename );
+            shared_ptr<SyntaxNode> syntax_node = shader_parser.parse( filename );
             CHECK( syntax_node );            
             if ( syntax_node )
             {        
@@ -53,7 +54,7 @@ SUITE( CodeGeneration )
         
         void check_symbol( const char* identifier, ValueType type, ValueStorage storage )
         {
-            ptr<Symbol> symbol = code_generator.find_symbol( identifier );
+            shared_ptr<Symbol> symbol = code_generator.find_symbol( identifier );
             SWEET_ASSERT( symbol );        
             CHECK( symbol );        
             if ( symbol )
@@ -67,7 +68,7 @@ SUITE( CodeGeneration )
 
     TEST_FIXTURE( CodeGenerationTest, Constant )
     {
-        if ( test("../shaders/constant.sl") )
+        if ( test(SHADERS_PATH "constant.sl") )
         {        
             CHECK( code_generator.symbols().size() == 4 );
             check_symbol( "Oi", TYPE_COLOR, STORAGE_VARYING );
@@ -79,7 +80,7 @@ SUITE( CodeGeneration )
     
     TEST_FIXTURE( CodeGenerationTest, Matte )
     {
-        if ( test("../shaders/matte.sl") )
+        if ( test(SHADERS_PATH "matte.sl") )
         {        
             CHECK( code_generator.symbols().size() == 13 );
             check_symbol( "Nf", TYPE_NORMAL, STORAGE_VARYING );
@@ -100,7 +101,7 @@ SUITE( CodeGeneration )
 
     TEST_FIXTURE( CodeGenerationTest, Plastic )
     {
-        if ( test("../shaders/plastic.sl") )
+        if ( test(SHADERS_PATH "plastic.sl") )
         {
             CHECK( code_generator.symbols().size() == 18 );
             check_symbol( "Nf", TYPE_NORMAL, STORAGE_VARYING );
@@ -122,7 +123,7 @@ SUITE( CodeGeneration )
 
     TEST_FIXTURE( CodeGenerationTest, Bumpy )
     {
-        if ( test("../shaders/bumpy.sl") )
+        if ( test(SHADERS_PATH "bumpy.sl") )
         {
             CHECK( code_generator.symbols().size() == 9 );
             check_symbol( "Km", TYPE_FLOAT, STORAGE_UNIFORM );
@@ -139,7 +140,7 @@ SUITE( CodeGeneration )
 
     TEST_FIXTURE( CodeGenerationTest, PaintedPlastic )
     {
-        if ( test("../shaders/paintedplastic.sl") )
+        if ( test(SHADERS_PATH "paintedplastic.sl") )
         {
             CHECK( code_generator.symbols().size() == 21 );
             check_symbol( "Ka", TYPE_FLOAT, STORAGE_UNIFORM );
@@ -167,28 +168,28 @@ SUITE( CodeGeneration )
 
     TEST_FIXTURE( CodeGenerationTest, DistantLight )
     {
-        if ( test("../shaders/distantlight.sl") )
+        if ( test(SHADERS_PATH "distantlight.sl") )
         {        
         }
     }
     
     TEST_FIXTURE( CodeGenerationTest, PointLight )
     {
-        if ( test("../shaders/pointlight.sl") )
+        if ( test(SHADERS_PATH "pointlight.sl") )
         {        
         }
     }
     
     TEST_FIXTURE( CodeGenerationTest, spotlight )
     {
-        if ( test("../shaders/spotlight.sl") )
+        if ( test(SHADERS_PATH "spotlight.sl") )
         {        
         }
     }
     
     TEST_FIXTURE( CodeGenerationTest, ShadowPointLight )
     {
-        if ( test("../shaders/shadowpointlight.sl") )
+        if ( test(SHADERS_PATH "shadowpointlight.sl") )
         {
         }
     }

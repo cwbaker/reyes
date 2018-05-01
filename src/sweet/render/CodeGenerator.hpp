@@ -10,9 +10,9 @@
 #include "SyntaxNodeType.hpp"
 #include "ValueType.hpp"
 #include "ValueStorage.hpp"
-#include <sweet/pointer/ptr.hpp>
 #include <vector>
 #include <string>
+#include <memory>
 
 namespace sweet
 {
@@ -57,8 +57,8 @@ class SWEET_RENDER_DECLSPEC CodeGenerator
     int variables_; ///< The number of variables in the shader.
     int constants_; ///< The number of constants in the shader.
     int errors_; ///< The number of errors detected during code generation.
-    std::vector<ptr<Symbol> > symbols_; ///< The symbols that are used in the shader.
-    std::vector<ptr<Value> > values_; ///< The values of any constants used in the shader (including default parameter values).
+    std::vector<std::shared_ptr<Symbol> > symbols_; ///< The symbols that are used in the shader.
+    std::vector<std::shared_ptr<Value> > values_; ///< The values of any constants used in the shader (including default parameter values).
     std::vector<short> code_; ///< The byte code generated for the shader.
     std::vector<int> temporary_registers_; ///< The stack of register indices that are being used to store values that are still being used.
     std::vector<Loop> loops_; ///< The Loops used to patch jumps to the beginning or the end of an enclosing loop.
@@ -69,8 +69,8 @@ public:
     CodeGenerator( const SymbolTable& symbol_table, ErrorPolicy* error_policy = NULL );
     void generate( SyntaxNode* node, const char* name );
 
-    ptr<Symbol> find_symbol( const std::string& identifier ) const;
-    ptr<Symbol> get_symbol( int index ) const;
+    std::shared_ptr<Symbol> find_symbol( const std::string& identifier ) const;
+    std::shared_ptr<Symbol> get_symbol( int index ) const;
 
     int initialize_address() const;
     int shade_address() const;
@@ -78,10 +78,10 @@ public:
     int parameters() const;
     int variables() const;
     int constants() const;
-    std::vector<ptr<Symbol> >& symbols();
-    const std::vector<ptr<Symbol> >& symbols() const;
-    std::vector<ptr<Value> >& values();
-    const std::vector<ptr<Value> >& values() const;
+    std::vector<std::shared_ptr<Symbol> >& symbols();
+    const std::vector<std::shared_ptr<Symbol> >& symbols() const;
+    std::vector<std::shared_ptr<Value> >& values();
+    const std::vector<std::shared_ptr<Value> >& values() const;
     std::vector<short>& code();
     const std::vector<short>& code() const;
     int registers() const;
@@ -91,9 +91,9 @@ private:
     void generate_code_in_case_of_errors();
     void generate_symbols( const SyntaxNode& node );
     void generate_symbols_for_parameters( SyntaxNode* node );
-    ptr<Value> generate_constants( SyntaxNode* node );
+    std::shared_ptr<Value> generate_constants( SyntaxNode* node );
     void generate_indexes_for_symbols();
-    void evaluate_expression( ptr<Value> value, const SyntaxNode* node ) const;
+    void evaluate_expression( std::shared_ptr<Value> value, const SyntaxNode* node ) const;
     int assign_instruction_from_type( int instruction, ValueType type ) const;
     int arithmetic_instruction_from_type( int instruction, ValueType type ) const;
     int promote_instruction_from_type( int instruction, ValueType type ) const;

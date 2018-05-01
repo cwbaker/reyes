@@ -1,8 +1,3 @@
-//
-// Texture.hpp
-// Copyright (c) 2011 - 2012 Charles Baker.  All rights reserved.
-//
-
 #ifndef SWEET_RENDER_TEXTURE_HPP_INCLUDED
 #define SWEET_RENDER_TEXTURE_HPP_INCLUDED
 

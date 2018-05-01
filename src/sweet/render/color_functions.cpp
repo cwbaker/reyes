@@ -11,6 +11,7 @@
 #include <sweet/math/vec3.ipp>
 #include <sweet/assert/assert.hpp>
 
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 
@@ -20,7 +21,7 @@ namespace sweet
 namespace render
 {
 
-void comp( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> color, ptr<Value> index_value )
+void comp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> color, std::shared_ptr<Value> index_value )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( color );
@@ -59,7 +60,7 @@ void comp( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Va
     }
 }
 
-void setcomp( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> color, ptr<Value> index_value, ptr<Value> value )
+void setcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> color, std::shared_ptr<Value> index_value, std::shared_ptr<Value> value )
 {
     SWEET_ASSERT( color );
     SWEET_ASSERT( index_value );
@@ -97,7 +98,7 @@ void setcomp( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr
     }
 }
 
-void ctransform( const Renderer& renderer, const Grid& grid, ptr<Value> result, ptr<Value> fromspace, ptr<Value> color )
+void ctransform( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> color )
 {
     SWEET_ASSERT( result );
     SWEET_ASSERT( fromspace );

@@ -1,6 +1,6 @@
 //
 // Torus.cpp
-// Copyright (c) 2012 Charles Baker.  All rights reserved.
+// Copyright (c) Charles Baker. All rights reserved.
 //
 
 #include "stdafx.hpp"
@@ -20,6 +20,7 @@ using std::min;
 using std::max;
 using std::list;
 using std::vector;
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -77,7 +78,7 @@ bool Torus::splittable() const
     return true;
 }
 
-void Torus::split( std::list<ptr<Geometry> >* primitives ) const
+void Torus::split( std::list<std::shared_ptr<Geometry>>* primitives ) const
 {
     SWEET_ASSERT( primitives );
     SWEET_ASSERT( u_range().y >= u_range().x );
@@ -93,7 +94,7 @@ void Torus::split( std::list<ptr<Geometry> >* primitives ) const
     float v1 = (v_range.x + v_range.y) / 2.0f;
     float v2 = v_range.y;
 
-    ptr<Geometry> torus;
+    shared_ptr<Geometry> torus;
     torus.reset( new Torus(*this, vec2(u0, u1), vec2(v0, v1)) );
     primitives->push_back( torus );
     torus.reset( new Torus(*this, vec2(u0, u1), vec2(v1, v2)) );

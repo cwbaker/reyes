@@ -10,26 +10,26 @@
 #include <string.h>
 
 using std::vector;
-using namespace sweet::pointer;
+using std::shared_ptr;
 using namespace sweet::render;
 
 SUITE( ShaderParser )
 {
     struct BuildSyntaxTree
     {
-        std::vector<ptr<SyntaxNode> > nodes_;
+        std::vector<shared_ptr<SyntaxNode>> nodes_;
         
         BuildSyntaxTree()
         : nodes_()
         {
-            ptr<SyntaxNode> node( new SyntaxNode(SHADER_NODE_NULL, 0) );
+            shared_ptr<SyntaxNode> node( new SyntaxNode(SHADER_NODE_NULL, 0) );
             nodes_.push_back( node );
         }
         
         BuildSyntaxTree& begin( SyntaxNodeType type, const char* lexeme = NULL )
         {
             SWEET_ASSERT( !nodes_.empty() );
-            ptr<SyntaxNode> node( new SyntaxNode(type, 0, lexeme) );
+            shared_ptr<SyntaxNode> node( new SyntaxNode(type, 0, lexeme) );
             nodes_.back()->add_node( node );
             nodes_.push_back( node );
             return *this;
@@ -45,7 +45,7 @@ SUITE( ShaderParser )
         
         BuildSyntaxTree& node( SyntaxNodeType type, const char* lexeme = NULL )
         {
-            ptr<SyntaxNode> node( new SyntaxNode(type, 0, lexeme) );
+            shared_ptr<SyntaxNode> node( new SyntaxNode(type, 0, lexeme) );
             nodes_.back()->add_node( node );
             return *this;
         }
@@ -225,7 +225,7 @@ SUITE( ShaderParser )
             return begin( SHADER_NODE_TEXTURE );
         }
         
-        ptr<SyntaxNode> root() const
+        shared_ptr<SyntaxNode> root() const
         {
             SWEET_ASSERT( nodes_.size() == 1 );
             SWEET_ASSERT( nodes_.back()->get_nodes().size() == 1 );
@@ -237,7 +237,7 @@ SUITE( ShaderParser )
     {       
         SymbolTable symbol_table;
         ShaderParser shader_parser( symbol_table );
-        ptr<SyntaxNode> shader = shader_parser.parse( "../shaders/constant.sl" );
+        shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "constant.sl" );
 
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
@@ -257,7 +257,7 @@ SUITE( ShaderParser )
                 .end()
             .end()
         .end();
-        ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
+        shared_ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
 
         CHECK( *shader == *expected_shader );
     }
@@ -266,7 +266,7 @@ SUITE( ShaderParser )
     {
         SymbolTable symbol_table;
         ShaderParser shader_parser( symbol_table );
-        ptr<SyntaxNode> shader = shader_parser.parse( "../shaders/matte.sl" );
+        shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "matte.sl" );
 
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
@@ -315,7 +315,7 @@ SUITE( ShaderParser )
                 .end()
             .end()
         .end();
-        ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
+        shared_ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
 
         CHECK( *shader == *expected_shader );
     }
@@ -324,7 +324,7 @@ SUITE( ShaderParser )
     {
         SymbolTable symbol_table;
         ShaderParser shader_parser( symbol_table );
-        ptr<SyntaxNode> shader = shader_parser.parse( "../shaders/metal.sl" );
+        shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "metal.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
@@ -385,7 +385,7 @@ SUITE( ShaderParser )
                 .end()
             .end()
         .end();
-        ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
+        shared_ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
         
         CHECK( *shader == *expected_shader );
     }
@@ -394,7 +394,7 @@ SUITE( ShaderParser )
     TEST( TestShinyMetal )
     {
         ShaderParser shader_parser;
-        ptr<SyntaxNode> shader = shader_parser.parse( "../shaders/shinymetal.sl" );
+        shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "shinymetal.sl" );
 
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
@@ -488,7 +488,7 @@ SUITE( ShaderParser )
                 .end()             
             .end()
         .end();
-        ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
+        shared_ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
 
         CHECK( *shader == *expected_shader );
     }
@@ -498,7 +498,7 @@ SUITE( ShaderParser )
     {
         SymbolTable symbol_table;
         ShaderParser shader_parser( symbol_table );
-        ptr<SyntaxNode> shader = shader_parser.parse( "../shaders/plastic.sl" );
+        shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "plastic.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
@@ -576,7 +576,7 @@ SUITE( ShaderParser )
                 .end()
             .end()
         .end();
-        ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
+        shared_ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
         
         CHECK( *shader == *expected_shader );
     }
@@ -585,7 +585,7 @@ SUITE( ShaderParser )
     {
         SymbolTable symbol_table;
         ShaderParser shader_parser( symbol_table );
-        ptr<SyntaxNode> shader = shader_parser.parse( "../shaders/paintedplastic.sl" );
+        shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "paintedplastic.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
@@ -676,7 +676,7 @@ SUITE( ShaderParser )
                 .end()
             .end()
         .end();
-        ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
+        shared_ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
         
         CHECK( *shader == *expected_shader );  
     }
@@ -685,7 +685,7 @@ SUITE( ShaderParser )
     {
         SymbolTable symbol_table;
         ShaderParser shader_parser( symbol_table );
-        ptr<SyntaxNode> shader = shader_parser.parse( "../shaders/ambientlight.sl" );
+        shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "ambientlight.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
@@ -712,7 +712,7 @@ SUITE( ShaderParser )
                 .end()
             .end()
         .end();
-        ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
+        shared_ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
         
         CHECK( *shader == *expected_shader );  
     }
@@ -721,7 +721,7 @@ SUITE( ShaderParser )
     {
         SymbolTable symbol_table;
         ShaderParser shader_parser( symbol_table );
-        ptr<SyntaxNode> shader = shader_parser.parse( "../shaders/distantlight.sl" );
+        shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "distantlight.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
@@ -775,7 +775,7 @@ SUITE( ShaderParser )
                 .end()
             .end()
         .end();
-        ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
+        shared_ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
       
         CHECK( *shader == *expected_shader );  
     }
@@ -784,7 +784,7 @@ SUITE( ShaderParser )
     {
         SymbolTable symbol_table;
         ShaderParser shader_parser( symbol_table );
-        ptr<SyntaxNode> shader = shader_parser.parse( "../shaders/pointlight.sl" );
+        shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "pointlight.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
@@ -832,7 +832,7 @@ SUITE( ShaderParser )
                 .end()
             .end()
         .end();
-        ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
+        shared_ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
 
         CHECK( *shader == *expected_shader );  
     }
@@ -841,7 +841,7 @@ SUITE( ShaderParser )
     {
         SymbolTable symbol_table;
         ShaderParser shader_parser( symbol_table );
-        ptr<SyntaxNode> shader = shader_parser.parse( "../shaders/spotlight.sl" );
+        shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "spotlight.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
@@ -970,7 +970,7 @@ SUITE( ShaderParser )
                 .end()
             .end()
         .end();
-        ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
+        shared_ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
         
         CHECK( *shader == *expected_shader );  
     }
@@ -979,7 +979,7 @@ SUITE( ShaderParser )
     {
         SymbolTable symbol_table;
         ShaderParser shader_parser( symbol_table );
-        ptr<SyntaxNode> shader = shader_parser.parse( "../shaders/depthcue.sl" );
+        shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "depthcue.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
@@ -1041,7 +1041,7 @@ SUITE( ShaderParser )
                 .end()
             .end()
         .end();
-        ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
+        shared_ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
         
         CHECK( *shader == *expected_shader );  
     }
@@ -1050,7 +1050,7 @@ SUITE( ShaderParser )
     {
         SymbolTable symbol_table;
         ShaderParser shader_parser( symbol_table );
-        ptr<SyntaxNode> shader = shader_parser.parse( "../shaders/fog.sl" );
+        shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "fog.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
@@ -1106,7 +1106,7 @@ SUITE( ShaderParser )
                 .end()
             .end()
         .end();
-        ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
+        shared_ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
         
         CHECK( *shader == *expected_shader );  
     }
@@ -1115,7 +1115,7 @@ SUITE( ShaderParser )
     {
         SymbolTable symbol_table;
         ShaderParser shader_parser( symbol_table );
-        ptr<SyntaxNode> shader = shader_parser.parse( "../shaders/bumpy.sl" );
+        shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "bumpy.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
@@ -1158,7 +1158,7 @@ SUITE( ShaderParser )
                 .end()
             .end()
         .end();
-        ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
+        shared_ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
         
         CHECK( *shader == *expected_shader );  
     }
@@ -1167,7 +1167,7 @@ SUITE( ShaderParser )
     {
         SymbolTable symbol_table;
         ShaderParser shader_parser( symbol_table );
-        ptr<SyntaxNode> shader = shader_parser.parse( "../shaders/background.sl" );
+        shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "background.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
@@ -1196,7 +1196,7 @@ SUITE( ShaderParser )
                 .end()
             .end()
         .end();
-        ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
+        shared_ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
         
         CHECK( *shader == *expected_shader );  
     }
@@ -1205,13 +1205,13 @@ SUITE( ShaderParser )
     {           
         SymbolTable symbol_table;
         ShaderParser shader_parser( symbol_table );
-        ptr<SyntaxNode> shader = shader_parser.parse( "../shaders/shadowpointlight.sl" );
+        shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "shadowpointlight.sl" );
         
         /*
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
         .end();
-        ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
+        shared_ptr<SyntaxNode> expected_shader = build_syntax_tree.root();
         
         CHECK( *shader == *expected_shader );  
         */
@@ -1229,7 +1229,7 @@ SUITE( ShaderParser )
 
         SymbolTable symbol_table;
         ShaderParser shader_parser( symbol_table );        
-        ptr<SyntaxNode> shader = shader_parser.parse( source, source + strlen(source) );
+        shared_ptr<SyntaxNode> shader = shader_parser.parse( source, source + strlen(source) );
         CHECK( shader );
     }
     
@@ -1258,7 +1258,7 @@ SUITE( ShaderParser )
 
         SymbolTable symbol_table;
         ShaderParser shader_parser( symbol_table );        
-        ptr<SyntaxNode> shader = shader_parser.parse( source, source + strlen(source) );
+        shared_ptr<SyntaxNode> shader = shader_parser.parse( source, source + strlen(source) );
         CHECK( shader );
     }
     
@@ -1287,7 +1287,7 @@ SUITE( ShaderParser )
 
         SymbolTable symbol_table;
         ShaderParser shader_parser( symbol_table );
-        ptr<SyntaxNode> shader = shader_parser.parse( source, source + strlen(source) );
+        shared_ptr<SyntaxNode> shader = shader_parser.parse( source, source + strlen(source) );
         CHECK( shader );
     }
 
@@ -1303,7 +1303,7 @@ SUITE( ShaderParser )
 
         SymbolTable symbol_table;
         ShaderParser shader_parser( symbol_table );
-        ptr<SyntaxNode> shader = shader_parser.parse( source, source + strlen(source) );
+        shared_ptr<SyntaxNode> shader = shader_parser.parse( source, source + strlen(source) );
         CHECK( shader );
     }
 

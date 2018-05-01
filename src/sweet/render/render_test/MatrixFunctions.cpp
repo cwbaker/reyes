@@ -15,6 +15,7 @@
 #include <string.h>
 #include <stdio.h>
 
+using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
@@ -42,14 +43,14 @@ SUITE( MatrixFunctions )
 
             grid.resize( 2, 2 );
             
-            ptr<Value> M_value = grid.add_value( "M", TYPE_MATRIX, STORAGE_UNIFORM );
+            shared_ptr<Value> M_value = grid.add_value( "M", TYPE_MATRIX, STORAGE_UNIFORM );
             M_value->zero();
             M = M_value->mat4x4_values();
             
-            ptr<Value> P_value = grid.add_value( "P", TYPE_POINT );
+            shared_ptr<Value> P_value = grid.add_value( "P", TYPE_POINT );
             P_value->zero();
             
-            ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
+            shared_ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
             x_value->zero();
             x = x_value->float_values();
         }
