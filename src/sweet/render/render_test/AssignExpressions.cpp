@@ -6,7 +6,7 @@
 #include <sweet/render/Shader.hpp>
 #include <sweet/render/Grid.hpp>
 #include <sweet/render/Value.hpp>
-#include <sweet/render/Error.hpp>
+#include <sweet/render/ErrorCode.hpp>
 #include <sweet/render/ErrorAction.hpp>
 #include <sweet/assert/assert.hpp>
 #define _USE_MATH_DEFINES
@@ -23,6 +23,16 @@ static const float TOLERANCE = 0.01f;
 
 SUITE( AssignExpressions )
 {
+    struct CheckErrorPolicy : public render::ErrorPolicy
+    {
+        int error;
+
+        void render_error( int eerror, const char* /*format*/, va_list /*args*/ )
+        {
+            error = eerror;
+        }
+    };
+
     struct AssignExpressionTest
     {
         Grid grid;
@@ -45,11 +55,9 @@ SUITE( AssignExpressions )
             y = y_value->float_values();
         }
         
-        void test( const char* source )
+        int test( const char* source )
         {
-            ErrorPolicy error_policy;
-            error_policy.actions( ERROR_ACTION_THROW );
-            
+            CheckErrorPolicy error_policy;      
             SymbolTable symbol_table;
             symbol_table.add_symbols()
                 ( "x", TYPE_FLOAT )
@@ -59,6 +67,7 @@ SUITE( AssignExpressions )
             VirtualMachine virtual_machine;
             virtual_machine.initialize( grid, shader );
             virtual_machine.shade( grid, grid, shader );
+            return error_policy.error;
         }
     };
 
@@ -110,7 +119,7 @@ SUITE( AssignExpressions )
             "   PI = 2; \n"
             "}"
         ;    
-        CHECK_THROW( test(shader), SemanticAnalysisFailedError );
+        CHECK( test(shader) == RENDER_ERROR_SEMANTIC_ANALYSIS_FAILED );
     }
     
     TEST_FIXTURE( AssignExpressionTest, assign_constant_from_uniform_fails )
@@ -119,8 +128,8 @@ SUITE( AssignExpressions )
             "surface assign_constant_from_uniform_fails(float z = 0;) { \n"
             "   PI = z; \n"
             "}"
-        ;    
-        CHECK_THROW( test(shader), SemanticAnalysisFailedError );
+        ;
+        CHECK( test(shader) == RENDER_ERROR_SEMANTIC_ANALYSIS_FAILED );
     }
     
     TEST_FIXTURE( AssignExpressionTest, assign_constant_from_varying_fails )
@@ -130,7 +139,7 @@ SUITE( AssignExpressions )
             "   PI = x; \n"
             "}"
         ;    
-        CHECK_THROW( test(shader), SemanticAnalysisFailedError );
+        CHECK( test(shader) == RENDER_ERROR_SEMANTIC_ANALYSIS_FAILED );
     }
     
     TEST_FIXTURE( AssignExpressionTest, assign_uniform_from_identified_constant )

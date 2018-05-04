@@ -6,7 +6,7 @@
 #include <sweet/render/Shader.hpp>
 #include <sweet/render/Grid.hpp>
 #include <sweet/render/Value.hpp>
-#include <sweet/render/Error.hpp>
+#include <sweet/render/ErrorCode.hpp>
 #include <sweet/math/vec2.ipp>
 #include <sweet/math/vec3.ipp>
 #include <sweet/assert/assert.hpp>

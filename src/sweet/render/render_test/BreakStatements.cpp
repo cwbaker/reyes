@@ -1,11 +1,12 @@
 
+#include "CaptureErrorPolicy.hpp"
 #include <UnitTest++/UnitTest++.h>
 #include <sweet/render/Shader.hpp>
 #include <sweet/render/Grid.hpp>
 #include <sweet/render/Value.hpp>
 #include <sweet/render/SymbolTable.hpp>
 #include <sweet/render/VirtualMachine.hpp>
-#include <sweet/render/Error.hpp>
+#include <sweet/render/ErrorCode.hpp>
 #include <sweet/render/ErrorAction.hpp>
 #include <sweet/render/ErrorPolicy.hpp>
 #include <sweet/assert/assert.hpp>
@@ -19,32 +20,12 @@ using namespace sweet;
 using namespace sweet::math;
 using namespace sweet::render;
 
+using std::string;
+
 static const float TOLERANCE = 0.01f;
 
 SUITE( BreakStatements )
 {
-    struct ExpectLineAndMessage : public render::ErrorPolicy
-    {
-        int line_;
-        const char* message_;
-        
-        ExpectLineAndMessage( int line, const char* message )
-        : ErrorPolicy(),
-          line_( line ),
-          message_( message )
-        {
-            SWEET_ASSERT( line >= 0 );
-            SWEET_ASSERT( message );
-            actions( ERROR_ACTION_THROW );
-        }
-        
-        void parser_error( int line, const char* message )
-        {
-            CHECK_EQUAL( line_, line );
-            CHECK( strcmp(message, message_) == 0 );
-        }
-    };
-
     struct BreakStatementTest
     {
         Grid grid;
@@ -69,7 +50,6 @@ SUITE( BreakStatements )
         void test( const char* source )
         {
             ErrorPolicy error_policy;
-            error_policy.actions( ERROR_ACTION_THROW );
             test( source, error_policy );
         }
         
@@ -137,8 +117,11 @@ SUITE( BreakStatements )
             "}"
         ;
 
-        ExpectLineAndMessage expect_line_and_message( 4, "Break to a level outside of a loop" );
-        CHECK_THROW( test(source, expect_line_and_message), CodeGenerationFailedError );
+        CaptureErrorPolicy error_policy;
+        test( source, error_policy );
+        REQUIRE CHECK( !error_policy.errors.empty() && !error_policy.messages.empty() );
+        CHECK_EQUAL( error_policy.errors[0], RENDER_ERROR_CODE_GENERATION_ERROR );
+        CHECK_EQUAL( error_policy.messages[0], "Break to a level outside of a loop" );
     }
 
     TEST_FIXTURE( BreakStatementTest, break_statement_in_while_loop )
@@ -192,8 +175,10 @@ SUITE( BreakStatements )
             "   } \n"
             "}"
         ;
-        ExpectLineAndMessage expect_line_and_message( 4, "Break to a level outside of a loop" );
-        CHECK_THROW( test(source, expect_line_and_message), CodeGenerationFailedError );
+        CaptureErrorPolicy error_policy;
+        test( source, error_policy );
+        CHECK_EQUAL( error_policy.errors[0], RENDER_ERROR_CODE_GENERATION_ERROR );
+        CHECK_EQUAL( error_policy.messages[0], "Break to a level outside of a loop" );
     }
 
     TEST_FIXTURE( BreakStatementTest, break_out_of_first_level_of_nested_for_loop )
@@ -245,8 +230,10 @@ SUITE( BreakStatements )
             "   break; \n"
             "}"
         ;
-        ExpectLineAndMessage expect_line_and_message( 2, "Break outside of a loop" );
-        CHECK_THROW( test(source, expect_line_and_message), CodeGenerationFailedError );
+        CaptureErrorPolicy error_policy;
+        test( source, error_policy );
+        CHECK_EQUAL( error_policy.errors[0], RENDER_ERROR_CODE_GENERATION_ERROR );
+        CHECK_EQUAL( error_policy.messages[0], "Break outside of a loop" );
     }
 
     TEST_FIXTURE( BreakStatementTest, break_statement_with_level_outside_of_loop )
@@ -256,7 +243,9 @@ SUITE( BreakStatements )
             "   break 2; \n"
             "}"
         ;
-        ExpectLineAndMessage expect_line_and_message( 2, "Break outside of a loop" );
-        CHECK_THROW( test(source, expect_line_and_message), CodeGenerationFailedError );
+        CaptureErrorPolicy error_policy;
+        test( source, error_policy );
+        CHECK_EQUAL( error_policy.errors[0], RENDER_ERROR_CODE_GENERATION_ERROR );
+        CHECK_EQUAL( error_policy.messages[0], "Break outside of a loop" );
     }
 }

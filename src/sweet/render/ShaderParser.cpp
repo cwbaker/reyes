@@ -5,7 +5,7 @@
 
 #include "stdafx.hpp"
 #include "ShaderParser.hpp"
-#include "Error.hpp"
+#include "ErrorCode.hpp"
 #include "parser.hpp"
 #include "SyntaxNode.hpp"
 #include "SymbolTable.hpp"

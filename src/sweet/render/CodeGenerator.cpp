@@ -10,7 +10,7 @@
 #include "Value.hpp"
 #include "Instruction.hpp"
 #include "SymbolTable.hpp"
-#include "Error.hpp"
+#include "ErrorCode.hpp"
 #include "ErrorPolicy.hpp"
 #include <sweet/math/vec2.ipp>
 #include <sweet/math/vec3.ipp>
@@ -215,7 +215,7 @@ int CodeGenerator::registers() const
     return registers_;
 }
 
-void CodeGenerator::error( bool condition, int line, const char* format, ... )
+void CodeGenerator::error( bool condition, int /*line*/, const char* format, ... )
 {       
     if ( condition )
     {
@@ -229,7 +229,7 @@ void CodeGenerator::error( bool condition, int line, const char* format, ... )
             vsnprintf( message, sizeof(message), format, args );
             va_end( args );
             
-            error_policy_->error( RENDER_ERROR_CODE_GENERATION_ERROR, "(%d): %s", line, message );
+            error_policy_->error( RENDER_ERROR_CODE_GENERATION_ERROR, "%s", message );
         }
     }
 }

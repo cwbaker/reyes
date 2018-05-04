@@ -51,13 +51,13 @@ class SWEET_RENDER_DECLSPEC ImageBuffer
         void expose( float gain, float gamma );
         void quantize( const ImageBuffer& image_buffer, float one, int minimum, int maximum, float dither );
 
-        void load( const char* filename, ErrorPolicy* error_policy = 0 );
-        void save( const char* filename, ErrorPolicy* error_policy = 0 ) const;
+        void load( const char* filename, ErrorPolicy* error_policy = nullptr );
+        void save( const char* filename, ErrorPolicy* error_policy = nullptr ) const;
         
-        void load_png( const char* filename, ErrorPolicy* error_policy = 0 );
-        void save_png( const char* filename, ErrorPolicy* error_policy = 0 ) const;
+        void load_png( const char* filename, ErrorPolicy* error_policy = nullptr );
+        void save_png( const char* filename, ErrorPolicy* error_policy = nullptr ) const;
         
-        void load_jpeg( const char* filename, ErrorPolicy* error_policy = 0 );
+        void load_jpeg( const char* filename, ErrorPolicy* error_policy = nullptr );
 };
 
 }

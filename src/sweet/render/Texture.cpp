@@ -7,7 +7,8 @@
 #include "Texture.hpp"
 #include "ImageBuffer.hpp"
 #include "ImageBufferFormat.hpp"
-#include "Error.hpp"
+#include "ErrorCode.hpp"
+#include "ErrorPolicy.hpp"
 #include <sweet/math/mat4x4.ipp>
 #include <sweet/math/scalar.ipp>
 #include <jpeg/jpeglib.h>
@@ -60,13 +61,13 @@ Texture::Texture( TextureType type, const math::mat4x4& camera_transform, const 
     image_buffers_ = new ImageBuffer [1];
 }
 
-Texture::Texture( const std::string& filename, TextureType type )
+Texture::Texture( const std::string& filename, TextureType type, ErrorPolicy* error_policy )
 : type_( TEXTURE_NULL ),
   camera_transform_( identity() ),
   screen_transform_( identity() ),
   image_buffers_( NULL )
 {
-    load( filename, type );
+    load( filename, type, error_policy );
 }
 
 Texture::~Texture()
@@ -163,9 +164,10 @@ float Texture::shadow( const math::vec4& P, float bias ) const
     return xx.w <= *pixel + bias ? 1.0f : 0.0f;
 }
 
-void Texture::load( const std::string& filename, TextureType type )
+void Texture::load( const std::string& filename, TextureType type, ErrorPolicy* error_policy )
 {
     SWEET_ASSERT( !filename.empty() );
+    SWEET_ASSERT( error_policy );
     SWEET_ASSERT( type > TEXTURE_NULL && type < TEXTURE_COUNT );
     
     type_ = type;
@@ -210,7 +212,11 @@ void Texture::load( const std::string& filename, TextureType type )
             }
             else
             {
-                SWEET_ERROR( OpeningFileFailedError("Unrecognized file type '%s' when loading a texture from '%s'", extension.c_str(), filename.c_str()) );
+                if ( error_policy )
+                {                    
+                    error_policy->error( RENDER_ERROR_OPENING_FILE_FAILED, "Unrecognized file type '%s' when loading a texture from '%s'", extension.c_str(), filename.c_str() );
+                }
+                return;
             }
         }
     }

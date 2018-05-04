@@ -11,6 +11,7 @@ namespace sweet
 namespace render
 {
 
+class ErrorPolicy;
 class ImageBuffer;
 
 /**
@@ -41,7 +42,7 @@ class SWEET_RENDER_DECLSPEC SampleBuffer
         float* position( int x, int y ) const;
         
         void save( int mode, const char* filename ) const;
-        void save_png( int mode, const char* filename ) const;
+        void save_png( int mode, const char* filename, ErrorPolicy* error_policy ) const;
         void filter( float (*filter_function)(float, float, float, float), ImageBuffer* image_buffer ) const;
         void pack( int mode, ImageBuffer* image_buffer ) const;        
 };
