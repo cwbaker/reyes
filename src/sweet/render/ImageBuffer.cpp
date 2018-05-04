@@ -1,13 +1,13 @@
 // 
 // ImageBuffer.cpp
-// Copyright (c) 2010 - 2012 Charles Baker.  All rights reserved.
+// Copyright (c) Charles Baker. All rights reserved.
 //
 
 #include "stdafx.hpp"
 #include "ImageBuffer.hpp"
 #include "DisplayMode.hpp"
 #include "ImageBufferFormat.hpp"
-#include "Error.hpp"
+#include "ErrorCode.hpp"
 #include "ErrorPolicy.hpp"
 #include <sweet/math/scalar.ipp>
 #include <sweet/assert/assert.hpp>
@@ -335,7 +335,6 @@ void ImageBuffer::load_png( const char* filename, ErrorPolicy* error_policy )
     };
 
     LoadPngGuard guard;
-    
     guard.file = fopen( filename, "rb" );
     if ( guard.file )
     {
@@ -344,19 +343,31 @@ void ImageBuffer::load_png( const char* filename, ErrorPolicy* error_policy )
         fread( signature, sizeof(unsigned char), sizeof(signature), guard.file );
         if ( png_sig_cmp(signature, 0, sizeof(signature)) != 0 )
         {
-            SWEET_ERROR( ReadingFileFailedError("Signature of '%s' doesn't match PNG", filename) );
+            if ( error_policy )
+            {
+                error_policy->error( RENDER_ERROR_READING_FILE_FAILED, "Signature of '%s' doesn't match PNG", filename );
+            }
+            return;
         }
         
         guard.png_read = png_create_read_struct( PNG_LIBPNG_VER_STRING, NULL, NULL, NULL );
         if ( !guard.png_read )
         {
-            SWEET_ERROR( OutOfMemoryError("Allocating memory to read a PNG from '%s' failed", filename) );
+            if ( error_policy )
+            {
+                error_policy->error( RENDER_ERROR_OUT_OF_MEMORY, "Allocating memory to read a PNG from '%s' failed", filename );
+            }
+            return;
         }
         
         guard.png_info = png_create_info_struct( guard.png_read );
         if ( !guard.png_info )
         {
-            SWEET_ERROR( OutOfMemoryError("Allocating memory to read PNG info from '%s' failed", filename) );
+            if ( error_policy )
+            {
+                error_policy->error( RENDER_ERROR_OUT_OF_MEMORY, "Allocating memory to read PNG info from '%s' failed", filename );
+            }
+            return;
         }
         
         png_init_io( guard.png_read, guard.file );
@@ -367,7 +378,11 @@ void ImageBuffer::load_png( const char* filename, ErrorPolicy* error_policy )
         int interlace_type = png_get_interlace_type( guard.png_read, guard.png_info );
         if ( interlace_type != 0 )
         {
-            SWEET_ERROR( ReadingFileFailedError("Reading an interlaced PNG from '%s' is not supported", filename) );
+            if ( error_policy )
+            {
+                error_policy->error( RENDER_ERROR_READING_FILE_FAILED, "Reading an interlaced PNG from '%s' is not supported", filename );
+            }
+            return;
         }
 
         int width = png_get_image_width( guard.png_read, guard.png_info );
@@ -472,13 +487,21 @@ void ImageBuffer::save_png( const char* filename, ErrorPolicy* error_policy ) co
         guard.png_write = png_create_write_struct( PNG_LIBPNG_VER_STRING, NULL, NULL, NULL );
         if ( !guard.png_write )
         {
-            SWEET_ERROR( OutOfMemoryError("Allocating memory to write a PNG to '%s' failed", filename) );
+            if ( error_policy )
+            {
+                error_policy->error( RENDER_ERROR_OUT_OF_MEMORY, "Allocating memory to write a PNG to '%s' failed", filename );
+            }
+            return;
         }
 
         guard.png_info = png_create_info_struct( guard.png_write );
         if ( !guard.png_info )
         {
-            SWEET_ERROR( OutOfMemoryError("Allocating memory to write a PNG to '%s' failed", filename) );
+            if ( error_policy )
+            {
+                error_policy->error( RENDER_ERROR_OUT_OF_MEMORY, "Allocating memory to write a PNG to '%s' failed", filename );
+            }
+            return;
         }
         
         png_init_io( guard.png_write, guard.file );
@@ -525,12 +548,12 @@ void ImageBuffer::load_jpeg( const char* filename, ErrorPolicy* error_policy )
             if ( file_ )
             {
                 decompress_->err = jpeg_std_error( &error_mgr_ );
+                decompress_->client_data = this;
                 error_mgr_.error_exit = &JpegDecoder::jpeg_error_exit;
             }
             else
             {
                 decompress_ = NULL;
-                
                 if ( error_policy_ )
                 {
                     error_policy->error( RENDER_ERROR_OPENING_FILE_FAILED, "Opening '%s' to read a JPEG failed", filename );
@@ -553,9 +576,18 @@ void ImageBuffer::load_jpeg( const char* filename, ErrorPolicy* error_policy )
             }
         }
 
-        static void jpeg_error_exit( struct jpeg_common_struct* /*jpeg_common*/ )
+        static void jpeg_error_exit( struct jpeg_common_struct* jpeg_common )
         {
-            SWEET_ERROR( ReadingFileFailedError("Reading a JPEG failed") );
+            JpegDecoder* decoder = reinterpret_cast<JpegDecoder*>( jpeg_common->client_data );
+            SWEET_ASSERT( decoder );
+            ErrorPolicy* error_policy = decoder->error_policy_;
+            if ( error_policy )
+            {
+                error_policy->error( RENDER_ERROR_READING_FILE_FAILED, "Reading a JPEG failed" );
+            }
+
+            jpeg_destroy( jpeg_common );
+            decoder->decompress_ = nullptr;
         }
     };
 

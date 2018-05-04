@@ -18,7 +18,6 @@ for _, build in build:default_builds("cc_.*") do
                 "Cylinder.cpp",        
                 "Debugger.cpp",
                 "Disk.cpp",
-                "Error.cpp",
                 "ErrorPolicy.cpp",
                 "Geometry.cpp",
                 "Grid.cpp",

@@ -3,7 +3,6 @@ build:all {
     build:Executable '${bin}/render_examples' {
         '${lib}/render_${architecture}';
         '${lib}/assert_${architecture}';
-        '${lib}/error_${architecture}';
         '${lib}/jpeg_${architecture}';
         '${lib}/lalr_${architecture}';
         '${lib}/libpng_${architecture}';

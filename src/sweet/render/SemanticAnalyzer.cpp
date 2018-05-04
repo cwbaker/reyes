@@ -10,7 +10,7 @@
 #include "SymbolTable.hpp"
 #include "ValueType.hpp"
 #include "Instruction.hpp"
-#include "Error.hpp"
+#include "ErrorCode.hpp"
 #include "ErrorPolicy.hpp"
 #include <sweet/assert/assert.hpp>
 #include <algorithm>
@@ -68,7 +68,7 @@ void SemanticAnalyzer::analyze( SyntaxNode* node, const char* name )
     ambient_light_ = false;
     errors_ = 0;
 
-    if ( node && error_policy_->total_errors() == 0 )
+    if ( node && error_policy_->errors() == 0 )
     {
         analyze_ambient_lighting( node->node(0) );
         analyze_node( node->node(0) );

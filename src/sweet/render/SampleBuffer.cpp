@@ -8,7 +8,8 @@
 #include "ImageBuffer.hpp"
 #include "DisplayMode.hpp"
 #include "ImageBufferFormat.hpp"
-#include "Error.hpp"
+#include "ErrorCode.hpp"
+#include "ErrorPolicy.hpp"
 #include <sweet/math/vec2.ipp>
 #include <sweet/math/vec4.ipp>
 #include <sweet/math/mat4x4.ipp>
@@ -113,7 +114,7 @@ void SampleBuffer::save( int mode, const char* filename ) const
     image_buffer.save( filename );
 }
 
-void SampleBuffer::save_png( int mode, const char* filename ) const
+void SampleBuffer::save_png( int mode, const char* filename, ErrorPolicy* error_policy ) const
 {
     bool rgb = (mode & DISPLAY_MODE_RGB) != 0;
     bool alpha = (mode & DISPLAY_MODE_A) != 0;
@@ -121,11 +122,18 @@ void SampleBuffer::save_png( int mode, const char* filename ) const
     
     if ( !rgb )
     {
-        SWEET_ERROR( InvalidDisplayModeError("Unable to write to a PNG image without 'rgb'") );
+        if ( error_policy )
+        {
+            error_policy->error( RENDER_ERROR_INVALID_DISPLAY_MODE, "Unable to write to a PNG image without 'rgb'" );
+        }
+        return;
     }
     else if ( alpha && depth )
     {
-        SWEET_ERROR( InvalidDisplayModeError("Unable to write both 'a' and 'z' into a single PNG image") );
+        if ( error_policy )
+        {
+            error_policy->error( RENDER_ERROR_INVALID_DISPLAY_MODE, "Unable to write both 'a' and 'z' into a single PNG image" );
+        }
     }
     
     ImageBuffer image_buffer;

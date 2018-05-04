@@ -4,7 +4,7 @@
 #include "Grid.hpp"
 #include "Value.hpp"
 #include "Renderer.hpp"
-#include "Error.hpp"
+#include "ErrorCode.hpp"
 #include "ErrorPolicy.hpp"
 #include <sweet/math/scalar.ipp>
 #include <sweet/math/vec2.ipp>

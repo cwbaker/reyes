@@ -13,6 +13,7 @@ namespace sweet
 namespace render
 {
 
+class ErrorPolicy;
 class ImageBuffer;
 
 /**
@@ -28,7 +29,7 @@ class SWEET_RENDER_DECLSPEC Texture
 public:
     Texture();
     Texture( TextureType type, const math::mat4x4& camera_transform, const math::mat4x4& screen_transform );
-    Texture( const std::string& filename, TextureType type = TEXTURE_COLOR );
+    Texture( const std::string& filename, TextureType type, ErrorPolicy* error_policy );
     ~Texture();
     
     TextureType type() const;
@@ -40,7 +41,7 @@ public:
     float shadow( const math::vec4& P, float bias ) const;
     
 private:
-    void load( const std::string& filename, TextureType type );
+    void load( const std::string& filename, TextureType type, ErrorPolicy* error_policy );
 };
 
 }

@@ -6,7 +6,6 @@
 #include <sweet/render/Shader.hpp>
 #include <sweet/render/Grid.hpp>
 #include <sweet/render/Value.hpp>
-#include <sweet/render/Error.hpp>
 #include <sweet/assert/assert.hpp>
 #define _USE_MATH_DEFINES
 #include <math.h>

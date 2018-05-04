@@ -3,12 +3,15 @@ build:all {
     build:Executable '${bin}/render_test' {
         '${lib}/render_${architecture}';
         '${lib}/assert_${architecture}';
-        '${lib}/error_${architecture}';
         '${lib}/jpeg_${architecture}';
         '${lib}/lalr_${architecture}';
         '${lib}/libpng_${architecture}';
         '${lib}/UnitTest++_${architecture}';
         '${lib}/zlib_${architecture}';
+
+        build:Cxx () {
+            'CaptureErrorPolicy.cpp';
+        };
 
         build:Cxx () {
             defines = {

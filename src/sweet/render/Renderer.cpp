@@ -83,7 +83,7 @@ Renderer::Renderer()
   options_( NULL ),
   attributes_()
 {
-    error_policy_ = new ErrorPolicy( ERROR_ACTION_THROW, NULL );
+    error_policy_ = new ErrorPolicy;
     symbol_table_ = new SymbolTable();
     virtual_machine_ = new VirtualMachine( *this );
     null_surface_shader_ = new Shader( NULL_SURFACE_SHADER, NULL_SURFACE_SHADER + strlen(NULL_SURFACE_SHADER), symbol_table(), error_policy() );
@@ -1524,7 +1524,7 @@ void Renderer::save_samples_as_png( int mode, const char* format, ... ) const
     va_end( args );
     filename [sizeof(filename) - 1] = 0;
 
-    sample_buffer_->save_png( mode, filename );
+    sample_buffer_->save_png( mode, filename, error_policy_ );
 }
 
 /**
@@ -1544,7 +1544,7 @@ void Renderer::texture( const char* filename )
     Texture* texture = find_texture( filename );
     if ( !texture )
     {
-        texture = new Texture( filename, TEXTURE_COLOR );
+        texture = new Texture( filename, TEXTURE_COLOR, error_policy_ );
         textures_.insert( make_pair(filename, texture) );
     }
 }
@@ -1564,7 +1564,7 @@ void Renderer::environment( const char* filename )
     Texture* texture = find_texture( filename );
     if ( !texture )
     {
-        texture = new Texture( filename, TEXTURE_LATLONG_ENVIRONMENT );
+        texture = new Texture( filename, TEXTURE_LATLONG_ENVIRONMENT, error_policy_ );
         textures_.insert( make_pair(filename, texture) );
     }
 }
@@ -1589,7 +1589,7 @@ void Renderer::cubic_environment( const char* filename )
     Texture* texture = find_texture( filename );
     if ( !texture )
     {
-        texture = new Texture( filename, TEXTURE_CUBIC_ENVIRONMENT );
+        texture = new Texture( filename, TEXTURE_CUBIC_ENVIRONMENT, error_policy_ );
         textures_.insert( make_pair(filename, texture) );
     }
 }
