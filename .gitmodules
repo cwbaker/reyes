@@ -4,3 +4,6 @@
 [submodule "src/lalr"]
 	path = src/lalr
 	url = git@github.com:cwbaker/lalr.git
+[submodule "src/zlib"]
+	path = src/zlib
+	url = git@github.com:cwbaker/zlib.git
