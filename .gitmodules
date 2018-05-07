@@ -7,3 +7,6 @@
 [submodule "src/zlib"]
 	path = src/zlib
 	url = git@github.com:cwbaker/zlib.git
+[submodule "src/math"]
+	path = src/math
+	url = git@github.com:cwbaker/math.git
