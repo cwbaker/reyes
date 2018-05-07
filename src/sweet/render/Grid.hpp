@@ -9,7 +9,7 @@
 #include "declspec.hpp"
 #include "ValueType.hpp"
 #include "ValueStorage.hpp"
-#include <sweet/math/mat4x4.hpp>
+#include <math/mat4x4.hpp>
 #include <string>
 #include <vector>
 #include <map>

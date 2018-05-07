@@ -2,8 +2,8 @@
 #define SWEET_RENDER_SAMPLER_HPP_INCLUDED
 
 #include "declspec.hpp"
-#include <sweet/math/vec3.hpp>
-#include <sweet/math/mat4x4.hpp>
+#include <math/vec3.hpp>
+#include <math/mat4x4.hpp>
 
 namespace sweet
 {

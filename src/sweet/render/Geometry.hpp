@@ -7,9 +7,9 @@
 #define SWEET_RENDER_GEOMETRY_HPP_INCLUDED
 
 #include "declspec.hpp"
-#include <sweet/math/vec2.hpp>
-#include <sweet/math/vec3.hpp>
-#include <sweet/math/mat4x4.hpp>
+#include <math/vec2.hpp>
+#include <math/vec3.hpp>
+#include <math/mat4x4.hpp>
 #include <list>
 #include <memory>
 

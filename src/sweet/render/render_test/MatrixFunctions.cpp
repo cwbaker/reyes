@@ -6,8 +6,8 @@
 #include <sweet/render/Shader.hpp>
 #include <sweet/render/Grid.hpp>
 #include <sweet/render/Value.hpp>
-#include <sweet/math/vec3.ipp>
-#include <sweet/math/mat4x4.ipp>
+#include <math/vec3.ipp>
+#include <math/mat4x4.ipp>
 #include <sweet/assert/assert.hpp>
 #define _USE_MATH_DEFINES
 #include <math.h>

@@ -9,7 +9,7 @@
 #include "ImageBufferFormat.hpp"
 #include "ErrorCode.hpp"
 #include "ErrorPolicy.hpp"
-#include <sweet/math/scalar.ipp>
+#include <math/scalar.ipp>
 #include <sweet/assert/assert.hpp>
 #include <png/png.h>
 #include <jpeg/jpeglib.h>

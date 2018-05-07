@@ -4,10 +4,10 @@
 #include "declspec.hpp"
 #include "ValueType.hpp"
 #include "ValueStorage.hpp"
-#include <sweet/math/vec2.hpp>
-#include <sweet/math/vec3.hpp>
-#include <sweet/math/vec4.hpp>
-#include <sweet/math/mat4x4.hpp>
+#include <math/vec2.hpp>
+#include <math/vec3.hpp>
+#include <math/vec4.hpp>
+#include <math/mat4x4.hpp>
 #include <string>
 #include <vector>
 #include <memory>

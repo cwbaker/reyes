@@ -12,8 +12,8 @@
 #include "SymbolTable.hpp"
 #include "ErrorCode.hpp"
 #include "ErrorPolicy.hpp"
-#include <sweet/math/vec2.ipp>
-#include <sweet/math/vec3.ipp>
+#include <math/vec2.ipp>
+#include <math/vec3.ipp>
 #include <sweet/assert/assert.hpp>
 #include <algorithm>
 #include <stdio.h>

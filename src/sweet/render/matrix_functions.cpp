@@ -4,9 +4,9 @@
 #include "Grid.hpp"
 #include "Value.hpp"
 #include "Renderer.hpp"
-#include <sweet/math/scalar.ipp>
-#include <sweet/math/vec3.ipp>
-#include <sweet/math/mat4x4.ipp>
+#include <math/scalar.ipp>
+#include <math/vec3.ipp>
+#include <math/mat4x4.ipp>
 #include <sweet/assert/assert.hpp>
 
 using namespace sweet;

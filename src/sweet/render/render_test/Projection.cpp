@@ -1,7 +1,7 @@
 
 #include <UnitTest++/UnitTest++.h>
-#include <sweet/math/vec4.ipp>
-#include <sweet/math/mat4x4.ipp>
+#include <math/vec4.ipp>
+#include <math/mat4x4.ipp>
 #define _USE_MATH_DEFINES
 #include <math.h>
 

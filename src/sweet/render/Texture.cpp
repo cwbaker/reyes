@@ -9,8 +9,8 @@
 #include "ImageBufferFormat.hpp"
 #include "ErrorCode.hpp"
 #include "ErrorPolicy.hpp"
-#include <sweet/math/mat4x4.ipp>
-#include <sweet/math/scalar.ipp>
+#include <math/mat4x4.ipp>
+#include <math/scalar.ipp>
 #include <jpeg/jpeglib.h>
 #include <sweet/assert/assert.hpp>
 #include <string>

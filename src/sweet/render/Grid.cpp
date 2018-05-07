@@ -6,7 +6,7 @@
 #include "stdafx.hpp"
 #include "Grid.hpp"
 #include "Value.hpp"
-#include <sweet/math/mat4x4.ipp>
+#include <math/mat4x4.ipp>
 #include <sweet/assert/assert.hpp>
 #include <vector>
 

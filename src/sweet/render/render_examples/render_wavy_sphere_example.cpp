@@ -3,7 +3,7 @@
 #include <sweet/render/Value.hpp>
 #include <sweet/render/Options.hpp>
 #include <sweet/render/Renderer.hpp>
-#include <sweet/math/vec3.ipp>
+#include <math/vec3.ipp>
 #define _USE_MATH_DEFINES
 #include <math.h>
 

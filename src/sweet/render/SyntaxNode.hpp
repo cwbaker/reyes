@@ -6,8 +6,8 @@
 #include "ValueType.hpp"
 #include "ValueStorage.hpp"
 #include "Instruction.hpp"
-#include <sweet/math/vec3.hpp>
-#include <sweet/math/mat4x4.hpp>
+#include <math/vec3.hpp>
+#include <math/mat4x4.hpp>
 #include <memory>
 #include <string>
 #include <vector>

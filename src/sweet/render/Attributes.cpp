@@ -9,9 +9,9 @@
 #include "Grid.hpp"
 #include "Shader.hpp"
 #include "VirtualMachine.hpp"
-#include <sweet/math/vec2.ipp>
-#include <sweet/math/vec3.ipp>
-#include <sweet/math/mat4x4.ipp>
+#include <math/vec2.ipp>
+#include <math/vec3.ipp>
+#include <math/mat4x4.ipp>
 #include <sweet/assert/assert.hpp>
 
 using std::map;

@@ -2,7 +2,7 @@
 #define SWEET_RENDER_IMAGEBUFFER_HPP_INCLUDED
 
 #include "declspec.hpp"
-#include <sweet/math/vec4.hpp>
+#include <math/vec4.hpp>
 
 namespace sweet
 {

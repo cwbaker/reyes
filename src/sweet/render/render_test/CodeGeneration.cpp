@@ -10,8 +10,8 @@
 #include <sweet/render/CodeGenerator.hpp>
 #include <sweet/render/Value.hpp>
 #include <sweet/render/Instruction.hpp>
-#include <sweet/math/vec2.ipp>
-#include <sweet/math/vec3.ipp>
+#include <math/vec2.ipp>
+#include <math/vec3.ipp>
 #include <sweet/assert/assert.hpp>
 
 using std::vector;

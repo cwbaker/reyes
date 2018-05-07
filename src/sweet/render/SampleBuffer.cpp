@@ -10,10 +10,10 @@
 #include "ImageBufferFormat.hpp"
 #include "ErrorCode.hpp"
 #include "ErrorPolicy.hpp"
-#include <sweet/math/vec2.ipp>
-#include <sweet/math/vec4.ipp>
-#include <sweet/math/mat4x4.ipp>
-#include <sweet/math/scalar.ipp>
+#include <math/vec2.ipp>
+#include <math/vec4.ipp>
+#include <math/mat4x4.ipp>
+#include <math/scalar.ipp>
 #include <sweet/assert/assert.hpp>
 #include <algorithm>
 

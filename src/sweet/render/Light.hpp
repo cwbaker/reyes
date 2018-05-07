@@ -3,7 +3,7 @@
 
 #include "declspec.hpp"
 #include "LightType.hpp"
-#include <sweet/math/vec3.hpp>
+#include <math/vec3.hpp>
 #include <memory>
 
 namespace sweet

@@ -10,9 +10,9 @@
 #include "VirtualMachine.hpp"
 #include "Light.hpp"
 #include "Renderer.hpp"
-#include <sweet/math/scalar.ipp>
-#include <sweet/math/vec2.ipp>
-#include <sweet/math/vec3.ipp>
+#include <math/scalar.ipp>
+#include <math/vec2.ipp>
+#include <math/vec3.ipp>
 #include <sweet/assert/assert.hpp>
 #include <algorithm>
 

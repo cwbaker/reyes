@@ -2,9 +2,9 @@
 #define SWEET_RENDER_RENDERER_HPP_INCLUDED
 
 #include "declspec.hpp"
-#include <sweet/math/vec3.hpp>
-#include <sweet/math/vec4.hpp>
-#include <sweet/math/mat4x4.hpp>
+#include <math/vec3.hpp>
+#include <math/vec4.hpp>
+#include <math/mat4x4.hpp>
 #include <memory>
 #include <utility>
 #include <vector>
