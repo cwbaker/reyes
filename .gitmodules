@@ -10,3 +10,6 @@
 [submodule "src/math"]
 	path = src/math
 	url = git@github.com:cwbaker/math.git
+[submodule "src/libpng"]
+	path = src/libpng
+	url = git@github.com:cwbaker/libpng.git
