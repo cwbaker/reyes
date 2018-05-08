@@ -11,7 +11,7 @@
 #include "ErrorPolicy.hpp"
 #include <math/scalar.ipp>
 #include <sweet/assert/assert.hpp>
-#include <png/png.h>
+#include <libpng/png.h>
 #include <jpeg/jpeglib.h>
 #include <algorithm>
 #include <memory.h>
