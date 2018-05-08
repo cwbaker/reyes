@@ -23,7 +23,7 @@ local settings = build:initialize {
     include_directories = {
         build:root( 'src' ),
         build:root( 'src/zlib' ),
-        build:root( 'src/png' ),
+        build:root( 'src/libpng' ),
         build:root( 'src/unittest-cpp' );
         build:root( 'src/lalr/lalr' );
     };
@@ -55,7 +55,7 @@ build:default_targets {
 
 buildfile 'src/lalr/lalr/lalr.build';
 buildfile 'src/jpeg/jpeg.build';
-buildfile 'src/png/png.build';
+buildfile 'src/libpng/libpng.build';
 buildfile 'src/sweet/assert/assert.build';
 buildfile 'src/sweet/math/math.build';
 buildfile 'src/sweet/render/render.build';
