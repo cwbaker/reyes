@@ -12,7 +12,7 @@
 #include <math/mat4x4.ipp>
 #include <math/scalar.ipp>
 #include <jpeg/jpeglib.h>
-#include <sweet/assert/assert.hpp>
+#include "assert.hpp"
 #include <string>
 #include <stdio.h>
 #include <memory.h>

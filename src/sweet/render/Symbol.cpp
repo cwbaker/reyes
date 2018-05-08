@@ -5,7 +5,7 @@
 
 #include "stdafx.hpp"
 #include "Symbol.hpp"
-#include <sweet/assert/assert.hpp>
+#include "assert.hpp"
 
 using std::string;
 using namespace sweet;

@@ -9,7 +9,7 @@
 #include <math/scalar.ipp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
-#include <sweet/assert/assert.hpp>
+#include "assert.hpp"
 
 using std::shared_ptr;
 using namespace sweet;

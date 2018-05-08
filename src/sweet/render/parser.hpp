@@ -1,7 +1,7 @@
 #ifndef SWEET_RENDER_PARSER_HPP_INCLUDED
 #define SWEET_RENDER_PARSER_HPP_INCLUDED
 
-#include <sweet/assert/assert.hpp>
+#include "assert.hpp"
 #include <iterator>
 #include <string>
 #include <vector>

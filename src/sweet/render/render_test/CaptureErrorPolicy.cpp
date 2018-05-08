@@ -5,7 +5,7 @@
 
 #include "CaptureErrorPolicy.hpp"
 #include <sweet/render/ErrorCode.hpp>
-#include <sweet/assert/assert.hpp>
+#include <sweet/render/assert.hpp>
 
 using namespace sweet::render;
 

@@ -18,7 +18,7 @@
 #include <math/vec3.ipp>
 #include <math/vec4.ipp>
 #include <math/mat4x4.ipp>
-#include <sweet/assert/assert.hpp>
+#include "assert.hpp"
 #include <algorithm>
 #include <limits.h>
 

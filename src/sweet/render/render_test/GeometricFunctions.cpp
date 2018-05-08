@@ -9,7 +9,7 @@
 #include <sweet/render/Grid.hpp>
 #include <sweet/render/Value.hpp>
 #include <math/vec3.ipp>
-#include <sweet/assert/assert.hpp>
+#include <sweet/render/assert.hpp>
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <string.h>

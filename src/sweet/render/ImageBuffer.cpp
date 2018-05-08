@@ -10,7 +10,7 @@
 #include "ErrorCode.hpp"
 #include "ErrorPolicy.hpp"
 #include <math/scalar.ipp>
-#include <sweet/assert/assert.hpp>
+#include "assert.hpp"
 #include <libpng/png.h>
 #include <jpeg/jpeglib.h>
 #include <algorithm>

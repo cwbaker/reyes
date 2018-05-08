@@ -12,7 +12,7 @@
 #include "color_functions.hpp"
 #include "matrix_functions.hpp"
 #include "shading_and_lighting_functions.hpp"
-#include <sweet/assert/assert.hpp>
+#include "assert.hpp"
 #define _USE_MATH_DEFINES
 #include <math.h>
 

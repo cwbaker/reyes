@@ -12,7 +12,7 @@
 #include <sweet/render/Instruction.hpp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
-#include <sweet/assert/assert.hpp>
+#include <sweet/render/assert.hpp>
 
 using std::vector;
 using std::shared_ptr;

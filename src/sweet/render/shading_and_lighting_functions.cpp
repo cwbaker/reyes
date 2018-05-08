@@ -13,7 +13,7 @@
 #include <math/scalar.ipp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
-#include <sweet/assert/assert.hpp>
+#include "assert.hpp"
 #include <algorithm>
 
 using std::min;

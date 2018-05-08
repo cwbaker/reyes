@@ -11,7 +11,7 @@
 #include <math/vec3.ipp>
 #include <math/mat4x4.ipp>
 #include <math/scalar.ipp>
-#include <sweet/assert/assert.hpp>
+#include "assert.hpp"
 #include <vector>
 #include <memory.h>
 #define _USE_MATH_DEFINES

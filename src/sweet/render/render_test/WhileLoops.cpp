@@ -6,7 +6,7 @@
 #include <sweet/render/ErrorPolicy.hpp>
 #include <sweet/render/SymbolTable.hpp>
 #include <sweet/render/VirtualMachine.hpp>
-#include <sweet/assert/assert.hpp>
+#include <sweet/render/assert.hpp>
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <string.h>

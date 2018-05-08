@@ -13,7 +13,7 @@
 #include "ErrorPolicy.hpp"
 #include <lalr/Parser.hpp>
 #include <lalr/PositionIterator.hpp>
-#include <sweet/assert/assert.hpp>
+#include "assert.hpp"
 #include <fstream>
 #include <iterator>
 #include <functional>

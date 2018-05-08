@@ -4,7 +4,7 @@
 #include <sweet/render/SyntaxNode.hpp>
 #include <sweet/render/Symbol.hpp>
 #include <sweet/render/SymbolTable.hpp>
-#include <sweet/assert/assert.hpp>
+#include <sweet/render/assert.hpp>
 #include <vector>
 #include <string.h>
 

@@ -10,6 +10,9 @@ for _, build in build:default_builds("cc_.*") do
     build:all {
         build:Library '${lib}/render_${architecture}' {
             build:Cxx () {
+                'assert.cpp'
+            };
+            build:Cxx () {
                 "AddSymbolHelper.cpp",
                 "Attributes.cpp",
                 "CodeGenerator.cpp",

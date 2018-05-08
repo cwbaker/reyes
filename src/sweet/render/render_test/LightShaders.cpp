@@ -6,7 +6,7 @@
 #include <sweet/render/SymbolTable.hpp>
 #include <sweet/render/ErrorPolicy.hpp>
 #include <sweet/render/Renderer.hpp>
-#include <sweet/assert/assert.hpp>
+#include <sweet/render/assert.hpp>
 
 using std::vector;
 using namespace sweet;

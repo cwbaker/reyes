@@ -9,7 +9,7 @@
 #include <math/vec4.ipp>
 #include <math/mat4x4.ipp>
 #include <math/scalar.ipp>
-#include <sweet/assert/assert.hpp>
+#include "assert.hpp"
 #include <algorithm>
 
 using std::max;

@@ -8,7 +8,7 @@
 #include <sweet/render/Value.hpp>
 #include <sweet/render/ErrorCode.hpp>
 #include <sweet/render/ErrorAction.hpp>
-#include <sweet/assert/assert.hpp>
+#include <sweet/render/assert.hpp>
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <string.h>

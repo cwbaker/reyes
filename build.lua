@@ -57,7 +57,6 @@ buildfile 'src/jpeg/jpeg.build';
 buildfile 'src/lalr/lalr/lalr.build';
 buildfile 'src/libpng/libpng.build';
 buildfile 'src/math/math.build';
-buildfile 'src/sweet/assert/assert.build';
 buildfile 'src/sweet/render/render.build';
 buildfile 'src/unittest-cpp/unittest-cpp.build';
 buildfile 'src/zlib/zlib.build';

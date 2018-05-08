@@ -12,7 +12,7 @@
 #include "Instruction.hpp"
 #include "ErrorCode.hpp"
 #include "ErrorPolicy.hpp"
-#include <sweet/assert/assert.hpp>
+#include "assert.hpp"
 #include <algorithm>
 #include <stdio.h>
 
