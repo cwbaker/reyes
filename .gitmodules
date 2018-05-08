@@ -13,3 +13,6 @@
 [submodule "src/libpng"]
 	path = src/libpng
 	url = git@github.com:cwbaker/libpng.git
+[submodule "src/jpeg"]
+	path = src/jpeg
+	url = git@github.com:cwbaker/jpeg.git
