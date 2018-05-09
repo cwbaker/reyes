@@ -1,7 +1,7 @@
 
-# Sweet Render
+# Reyes
 
-*Sweet Render* is a toy micropolygon renderer based on the architecture described in the original REYES paper and The RenderMan Interface v3.2.1 from Pixar.
+*Reyes* is a toy micropolygon renderer based on the architecture described in the original REYES paper and The RenderMan Interface v3.2.1 from Pixar.
 
 ## Features
 
@@ -86,7 +86,7 @@ void render_wavy_sphere_example()
 
 ## Installation
 
-*Sweet Render* is built with XCode or Visual Studio using the [Sweet Build](https:/www.github.com/cwbaker/sweet_build) build tool.
+*Reyes* is built with XCode or Visual Studio using the [Sweet Build](https:/www.github.com/cwbaker/sweet_build) build tool.
 
 **macOS**
 
@@ -108,7 +108,7 @@ void render_wavy_sphere_example()
 
 ## Usage
 
-*Sweet Render* is a C++ library that generates images from geometry, textures, and shaders based on the architecture described in the original REYES paper and [the RenderMan Interface Specification](https://en.wikipedia.org/wiki/RenderMan_Interface_Specification) v3.2.1 from Pixar. 
+*Reyes* is a C++ library that generates images from geometry, textures, and shaders based on the architecture described in the original REYES paper and [the RenderMan Interface Specification](https://en.wikipedia.org/wiki/RenderMan_Interface_Specification) v3.2.1 from Pixar. 
 
 The *Renderer*, *Grid*, *Value*, and *Options* classes form the public interface to the renderer.  The *Renderer* class provides the main interface to the library for application code.  The *Options* class allows application code to override the default per-frame options used by the renderer.  The *Grid* and *Value* classes are used to provide a collection of values that is used to represent the parameters passed to shaders and the vertices in a piece of diced geometry.
 
@@ -122,4 +122,4 @@ This isn't really an active project so don't worry about opening pull requests o
 
 ## License
 
-*Sweet Render* is licensed under the [MIT License](http://www.opensource.org/licenses/MIT)
+*Reyes* is licensed under the [MIT License](http://www.opensource.org/licenses/MIT)
