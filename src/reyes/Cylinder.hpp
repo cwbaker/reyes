@@ -3,8 +3,8 @@
 // Copyright (c) 2012 Charles Baker.  All rights reserved.
 //
 
-#ifndef SWEET_RENDER_CYLINDER_HPP_INCLUDED
-#define SWEET_RENDER_CYLINDER_HPP_INCLUDED
+#ifndef REYES_CYLINDER_HPP_INCLUDED
+#define REYES_CYLINDER_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include "Geometry.hpp"
@@ -22,7 +22,7 @@ namespace render
 
 class Grid;
 
-class SWEET_RENDER_DECLSPEC Cylinder : public Geometry
+class REYES_DECLSPEC Cylinder : public Geometry
 {
     float radius_;
     float zmin_;

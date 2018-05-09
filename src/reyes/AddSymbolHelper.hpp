@@ -1,5 +1,5 @@
-#ifndef SWEET_RENDER_ADDSYMBOLHELPER_HPP_INCLUDED
-#define SWEET_RENDER_ADDSYMBOLHELPER_HPP_INCLUDED
+#ifndef REYES_ADDSYMBOLHELPER_HPP_INCLUDED
+#define REYES_ADDSYMBOLHELPER_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include "ValueType.hpp"
@@ -23,7 +23,7 @@ class SymbolTable;
 // Syntax helper to provide a convenient syntax for constructing hierarchical
 // symbol tables.
 */
-class SWEET_RENDER_DECLSPEC AddSymbolHelper
+class REYES_DECLSPEC AddSymbolHelper
 {
     SymbolTable* symbol_table_; ///< The SymbolTable to add Symbols to.
     std::shared_ptr<Symbol> symbol_; ///< The most recently added Symbol.

@@ -1,5 +1,5 @@
-#ifndef SWEET_RENDER_SYNTAXNODE_HPP_INCLUDED
-#define SWEET_RENDER_SYNTAXNODE_HPP_INCLUDED
+#ifndef REYES_SYNTAXNODE_HPP_INCLUDED
+#define REYES_SYNTAXNODE_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include "SyntaxNodeType.hpp"
@@ -23,7 +23,7 @@ class Symbol;
 /**
 // A node in the syntax tree generated when parsing a shader source file.
 */
-class SWEET_RENDER_DECLSPEC SyntaxNode
+class REYES_DECLSPEC SyntaxNode
 {
 public:
     static const int REGISTER_NULL = ~0; ///< Indicates that no register has been assigned.

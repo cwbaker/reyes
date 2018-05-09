@@ -3,8 +3,8 @@
 // Copyright (c) 2010 - 2012 Charles Baker.  All rights reserved.
 //
 
-#ifndef SWEET_RENDER_GRID_HPP_INCLUDED
-#define SWEET_RENDER_GRID_HPP_INCLUDED
+#ifndef REYES_GRID_HPP_INCLUDED
+#define REYES_GRID_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include "ValueType.hpp"
@@ -39,7 +39,7 @@ class Shader;
 // to shaders, vertices in a diced grid of micropolygons, and lighting values
 // returned by light shaders run against a diced grid of micropolygons.
 */
-class SWEET_RENDER_DECLSPEC Grid
+class REYES_DECLSPEC Grid
 {
 public:
     int width_; ///< The number of vertices across the u direction of this grid.

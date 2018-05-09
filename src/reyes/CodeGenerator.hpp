@@ -3,8 +3,8 @@
 // Copyright (c) 2011 - 2012 Charles Baker.  All rights reserved.
 //
 
-#ifndef SWEET_RENDER_CODEGENERATOR_HPP_INCLUDED
-#define SWEET_RENDER_CODEGENERATOR_HPP_INCLUDED
+#ifndef REYES_CODEGENERATOR_HPP_INCLUDED
+#define REYES_CODEGENERATOR_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include "SyntaxNodeType.hpp"
@@ -29,7 +29,7 @@ class ErrorPolicy;
 /**
 // Generate code from a syntax tree after parsing and semantic analysis.
 */
-class SWEET_RENDER_DECLSPEC CodeGenerator
+class REYES_DECLSPEC CodeGenerator
 {
     struct Jump
     {

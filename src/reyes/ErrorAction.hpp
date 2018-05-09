@@ -3,8 +3,8 @@
 // Copyright (c) 2012 Charles Baker.  All rights reserved.
 //
 
-#ifndef SWEET_RENDER_ERRORACTION_HPP_INCLUDED
-#define SWEET_RENDER_ERRORACTION_HPP_INCLUDED
+#ifndef REYES_ERRORACTION_HPP_INCLUDED
+#define REYES_ERRORACTION_HPP_INCLUDED
 
 namespace sweet
 {

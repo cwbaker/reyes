@@ -1,5 +1,5 @@
-#ifndef SWEET_RENDER_IMAGEBUFFER_HPP_INCLUDED
-#define SWEET_RENDER_IMAGEBUFFER_HPP_INCLUDED
+#ifndef REYES_IMAGEBUFFER_HPP_INCLUDED
+#define REYES_IMAGEBUFFER_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include <math/vec4.hpp>
@@ -16,7 +16,7 @@ class ErrorPolicy;
 // An buffer of pixel or texel elements in which the number and type of 
 // elements can vary (used for framebuffers and textures).
 */
-class SWEET_RENDER_DECLSPEC ImageBuffer
+class REYES_DECLSPEC ImageBuffer
 {
     int width_; ///< The width of the buffer in pixels/texels.
     int height_; ///< The height the buffer in pixels/texels.

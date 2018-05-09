@@ -1,5 +1,5 @@
-#ifndef SWEET_RENDER_SYMBOL_HPP_INCLUDED
-#define SWEET_RENDER_SYMBOL_HPP_INCLUDED
+#ifndef REYES_SYMBOL_HPP_INCLUDED
+#define REYES_SYMBOL_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include "ValueType.hpp"
@@ -17,7 +17,7 @@ namespace render
 /**
 // A symbol recognized by the shader parser.
 */
-class SWEET_RENDER_DECLSPEC Symbol
+class REYES_DECLSPEC Symbol
 {
     std::string identifier_; ///< The identifier of the symbol.
     ValueType type_; ///< The type of the symbol.

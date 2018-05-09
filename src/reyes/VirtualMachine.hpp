@@ -1,5 +1,5 @@
-#ifndef SWEET_RENDER_VIRTUALMACHINE_HPP_INCLUDED
-#define SWEET_RENDER_VIRTUALMACHINE_HPP_INCLUDED
+#ifndef REYES_VIRTUALMACHINE_HPP_INCLUDED
+#define REYES_VIRTUALMACHINE_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include <math/vec4.hpp>
@@ -23,7 +23,7 @@ class Renderer;
 // A virtual machine that interprets the code generated for shaders to execute
 // those shaders.
 */
-class SWEET_RENDER_DECLSPEC VirtualMachine
+class REYES_DECLSPEC VirtualMachine
 {
     struct ConditionMask
     {

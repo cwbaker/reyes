@@ -1,5 +1,5 @@
-#ifndef SWEET_RENDER_CONE_HPP_INCLUDED
-#define SWEET_RENDER_CONE_HPP_INCLUDED
+#ifndef REYES_CONE_HPP_INCLUDED
+#define REYES_CONE_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include "Geometry.hpp"
@@ -17,7 +17,7 @@ namespace render
 
 class Grid;
 
-class SWEET_RENDER_DECLSPEC Cone : public Geometry
+class REYES_DECLSPEC Cone : public Geometry
 {
     float height_;
     float radius_;

@@ -1,5 +1,5 @@
-#ifndef SWEET_RENDER_SEMANTICANALYZER_HPP_INCLUDED
-#define SWEET_RENDER_SEMANTICANALYZER_HPP_INCLUDED
+#ifndef REYES_SEMANTICANALYZER_HPP_INCLUDED
+#define REYES_SEMANTICANALYZER_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include "SyntaxNodeType.hpp"
@@ -21,7 +21,7 @@ class ErrorPolicy;
 // Traverse the syntax tree output by the parser and annotate it with type and 
 // symbol information.
 */
-class SWEET_RENDER_DECLSPEC SemanticAnalyzer
+class REYES_DECLSPEC SemanticAnalyzer
 {
     const SymbolTable& symbol_table_; ///< The SymbolTable to lookup symbols in.
     ErrorPolicy* error_policy_; ///< ErrorPolicy to report errors detected during semantic analysis to.

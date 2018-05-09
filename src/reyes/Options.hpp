@@ -1,5 +1,5 @@
-#ifndef SWEET_RENDER_OPTIONS_HPP_INCLUDED
-#define SWEET_RENDER_OPTIONS_HPP_INCLUDED
+#ifndef REYES_OPTIONS_HPP_INCLUDED
+#define REYES_OPTIONS_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include <math/vec4.hpp>
@@ -15,7 +15,7 @@ namespace render
 /**
 // Options that apply to at least one frame of a render.
 */
-class SWEET_RENDER_DECLSPEC Options
+class REYES_DECLSPEC Options
 {
 public:
     typedef float (*FilterFunction)( float x, float y, float width, float height );

@@ -1,5 +1,5 @@
-#ifndef SWEET_RENDER_VALUE_HPP_INCLUDED
-#define SWEET_RENDER_VALUE_HPP_INCLUDED
+#ifndef REYES_VALUE_HPP_INCLUDED
+#define REYES_VALUE_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include "ValueType.hpp"
@@ -27,7 +27,7 @@ class Renderer;
 // A value stored by the renderer for a shader parameter or a varying variable
 // used in a diced grid of micropolygon vertices.
 */
-class SWEET_RENDER_DECLSPEC Value
+class REYES_DECLSPEC Value
 {
     ValueType type_; ///< The type stored in this value.
     ValueStorage storage_; ///< The storage of this value.

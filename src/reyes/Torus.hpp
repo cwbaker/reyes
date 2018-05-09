@@ -1,5 +1,5 @@
-#ifndef SWEET_RENDER_TORUS_HPP_INCLUDED
-#define SWEET_RENDER_TORUS_HPP_INCLUDED
+#ifndef REYES_TORUS_HPP_INCLUDED
+#define REYES_TORUS_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include "Geometry.hpp"
@@ -16,7 +16,7 @@ namespace render
 
 class Grid;
 
-class SWEET_RENDER_DECLSPEC Torus : public Geometry
+class REYES_DECLSPEC Torus : public Geometry
 {
     float rmajor_;
     float rminor_;

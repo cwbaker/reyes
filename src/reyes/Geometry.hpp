@@ -3,8 +3,8 @@
 // Copyright (c) 2012 Charles Baker.  All rights reserved.
 //
 
-#ifndef SWEET_RENDER_GEOMETRY_HPP_INCLUDED
-#define SWEET_RENDER_GEOMETRY_HPP_INCLUDED
+#ifndef REYES_GEOMETRY_HPP_INCLUDED
+#define REYES_GEOMETRY_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include <math/vec2.hpp>
@@ -24,7 +24,7 @@ class Grid;
 /**
 // The base class for geometry types supported by the renderer.
 */
-class SWEET_RENDER_DECLSPEC Geometry
+class REYES_DECLSPEC Geometry
 {
     math::vec2 u_range_; ///< The range in u covered by this piece of geometry.
     math::vec2 v_range_; ///< The range in v covered by this piece of geometry.

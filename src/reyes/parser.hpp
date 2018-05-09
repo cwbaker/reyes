@@ -1,5 +1,5 @@
-#ifndef SWEET_RENDER_PARSER_HPP_INCLUDED
-#define SWEET_RENDER_PARSER_HPP_INCLUDED
+#ifndef REYES_PARSER_HPP_INCLUDED
+#define REYES_PARSER_HPP_INCLUDED
 
 #include "assert.hpp"
 #include <iterator>

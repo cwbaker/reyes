@@ -3,8 +3,8 @@
 // Copyright (c) 2012 Charles Baker.  All rights reserved.
 //
 
-#ifndef SWEET_RENDER_ATTRIBUTES_HPP_INCLUDED
-#define SWEET_RENDER_ATTRIBUTES_HPP_INCLUDED
+#ifndef REYES_ATTRIBUTES_HPP_INCLUDED
+#define REYES_ATTRIBUTES_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include <math/vec3.hpp>
@@ -29,7 +29,7 @@ class VirtualMachine;
 /**
 // Attributes for a single level of the renderer's attribute stack.
 */
-class SWEET_RENDER_DECLSPEC Attributes
+class REYES_DECLSPEC Attributes
 {
     VirtualMachine* virtual_machine_; ///< The VirtualMachine used to initialize shader parameters.
     float shading_rate_; ///< The current shading rate.

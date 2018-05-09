@@ -1,5 +1,5 @@
-#ifndef SWEET_RENDER_TEXTURE_HPP_INCLUDED
-#define SWEET_RENDER_TEXTURE_HPP_INCLUDED
+#ifndef REYES_TEXTURE_HPP_INCLUDED
+#define REYES_TEXTURE_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include "TextureType.hpp"
@@ -19,7 +19,7 @@ class ImageBuffer;
 /**
 // A color map, shadow map, or environment map texture.
 */
-class SWEET_RENDER_DECLSPEC Texture
+class REYES_DECLSPEC Texture
 {
     TextureType type_; ///< The type of texture.
     math::mat4x4 camera_transform_; ///< The camera transform in effect when a shadow map was created.

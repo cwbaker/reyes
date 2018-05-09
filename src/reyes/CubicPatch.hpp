@@ -1,5 +1,5 @@
-#ifndef SWEET_RENDER_CUBICPATCH_HPP_INCLUDED
-#define SWEET_RENDER_CUBICPATCH_HPP_INCLUDED
+#ifndef REYES_CUBICPATCH_HPP_INCLUDED
+#define REYES_CUBICPATCH_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include "Geometry.hpp"
@@ -17,7 +17,7 @@ namespace render
 
 class Grid;
 
-class SWEET_RENDER_DECLSPEC CubicPatch : public Geometry
+class REYES_DECLSPEC CubicPatch : public Geometry
 {
     const math::vec3* p_;
     const math::vec4* u_basis_;

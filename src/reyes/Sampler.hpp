@@ -1,5 +1,5 @@
-#ifndef SWEET_RENDER_SAMPLER_HPP_INCLUDED
-#define SWEET_RENDER_SAMPLER_HPP_INCLUDED
+#ifndef REYES_SAMPLER_HPP_INCLUDED
+#define REYES_SAMPLER_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include <math/vec3.hpp>
@@ -17,7 +17,7 @@ class SampleBuffer;
 /**
 // Sample the micropolygons in a diced grid down into a sample buffer.
 */
-class SWEET_RENDER_DECLSPEC Sampler
+class REYES_DECLSPEC Sampler
 {
     struct Sample
     {

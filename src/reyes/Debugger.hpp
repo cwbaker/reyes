@@ -3,8 +3,8 @@
 // Copyright (c) 2012 Charles Baker.  All rights reserved.
 //
 
-#ifndef SWEET_RENDER_DEBUGGER_HPP_INCLUDED
-#define SWEET_RENDER_DEBUGGER_HPP_INCLUDED
+#ifndef REYES_DEBUGGER_HPP_INCLUDED
+#define REYES_DEBUGGER_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include <math/vec4.hpp>
@@ -25,7 +25,7 @@ class Value;
 class Grid;
 class SampleBuffer;
 
-class SWEET_RENDER_DECLSPEC Debugger
+class REYES_DECLSPEC Debugger
 {
 public:
     void dump_syntax_tree( const SyntaxNode* node, int level = 0 ) const;

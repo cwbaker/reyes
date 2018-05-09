@@ -1,5 +1,5 @@
-#ifndef SWEET_RENDER_SPHERE_HPP_INCLUDED
-#define SWEET_RENDER_SPHERE_HPP_INCLUDED
+#ifndef REYES_SPHERE_HPP_INCLUDED
+#define REYES_SPHERE_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include "Geometry.hpp"
@@ -17,7 +17,7 @@ namespace render
 
 class Grid;
 
-class SWEET_RENDER_DECLSPEC Sphere : public Geometry
+class REYES_DECLSPEC Sphere : public Geometry
 {
     float radius_;
     float zmin_;

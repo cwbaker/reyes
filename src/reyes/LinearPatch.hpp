@@ -1,5 +1,5 @@
-#ifndef SWEET_RENDER_LINEARPATCH_HPP_INCLUDED
-#define SWEET_RENDER_LINEARPATCH_HPP_INCLUDED
+#ifndef REYES_LINEARPATCH_HPP_INCLUDED
+#define REYES_LINEARPATCH_HPP_INCLUDED
 
 #include "declspec.hpp"
 #include "Geometry.hpp"
@@ -17,7 +17,7 @@ namespace render
 
 class Grid;
 
-class SWEET_RENDER_DECLSPEC LinearPatch : public Geometry
+class REYES_DECLSPEC LinearPatch : public Geometry
 {
     math::vec3 positions_ [4];
     math::vec3 normals_ [4];
