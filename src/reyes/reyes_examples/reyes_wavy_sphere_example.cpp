@@ -1,8 +1,8 @@
 
-#include <sweet/render/Grid.hpp>
-#include <sweet/render/Value.hpp>
-#include <sweet/render/Options.hpp>
-#include <sweet/render/Renderer.hpp>
+#include <reyes/Grid.hpp>
+#include <reyes/Value.hpp>
+#include <reyes/Options.hpp>
+#include <reyes/Renderer.hpp>
 #include <math/vec3.ipp>
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -56,5 +56,5 @@ void render_wavy_sphere_example()
 
     renderer.end_world();
     renderer.end();
-    renderer.save_image_as_png( RENDER_EXAMPLES_PATH "wavy_sphere.png" );
+    renderer.save_image_as_png( REYES_EXAMPLES_PATH "wavy_sphere.png" );
 }

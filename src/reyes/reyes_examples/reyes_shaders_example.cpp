@@ -1,10 +1,10 @@
 
-#include <sweet/render/Grid.hpp>
-#include <sweet/render/Value.hpp>
-#include <sweet/render/Options.hpp>
-#include <sweet/render/Renderer.hpp>
-#include <sweet/render/Texture.hpp>
-#include <sweet/render/TextureType.hpp>
+#include <reyes/Grid.hpp>
+#include <reyes/Value.hpp>
+#include <reyes/Options.hpp>
+#include <reyes/Renderer.hpp>
+#include <reyes/Texture.hpp>
+#include <reyes/TextureType.hpp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
 #define _USE_MATH_DEFINES
@@ -96,10 +96,10 @@ void render_shaders_example()
 
     y = HEIGHT / 2.0f - HEIGHT / DOWN * float(4);
     renderer.push_attributes();
-    renderer.texture( RENDER_EXAMPLES_PATH "bumpy.jpg" );
+    renderer.texture( REYES_EXAMPLES_PATH "bumpy.jpg" );
     renderer.color( vec3(1.0f, 1.0f, 1.0f) );
     Grid& paintedplastic = renderer.surface_shader( SHADERS_PATH "paintedplastic.sl" );    
-    paintedplastic["texturename"] = RENDER_EXAMPLES_PATH "bumpy.jpg";
+    paintedplastic["texturename"] = REYES_EXAMPLES_PATH "bumpy.jpg";
     for ( int i = 0; i < 8; ++i )
     {
         renderer.identity();
@@ -113,9 +113,9 @@ void render_shaders_example()
     y = HEIGHT / 2.0f - HEIGHT / DOWN * float(5);
     renderer.push_attributes();
     renderer.two_sided( true );
-    renderer.texture( RENDER_EXAMPLES_PATH "bumpy.jpg" );
+    renderer.texture( REYES_EXAMPLES_PATH "bumpy.jpg" );
     Grid& bumpy = renderer.displacement_shader( SHADERS_PATH "bumpy.sl" );
-    bumpy["texturename"] = RENDER_EXAMPLES_PATH "bumpy.jpg";
+    bumpy["texturename"] = REYES_EXAMPLES_PATH "bumpy.jpg";
     Grid& bumpy_plastic = renderer.surface_shader( SHADERS_PATH "plastic.sl" );    
     bumpy_plastic["Ka"] = 0.2f;
     bumpy_plastic["Kd"] = 0.4f;
@@ -133,13 +133,13 @@ void render_shaders_example()
 
     y = HEIGHT / 2.0f - HEIGHT / DOWN * float(6);
     renderer.push_attributes();
-    renderer.environment( RENDER_EXAMPLES_PATH "st-eutropius.jpg" );
+    renderer.environment( REYES_EXAMPLES_PATH "st-eutropius.jpg" );
     Grid& shinymetal = renderer.surface_shader( SHADERS_PATH "shinymetal.sl" );
     shinymetal["Ka"] = 0.2f;
     shinymetal["Ks"] = 0.4f;
     shinymetal["Kr"] = 0.4f;
     shinymetal["roughness"] = 0.01f;
-    shinymetal["texturename"] = RENDER_EXAMPLES_PATH "st-eutropius.jpg";
+    shinymetal["texturename"] = REYES_EXAMPLES_PATH "st-eutropius.jpg";
     for ( int i = 0; i < 8; ++i )
     {
         renderer.identity();
@@ -152,5 +152,5 @@ void render_shaders_example()
 
     renderer.end_world();
     renderer.end();
-    renderer.save_image_as_png( RENDER_EXAMPLES_PATH "shaders.png" );
+    renderer.save_image_as_png( REYES_EXAMPLES_PATH "shaders.png" );
 }

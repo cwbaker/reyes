@@ -1,18 +1,18 @@
 
 #include <UnitTest++/UnitTest++.h>
-#include <sweet/render/Shader.hpp>
-#include <sweet/render/Symbol.hpp>
-#include <sweet/render/ErrorPolicy.hpp>
-#include <sweet/render/SymbolTable.hpp>
-#include <sweet/render/SyntaxNode.hpp>
-#include <sweet/render/ShaderParser.hpp>
-#include <sweet/render/SemanticAnalyzer.hpp>
-#include <sweet/render/CodeGenerator.hpp>
-#include <sweet/render/Value.hpp>
-#include <sweet/render/Instruction.hpp>
+#include <reyes/Shader.hpp>
+#include <reyes/Symbol.hpp>
+#include <reyes/ErrorPolicy.hpp>
+#include <reyes/SymbolTable.hpp>
+#include <reyes/SyntaxNode.hpp>
+#include <reyes/ShaderParser.hpp>
+#include <reyes/SemanticAnalyzer.hpp>
+#include <reyes/CodeGenerator.hpp>
+#include <reyes/Value.hpp>
+#include <reyes/Instruction.hpp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
-#include <sweet/render/assert.hpp>
+#include <reyes/assert.hpp>
 
 using std::vector;
 using std::shared_ptr;

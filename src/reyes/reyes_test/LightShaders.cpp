@@ -1,12 +1,12 @@
 
 #include <UnitTest++/UnitTest++.h>
-#include <sweet/render/Value.hpp>
-#include <sweet/render/Grid.hpp>
-#include <sweet/render/Shader.hpp>
-#include <sweet/render/SymbolTable.hpp>
-#include <sweet/render/ErrorPolicy.hpp>
-#include <sweet/render/Renderer.hpp>
-#include <sweet/render/assert.hpp>
+#include <reyes/Value.hpp>
+#include <reyes/Grid.hpp>
+#include <reyes/Shader.hpp>
+#include <reyes/SymbolTable.hpp>
+#include <reyes/ErrorPolicy.hpp>
+#include <reyes/Renderer.hpp>
+#include <reyes/assert.hpp>
 
 using std::vector;
 using namespace sweet;

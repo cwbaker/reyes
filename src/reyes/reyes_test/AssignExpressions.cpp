@@ -1,14 +1,14 @@
 
 #include <UnitTest++/UnitTest++.h>
-#include <sweet/render/VirtualMachine.hpp>
-#include <sweet/render/ErrorPolicy.hpp>
-#include <sweet/render/SymbolTable.hpp>
-#include <sweet/render/Shader.hpp>
-#include <sweet/render/Grid.hpp>
-#include <sweet/render/Value.hpp>
-#include <sweet/render/ErrorCode.hpp>
-#include <sweet/render/ErrorAction.hpp>
-#include <sweet/render/assert.hpp>
+#include <reyes/VirtualMachine.hpp>
+#include <reyes/ErrorPolicy.hpp>
+#include <reyes/SymbolTable.hpp>
+#include <reyes/Shader.hpp>
+#include <reyes/Grid.hpp>
+#include <reyes/Value.hpp>
+#include <reyes/ErrorCode.hpp>
+#include <reyes/ErrorAction.hpp>
+#include <reyes/assert.hpp>
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <string.h>

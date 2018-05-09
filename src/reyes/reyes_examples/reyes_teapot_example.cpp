@@ -1,8 +1,8 @@
 
-#include <sweet/render/Grid.hpp>
-#include <sweet/render/Value.hpp>
-#include <sweet/render/Options.hpp>
-#include <sweet/render/Renderer.hpp>
+#include <reyes/Grid.hpp>
+#include <reyes/Value.hpp>
+#include <reyes/Options.hpp>
+#include <reyes/Renderer.hpp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
 #define _USE_MATH_DEFINES
@@ -85,7 +85,7 @@ void render_teapot_example()
 
     renderer.end_world();
     renderer.end();
-    renderer.save_image_as_png( RENDER_EXAMPLES_PATH "teapot.png" );
+    renderer.save_image_as_png( REYES_EXAMPLES_PATH "teapot.png" );
 }
 
 static void render_teapot( Renderer& renderer )

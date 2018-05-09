@@ -10,7 +10,7 @@ build:all {
         build:Cxx () {
             defines = {
                 ('SHADERS_PATH=\\"%s/\\"'):format( build:absolute('../shaders') );
-                ('RENDER_EXAMPLES_PATH=\\"%s/\\"'):format( build:absolute('.') );
+                ('REYES_EXAMPLES_PATH=\\"%s/\\"'):format( build:absolute('.') );
             };
             'main.cpp',
             'reyes_shaders_example.cpp',

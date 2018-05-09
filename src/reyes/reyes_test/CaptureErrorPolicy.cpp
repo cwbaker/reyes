@@ -4,8 +4,8 @@
 //
 
 #include "CaptureErrorPolicy.hpp"
-#include <sweet/render/ErrorCode.hpp>
-#include <sweet/render/assert.hpp>
+#include <reyes/ErrorCode.hpp>
+#include <reyes/assert.hpp>
 
 using namespace sweet::render;
 

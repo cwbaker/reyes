@@ -1,7 +1,7 @@
 #ifndef SWEET_RENDER_CAPTUREERRORPOLICY_HPP_INCLUDED
 #define SWEET_RENDER_CAPTUREERRORPOLICY_HPP_INCLUDED
 
-#include <sweet/render/ErrorPolicy.hpp>
+#include <reyes/ErrorPolicy.hpp>
 #include <vector>
 #include <string>
 
