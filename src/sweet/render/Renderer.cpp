@@ -101,7 +101,7 @@ Renderer::~Renderer()
     for ( map<string, Shader*>::const_iterator i = shaders_.begin(); i != shaders_.end(); ++i )
     {
         Shader* shader = i->second;
-        SWEET_ASSERT( shader );
+        REYES_ASSERT( shader );
         delete shader;
     }
     shaders_.clear();
@@ -109,7 +109,7 @@ Renderer::~Renderer()
     for ( map<string, Texture*>::const_iterator i = textures_.begin(); i != textures_.end(); ++i )
     {
         Texture* texture = i->second;
-        SWEET_ASSERT( texture );
+        REYES_ASSERT( texture );
         delete texture;
     }
     textures_.clear();
@@ -192,7 +192,7 @@ const Options& Renderer::options() const
 */
 void Renderer::push_attributes()
 {
-    SWEET_ASSERT( !attributes_.empty() );
+    REYES_ASSERT( !attributes_.empty() );
     shared_ptr<Attributes> attributes( new Attributes(*attributes_.back()) );
     attributes_.push_back( attributes );
 }
@@ -202,7 +202,7 @@ void Renderer::push_attributes()
 */
 void Renderer::pop_attributes()
 {
-    SWEET_ASSERT( attributes_.size() > 1 );
+    REYES_ASSERT( attributes_.size() > 1 );
     if ( attributes_.size() > 1 )
     {
         attributes_.pop_back();
@@ -214,7 +214,7 @@ void Renderer::pop_attributes()
 */
 Attributes& Renderer::attributes() const
 {
-    SWEET_ASSERT( !attributes_.empty() );
+    REYES_ASSERT( !attributes_.empty() );
     return *attributes_.back();
 }
 
@@ -375,7 +375,7 @@ void Renderer::begin()
 */
 void Renderer::end()
 {
-    SWEET_ASSERT( options_ );
+    REYES_ASSERT( options_ );
     
     attributes_.clear();
     
@@ -552,7 +552,7 @@ void Renderer::begin_transform()
 */
 void Renderer::end_transform()
 {
-    SWEET_ASSERT( !attributes_.empty() );
+    REYES_ASSERT( !attributes_.empty() );
     attributes().pop_transform();
 }
 
@@ -561,7 +561,7 @@ void Renderer::end_transform()
 */
 void Renderer::identity()
 {
-    SWEET_ASSERT( !attributes_.empty() );
+    REYES_ASSERT( !attributes_.empty() );
     attributes().identity();
 }
 
@@ -573,7 +573,7 @@ void Renderer::identity()
 */
 void Renderer::transform( const math::mat4x4& transform )
 {
-    SWEET_ASSERT( !attributes_.empty() );
+    REYES_ASSERT( !attributes_.empty() );
     attributes().transform( transform );
 }
 
@@ -590,7 +590,7 @@ void Renderer::transform( const math::mat4x4& transform )
 */
 void Renderer::concat_transform( const math::mat4x4& transform )
 {
-    SWEET_ASSERT( !attributes_.empty() );
+    REYES_ASSERT( !attributes_.empty() );
     attributes().concat_transform( transform );
 }
 
@@ -602,7 +602,7 @@ void Renderer::concat_transform( const math::mat4x4& transform )
 */
 void Renderer::orthographic()
 {    
-    SWEET_ASSERT( options_ );
+    REYES_ASSERT( options_ );
     const vec4& screen_window = options_->screen_window();
     concat_transform( renderman_orthographic(screen_window.x, screen_window.y, screen_window.z, screen_window.w, options_->near_clip_distance(), options_->far_clip_distance()) );
 }
@@ -627,7 +627,7 @@ void Renderer::orthographic()
 */
 void Renderer::perspective( float fov )
 {
-    SWEET_ASSERT( options_ );
+    REYES_ASSERT( options_ );
 
     float near_clip_distance = options_->near_clip_distance();
     float far_clip_distance = options_->far_clip_distance();
@@ -736,7 +736,7 @@ const math::mat4x4& Renderer::current_transform() const
 */
 Grid& Renderer::displacement_shader( Shader* displacement_shader )
 {
-    SWEET_ASSERT( !attributes_.empty() );
+    REYES_ASSERT( !attributes_.empty() );
     Attributes& attributes = Renderer::attributes();
     attributes.set_displacement_shader( displacement_shader, camera_transform_ );
     return attributes.displacement_parameters();
@@ -755,7 +755,7 @@ Grid& Renderer::displacement_shader( Shader* displacement_shader )
 */
 Grid& Renderer::surface_shader( Shader* surface_shader )
 {
-    SWEET_ASSERT( !attributes_.empty() );
+    REYES_ASSERT( !attributes_.empty() );
     Attributes& attributes = Renderer::attributes();
     attributes.set_surface_shader( surface_shader ? surface_shader : null_surface_shader_, camera_transform_ );
     return attributes.surface_parameters();
@@ -789,7 +789,7 @@ Grid& Renderer::light_shader( Shader* light_shader )
 */
 Grid& Renderer::displacement_shader( const char* filename )
 {
-    SWEET_ASSERT( filename );
+    REYES_ASSERT( filename );
     return displacement_shader( shader(filename) );
 }
 
@@ -805,7 +805,7 @@ Grid& Renderer::displacement_shader( const char* filename )
 */
 Grid& Renderer::surface_shader( const char* filename )
 {
-    SWEET_ASSERT( filename );
+    REYES_ASSERT( filename );
     return surface_shader( shader(filename) );
 }
 
@@ -822,7 +822,7 @@ Grid& Renderer::surface_shader( const char* filename )
 */
 Grid& Renderer::light_shader( const char* filename )
 {
-    SWEET_ASSERT( filename );
+    REYES_ASSERT( filename );
     return light_shader( shader(filename) );
 }
 
@@ -1015,10 +1015,10 @@ void Renderer::torus( float rmajor, float rminor, float phimin, float phimax, fl
 */
 void Renderer::polygon( int vertices, const math::vec3* ppositions, const math::vec3* nnormals, const math::vec2* ttexture_coordinates )
 {
-    SWEET_ASSERT( vertices >= 3 );
-    SWEET_ASSERT( ppositions );
-    SWEET_ASSERT( nnormals );
-    SWEET_ASSERT( ttexture_coordinates );
+    REYES_ASSERT( vertices >= 3 );
+    REYES_ASSERT( ppositions );
+    REYES_ASSERT( nnormals );
+    REYES_ASSERT( ttexture_coordinates );
 
     for ( int i = 1; i < vertices - 1; ++i )
     {
@@ -1156,11 +1156,11 @@ void Renderer::linear_patch( const math::vec3* positions, const math::vec3* norm
 */
 void Renderer::polygon_mesh( int polygons, const int* vertices, const int* indices, const math::vec3* positions, const math::vec3* normals, const math::vec2* texture_coordinates )
 {
-    SWEET_ASSERT( vertices );
-    SWEET_ASSERT( indices );
-    SWEET_ASSERT( positions );
-    SWEET_ASSERT( normals );
-    SWEET_ASSERT( texture_coordinates );
+    REYES_ASSERT( vertices );
+    REYES_ASSERT( indices );
+    REYES_ASSERT( positions );
+    REYES_ASSERT( normals );
+    REYES_ASSERT( texture_coordinates );
     
     int base = 0;
     for ( int i = 0; i < polygons; ++i )
@@ -1287,7 +1287,7 @@ void Renderer::split( const Geometry& geometry )
     while ( !geometries.empty() )
     {
         const shared_ptr<Geometry>& geometry = geometries.front();
-        SWEET_ASSERT( geometry );
+        REYES_ASSERT( geometry );
 
         vec3 minimum = vec3( 0.0f, 0.0f, 0.0f );
         vec3 maximum = vec3( 0.0f, 0.0f, 0.0f );
@@ -1408,7 +1408,7 @@ void Renderer::light_shade( Grid& grid )
 */
 void Renderer::sample( const Grid& grid )
 {
-    SWEET_ASSERT( sampler_ );    
+    REYES_ASSERT( sampler_ );    
     const Attributes& attributes = Renderer::attributes();
     bool matte = attributes.matte();
     bool two_sided = attributes.two_sided();
@@ -1428,8 +1428,8 @@ void Renderer::sample( const Grid& grid )
 */
 void Renderer::save_image( const char* format, ... ) const
 {
-    SWEET_ASSERT( image_buffer_ );
-    SWEET_ASSERT( format );
+    REYES_ASSERT( image_buffer_ );
+    REYES_ASSERT( format );
 
     char filename [1024];
     va_list args;
@@ -1453,8 +1453,8 @@ void Renderer::save_image( const char* format, ... ) const
 */
 void Renderer::save_image_as_png( const char* format, ... ) const
 {
-    SWEET_ASSERT( image_buffer_ );
-    SWEET_ASSERT( format );
+    REYES_ASSERT( image_buffer_ );
+    REYES_ASSERT( format );
     
     char filename [1024];
     va_list args;
@@ -1482,8 +1482,8 @@ void Renderer::save_image_as_png( const char* format, ... ) const
 */
 void Renderer::save_samples( int mode, const char* format, ... ) const
 {
-    SWEET_ASSERT( sample_buffer_ );
-    SWEET_ASSERT( format );
+    REYES_ASSERT( sample_buffer_ );
+    REYES_ASSERT( format );
 
     char filename [1024];
     va_list args;
@@ -1514,8 +1514,8 @@ void Renderer::save_samples( int mode, const char* format, ... ) const
 */
 void Renderer::save_samples_as_png( int mode, const char* format, ... ) const
 {
-    SWEET_ASSERT( sample_buffer_ );
-    SWEET_ASSERT( format );
+    REYES_ASSERT( sample_buffer_ );
+    REYES_ASSERT( format );
 
     char filename [1024];
     va_list args;
@@ -1539,7 +1539,7 @@ void Renderer::save_samples_as_png( int mode, const char* format, ... ) const
 */
 void Renderer::texture( const char* filename )
 {
-    SWEET_ASSERT( filename );
+    REYES_ASSERT( filename );
     
     Texture* texture = find_texture( filename );
     if ( !texture )
@@ -1605,7 +1605,7 @@ void Renderer::cubic_environment( const char* filename )
 */
 void Renderer::shadow_from_framebuffer( const char* name )
 {
-    SWEET_ASSERT( name );
+    REYES_ASSERT( name );
 
     Texture* texture = find_texture( name );
     if ( !texture )
@@ -1614,7 +1614,7 @@ void Renderer::shadow_from_framebuffer( const char* name )
         textures_.insert( make_pair(name, texture) );
     }
 
-    SWEET_ASSERT( texture->type() == TEXTURE_SHADOW );
+    REYES_ASSERT( texture->type() == TEXTURE_SHADOW );
     sample_buffer_->pack( DISPLAY_MODE_Z, texture->image_buffers() );
 }
 
@@ -1629,7 +1629,7 @@ void Renderer::shadow_from_framebuffer( const char* name )
 */
 void Renderer::texture_from_framebuffer( const char* name )
 {
-    SWEET_ASSERT( name );
+    REYES_ASSERT( name );
 
     Texture* texture = find_texture( name );
     if ( !texture )
@@ -1638,7 +1638,7 @@ void Renderer::texture_from_framebuffer( const char* name )
         textures_.insert( make_pair(name, texture) );
     }    
 
-    SWEET_ASSERT( texture->type() == TEXTURE_COLOR );
+    REYES_ASSERT( texture->type() == TEXTURE_COLOR );
     sample_buffer_->pack( DISPLAY_MODE_RGB | DISPLAY_MODE_A, texture->image_buffers() );
 }
 
@@ -1653,7 +1653,7 @@ void Renderer::texture_from_framebuffer( const char* name )
 */
 Texture* Renderer::find_texture( const char* filename ) const
 {
-    SWEET_ASSERT( filename );
+    REYES_ASSERT( filename );
     
     map<string, Texture*>::const_iterator i = textures_.find( filename );
     return i != textures_.end() ? i->second : NULL;
@@ -1674,7 +1674,7 @@ Texture* Renderer::find_texture( const char* filename ) const
 */
 Shader* Renderer::shader( const char* filename )
 {
-    SWEET_ASSERT( filename );
+    REYES_ASSERT( filename );
 
     Shader* shader = find_shader( filename );
     if ( !shader )
@@ -1696,7 +1696,7 @@ Shader* Renderer::shader( const char* filename )
 */
 Shader* Renderer::find_shader( const char* filename ) const
 {
-    SWEET_ASSERT( filename );
+    REYES_ASSERT( filename );
     
     map<string, Shader*>::const_iterator i = shaders_.find( filename );
     return i != shaders_.end() ? i->second : NULL;

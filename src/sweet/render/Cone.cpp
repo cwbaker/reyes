@@ -48,8 +48,8 @@ bool Cone::boundable() const
 
 void Cone::bound( const math::mat4x4& transform, vec3* minimum, vec3* maximum ) const
 {
-    SWEET_ASSERT( minimum );
-    SWEET_ASSERT( maximum );
+    REYES_ASSERT( minimum );
+    REYES_ASSERT( maximum );
     
     *minimum = vec3( FLT_MAX, FLT_MAX, FLT_MAX );
     *maximum = vec3( -FLT_MAX, -FLT_MAX, -FLT_MAX );
@@ -76,9 +76,9 @@ bool Cone::splittable() const
 
 void Cone::split( std::list<std::shared_ptr<Geometry> >* primitives ) const
 {
-    SWEET_ASSERT( primitives );
-    SWEET_ASSERT( u_range().y >= u_range().x );
-    SWEET_ASSERT( v_range().y >= v_range().x );
+    REYES_ASSERT( primitives );
+    REYES_ASSERT( u_range().y >= u_range().x );
+    REYES_ASSERT( v_range().y >= v_range().x );
 
     const vec2& u_range = Geometry::u_range();
     float u0 = u_range.x;
@@ -108,9 +108,9 @@ bool Cone::diceable() const
 
 void Cone::dice( const math::mat4x4& transform, int width, int height, Grid* grid ) const
 {
-    SWEET_ASSERT( width > 0 );
-    SWEET_ASSERT( height > 0 );
-    SWEET_ASSERT( grid );
+    REYES_ASSERT( width > 0 );
+    REYES_ASSERT( height > 0 );
+    REYES_ASSERT( grid );
     
     const vec2& u_range = Geometry::u_range();
     const vec2& v_range = Geometry::v_range();

@@ -26,7 +26,7 @@ using namespace sweet::render;
 
 void Debugger::dump_syntax_tree( const SyntaxNode* node, int level ) const
 {
-    SWEET_ASSERT( node );
+    REYES_ASSERT( node );
     
     if ( node )
     {
@@ -142,7 +142,7 @@ void Debugger::dump_syntax_tree( const SyntaxNode* node, int level ) const
         for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
         {
             const SyntaxNode* node = i->get();
-            SWEET_ASSERT( node );
+            REYES_ASSERT( node );
             dump_syntax_tree( node, level + 1 );
         }
     }
@@ -173,7 +173,7 @@ void Debugger::dump_registers( int parameters, const std::vector<shared_ptr<Symb
     while ( i != symbols.end() && j != values.end() && register_index < parameters )
     {
         const Symbol* symbol = i->get();
-        SWEET_ASSERT( symbol );
+        REYES_ASSERT( symbol );
         
         printf( "%d, %d, %s\n", register_index, symbol->register_index(), symbol->identifier().c_str() );
         ++i;
@@ -191,7 +191,7 @@ void Debugger::dump_registers( int parameters, const std::vector<shared_ptr<Symb
     while ( i != symbols.end() )
     {
         const Symbol* symbol = i->get();
-        SWEET_ASSERT( symbol );
+        REYES_ASSERT( symbol );
         printf( "%d, %d, %s\n", register_index, symbol->register_index(), symbol->identifier().c_str() );
         ++i;
         ++register_index;
@@ -205,7 +205,7 @@ void Debugger::dump_symbols( const std::vector<std::shared_ptr<Symbol> >& symbol
     for ( vector<shared_ptr<Symbol> >::const_iterator i = symbols.begin(); i != symbols.end(); ++i )
     {
         const Symbol* symbol = i->get();
-        SWEET_ASSERT( symbol );
+        REYES_ASSERT( symbol );
         printf( "%d, %s\n", symbol->index(), symbol->identifier().c_str() );
     }
 
@@ -218,7 +218,7 @@ void Debugger::dump_values( const std::vector<std::shared_ptr<Value> >& values )
     for ( vector<shared_ptr<Value> >::const_iterator i = values.begin(); i != values.end(); ++i )
     {
         const Value* value = i->get();
-        SWEET_ASSERT( value );
+        REYES_ASSERT( value );
         switch ( value->type() )
         {
             case TYPE_FLOAT:
@@ -338,14 +338,14 @@ void Debugger::dump_code( const std::vector<short>& code ) const
     while ( i < instructions_end )
     {        
         int instruction = *i;
-        SWEET_ASSERT( instruction >= INSTRUCTION_NULL && instruction <= INSTRUCTION_COUNT );
+        REYES_ASSERT( instruction >= INSTRUCTION_NULL && instruction <= INSTRUCTION_COUNT );
         const char* name = INSTRUCTIONS[instruction].name;
         int size = INSTRUCTIONS[instruction].size;        
         printf( "%ld: %s", i - &code[0], name );
         ++i;
         if ( instruction == INSTRUCTION_JUMP || instruction == INSTRUCTION_JUMP_EMPTY || instruction == INSTRUCTION_JUMP_NOT_EMPTY || instruction == INSTRUCTION_JUMP_ILLUMINANCE )
         {
-            SWEET_ASSERT( size == 1 );
+            REYES_ASSERT( size == 1 );
             int jump_distance = *i;
             ++i;
             printf( ", %d (%ld)", jump_distance, i + jump_distance - &code[0] );
@@ -377,7 +377,7 @@ void Debugger::dump_grid( const Grid& grid, const math::vec4& color, const char*
         va_end( args );
         
         stream = fopen( filename, "wb" );
-        SWEET_ASSERT( stream );
+        REYES_ASSERT( stream );
     }
 
     fprintf( stream, "\n" );
@@ -454,7 +454,7 @@ void Debugger::dump_sample_buffer( const SampleBuffer& sample_buffer, const math
         va_end( args );
         
         stream = fopen( filename, "wb" );
-        SWEET_ASSERT( stream );
+        REYES_ASSERT( stream );
     }
 
     fprintf( stream, "\n" );
@@ -521,11 +521,11 @@ void Debugger::dump_sample_buffer( const SampleBuffer& sample_buffer, const math
 
 void Debugger::dump_samples( int x0, int x1, int y0, int y1, const int* bounds, const int* indices, const float* positions, int polygons, const math::vec4& color, const char* format, ... ) const
 {
-    SWEET_ASSERT( x0 <= x1 );
-    SWEET_ASSERT( y0 <= y1 );
-    SWEET_ASSERT( bounds );
-    SWEET_ASSERT( indices );
-    SWEET_ASSERT( positions );
+    REYES_ASSERT( x0 <= x1 );
+    REYES_ASSERT( y0 <= y1 );
+    REYES_ASSERT( bounds );
+    REYES_ASSERT( indices );
+    REYES_ASSERT( positions );
 
     FILE* stream = stdout;
     if ( format )
@@ -537,7 +537,7 @@ void Debugger::dump_samples( int x0, int x1, int y0, int y1, const int* bounds, 
         va_end( args );
         
         stream = fopen( filename, "wb" );
-        SWEET_ASSERT( stream );
+        REYES_ASSERT( stream );
     }
 
     fprintf( stream, "\n" );
@@ -595,11 +595,11 @@ void Debugger::dump_samples( int x0, int x1, int y0, int y1, const int* bounds, 
 
 void Debugger::dump_micropolygons( const int* indices, const float* raster_positions, const int* polygons, int size, const math::vec4& color, const math::mat4x4& screen_transform, float width, float height, const char* format, ... ) const
 {
-    SWEET_ASSERT( indices );
-    SWEET_ASSERT( raster_positions );
-    SWEET_ASSERT( size >= 0 );
-    SWEET_ASSERT( width > 0.0f );
-    SWEET_ASSERT( height > 0.0f );
+    REYES_ASSERT( indices );
+    REYES_ASSERT( raster_positions );
+    REYES_ASSERT( size >= 0 );
+    REYES_ASSERT( width > 0.0f );
+    REYES_ASSERT( height > 0.0f );
 
     FILE* stream = stdout;
     if ( format )
@@ -611,7 +611,7 @@ void Debugger::dump_micropolygons( const int* indices, const float* raster_posit
         va_end( args );
         
         stream = fopen( filename, "wb" );
-        SWEET_ASSERT( stream );
+        REYES_ASSERT( stream );
     }
 
     fprintf( stream, "\n" );
@@ -669,7 +669,7 @@ void Debugger::dump_micropolygons( const int* indices, const float* raster_posit
 
 math::vec3 Debugger::unproject( const float* raster_position, const math::mat4x4& inverse_screen_transform, float width, float height ) const
 {
-    SWEET_ASSERT( raster_position );
+    REYES_ASSERT( raster_position );
     float x = 2.0f * raster_position[0] / width - 1.0f;
     float y = 2.0f * (height - raster_position[1]) / height - 1.0f;
     return vec3( inverse_screen_transform * vec4(x, y, 0.0f, 1.0f) );

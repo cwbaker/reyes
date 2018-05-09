@@ -31,8 +31,8 @@ namespace render
 
 void xcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( p );
+    REYES_ASSERT( result );
+    REYES_ASSERT( p );
     
     result->reset( TYPE_FLOAT, p->storage(), p->size() );
     
@@ -47,8 +47,8 @@ void xcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> r
 
 void ycomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( p );
+    REYES_ASSERT( result );
+    REYES_ASSERT( p );
     
     result->reset( TYPE_FLOAT, p->storage(), p->size() );
     
@@ -63,8 +63,8 @@ void ycomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> r
 
 void zcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( p );
+    REYES_ASSERT( result );
+    REYES_ASSERT( p );
     
     result->reset( TYPE_FLOAT, p->storage(), p->size() );
     
@@ -79,9 +79,9 @@ void zcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> r
 
 void setxcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> p, std::shared_ptr<Value> x )
 {
-    SWEET_ASSERT( p );
-    SWEET_ASSERT( x );
-    SWEET_ASSERT( p->size() == x->size() );
+    REYES_ASSERT( p );
+    REYES_ASSERT( x );
+    REYES_ASSERT( p->size() == x->size() );
 
     const int size = p->size();
     vec3* values = p->vec3_values();
@@ -94,9 +94,9 @@ void setxcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value
 
 void setycomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> p, std::shared_ptr<Value> y )
 {
-    SWEET_ASSERT( p );
-    SWEET_ASSERT( y );
-    SWEET_ASSERT( p->size() == y->size() );
+    REYES_ASSERT( p );
+    REYES_ASSERT( y );
+    REYES_ASSERT( p->size() == y->size() );
 
     const int size = p->size();
     vec3* values = p->vec3_values();
@@ -109,9 +109,9 @@ void setycomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value
 
 void setzcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> p, std::shared_ptr<Value> z )
 {
-    SWEET_ASSERT( p );
-    SWEET_ASSERT( z );
-    SWEET_ASSERT( p->size() == z->size() );
+    REYES_ASSERT( p );
+    REYES_ASSERT( z );
+    REYES_ASSERT( p->size() == z->size() );
 
     const int size = p->size();
     vec3* values = p->vec3_values();
@@ -124,8 +124,8 @@ void setzcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value
 
 void length( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( x );
+    REYES_ASSERT( result );
+    REYES_ASSERT( x );
     
     result->reset( TYPE_FLOAT, x->storage(), x->size() );
     
@@ -140,8 +140,8 @@ void length( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> 
 
 void normalize( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> n )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( n );
+    REYES_ASSERT( result );
+    REYES_ASSERT( n );
     
     result->reset( n->type(), n->storage(), n->size() );
 
@@ -162,17 +162,17 @@ void normalize( const Renderer& renderer, const Grid& grid, std::shared_ptr<Valu
         }
             
         default:
-            SWEET_ASSERT( false );
+            REYES_ASSERT( false );
             break;
     }    
 }
 
 void distance( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p0, std::shared_ptr<Value> p1 )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( p0 );
-    SWEET_ASSERT( p1 );
-    SWEET_ASSERT( p0->size() == p1->size() );
+    REYES_ASSERT( result );
+    REYES_ASSERT( p0 );
+    REYES_ASSERT( p1 );
+    REYES_ASSERT( p0->size() == p1->size() );
     
     result->reset( TYPE_FLOAT, p0->storage(), p0->size() );
     
@@ -188,14 +188,14 @@ void distance( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value
 
 void rotate( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> q, std::shared_ptr<Value> angle, std::shared_ptr<Value> p0, std::shared_ptr<Value> p1 )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( q );
-    SWEET_ASSERT( angle );
-    SWEET_ASSERT( p0 );
-    SWEET_ASSERT( p1 );
-    SWEET_ASSERT( angle->storage() == STORAGE_UNIFORM );
-    SWEET_ASSERT( p0->storage() == STORAGE_UNIFORM );
-    SWEET_ASSERT( p1->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( result );
+    REYES_ASSERT( q );
+    REYES_ASSERT( angle );
+    REYES_ASSERT( p0 );
+    REYES_ASSERT( p1 );
+    REYES_ASSERT( angle->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( p0->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( p1->storage() == STORAGE_UNIFORM );
     
     result->reset( q->type(), q->storage(), q->size() );
     
@@ -211,8 +211,8 @@ void rotate( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> 
 
 void area( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( p );
+    REYES_ASSERT( result );
+    REYES_ASSERT( p );
     
     result->reset( TYPE_FLOAT, p->storage(), p->size() );
     
@@ -249,12 +249,12 @@ void faceforward_vv( const Renderer& renderer, const Grid& grid, std::shared_ptr
 
 void faceforward_vvv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> n, std::shared_ptr<Value> i, std::shared_ptr<Value> nref )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( n );
-    SWEET_ASSERT( i );
-    SWEET_ASSERT( nref );
-    SWEET_ASSERT( n->size() == i->size() );
-    SWEET_ASSERT( n->size() == nref->size() );
+    REYES_ASSERT( result );
+    REYES_ASSERT( n );
+    REYES_ASSERT( i );
+    REYES_ASSERT( nref );
+    REYES_ASSERT( n->size() == i->size() );
+    REYES_ASSERT( n->size() == nref->size() );
 
     result->reset( n->type(), n->storage(), n->size() );
 
@@ -277,17 +277,17 @@ void faceforward_vvv( const Renderer& renderer, const Grid& grid, std::shared_pt
         }
             
         default:
-            SWEET_ASSERT( false );
+            REYES_ASSERT( false );
             break;
     }    
 }
 
 void reflect( const Renderer& render, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> i, std::shared_ptr<Value> n )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( i );
-    SWEET_ASSERT( n );
-    SWEET_ASSERT( n->size() == i->size() );
+    REYES_ASSERT( result );
+    REYES_ASSERT( i );
+    REYES_ASSERT( n );
+    REYES_ASSERT( n->size() == i->size() );
 
     result->reset( TYPE_VECTOR, n->storage(), n->size() );
 
@@ -302,11 +302,11 @@ void reflect( const Renderer& render, const Grid& grid, std::shared_ptr<Value> r
 
 void refract( const Renderer& render, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> incident, std::shared_ptr<Value> normal, std::shared_ptr<Value> eta_value )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( incident );
-    SWEET_ASSERT( normal );
-    SWEET_ASSERT( eta_value );
-    SWEET_ASSERT( eta_value->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( result );
+    REYES_ASSERT( incident );
+    REYES_ASSERT( normal );
+    REYES_ASSERT( eta_value );
+    REYES_ASSERT( eta_value->storage() == STORAGE_UNIFORM );
     
     result->reset( TYPE_VECTOR, STORAGE_VARYING, grid.size() );
     
@@ -328,11 +328,11 @@ void refract( const Renderer& render, const Grid& grid, std::shared_ptr<Value> r
 
 void fresnel( const Renderer& render, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> incident, std::shared_ptr<Value> normal, std::shared_ptr<Value> eta_value, std::shared_ptr<Value> Kr, std::shared_ptr<Value> Kt )
 {
-    SWEET_ASSERT( incident );
-    SWEET_ASSERT( normal );
-    SWEET_ASSERT( eta_value );
-    SWEET_ASSERT( Kr );
-    SWEET_ASSERT( Kt );
+    REYES_ASSERT( incident );
+    REYES_ASSERT( normal );
+    REYES_ASSERT( eta_value );
+    REYES_ASSERT( Kr );
+    REYES_ASSERT( Kt );
     
     Kr->reset( TYPE_FLOAT, STORAGE_VARYING, grid.size() );
     Kt->reset( TYPE_FLOAT, STORAGE_VARYING, grid.size() );
@@ -373,10 +373,10 @@ void fresnel( const Renderer& render, const Grid& grid, std::shared_ptr<Value> r
 
 void transform_sv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( tospace );
-    SWEET_ASSERT( tospace->type() == TYPE_STRING );
-    SWEET_ASSERT( p );
+    REYES_ASSERT( result );
+    REYES_ASSERT( tospace );
+    REYES_ASSERT( tospace->type() == TYPE_STRING );
+    REYES_ASSERT( p );
     
     const int size = p->size();
     result->reset( TYPE_POINT, STORAGE_VARYING, size );
@@ -393,12 +393,12 @@ void transform_sv( const Renderer& renderer, const Grid& grid, std::shared_ptr<V
 
 void transform_ssv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( fromspace );
-    SWEET_ASSERT( fromspace->type() == TYPE_STRING );
-    SWEET_ASSERT( tospace );
-    SWEET_ASSERT( tospace->type() == TYPE_STRING );
-    SWEET_ASSERT( p );
+    REYES_ASSERT( result );
+    REYES_ASSERT( fromspace );
+    REYES_ASSERT( fromspace->type() == TYPE_STRING );
+    REYES_ASSERT( tospace );
+    REYES_ASSERT( tospace->type() == TYPE_STRING );
+    REYES_ASSERT( p );
     
     const int size = p->size();
     result->reset( TYPE_POINT, STORAGE_VARYING, size );
@@ -415,23 +415,23 @@ void transform_ssv( const Renderer& renderer, const Grid& grid, std::shared_ptr<
 
 void transform_mv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( m );
-    SWEET_ASSERT( m->type() == TYPE_MATRIX );
-    SWEET_ASSERT( p );
-    SWEET_ASSERT( p->type() == TYPE_POINT || p->type() == TYPE_VECTOR || p->type() == TYPE_NORMAL );
+    REYES_ASSERT( result );
+    REYES_ASSERT( m );
+    REYES_ASSERT( m->type() == TYPE_MATRIX );
+    REYES_ASSERT( p );
+    REYES_ASSERT( p->type() == TYPE_POINT || p->type() == TYPE_VECTOR || p->type() == TYPE_NORMAL );
     
     result->transform( m->mat4x4_values()[0], p );
 }
 
 void transform_smv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( fromspace );
-    SWEET_ASSERT( fromspace->type() == TYPE_STRING );
-    SWEET_ASSERT( m );
-    SWEET_ASSERT( m->type() == TYPE_MATRIX );
-    SWEET_ASSERT( p );
+    REYES_ASSERT( result );
+    REYES_ASSERT( fromspace );
+    REYES_ASSERT( fromspace->type() == TYPE_STRING );
+    REYES_ASSERT( m );
+    REYES_ASSERT( m->type() == TYPE_MATRIX );
+    REYES_ASSERT( p );
     
     const int size = p->size();
     result->reset( TYPE_POINT, STORAGE_VARYING, size );
@@ -449,100 +449,100 @@ void transform_smv( const Renderer& renderer, const Grid& grid, std::shared_ptr<
 
 void vtransform_sv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( tospace );
-    SWEET_ASSERT( tospace->type() == TYPE_STRING );
-    SWEET_ASSERT( p );
+    REYES_ASSERT( result );
+    REYES_ASSERT( tospace );
+    REYES_ASSERT( tospace->type() == TYPE_STRING );
+    REYES_ASSERT( p );
     
     result->vtransform( renderer.transform_to(tospace->string_value()), p );
 }
 
 void vtransform_ssv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( fromspace );
-    SWEET_ASSERT( fromspace->type() == TYPE_STRING );
-    SWEET_ASSERT( tospace );
-    SWEET_ASSERT( tospace->type() == TYPE_STRING );
-    SWEET_ASSERT( p );
+    REYES_ASSERT( result );
+    REYES_ASSERT( fromspace );
+    REYES_ASSERT( fromspace->type() == TYPE_STRING );
+    REYES_ASSERT( tospace );
+    REYES_ASSERT( tospace->type() == TYPE_STRING );
+    REYES_ASSERT( p );
     
     result->vtransform( renderer.transform_between(fromspace->string_value(), tospace->string_value()), p );
 }
 
 void vtransform_mv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( m );
-    SWEET_ASSERT( m->type() == TYPE_MATRIX );
-    SWEET_ASSERT( m->storage() == STORAGE_UNIFORM );
-    SWEET_ASSERT( p );
+    REYES_ASSERT( result );
+    REYES_ASSERT( m );
+    REYES_ASSERT( m->type() == TYPE_MATRIX );
+    REYES_ASSERT( m->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( p );
     
     result->vtransform( m->mat4x4_value(), p );
 }
 
 void vtransform_smv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( fromspace );
-    SWEET_ASSERT( fromspace->type() == TYPE_STRING );
-    SWEET_ASSERT( m );
-    SWEET_ASSERT( m->type() == TYPE_MATRIX );
-    SWEET_ASSERT( m->storage() == STORAGE_UNIFORM );
-    SWEET_ASSERT( p );
+    REYES_ASSERT( result );
+    REYES_ASSERT( fromspace );
+    REYES_ASSERT( fromspace->type() == TYPE_STRING );
+    REYES_ASSERT( m );
+    REYES_ASSERT( m->type() == TYPE_MATRIX );
+    REYES_ASSERT( m->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( p );
     
     result->vtransform( m->mat4x4_value() * renderer.transform_from(fromspace->string_value()), p );
 }
 
 void ntransform_sv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( tospace );
-    SWEET_ASSERT( tospace->type() == TYPE_STRING );
-    SWEET_ASSERT( p );
+    REYES_ASSERT( result );
+    REYES_ASSERT( tospace );
+    REYES_ASSERT( tospace->type() == TYPE_STRING );
+    REYES_ASSERT( p );
     
     result->ntransform( renderer.transform_to(tospace->string_value()), p );
 }
 
 void ntransform_ssv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( fromspace );
-    SWEET_ASSERT( fromspace->type() == TYPE_STRING );
-    SWEET_ASSERT( tospace );
-    SWEET_ASSERT( tospace->type() == TYPE_STRING );
-    SWEET_ASSERT( p );
+    REYES_ASSERT( result );
+    REYES_ASSERT( fromspace );
+    REYES_ASSERT( fromspace->type() == TYPE_STRING );
+    REYES_ASSERT( tospace );
+    REYES_ASSERT( tospace->type() == TYPE_STRING );
+    REYES_ASSERT( p );
     
     result->ntransform( renderer.transform_between(fromspace->string_value(), tospace->string_value()), p );
 }
 
 void ntransform_mv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( m );
-    SWEET_ASSERT( m->type() == TYPE_MATRIX );
-    SWEET_ASSERT( m->storage() == STORAGE_UNIFORM );
-    SWEET_ASSERT( p );
+    REYES_ASSERT( result );
+    REYES_ASSERT( m );
+    REYES_ASSERT( m->type() == TYPE_MATRIX );
+    REYES_ASSERT( m->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( p );
     
     result->ntransform( m->mat4x4_value(), p );
 }
 
 void ntransform_smv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( fromspace );
-    SWEET_ASSERT( fromspace->type() == TYPE_STRING );
-    SWEET_ASSERT( m );
-    SWEET_ASSERT( m->type() == TYPE_MATRIX );
-    SWEET_ASSERT( m->storage() == STORAGE_UNIFORM );
-    SWEET_ASSERT( p );
+    REYES_ASSERT( result );
+    REYES_ASSERT( fromspace );
+    REYES_ASSERT( fromspace->type() == TYPE_STRING );
+    REYES_ASSERT( m );
+    REYES_ASSERT( m->type() == TYPE_MATRIX );
+    REYES_ASSERT( m->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( p );
     
     result->ntransform( m->mat4x4_value() * renderer.transform_from(fromspace->string_value()), p );
 }
 
 void depth( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( p );
+    REYES_ASSERT( result );
+    REYES_ASSERT( p );
     
     result->reset( TYPE_FLOAT, p->storage(), p->size() );
 
@@ -557,8 +557,8 @@ void depth( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> r
 
 void calculatenormal( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( p );
+    REYES_ASSERT( result );
+    REYES_ASSERT( p );
     
     shared_ptr<Value> dpdu( new Value() );
     du_vec3( renderer, grid, dpdu, p );

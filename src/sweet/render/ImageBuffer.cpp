@@ -83,50 +83,50 @@ int ImageBuffer::pixel_size() const
 
 unsigned char* ImageBuffer::u8_data() const
 {
-    SWEET_ASSERT( format_ == FORMAT_U8 );
+    REYES_ASSERT( format_ == FORMAT_U8 );
     return reinterpret_cast<unsigned char*>( data_ );
 }
 
 unsigned char* ImageBuffer::u8_data( int x, int y ) const
 {
-    SWEET_ASSERT( format_ == FORMAT_U8 );
+    REYES_ASSERT( format_ == FORMAT_U8 );
     unsigned char* data = reinterpret_cast<unsigned char*>( data_ );
     return &data[(y * width_ + x) * elements_];
 }
 
 unsigned char* ImageBuffer::u8_data( float s, float t ) const
 {
-    SWEET_ASSERT( s >= 0.0f && s <= 1.0f );
-    SWEET_ASSERT( t >= 0.0f && t <= 1.0f );
+    REYES_ASSERT( s >= 0.0f && s <= 1.0f );
+    REYES_ASSERT( t >= 0.0f && t <= 1.0f );
     return u8_data( int(s * (width_ - 1)), int(t * (height_ - 1)) );
 }
 
 float* ImageBuffer::f32_data() const
 {
-    SWEET_ASSERT( format_ == FORMAT_F32 );
+    REYES_ASSERT( format_ == FORMAT_F32 );
     return reinterpret_cast<float*>( data_ );
 }
 
 float* ImageBuffer::f32_data( int x, int y ) const
 {
-    SWEET_ASSERT( format_ == FORMAT_F32 );
+    REYES_ASSERT( format_ == FORMAT_F32 );
     float* data = reinterpret_cast<float*>( data_ );
     return &data[(y * width_ + x) * elements_];
 }
 
 float* ImageBuffer::f32_data( float s, float t ) const
 {
-    SWEET_ASSERT( s >= 0.0f && s <= 1.0f );
-    SWEET_ASSERT( t >= 0.0f && t <= 1.0f );
+    REYES_ASSERT( s >= 0.0f && s <= 1.0f );
+    REYES_ASSERT( t >= 0.0f && t <= 1.0f );
     return f32_data( int(s * (width_ - 1)), int(t * (height_ - 1)) );
 }
 
 void ImageBuffer::set_pixel( int x, int y, const math::vec4& pixel )
 {
-    SWEET_ASSERT( x >= 0 && x < width_ );
-    SWEET_ASSERT( y >= 0 && y < height_ );
-    SWEET_ASSERT( format_ == FORMAT_F32 );
-    SWEET_ASSERT( elements_ == 4 );
+    REYES_ASSERT( x >= 0 && x < width_ );
+    REYES_ASSERT( y >= 0 && y < height_ );
+    REYES_ASSERT( format_ == FORMAT_F32 );
+    REYES_ASSERT( elements_ == 4 );
         
     float* data = f32_data( x, y );
     *(data + 0) = pixel.x;
@@ -147,10 +147,10 @@ void ImageBuffer::swap( ImageBuffer& image_buffer )
 
 void ImageBuffer::reset( int width, int height, int elements, int format, const void* data )
 {
-    SWEET_ASSERT( width >= 0 );
-    SWEET_ASSERT( height >= 0 );
-    SWEET_ASSERT( elements > 0 );
-    SWEET_ASSERT( format >= FORMAT_U8 && format < FORMAT_COUNT );
+    REYES_ASSERT( width >= 0 );
+    REYES_ASSERT( height >= 0 );
+    REYES_ASSERT( elements > 0 );
+    REYES_ASSERT( format >= FORMAT_U8 && format < FORMAT_COUNT );
 
     if ( width_ != width || height_ != height || elements_ != elements || format_ != format )
     {
@@ -194,7 +194,7 @@ void ImageBuffer::expose( float gain, float gamma )
 
 void ImageBuffer::quantize( const ImageBuffer& image_buffer, float one, int minimum, int maximum, float dither )
 {
-    SWEET_ASSERT( image_buffer.format_ == FORMAT_F32 );
+    REYES_ASSERT( image_buffer.format_ == FORMAT_F32 );
 
     minimum = clamp( minimum, 0, 255 );
     maximum = clamp( maximum, 0, 255 );
@@ -211,7 +211,7 @@ void ImageBuffer::quantize( const ImageBuffer& image_buffer, float one, int mini
 
 void ImageBuffer::load( const char* filename, ErrorPolicy* error_policy )
 {
-    SWEET_ASSERT( filename );
+    REYES_ASSERT( filename );
 
     struct LoadNativeGuard
     {
@@ -259,7 +259,7 @@ void ImageBuffer::load( const char* filename, ErrorPolicy* error_policy )
 
 void ImageBuffer::save( const char* filename, ErrorPolicy* error_policy ) const
 {
-    SWEET_ASSERT( filename );
+    REYES_ASSERT( filename );
     
     struct SaveNativeGuard
     {
@@ -301,7 +301,7 @@ void ImageBuffer::save( const char* filename, ErrorPolicy* error_policy ) const
 
 void ImageBuffer::load_png( const char* filename, ErrorPolicy* error_policy )
 {
-    SWEET_ASSERT( filename );
+    REYES_ASSERT( filename );
 
     struct LoadPngGuard
     {
@@ -445,7 +445,7 @@ void ImageBuffer::load_png( const char* filename, ErrorPolicy* error_policy )
 
 void ImageBuffer::save_png( const char* filename, ErrorPolicy* error_policy ) const
 {
-    SWEET_ASSERT( filename );
+    REYES_ASSERT( filename );
 
     struct SavePngGuard
     {
@@ -526,7 +526,7 @@ void ImageBuffer::save_png( const char* filename, ErrorPolicy* error_policy ) co
 
 void ImageBuffer::load_jpeg( const char* filename, ErrorPolicy* error_policy )
 {
-    SWEET_ASSERT( filename );
+    REYES_ASSERT( filename );
     
     struct JpegDecoder
     {
@@ -541,8 +541,8 @@ void ImageBuffer::load_jpeg( const char* filename, ErrorPolicy* error_policy )
           error_policy_( error_policy ),
           file_( NULL )
         {
-            SWEET_ASSERT( decompress );
-            SWEET_ASSERT( filename );
+            REYES_ASSERT( decompress );
+            REYES_ASSERT( filename );
             
             file_ = fopen( filename, "rb" );
             if ( file_ )
@@ -579,7 +579,7 @@ void ImageBuffer::load_jpeg( const char* filename, ErrorPolicy* error_policy )
         static void jpeg_error_exit( struct jpeg_common_struct* jpeg_common )
         {
             JpegDecoder* decoder = reinterpret_cast<JpegDecoder*>( jpeg_common->client_data );
-            SWEET_ASSERT( decoder );
+            REYES_ASSERT( decoder );
             ErrorPolicy* error_policy = decoder->error_policy_;
             if ( error_policy )
             {
@@ -600,7 +600,7 @@ void ImageBuffer::load_jpeg( const char* filename, ErrorPolicy* error_policy )
         jpeg_read_header( &decompress, TRUE );
         jpeg_start_decompress( &decompress );
 
-        SWEET_ASSERT( decompress.output_components == 3 );
+        REYES_ASSERT( decompress.output_components == 3 );
         reset( decompress.output_width, decompress.output_height, sizeof(unsigned char) * 3 );
 
         for ( int y = 0; y < height_; ++y )

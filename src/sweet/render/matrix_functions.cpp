@@ -20,13 +20,13 @@ namespace render
 
 void comp_matrix( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> matrix, std::shared_ptr<Value> row_value, std::shared_ptr<Value> column_value )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( matrix );
-    SWEET_ASSERT( matrix->storage() == STORAGE_UNIFORM );
-    SWEET_ASSERT( row_value );
-    SWEET_ASSERT( row_value->storage() == STORAGE_UNIFORM );
-    SWEET_ASSERT( column_value );
-    SWEET_ASSERT( column_value->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( result );
+    REYES_ASSERT( matrix );
+    REYES_ASSERT( matrix->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( row_value );
+    REYES_ASSERT( row_value->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( column_value );
+    REYES_ASSERT( column_value->storage() == STORAGE_UNIFORM );
     
     result->reset( TYPE_FLOAT, STORAGE_UNIFORM, 1 );
     
@@ -39,14 +39,14 @@ void comp_matrix( const Renderer& renderer, const Grid& grid, std::shared_ptr<Va
 
 void setcomp_matrix( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> matrix, std::shared_ptr<Value> row_value, std::shared_ptr<Value> column_value, std::shared_ptr<Value> value )
 {
-    SWEET_ASSERT( matrix );
-    SWEET_ASSERT( matrix->storage() == STORAGE_UNIFORM );
-    SWEET_ASSERT( row_value );
-    SWEET_ASSERT( row_value->storage() == STORAGE_UNIFORM );
-    SWEET_ASSERT( column_value );
-    SWEET_ASSERT( column_value->storage() == STORAGE_UNIFORM );
-    SWEET_ASSERT( value );
-    SWEET_ASSERT( value->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( matrix );
+    REYES_ASSERT( matrix->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( row_value );
+    REYES_ASSERT( row_value->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( column_value );
+    REYES_ASSERT( column_value->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( value );
+    REYES_ASSERT( value->storage() == STORAGE_UNIFORM );
 
     const mat4x4& m = matrix->mat4x4_value();
     int row = int(row_value->float_value());
@@ -57,8 +57,8 @@ void setcomp_matrix( const Renderer& renderer, const Grid& grid, std::shared_ptr
 
 void determinant( const Renderer& render, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> matrix )
 {
-    SWEET_ASSERT( matrix );
-    SWEET_ASSERT( matrix->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( matrix );
+    REYES_ASSERT( matrix->storage() == STORAGE_UNIFORM );
 
     result->reset( TYPE_FLOAT, STORAGE_UNIFORM, 1 );
     const mat4x4& m = matrix->mat4x4_value();
@@ -68,11 +68,11 @@ void determinant( const Renderer& render, const Grid& grid, std::shared_ptr<Valu
 
 void translate_matrix( const Renderer& render, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> matrix, std::shared_ptr<Value> t )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( matrix );
-    SWEET_ASSERT( matrix->storage() == STORAGE_UNIFORM );
-    SWEET_ASSERT( t );
-    SWEET_ASSERT( t->storage() == STORAGE_UNIFORM );    
+    REYES_ASSERT( result );
+    REYES_ASSERT( matrix );
+    REYES_ASSERT( matrix->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( t );
+    REYES_ASSERT( t->storage() == STORAGE_UNIFORM );    
 
     result->reset( TYPE_MATRIX, STORAGE_UNIFORM, 1 );
     const mat4x4& m = matrix->mat4x4_value();
@@ -82,13 +82,13 @@ void translate_matrix( const Renderer& render, const Grid& grid, std::shared_ptr
 
 void rotate_matrix( const Renderer& render, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> matrix, std::shared_ptr<Value> angle, std::shared_ptr<Value> axis )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( matrix );
-    SWEET_ASSERT( matrix->storage() == STORAGE_UNIFORM );
-    SWEET_ASSERT( angle );
-    SWEET_ASSERT( angle->storage() == STORAGE_UNIFORM );
-    SWEET_ASSERT( axis );
-    SWEET_ASSERT( axis->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( result );
+    REYES_ASSERT( matrix );
+    REYES_ASSERT( matrix->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( angle );
+    REYES_ASSERT( angle->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( axis );
+    REYES_ASSERT( axis->storage() == STORAGE_UNIFORM );
 
     result->reset( TYPE_MATRIX, STORAGE_UNIFORM, 1 );
     const mat4x4& m = matrix->mat4x4_value();
@@ -98,11 +98,11 @@ void rotate_matrix( const Renderer& render, const Grid& grid, std::shared_ptr<Va
 
 void scale_matrix( const Renderer& render, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> matrix, std::shared_ptr<Value> s )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( matrix );
-    SWEET_ASSERT( matrix->storage() == STORAGE_UNIFORM );
-    SWEET_ASSERT( s );
-    SWEET_ASSERT( s->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( result );
+    REYES_ASSERT( matrix );
+    REYES_ASSERT( matrix->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( s );
+    REYES_ASSERT( s->storage() == STORAGE_UNIFORM );
 
     result->reset( TYPE_MATRIX, STORAGE_UNIFORM, 1 );
     const mat4x4& m = matrix->mat4x4_value();

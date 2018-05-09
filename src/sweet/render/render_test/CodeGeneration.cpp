@@ -40,7 +40,7 @@ SUITE( CodeGeneration )
         
         bool test( const char* filename )
         {
-            SWEET_ASSERT( filename );
+            REYES_ASSERT( filename );
 
             shared_ptr<SyntaxNode> syntax_node = shader_parser.parse( filename );
             CHECK( syntax_node );            
@@ -55,11 +55,11 @@ SUITE( CodeGeneration )
         void check_symbol( const char* identifier, ValueType type, ValueStorage storage )
         {
             shared_ptr<Symbol> symbol = code_generator.find_symbol( identifier );
-            SWEET_ASSERT( symbol );        
+            REYES_ASSERT( symbol );        
             CHECK( symbol );        
             if ( symbol )
             {
-                SWEET_ASSERT( symbol->type() == type );
+                REYES_ASSERT( symbol->type() == type );
                 CHECK( symbol->type() == type );
                 CHECK( symbol->storage() == storage );
             }

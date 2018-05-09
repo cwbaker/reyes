@@ -57,7 +57,7 @@ bool Geometry::splittable() const
 
 void Geometry::split( std::list<std::shared_ptr<Geometry>>* /*primitives*/ ) const
 {
-    SWEET_ASSERT( false );
+    REYES_ASSERT( false );
 }
 
 bool Geometry::diceable() const

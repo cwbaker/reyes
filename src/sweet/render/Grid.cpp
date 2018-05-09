@@ -42,7 +42,7 @@ Grid::Grid( Shader* shader )
   transform_( math::identity() ),
   shader_( shader )
 {
-    SWEET_ASSERT( shader_ );
+    REYES_ASSERT( shader_ );
 }
 
 Grid::Grid( const Grid& grid )
@@ -101,8 +101,8 @@ void Grid::clear()
 
 void Grid::resize( int width, int height )
 {
-    SWEET_ASSERT( width > 0 );
-    SWEET_ASSERT( height > 0 );
+    REYES_ASSERT( width > 0 );
+    REYES_ASSERT( height > 0 );
     
     width_ = width;
     height_ = height;
@@ -114,7 +114,7 @@ void Grid::generate_normals( bool left_handed, bool force )
     {
         Value& normals = value( "N", TYPE_NORMAL );    
         const vec3* positions = value("P").vec3_values();
-        SWEET_ASSERT( positions );
+        REYES_ASSERT( positions );
         
         vector<vec4> generated_normals;
         generated_normals.insert( generated_normals.end(), width_ * height_, vec4(0.0f, 0.0f, 0.0f, 0.0f) );
@@ -170,7 +170,7 @@ Value& Grid::value( const std::string& identifier, ValueType type )
 const Value& Grid::value( const std::string& identifier ) const
 {
     shared_ptr<Value> value = find_value( identifier );
-    SWEET_ASSERT( value );
+    REYES_ASSERT( value );
     return *value;
 }
 
@@ -186,10 +186,10 @@ const Value& Grid::operator[]( const std::string& identifier ) const
 
 void Grid::copy_value( const std::string& identifier, std::shared_ptr<Value> value )
 {
-    SWEET_ASSERT( !identifier.empty() );
-    SWEET_ASSERT( !find_value(identifier) );
-    SWEET_ASSERT( value );
-    SWEET_ASSERT( int(value->size()) <= width_ * height_ );
+    REYES_ASSERT( !identifier.empty() );
+    REYES_ASSERT( !find_value(identifier) );
+    REYES_ASSERT( value );
+    REYES_ASSERT( int(value->size()) <= width_ * height_ );
 
     shared_ptr<Value> copied_value( new Value(*value) );
     values_.push_back( copied_value );
@@ -198,18 +198,18 @@ void Grid::copy_value( const std::string& identifier, std::shared_ptr<Value> val
 
 void Grid::insert_value( const std::string& identifier, std::shared_ptr<Value> value )
 {
-    SWEET_ASSERT( !identifier.empty() );
-    SWEET_ASSERT( !find_value(identifier) );
-    SWEET_ASSERT( value );
-    SWEET_ASSERT( int(value->size()) <= width_ * height_ );
+    REYES_ASSERT( !identifier.empty() );
+    REYES_ASSERT( !find_value(identifier) );
+    REYES_ASSERT( value );
+    REYES_ASSERT( int(value->size()) <= width_ * height_ );
     
     values_by_identifier_.insert( make_pair(identifier, value) );
 }
 
 std::shared_ptr<Value> Grid::add_value( const std::string& identifier, ValueType type, ValueStorage storage )
 {
-    SWEET_ASSERT( !identifier.empty() );
-    SWEET_ASSERT( !find_value(identifier) );
+    REYES_ASSERT( !identifier.empty() );
+    REYES_ASSERT( !find_value(identifier) );
     
     shared_ptr<Value> value( new Value(type, storage, size()) );
     values_.push_back( value );
@@ -245,7 +245,7 @@ void Grid::add_light( std::shared_ptr<Light> light )
 
 const Light* Grid::get_light( int index ) const
 {
-    SWEET_ASSERT( index >= 0 && index < int(lights_.size()) );
+    REYES_ASSERT( index >= 0 && index < int(lights_.size()) );
     return lights_[index].get();
 }
 

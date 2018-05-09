@@ -23,10 +23,10 @@ namespace render
 
 void comp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> color, std::shared_ptr<Value> index_value )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( color );
-    SWEET_ASSERT( index_value );
-    SWEET_ASSERT( index_value->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( result );
+    REYES_ASSERT( color );
+    REYES_ASSERT( index_value );
+    REYES_ASSERT( index_value->storage() == STORAGE_UNIFORM );
     
     result->reset( TYPE_FLOAT, color->storage(), color->size() );
     
@@ -62,10 +62,10 @@ void comp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> re
 
 void setcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> color, std::shared_ptr<Value> index_value, std::shared_ptr<Value> value )
 {
-    SWEET_ASSERT( color );
-    SWEET_ASSERT( index_value );
-    SWEET_ASSERT( index_value->storage() == STORAGE_UNIFORM );
-    SWEET_ASSERT( color->size() == value->size() );
+    REYES_ASSERT( color );
+    REYES_ASSERT( index_value );
+    REYES_ASSERT( index_value->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( color->size() == value->size() );
 
     const int size = color->size();
     vec3* colors = color->vec3_values();
@@ -100,10 +100,10 @@ void setcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value>
 
 void ctransform( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> color )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( fromspace );
-    SWEET_ASSERT( fromspace->type() == TYPE_STRING );
-    SWEET_ASSERT( color );
+    REYES_ASSERT( result );
+    REYES_ASSERT( fromspace );
+    REYES_ASSERT( fromspace->type() == TYPE_STRING );
+    REYES_ASSERT( color );
     
     result->reset( TYPE_COLOR, color->storage(), color->size() );
     

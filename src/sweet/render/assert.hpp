@@ -1,58 +1,37 @@
-#ifndef SWEET_ASSERT_ASSERT_HPP_INCLUDED
-#define SWEET_ASSERT_ASSERT_HPP_INCLUDED
+#ifndef REYES_RENDER_ASSERT_HPP_INCLUDED
+#define REYES_RENDER_ASSERT_HPP_INCLUDED
 
-#if defined(BUILD_MODULE_ASSERT) && defined(BUILD_LIBRARY_TYPE_DYNAMIC)
-#define SWEET_ASSERT_DECLSPEC __declspec(dllexport)
-#elif defined(BUILD_LIBRARY_TYPE_DYNAMIC)
-#define SWEET_ASSERT_DECLSPEC __declspec(dllimport)
-#else
-#define SWEET_ASSERT_DECLSPEC
-#endif 
-
-#include <sweet/build.hpp>
-
-/**
- Assertion library.
-
- The assert component provides the macro SWEET_ASSERT(<em>e</em>) for 
- asserting that assumptions are true at runtime. The macro compiles to code
- to generate a __debugbreak() call if the expression is false when the macro
- SWEET_ASSERT_ENABLED is defined and to nothing otherwise.
-
- An assert function (sweet_assert()) is provided for situations where a macro
- doesn't work.  Lua code uses assertions in expressions in a way that requires
- they be in a function. 
-*/
+#include "config.hpp"
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
 
-SWEET_ASSERT_DECLSPEC void sweet_break( void );
-SWEET_ASSERT_DECLSPEC void sweet_assert( int expression, const char* description, const char* file, int line );
-SWEET_ASSERT_DECLSPEC void sweet_assert_with_break( int expression, const char* description, const char* file, int line );
+void reyes_break( void );
+void reyes_assert( int expression, const char* description, const char* file, int line );
+void reyes_assert_with_break( int expression, const char* description, const char* file, int line );
    
 #ifdef __cplusplus
 }
 #endif
 
 #ifdef _MSC_VER
-#define SWEET_BREAK() __debugbreak()
+#define REYES_BREAK() __debugbreak()
 #elif defined(BUILD_OS_MACOSX)
-#define SWEET_BREAK() __asm__("int $3")
+#define REYES_BREAK() __asm__("int $3")
 #else
-#define SWEET_BREAK() sweet_break()
+#define REYES_BREAK() reyes_break()
 #endif
 
-#ifdef SWEET_ASSERT_ENABLED
+#ifdef REYES_ASSERT_ENABLED
 
-#define SWEET_ASSERT( x ) \
+#define REYES_ASSERT( x ) \
 do { \
     if ( !(x) ) \
     { \
-        sweet_assert( false, #x, __FILE__, __LINE__ ); \
-        SWEET_BREAK(); \
+        reyes_assert( false, #x, __FILE__, __LINE__ ); \
+        REYES_BREAK(); \
     } \
 } while ( false )
 
@@ -62,7 +41,7 @@ do { \
 #pragma warning( disable: 4127 )
 #endif
 
-#define SWEET_ASSERT( x )
+#define REYES_ASSERT( x )
 
 #endif
 

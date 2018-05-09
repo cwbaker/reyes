@@ -27,7 +27,7 @@ SUITE( ShaderParser )
         
         BuildSyntaxTree& begin( SyntaxNodeType type, const char* lexeme = NULL )
         {
-            SWEET_ASSERT( !nodes_.empty() );
+            REYES_ASSERT( !nodes_.empty() );
             shared_ptr<SyntaxNode> node( new SyntaxNode(type, 0, lexeme) );
             nodes_.back()->add_node( node );
             nodes_.push_back( node );
@@ -36,8 +36,8 @@ SUITE( ShaderParser )
         
         BuildSyntaxTree& end()
         {
-            SWEET_ASSERT( !nodes_.empty() );
-            SWEET_ASSERT( nodes_.size() > 1 );
+            REYES_ASSERT( !nodes_.empty() );
+            REYES_ASSERT( nodes_.size() > 1 );
             nodes_.pop_back();
             return *this;
         }
@@ -226,8 +226,8 @@ SUITE( ShaderParser )
         
         shared_ptr<SyntaxNode> root() const
         {
-            SWEET_ASSERT( nodes_.size() == 1 );
-            SWEET_ASSERT( nodes_.back()->get_nodes().size() == 1 );
+            REYES_ASSERT( nodes_.size() == 1 );
+            REYES_ASSERT( nodes_.back()->get_nodes().size() == 1 );
             return nodes_.back()->get_nodes().at( 0 );
         }
     };

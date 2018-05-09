@@ -45,7 +45,7 @@ Attributes::Attributes( VirtualMachine* virtual_machine )
   transforms_(),
   named_transforms_()
 {
-    SWEET_ASSERT( virtual_machine_ );
+    REYES_ASSERT( virtual_machine_ );
     displacement_parameters_ = new Grid();
     surface_parameters_ = new Grid();
 
@@ -77,7 +77,7 @@ Attributes::Attributes( const Attributes& attributes )
   transforms_( attributes.transforms_ ),
   named_transforms_( attributes.named_transforms_ )
 {
-    SWEET_ASSERT( virtual_machine_ );
+    REYES_ASSERT( virtual_machine_ );
     displacement_parameters_ = new Grid( *attributes.displacement_parameters_ );
     surface_parameters_ = new Grid( *attributes.surface_parameters_ );
 }
@@ -138,7 +138,7 @@ const math::vec4* Attributes::v_basis() const
 
 void Attributes::set_shading_rate( float shading_rate )
 {
-    SWEET_ASSERT( shading_rate > 0.0f );
+    REYES_ASSERT( shading_rate > 0.0f );
     shading_rate_ = shading_rate > 0.0f ? shading_rate : 1.0f;
 }
 
@@ -174,13 +174,13 @@ void Attributes::set_opacity( const math::vec3& opacity )
 
 void Attributes::set_u_basis( const math::vec4* u_basis )
 {
-    SWEET_ASSERT( u_basis );
+    REYES_ASSERT( u_basis );
     u_basis_ = u_basis;
 }
 
 void Attributes::set_v_basis( const math::vec4* v_basis )
 {
-    SWEET_ASSERT( v_basis );
+    REYES_ASSERT( v_basis );
     v_basis_ = v_basis;
 }
 
@@ -297,10 +297,10 @@ void Attributes::light_shade( Grid& grid )
     for ( vector<Grid*>::const_iterator i = active_light_shaders_.begin(); i != active_light_shaders_.end(); ++i )
     {
         Grid* light_parameters = *i;
-        SWEET_ASSERT( light_parameters );
+        REYES_ASSERT( light_parameters );
     
         Shader* shader = light_parameters->shader();
-        SWEET_ASSERT( shader );
+        REYES_ASSERT( shader );
         
         Grid light_grid;
         light_grid.resize( grid.width(), grid.height() );
@@ -323,7 +323,7 @@ void Attributes::light_shade( Grid& grid )
 
 Grid& Attributes::add_light_shader( Shader* light_shader, const math::mat4x4& camera_transform )
 {
-    SWEET_ASSERT( light_shader );
+    REYES_ASSERT( light_shader );
     
     shared_ptr<Grid> light_parameters( new Grid(light_shader) );
     light_shaders_.push_back( make_pair(light_shader, light_parameters) );
@@ -353,7 +353,7 @@ void Attributes::deactivate_light_shader( const Grid& grid )
     vector<Grid*>::iterator i = find_active_light_shader_by_grid( grid );
     if ( i != active_light_shaders_.end() )
     {
-        SWEET_ASSERT( *i == &grid );
+        REYES_ASSERT( *i == &grid );
         swap( *i, active_light_shaders_.back() );
         active_light_shaders_.pop_back();
     }
@@ -376,7 +376,7 @@ void Attributes::push_transform()
 
 void Attributes::pop_transform()
 {
-    SWEET_ASSERT( transforms_.size() > 1 );
+    REYES_ASSERT( transforms_.size() > 1 );
     if ( transforms_.size() > 1 )
     {
         transforms_.pop_back();
@@ -411,27 +411,27 @@ void Attributes::perspective( float fov, float aspect_ratio, float near_clip_dis
 
 const math::mat4x4& Attributes::transform() const
 {
-    SWEET_ASSERT( !transforms_.empty() );
+    REYES_ASSERT( !transforms_.empty() );
     return transforms_.back();
 }
 
 void Attributes::add_coordinate_system( const char* name, const math::mat4x4& transform )
 {
-    SWEET_ASSERT( name );
-    SWEET_ASSERT( !transforms_.empty() );
+    REYES_ASSERT( name );
+    REYES_ASSERT( !transforms_.empty() );
     named_transforms_[name] = transform;
 }
 
 void Attributes::remove_coordinate_system( const char* name )
 {
-    SWEET_ASSERT( name );
-    SWEET_ASSERT( named_transforms_.find(name) != named_transforms_.end() );
+    REYES_ASSERT( name );
+    REYES_ASSERT( named_transforms_.find(name) != named_transforms_.end() );
     named_transforms_.erase( name );
 }
 
 math::mat4x4 Attributes::transform_from( const std::string& name ) const
 {
-    SWEET_ASSERT( named_transforms_.find(name) != named_transforms_.end() );
+    REYES_ASSERT( named_transforms_.find(name) != named_transforms_.end() );
     map<string, math::mat4x4>::const_iterator i = named_transforms_.find( name );
     return i != named_transforms_.end() ? i->second : math::identity();    
 }

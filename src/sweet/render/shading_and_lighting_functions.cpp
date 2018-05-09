@@ -31,7 +31,7 @@ namespace render
 
 void ambient( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> color )
 {
-    SWEET_ASSERT( color );
+    REYES_ASSERT( color );
     
     color->reset( TYPE_COLOR, STORAGE_VARYING, grid.size() );
     color->zero();
@@ -40,12 +40,12 @@ void ambient( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value>
     for ( vector<shared_ptr<Light>>::const_iterator i = lights.begin(); i != lights.end(); ++i )
     {
         Light* light = i->get();
-        SWEET_ASSERT( light );
+        REYES_ASSERT( light );
         
         if ( light->type() == LIGHT_AMBIENT )
         {
             const std::shared_ptr<Value>& light_color = light->color();
-            SWEET_ASSERT( light_color );
+            REYES_ASSERT( light_color );
             
             vec3* color_values = color->vec3_values();
             const vec3* light_color_values = light_color->vec3_values();
@@ -59,29 +59,29 @@ void ambient( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value>
 
 void diffuse( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> color, std::shared_ptr<Value> normal )
 {
-    SWEET_ASSERT( color );
-    SWEET_ASSERT( normal );
-    SWEET_ASSERT( normal->size() == grid.size() );
+    REYES_ASSERT( color );
+    REYES_ASSERT( normal );
+    REYES_ASSERT( normal->size() == grid.size() );
     
     color->reset( TYPE_COLOR, STORAGE_VARYING, grid.size() );
     color->zero();
 
     std::shared_ptr<Value> P = grid.find_value( "P" );
-    SWEET_ASSERT( P );
-    SWEET_ASSERT( P->type() == TYPE_POINT );
-    SWEET_ASSERT( P->storage() == STORAGE_VARYING );
-    SWEET_ASSERT( P->size() == color->size() );
+    REYES_ASSERT( P );
+    REYES_ASSERT( P->type() == TYPE_POINT );
+    REYES_ASSERT( P->storage() == STORAGE_VARYING );
+    REYES_ASSERT( P->size() == color->size() );
 
     const vector<std::shared_ptr<Light> >& lights = grid.lights();
     for ( vector<std::shared_ptr<Light> >::const_iterator i = lights.begin(); i != lights.end(); ++i )
     {
         Light* light = i->get();
-        SWEET_ASSERT( light );
+        REYES_ASSERT( light );
         
         if ( light->type() != LIGHT_AMBIENT )
         {
             const std::shared_ptr<Value>& light_color = light->color();
-            SWEET_ASSERT( light_color );
+            REYES_ASSERT( light_color );
             
             vec3* colors = color->vec3_values();
             const vec3* positions = P->vec3_values();
@@ -169,25 +169,25 @@ void diffuse( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value>
 
 void specular( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> color, std::shared_ptr<Value> normal, std::shared_ptr<Value> view, std::shared_ptr<Value> roughness_value )
 {
-    SWEET_ASSERT( color );
-    SWEET_ASSERT( normal );
-    SWEET_ASSERT( view );
-    SWEET_ASSERT( roughness_value );
+    REYES_ASSERT( color );
+    REYES_ASSERT( normal );
+    REYES_ASSERT( view );
+    REYES_ASSERT( roughness_value );
     
     color->reset( TYPE_COLOR, STORAGE_VARYING, grid.size() );
     color->zero();
     
     std::shared_ptr<Value> P = grid.find_value( "P" );
-    SWEET_ASSERT( P );
-    SWEET_ASSERT( P->type() == TYPE_POINT );
-    SWEET_ASSERT( P->storage() == STORAGE_VARYING );
-    SWEET_ASSERT( P->size() == color->size() );
+    REYES_ASSERT( P );
+    REYES_ASSERT( P->type() == TYPE_POINT );
+    REYES_ASSERT( P->storage() == STORAGE_VARYING );
+    REYES_ASSERT( P->size() == color->size() );
     
     const vector<std::shared_ptr<Light> >& lights = grid.lights();
     for ( vector<std::shared_ptr<Light> >::const_iterator i = lights.begin(); i != lights.end(); ++i )
     {
         Light* light = i->get();
-        SWEET_ASSERT( light );
+        REYES_ASSERT( light );
         
         vec3* colors = color->vec3_values();
         const vec3* positions = P->vec3_values();
@@ -284,13 +284,13 @@ void specular( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value
 
 void specularbrdf( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> l, std::shared_ptr<Value> n, std::shared_ptr<Value> v, std::shared_ptr<Value> roughness_value )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( l );
-    SWEET_ASSERT( n );
-    SWEET_ASSERT( v );
-    SWEET_ASSERT( roughness_value );
-    SWEET_ASSERT( roughness_value->type() == TYPE_FLOAT );
-    SWEET_ASSERT( roughness_value->storage() == STORAGE_CONSTANT || roughness_value->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( result );
+    REYES_ASSERT( l );
+    REYES_ASSERT( n );
+    REYES_ASSERT( v );
+    REYES_ASSERT( roughness_value );
+    REYES_ASSERT( roughness_value->type() == TYPE_FLOAT );
+    REYES_ASSERT( roughness_value->storage() == STORAGE_CONSTANT || roughness_value->storage() == STORAGE_UNIFORM );
     
     const vec3* lights = l->vec3_values();
     const vec3* normals = n->vec3_values();
@@ -310,25 +310,25 @@ void specularbrdf( const Renderer& renderer, const Grid& grid, std::shared_ptr<V
 
 void phong( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> normal, std::shared_ptr<Value> view, std::shared_ptr<Value> power_value )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( normal );
-    SWEET_ASSERT( view );
-    SWEET_ASSERT( power_value );
+    REYES_ASSERT( result );
+    REYES_ASSERT( normal );
+    REYES_ASSERT( view );
+    REYES_ASSERT( power_value );
     
     result->reset( TYPE_COLOR, STORAGE_VARYING, grid.size() );
     result->zero();
     
     std::shared_ptr<Value> P = grid.find_value( "P" );
-    SWEET_ASSERT( P );
-    SWEET_ASSERT( P->type() == TYPE_POINT );
-    SWEET_ASSERT( P->storage() == STORAGE_VARYING );
-    SWEET_ASSERT( P->size() == result->size() );
+    REYES_ASSERT( P );
+    REYES_ASSERT( P->type() == TYPE_POINT );
+    REYES_ASSERT( P->storage() == STORAGE_VARYING );
+    REYES_ASSERT( P->size() == result->size() );
     
     const vector<std::shared_ptr<Light> >& lights = grid.lights();
     for ( vector<std::shared_ptr<Light> >::const_iterator i = lights.begin(); i != lights.end(); ++i )
     {
         Light* light = i->get();
-        SWEET_ASSERT( light );
+        REYES_ASSERT( light );
         
         vec3* colors = result->vec3_values();
         const vec3* positions = P->vec3_values();
@@ -425,7 +425,7 @@ void phong( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> r
 
 void trace( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> point, std::shared_ptr<Value> reflection )
 {
-    SWEET_ASSERT( result );
+    REYES_ASSERT( result );
     result->reset( TYPE_COLOR, STORAGE_VARYING, grid.size() );
     result->zero();
 }

@@ -46,7 +46,7 @@ Shader::Shader( const char* filename, SymbolTable& symbol_table, ErrorPolicy& er
   permanent_registers_( 0 ),
   registers_( 0 )
 {
-    SWEET_ASSERT( filename );
+    REYES_ASSERT( filename );
     
     ShaderParser shader_parser( symbol_table, &error_policy );
     shared_ptr<SyntaxNode> syntax_node = shader_parser.parse( filename );
@@ -82,9 +82,9 @@ Shader::Shader( const char* start, const char* finish, SymbolTable& symbol_table
   permanent_registers_( 0 ),
   registers_( 0 )
 {
-    SWEET_ASSERT( start );
-    SWEET_ASSERT( finish );
-    SWEET_ASSERT( start <= finish );
+    REYES_ASSERT( start );
+    REYES_ASSERT( finish );
+    REYES_ASSERT( start <= finish );
     
     ShaderParser shader_parser( symbol_table, &error_policy );
     shared_ptr<SyntaxNode> syntax_node = shader_parser.parse( start, finish );

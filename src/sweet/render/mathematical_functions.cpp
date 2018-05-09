@@ -24,8 +24,8 @@ namespace render
 
 void radians( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> degrees )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( degrees );
+    REYES_ASSERT( result );
+    REYES_ASSERT( degrees );
     
     result->reset( degrees->type(), degrees->storage(), degrees->size() );
 
@@ -40,8 +40,8 @@ void radians( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value>
 
 void degrees( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> radians )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( radians );
+    REYES_ASSERT( result );
+    REYES_ASSERT( radians );
     
     result->reset( radians->type(), radians->storage(), radians->size() );
 
@@ -56,8 +56,8 @@ void degrees( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value>
 
 void sin( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> a )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( a );
+    REYES_ASSERT( result );
+    REYES_ASSERT( a );
     
     result->reset( a->type(), a->storage(), a->size() );
 
@@ -72,8 +72,8 @@ void sin( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> res
 
 void asin( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> a )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( a );
+    REYES_ASSERT( result );
+    REYES_ASSERT( a );
     
     result->reset( a->type(), a->storage(), a->size() );
 
@@ -88,8 +88,8 @@ void asin( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> re
 
 void cos( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> a )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( a );
+    REYES_ASSERT( result );
+    REYES_ASSERT( a );
     
     result->reset( a->type(), a->storage(), a->size() );
 
@@ -104,8 +104,8 @@ void cos( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> res
 
 void acos( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> a )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( a );
+    REYES_ASSERT( result );
+    REYES_ASSERT( a );
     
     result->reset( a->type(), a->storage(), a->size() );
 
@@ -120,8 +120,8 @@ void acos( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> re
 
 void tan( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> a )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( a );
+    REYES_ASSERT( result );
+    REYES_ASSERT( a );
     
     result->reset( a->type(), a->storage(), a->size() );
 
@@ -136,8 +136,8 @@ void tan( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> res
 
 void atan( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> yoverx )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( yoverx );
+    REYES_ASSERT( result );
+    REYES_ASSERT( yoverx );
     
     result->reset( yoverx->type(), yoverx->storage(), yoverx->size() );
 
@@ -152,10 +152,10 @@ void atan( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> re
 
 void atan2( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> y, std::shared_ptr<Value> x )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( y );
-    SWEET_ASSERT( x );
-    SWEET_ASSERT( x->size() == y->size() );
+    REYES_ASSERT( result );
+    REYES_ASSERT( y );
+    REYES_ASSERT( x );
+    REYES_ASSERT( x->size() == y->size() );
     
     result->reset( y->type(), y->storage(), y->size() );
 
@@ -171,10 +171,10 @@ void atan2( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> r
 
 void pow( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x, std::shared_ptr<Value> y )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( x );
-    SWEET_ASSERT( y );
-    SWEET_ASSERT( x->size() == y->size() );
+    REYES_ASSERT( result );
+    REYES_ASSERT( x );
+    REYES_ASSERT( y );
+    REYES_ASSERT( x->size() == y->size() );
     
     result->reset( x->type(), x->storage(), x->size() );
 
@@ -190,8 +190,8 @@ void pow( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> res
 
 void exp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( x );
+    REYES_ASSERT( result );
+    REYES_ASSERT( x );
     
     result->reset( x->type(), x->storage(), x->size() );
 
@@ -206,8 +206,8 @@ void exp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> res
 
 void sqrt( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( x );
+    REYES_ASSERT( result );
+    REYES_ASSERT( x );
     
     result->reset( x->type(), x->storage(), x->size() );
 
@@ -222,8 +222,8 @@ void sqrt( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> re
 
 void inversesqrt( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( x );
+    REYES_ASSERT( result );
+    REYES_ASSERT( x );
     
     result->reset( x->type(), x->storage(), x->size() );
 
@@ -238,8 +238,8 @@ void inversesqrt( const Renderer& renderer, const Grid& grid, std::shared_ptr<Va
 
 void log( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( x );
+    REYES_ASSERT( result );
+    REYES_ASSERT( x );
     
     result->reset( x->type(), x->storage(), x->size() );
 
@@ -254,10 +254,10 @@ void log( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> res
 
 void logb( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x, std::shared_ptr<Value> base )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( x );
-    SWEET_ASSERT( base );
-    SWEET_ASSERT( x->size() == base->size() );
+    REYES_ASSERT( result );
+    REYES_ASSERT( x );
+    REYES_ASSERT( base );
+    REYES_ASSERT( x->size() == base->size() );
     
     result->reset( x->type(), x->storage(), x->size() );
 
@@ -273,10 +273,10 @@ void logb( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> re
 
 void mod( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> a, std::shared_ptr<Value> b )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( a );
-    SWEET_ASSERT( b );
-    SWEET_ASSERT( a->size() == b->size() );
+    REYES_ASSERT( result );
+    REYES_ASSERT( a );
+    REYES_ASSERT( b );
+    REYES_ASSERT( a->size() == b->size() );
     
     result->reset( a->type(), a->storage(), a->size() );
 
@@ -292,8 +292,8 @@ void mod( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> res
 
 void abs( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( x );
+    REYES_ASSERT( result );
+    REYES_ASSERT( x );
     
     result->reset( x->type(), x->storage(), x->size() );
 
@@ -308,8 +308,8 @@ void abs( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> res
 
 void sign( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( x );
+    REYES_ASSERT( result );
+    REYES_ASSERT( x );
     
     result->reset( x->type(), x->storage(), x->size() );
 
@@ -324,10 +324,10 @@ void sign( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> re
 
 void mix_float( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x, std::shared_ptr<Value> y, std::shared_ptr<Value> alpha )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( x );
-    SWEET_ASSERT( x );
-    SWEET_ASSERT( x->size() == y->size() == alpha->size() );
+    REYES_ASSERT( result );
+    REYES_ASSERT( x );
+    REYES_ASSERT( x );
+    REYES_ASSERT( x->size() == y->size() == alpha->size() );
     
     result->reset( x->type(), x->storage(), x->size() );
 
@@ -344,12 +344,12 @@ void mix_float( const Renderer& renderer, const Grid& grid, std::shared_ptr<Valu
 
 void mix_vec3( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x, std::shared_ptr<Value> y, std::shared_ptr<Value> alpha )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( x );
-    SWEET_ASSERT( y );
-    SWEET_ASSERT( alpha );
-    SWEET_ASSERT( x->size() == y->size() );
-    SWEET_ASSERT( x->size() == alpha->size() );
+    REYES_ASSERT( result );
+    REYES_ASSERT( x );
+    REYES_ASSERT( y );
+    REYES_ASSERT( alpha );
+    REYES_ASSERT( x->size() == y->size() );
+    REYES_ASSERT( x->size() == alpha->size() );
     
     result->reset( x->type(), x->storage(), x->size() );
 
@@ -366,8 +366,8 @@ void mix_vec3( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value
 
 void floor( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( x );
+    REYES_ASSERT( result );
+    REYES_ASSERT( x );
     
     result->reset( x->type(), x->storage(), x->size() );
 
@@ -382,8 +382,8 @@ void floor( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> r
 
 void ceil( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( x );
+    REYES_ASSERT( result );
+    REYES_ASSERT( x );
     
     result->reset( x->type(), x->storage(), x->size() );
 
@@ -398,8 +398,8 @@ void ceil( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> re
 
 void round( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( x );
+    REYES_ASSERT( result );
+    REYES_ASSERT( x );
     
     result->reset( x->type(), x->storage(), x->size() );
 
@@ -414,9 +414,9 @@ void round( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> r
 
 void step( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> min, std::shared_ptr<Value> x )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( min );
-    SWEET_ASSERT( x );
+    REYES_ASSERT( result );
+    REYES_ASSERT( min );
+    REYES_ASSERT( x );
     
     result->reset( TYPE_FLOAT, x->storage(), x->size() );
 
@@ -432,10 +432,10 @@ void step( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> re
 
 void smoothstep( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> min, std::shared_ptr<Value> max, std::shared_ptr<Value> x )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( min );
-    SWEET_ASSERT( max );
-    SWEET_ASSERT( x );
+    REYES_ASSERT( result );
+    REYES_ASSERT( min );
+    REYES_ASSERT( max );
+    REYES_ASSERT( x );
     
     result->reset( TYPE_FLOAT, x->storage(), x->size() );
 
@@ -453,8 +453,8 @@ void smoothstep( const Renderer& renderer, const Grid& grid, std::shared_ptr<Val
 
 void du_float( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( p );
-    SWEET_ASSERT( p->type() >= TYPE_COLOR && p->type() <= TYPE_NORMAL );
+    REYES_ASSERT( p );
+    REYES_ASSERT( p->type() >= TYPE_COLOR && p->type() <= TYPE_NORMAL );
     
     result->reset( p->type(), p->storage(), p->size() );
     
@@ -488,8 +488,8 @@ void du_float( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value
 
 void du_vec3( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( p );
-    SWEET_ASSERT( p->type() >= TYPE_COLOR && p->type() <= TYPE_NORMAL );
+    REYES_ASSERT( p );
+    REYES_ASSERT( p->type() >= TYPE_COLOR && p->type() <= TYPE_NORMAL );
     
     result->reset( p->type(), p->storage(), p->size() );
     
@@ -523,8 +523,8 @@ void du_vec3( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value>
 
 void dv_float( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( p );
-    SWEET_ASSERT( p->type() >= TYPE_COLOR && p->type() <= TYPE_NORMAL );
+    REYES_ASSERT( p );
+    REYES_ASSERT( p->type() >= TYPE_COLOR && p->type() <= TYPE_NORMAL );
     
     result->reset( p->type(), p->storage(), p->size() );
     
@@ -563,8 +563,8 @@ void dv_float( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value
 
 void dv_vec3( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( p );
-    SWEET_ASSERT( p->type() >= TYPE_COLOR && p->type() <= TYPE_NORMAL );
+    REYES_ASSERT( p );
+    REYES_ASSERT( p->type() >= TYPE_COLOR && p->type() <= TYPE_NORMAL );
     
     result->reset( p->type(), p->storage(), p->size() );
     
@@ -603,10 +603,10 @@ void dv_vec3( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value>
 
 void deriv_float( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> y, std::shared_ptr<Value> x )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( y );
-    SWEET_ASSERT( x );
-    SWEET_ASSERT( x->size() == y->size() );
+    REYES_ASSERT( result );
+    REYES_ASSERT( y );
+    REYES_ASSERT( x );
+    REYES_ASSERT( x->size() == y->size() );
     
     result->reset( TYPE_FLOAT, y->storage(), y->size() );
 
@@ -666,10 +666,10 @@ void deriv_float( const Renderer& renderer, const Grid& grid, std::shared_ptr<Va
 
 void deriv_vec3( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> y, std::shared_ptr<Value> x )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( y );
-    SWEET_ASSERT( x );
-    SWEET_ASSERT( x->size() == y->size() );
+    REYES_ASSERT( result );
+    REYES_ASSERT( y );
+    REYES_ASSERT( x );
+    REYES_ASSERT( x->size() == y->size() );
     
     result->reset( y->type(), y->storage(), y->size() );
 
@@ -729,14 +729,14 @@ void deriv_vec3( const Renderer& renderer, const Grid& grid, std::shared_ptr<Val
 
 void uniform_float_random( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result )
 {
-    SWEET_ASSERT( result );
+    REYES_ASSERT( result );
     result->reset( TYPE_FLOAT, STORAGE_UNIFORM, 1 );
     result->float_values()[0] = (float(rand()) / (RAND_MAX / 2) - 1.0f);
 }
 
 void uniform_vec3_random( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result )
 {
-    SWEET_ASSERT( result );
+    REYES_ASSERT( result );
     result->reset( TYPE_POINT, STORAGE_UNIFORM, 1 );
     result->vec3_values()[0] = vec3(
         (float(rand()) / (RAND_MAX / 2) - 1.0f),
@@ -747,7 +747,7 @@ void uniform_vec3_random( const Renderer& renderer, const Grid& grid, std::share
 
 void float_random( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result )
 {
-    SWEET_ASSERT( result );
+    REYES_ASSERT( result );
     
     int size = grid.size();
     result->reset( TYPE_FLOAT, STORAGE_VARYING, size );
@@ -760,7 +760,7 @@ void float_random( const Renderer& renderer, const Grid& grid, std::shared_ptr<V
 
 void vec3_random( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result )
 {
-    SWEET_ASSERT( result );
+    REYES_ASSERT( result );
 
     int size = grid.size();
     result->reset( TYPE_POINT, STORAGE_VARYING, size );

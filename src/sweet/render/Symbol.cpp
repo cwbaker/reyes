@@ -122,19 +122,19 @@ bool Symbol::matches_return( ValueType type, ValueStorage storage ) const
 
 void Symbol::set_type( ValueType type )
 {
-    SWEET_ASSERT( type >= TYPE_NULL && type < TYPE_COUNT );
+    REYES_ASSERT( type >= TYPE_NULL && type < TYPE_COUNT );
     type_ = type;
 }
 
 void Symbol::set_storage( ValueStorage storage )
 {
-    SWEET_ASSERT( storage >= STORAGE_NULL && storage < STORAGE_COUNT );
+    REYES_ASSERT( storage >= STORAGE_NULL && storage < STORAGE_COUNT );
     storage_ = storage;
 }
 
 void Symbol::set_elements( int elements )
 {
-    SWEET_ASSERT( elements > 0 );
+    REYES_ASSERT( elements > 0 );
     elements_ = elements;
 }
 

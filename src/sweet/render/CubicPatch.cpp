@@ -29,9 +29,9 @@ CubicPatch::CubicPatch( const math::vec3* p, const math::vec4* u_basis, const ma
   u_basis_( u_basis ),
   v_basis_( v_basis )
 {
-    SWEET_ASSERT( p_ );
-    SWEET_ASSERT( u_basis_ );
-    SWEET_ASSERT( v_basis_ );
+    REYES_ASSERT( p_ );
+    REYES_ASSERT( u_basis_ );
+    REYES_ASSERT( v_basis_ );
 }
 
 CubicPatch::CubicPatch( const CubicPatch& patch, const math::vec2& u_range, const math::vec2& v_range )
@@ -49,8 +49,8 @@ bool CubicPatch::boundable() const
 
 void CubicPatch::bound( const math::mat4x4& transform, math::vec3* minimum, math::vec3* maximum ) const
 {
-    SWEET_ASSERT( minimum );
-    SWEET_ASSERT( maximum );
+    REYES_ASSERT( minimum );
+    REYES_ASSERT( maximum );
     
     *minimum = vec3( FLT_MAX, FLT_MAX, FLT_MAX );
     *maximum = vec3( -FLT_MAX, -FLT_MAX, -FLT_MAX );
@@ -77,9 +77,9 @@ bool CubicPatch::splittable() const
 
 void CubicPatch::split( std::list<std::shared_ptr<Geometry> >* primitives ) const
 {
-    SWEET_ASSERT( primitives );
-    SWEET_ASSERT( u_range().y >= u_range().x );
-    SWEET_ASSERT( v_range().y >= v_range().x );
+    REYES_ASSERT( primitives );
+    REYES_ASSERT( u_range().y >= u_range().x );
+    REYES_ASSERT( v_range().y >= v_range().x );
 
     const vec2& u_range = Geometry::u_range();
     float u0 = u_range.x;
@@ -109,9 +109,9 @@ bool CubicPatch::diceable() const
 
 void CubicPatch::dice( const math::mat4x4& transform, int width, int height, Grid* grid ) const
 {
-    SWEET_ASSERT( width > 0 );
-    SWEET_ASSERT( height > 0 );
-    SWEET_ASSERT( grid );
+    REYES_ASSERT( width > 0 );
+    REYES_ASSERT( height > 0 );
+    REYES_ASSERT( grid );
     
     const vec2& u_range = Geometry::u_range();
     const vec2& v_range = Geometry::v_range();
@@ -145,8 +145,8 @@ void CubicPatch::dice( const math::mat4x4& transform, int width, int height, Gri
 
 math::vec3 CubicPatch::position( float u, float v ) const
 {
-    SWEET_ASSERT( u >= 0.0f && u <= 1.0f );
-    SWEET_ASSERT( v >= 0.0f && v <= 1.0f );
+    REYES_ASSERT( u >= 0.0f && u <= 1.0f );
+    REYES_ASSERT( v >= 0.0f && v <= 1.0f );
 
     vec4 uu( u * u * u, u * u, u, 1.0f );
     float b0_u = dot( u_basis_[0], uu );
@@ -182,7 +182,7 @@ math::vec3 CubicPatch::position( float u, float v ) const
 
 math::vec3 CubicPatch::normal( float u, float v ) const
 {
-    SWEET_ASSERT( u >= 0.0f && u <= 1.0f );
-    SWEET_ASSERT( v >= 0.0f && v <= 1.0f );
+    REYES_ASSERT( u >= 0.0f && u <= 1.0f );
+    REYES_ASSERT( v >= 0.0f && v <= 1.0f );
     return vec3( 0.0f, 0.0f, -1.0f );
 }

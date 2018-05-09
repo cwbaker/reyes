@@ -63,7 +63,7 @@ SemanticAnalyzer::SemanticAnalyzer( const SymbolTable& symbol_table, ErrorPolicy
 
 void SemanticAnalyzer::analyze( SyntaxNode* node, const char* name )
 {
-    SWEET_ASSERT( name );
+    REYES_ASSERT( name );
     
     ambient_light_ = false;
     errors_ = 0;
@@ -101,7 +101,7 @@ void SemanticAnalyzer::error( bool condition, int line, const char* format, ... 
 
 void SemanticAnalyzer::analyze_ambient_lighting( SyntaxNode* node )
 {
-    SWEET_ASSERT( node );
+    REYES_ASSERT( node );
     
     if ( node->node_type() == SHADER_NODE_LIGHT_SHADER )
     {
@@ -113,7 +113,7 @@ void SemanticAnalyzer::analyze_ambient_lighting( SyntaxNode* node )
         for ( vector<shared_ptr<SyntaxNode>>::const_iterator i = statements.begin(); i != statements.end(); ++i )
         {
             const SyntaxNode* node = i->get();
-            SWEET_ASSERT( node );
+            REYES_ASSERT( node );
             ambient_assignments += node->node_type() >= SHADER_NODE_ASSIGN && node->node_type() <= SHADER_NODE_DIVIDE_ASSIGN && (node->lexeme() == "Cl" || node->lexeme() == "Ol");
             solar_statements += node->node_type() == SHADER_NODE_SOLAR;
             illuminate_statements += node->node_type() == SHADER_NODE_ILLUMINATE;
@@ -129,7 +129,7 @@ void SemanticAnalyzer::analyze_ambient_lighting( SyntaxNode* node )
 
 void SemanticAnalyzer::analyze_node( SyntaxNode* node ) const
 {
-    SWEET_ASSERT( node );
+    REYES_ASSERT( node );
     
     switch ( node->node_type() )
     {
@@ -173,7 +173,7 @@ void SemanticAnalyzer::analyze_node( SyntaxNode* node ) const
     for ( vector<shared_ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
     {
         SyntaxNode* syntax_node = i->get();
-        SWEET_ASSERT( syntax_node );
+        REYES_ASSERT( syntax_node );
         analyze_node( syntax_node );
     }
     
@@ -319,7 +319,7 @@ void SemanticAnalyzer::analyze_node( SyntaxNode* node ) const
 
 void SemanticAnalyzer::analyze_assign_expectations( SyntaxNode* node ) const
 {
-    SWEET_ASSERT( node );
+    REYES_ASSERT( node );
 
     shared_ptr<Symbol> symbol = node->get_symbol();
     if ( symbol )
@@ -330,7 +330,7 @@ void SemanticAnalyzer::analyze_assign_expectations( SyntaxNode* node ) const
         for ( vector<shared_ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
         {
             SyntaxNode* syntax_node = i->get();
-            SWEET_ASSERT( syntax_node );
+            REYES_ASSERT( syntax_node );
             syntax_node->set_expected_storage( expected_storage );
         }
     }
@@ -338,8 +338,8 @@ void SemanticAnalyzer::analyze_assign_expectations( SyntaxNode* node ) const
 
 void SemanticAnalyzer::analyze_typecast_expectations( SyntaxNode* node ) const
 {
-    SWEET_ASSERT( node );
-    SWEET_ASSERT( node->node_type() == SHADER_NODE_TYPECAST );
+    REYES_ASSERT( node );
+    REYES_ASSERT( node->node_type() == SHADER_NODE_TYPECAST );
 
     ValueType expected_type = type_from_type_node( node->node(0) );
     ValueStorage expected_storage = node->get_expected_storage();
@@ -348,7 +348,7 @@ void SemanticAnalyzer::analyze_typecast_expectations( SyntaxNode* node ) const
     for ( vector<shared_ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
     {
         SyntaxNode* syntax_node = i->get();
-        SWEET_ASSERT( syntax_node );
+        REYES_ASSERT( syntax_node );
         syntax_node->set_expected_type( expected_type );
         syntax_node->set_expected_storage( expected_storage );
     }
@@ -356,7 +356,7 @@ void SemanticAnalyzer::analyze_typecast_expectations( SyntaxNode* node ) const
 
 void SemanticAnalyzer::analyze_expectations( SyntaxNode* node ) const
 {
-    SWEET_ASSERT( node );
+    REYES_ASSERT( node );
     
     ValueType expected_type = node->get_expected_type();
     ValueStorage expected_storage = node->get_expected_storage();
@@ -365,7 +365,7 @@ void SemanticAnalyzer::analyze_expectations( SyntaxNode* node ) const
     for ( vector<shared_ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
     {
         SyntaxNode* syntax_node = i->get();
-        SWEET_ASSERT( syntax_node );
+        REYES_ASSERT( syntax_node );
         syntax_node->set_expected_type( expected_type );
         syntax_node->set_expected_storage( expected_storage );
     }
@@ -411,7 +411,7 @@ void SemanticAnalyzer::analyze_illuminate_statement( SyntaxNode* node ) const
 
 void SemanticAnalyzer::analyze_illuminance_statement( SyntaxNode* node ) const
 {
-    SWEET_ASSERT( node );
+    REYES_ASSERT( node );
     
     const SyntaxNode* expressions_node = node->node( 0 );
     if ( expressions_node->get_nodes().size() == 1 )
@@ -440,7 +440,7 @@ void SemanticAnalyzer::analyze_call( SyntaxNode* node ) const
         
         const vector<SymbolParameter>& parameters = symbol->parameters();
         const vector<shared_ptr<SyntaxNode>>& nodes = node->get_nodes();
-        SWEET_ASSERT( parameters.size() == nodes.size() );
+        REYES_ASSERT( parameters.size() == nodes.size() );
         const int MAXIMUM_PARAMETERS = 5;
         error( parameters.size() > MAXIMUM_PARAMETERS, node->line(), "The call '%s' has more than the %d parameters", symbol->identifier().c_str(), MAXIMUM_PARAMETERS );
         for ( unsigned int i = 0; i < parameters.size(); ++i )
@@ -678,10 +678,10 @@ void SemanticAnalyzer::analyze_ternary( SyntaxNode* node ) const
         { 0, 0, TYPE_NULL, INSTRUCTION_NULL }
     };
 
-    SWEET_ASSERT( node );
-    SWEET_ASSERT( node->get_nodes().size() == 3 );
-    SWEET_ASSERT( node->node(1) );
-    SWEET_ASSERT( node->node(2) );    
+    REYES_ASSERT( node );
+    REYES_ASSERT( node->get_nodes().size() == 3 );
+    REYES_ASSERT( node->node(1) );
+    REYES_ASSERT( node->node(2) );    
     
     const OperationMetadata* metadata = find_metadata( TERNARY_METADATA, node->node(1)->get_type(), node->node(2)->get_type() );
     error( metadata == NULL, node->line(), "Invalid arguments to ternary operator" );
@@ -729,7 +729,7 @@ void SemanticAnalyzer::analyze_environment( SyntaxNode* node ) const
 
 void SemanticAnalyzer::analyze_storage_promotion( SyntaxNode* node, ValueStorage to_storage ) const
 {
-    SWEET_ASSERT( node );
+    REYES_ASSERT( node );
     if ( node->get_storage() != STORAGE_VARYING && to_storage == STORAGE_VARYING )
     {
         node->set_storage_for_promotion( to_storage );
@@ -738,7 +738,7 @@ void SemanticAnalyzer::analyze_storage_promotion( SyntaxNode* node, ValueStorage
 
 void SemanticAnalyzer::analyze_type_conversion( SyntaxNode* node, ValueType to_type  ) const
 {
-    SWEET_ASSERT( node );
+    REYES_ASSERT( node );
     if ( node->get_type() == TYPE_FLOAT && to_type != TYPE_FLOAT )    
     {
         node->set_type_for_conversion( to_type );
@@ -747,12 +747,12 @@ void SemanticAnalyzer::analyze_type_conversion( SyntaxNode* node, ValueType to_t
 
 void SemanticAnalyzer::analyze_binary_operator( const OperationMetadata* operation_metadata, const char* name, SyntaxNode* node ) const
 {
-    SWEET_ASSERT( operation_metadata );
-    SWEET_ASSERT( name );
-    SWEET_ASSERT( node );
-    SWEET_ASSERT( node->get_nodes().size() == 2 );
-    SWEET_ASSERT( node->node(0) );
-    SWEET_ASSERT( node->node(1) );    
+    REYES_ASSERT( operation_metadata );
+    REYES_ASSERT( name );
+    REYES_ASSERT( node );
+    REYES_ASSERT( node->get_nodes().size() == 2 );
+    REYES_ASSERT( node->node(0) );
+    REYES_ASSERT( node->node(1) );    
     
     analyze_type_conversion( node->node(0), node->node(1)->get_type() );
     analyze_storage_promotion( node->node(0), node->node(1)->get_storage() );
@@ -780,7 +780,7 @@ const OperationMetadata* SemanticAnalyzer::find_metadata( const OperationMetadat
 
 ValueType SemanticAnalyzer::type_from_type_node( const SyntaxNode* type_node ) const
 {
-    SWEET_ASSERT( type_node );
+    REYES_ASSERT( type_node );
     
     ValueType type = TYPE_NULL;
     switch ( type_node->node_type() )
@@ -814,7 +814,7 @@ ValueType SemanticAnalyzer::type_from_type_node( const SyntaxNode* type_node ) c
             break;
             
         default:
-            SWEET_ASSERT( false );
+            REYES_ASSERT( false );
             type = TYPE_NULL;
             break;
     }
@@ -823,7 +823,7 @@ ValueType SemanticAnalyzer::type_from_type_node( const SyntaxNode* type_node ) c
 
 ValueType SemanticAnalyzer::type_from_literal( const SyntaxNode* expression_node ) const
 {
-    SWEET_ASSERT( expression_node );
+    REYES_ASSERT( expression_node );
 
     ValueType type = TYPE_NULL;
     switch ( expression_node->node_type() )
@@ -846,12 +846,12 @@ ValueType SemanticAnalyzer::type_from_literal( const SyntaxNode* expression_node
             break;
             
         case SHADER_NODE_IDENTIFIER:
-            SWEET_ASSERT( expression_node->get_symbol() );
+            REYES_ASSERT( expression_node->get_symbol() );
             type = expression_node->get_symbol()->type();
             break;
             
         default:    
-            SWEET_ASSERT( false );
+            REYES_ASSERT( false );
             type = TYPE_NULL;
             break;
     }

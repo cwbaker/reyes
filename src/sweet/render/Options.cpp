@@ -147,9 +147,9 @@ float Options::filter_height() const
 
 void Options::set_resolution( int horizontal_resolution, int vertical_resolution, float pixel_aspect_ratio )
 {
-    SWEET_ASSERT( horizontal_resolution > 1 );
-    SWEET_ASSERT( vertical_resolution > 1 );
-    SWEET_ASSERT( pixel_aspect_ratio > 0.0f );
+    REYES_ASSERT( horizontal_resolution > 1 );
+    REYES_ASSERT( vertical_resolution > 1 );
+    REYES_ASSERT( pixel_aspect_ratio > 0.0f );
 
     horizontal_resolution_ = horizontal_resolution;
     vertical_resolution_ = vertical_resolution;
@@ -169,7 +169,7 @@ void Options::set_crop_window( const math::vec4& crop_window )
 
 void Options::set_frame_aspect_ratio( float frame_aspect_ratio )
 {
-    SWEET_ASSERT( frame_aspect_ratio > 0.0f );
+    REYES_ASSERT( frame_aspect_ratio > 0.0f );
 
     frame_aspect_ratio_ = frame_aspect_ratio;
       
@@ -245,9 +245,9 @@ void Options::set_maximum( int maximum )
 
 void Options::set_filter( FilterFunction function, float width, float height )
 {
-    SWEET_ASSERT( function );
-    SWEET_ASSERT( width >= 1.0f );
-    SWEET_ASSERT( height >= 1.0f );
+    REYES_ASSERT( function );
+    REYES_ASSERT( width >= 1.0f );
+    REYES_ASSERT( height >= 1.0f );
     filter_function_ = function;
     filter_width_ = max( 1.0f, width );
     filter_height_ = max( 1.0f, height );

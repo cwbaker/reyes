@@ -190,8 +190,8 @@ public:
 
     shared_ptr<Symbol> find_symbol( const std::string& identifier )
     {
-        SWEET_ASSERT( parser_ );
-        SWEET_ASSERT( !identifier.empty() );
+        REYES_ASSERT( parser_ );
+        REYES_ASSERT( !identifier.empty() );
 
         shared_ptr<Symbol> symbol = symbol_table_.find_symbol( identifier );
         if ( !symbol )
@@ -204,7 +204,7 @@ public:
 
     ValueStorage storage_from_syntax_node( shared_ptr<SyntaxNode> syntax_node, ValueStorage default_storage ) const
     {
-        SWEET_ASSERT( syntax_node );
+        REYES_ASSERT( syntax_node );
 
         ValueStorage storage = STORAGE_NULL;
         switch( syntax_node->node_type() )
@@ -222,7 +222,7 @@ public:
                 break;
                 
             default:
-                SWEET_ASSERT( false );
+                REYES_ASSERT( false );
                 storage = STORAGE_NULL;
                 break;
         }
@@ -231,7 +231,7 @@ public:
 
     ValueType type_from_syntax_node( shared_ptr<SyntaxNode> syntax_node ) const
     {
-        SWEET_ASSERT( syntax_node );
+        REYES_ASSERT( syntax_node );
 
         ValueType type = TYPE_NULL;
         switch ( syntax_node->node_type() )
@@ -265,7 +265,7 @@ public:
                 break;
 
             default:
-                SWEET_ASSERT( false );
+                REYES_ASSERT( false );
                 type = TYPE_NULL;
                 break;            
         }    
@@ -274,13 +274,13 @@ public:
     
     static void string_( lalr::PositionIterator<Iterator>* begin, lalr::PositionIterator<Iterator> end, std::string* lexeme, const void** /*symbol*/ )
     {
-        SWEET_ASSERT( begin );
-        SWEET_ASSERT( lexeme );
-        SWEET_ASSERT( lexeme->length() == 1 );
+        REYES_ASSERT( begin );
+        REYES_ASSERT( lexeme );
+        REYES_ASSERT( lexeme->length() == 1 );
 
         lalr::PositionIterator<Iterator> position = *begin;
         int terminator = lexeme->at( 0 );
-        SWEET_ASSERT( terminator == '"' );
+        REYES_ASSERT( terminator == '"' );
         lexeme->clear();
         
         while ( position != end && *position != terminator )
@@ -390,8 +390,8 @@ public:
         for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
         {
             SyntaxNode* variable_node = i->get();
-            SWEET_ASSERT( variable_node );
-            SWEET_ASSERT( variable_node->node_type() == SHADER_NODE_VARIABLE );
+            REYES_ASSERT( variable_node );
+            REYES_ASSERT( variable_node->node_type() == SHADER_NODE_VARIABLE );
             shared_ptr<Symbol> symbol = symbol_table_.add_symbol( variable_node->lexeme() );
             symbol->set_type( type );
             symbol->set_storage( storage );
@@ -412,8 +412,8 @@ public:
         for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
         {
             SyntaxNode* variable_node = i->get();
-            SWEET_ASSERT( variable_node );
-            SWEET_ASSERT( variable_node->node_type() == SHADER_NODE_VARIABLE );
+            REYES_ASSERT( variable_node );
+            REYES_ASSERT( variable_node->node_type() == SHADER_NODE_VARIABLE );
             shared_ptr<Symbol> symbol = symbol_table_.add_symbol( variable_node->lexeme() );
             symbol->set_type( type );
             symbol->set_storage( storage );
@@ -564,7 +564,7 @@ public:
     {
         shared_ptr<SyntaxNode> return_( new SyntaxNode(SHADER_NODE_RETURN, start[0].line()) );
         const shared_ptr<SyntaxNode>& expression = start[1].user_data();
-        SWEET_ASSERT( expression );
+        REYES_ASSERT( expression );
         return_->add_node( expression );
         return return_;
     }
@@ -594,11 +594,11 @@ public:
     static shared_ptr<SyntaxNode> if_statement( const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* finish )
     {
         const shared_ptr<SyntaxNode>& expression = start[2].user_data();
-        SWEET_ASSERT( expression );
+        REYES_ASSERT( expression );
 
         const shared_ptr<SyntaxNode>& statement = start[4].user_data();
-        SWEET_ASSERT( statement );
-        SWEET_ASSERT( statement->node_type() == SHADER_NODE_STATEMENT || statement->node_type() == SHADER_NODE_LIST );
+        REYES_ASSERT( statement );
+        REYES_ASSERT( statement->node_type() == SHADER_NODE_STATEMENT || statement->node_type() == SHADER_NODE_LIST );
 
         shared_ptr<SyntaxNode> if_( new SyntaxNode(SHADER_NODE_IF, start[0].line()) );
         if_->add_node( expression );
@@ -609,15 +609,15 @@ public:
     static shared_ptr<SyntaxNode> if_else_statement( const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* finish )
     {
         const shared_ptr<SyntaxNode>& expression = start[2].user_data();
-        SWEET_ASSERT( expression );
+        REYES_ASSERT( expression );
 
         const shared_ptr<SyntaxNode>& statement = start[4].user_data();
-        SWEET_ASSERT( statement );
-        SWEET_ASSERT( statement->node_type() == SHADER_NODE_STATEMENT || statement->node_type() == SHADER_NODE_LIST );
+        REYES_ASSERT( statement );
+        REYES_ASSERT( statement->node_type() == SHADER_NODE_STATEMENT || statement->node_type() == SHADER_NODE_LIST );
 
         const shared_ptr<SyntaxNode>& else_statement = start[6].user_data();
-        SWEET_ASSERT( else_statement );
-        SWEET_ASSERT( else_statement->node_type() == SHADER_NODE_STATEMENT || statement->node_type() == SHADER_NODE_LIST );
+        REYES_ASSERT( else_statement );
+        REYES_ASSERT( else_statement->node_type() == SHADER_NODE_STATEMENT || statement->node_type() == SHADER_NODE_LIST );
 
         shared_ptr<SyntaxNode> if_else( new SyntaxNode(SHADER_NODE_IF_ELSE, start[0].line()) );
         if_else->add_node( expression );
@@ -629,11 +629,11 @@ public:
     static shared_ptr<SyntaxNode> while_statement( const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* finish )
     {
         const shared_ptr<SyntaxNode>& expression = start[2].user_data();
-        SWEET_ASSERT( expression );
+        REYES_ASSERT( expression );
         
         const shared_ptr<SyntaxNode>& statement = start[4].user_data();
-        SWEET_ASSERT( statement );
-        SWEET_ASSERT( statement->node_type() == SHADER_NODE_STATEMENT || statement->node_type() == SHADER_NODE_LIST );
+        REYES_ASSERT( statement );
+        REYES_ASSERT( statement->node_type() == SHADER_NODE_STATEMENT || statement->node_type() == SHADER_NODE_LIST );
 
         shared_ptr<SyntaxNode> while_( new SyntaxNode(SHADER_NODE_WHILE, start[0].line()) );
         while_->add_node( expression );
@@ -644,17 +644,17 @@ public:
     static shared_ptr<SyntaxNode> for_statement( const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* finish )
     {
         const shared_ptr<SyntaxNode>& initial_expression = start[2].user_data();
-        SWEET_ASSERT( initial_expression );
+        REYES_ASSERT( initial_expression );
         
         const shared_ptr<SyntaxNode>& condition_expression = start[4].user_data();
-        SWEET_ASSERT( condition_expression );
+        REYES_ASSERT( condition_expression );
 
         const shared_ptr<SyntaxNode>& increment_expression = start[6].user_data();
-        SWEET_ASSERT( increment_expression );
+        REYES_ASSERT( increment_expression );
 
         const shared_ptr<SyntaxNode>& statement = start[8].user_data();
-        SWEET_ASSERT( statement );
-        SWEET_ASSERT( statement->node_type() == SHADER_NODE_STATEMENT || statement->node_type() == SHADER_NODE_LIST );
+        REYES_ASSERT( statement );
+        REYES_ASSERT( statement->node_type() == SHADER_NODE_STATEMENT || statement->node_type() == SHADER_NODE_LIST );
 
         shared_ptr<SyntaxNode> for_( new SyntaxNode(SHADER_NODE_FOR, start[0].line()) );
         for_->add_node( initial_expression );
@@ -778,10 +778,10 @@ public:
     static shared_ptr<SyntaxNode> binary_operator( SyntaxNodeType type, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start )
     {
         const shared_ptr<SyntaxNode>& lhs = start[0].user_data();
-        SWEET_ASSERT( lhs );
+        REYES_ASSERT( lhs );
         
         const shared_ptr<SyntaxNode>& rhs = start[2].user_data();
-        SWEET_ASSERT( rhs );
+        REYES_ASSERT( rhs );
         
         shared_ptr<SyntaxNode> binary_operator( new SyntaxNode(type, start[0].line()) );
         binary_operator->add_node( lhs );
@@ -862,7 +862,7 @@ public:
     static shared_ptr<SyntaxNode> negate_expression( const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* finish )
     {
         const shared_ptr<SyntaxNode>& expression = start[1].user_data();
-        SWEET_ASSERT( expression );
+        REYES_ASSERT( expression );
         
         shared_ptr<SyntaxNode> negate( new SyntaxNode(SHADER_NODE_NEGATE, start[0].line()) );
         negate->add_node( expression );
@@ -872,13 +872,13 @@ public:
     static shared_ptr<SyntaxNode> ternary_expression( const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* finish )
     {
         const shared_ptr<SyntaxNode>& condition_expression = start[0].user_data();
-        SWEET_ASSERT( condition_expression );
+        REYES_ASSERT( condition_expression );
     
         const shared_ptr<SyntaxNode>& expression = start[0].user_data();
-        SWEET_ASSERT( expression );
+        REYES_ASSERT( expression );
 
         const shared_ptr<SyntaxNode>& else_expression = start[0].user_data();
-        SWEET_ASSERT( else_expression );
+        REYES_ASSERT( else_expression );
 
         shared_ptr<SyntaxNode> ternary_expression( new SyntaxNode(SHADER_NODE_TERNARY, start[0].line()) );
         ternary_expression->add_node( condition_expression );
@@ -898,7 +898,7 @@ public:
     static shared_ptr<SyntaxNode> compound_expression( const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* finish )
     {
         const shared_ptr<SyntaxNode>& expression = start[1].user_data();
-        SWEET_ASSERT( expression );
+        REYES_ASSERT( expression );
         return expression;
     }
     
@@ -929,27 +929,27 @@ public:
 
     static shared_ptr<SyntaxNode> index_expression( const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* finish )
     {
-        SWEET_ASSERT( false );
+        REYES_ASSERT( false );
         return shared_ptr<SyntaxNode>();
     }
     
     static shared_ptr<SyntaxNode> pass( const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* finish )
     {
         const shared_ptr<SyntaxNode>& node = start[0].user_data();
-        SWEET_ASSERT( node );
+        REYES_ASSERT( node );
         return node;
     }
     
     static shared_ptr<SyntaxNode> triple_expression( const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* finish )
     {
         const shared_ptr<SyntaxNode>& first_expression = start[1].user_data();
-        SWEET_ASSERT( first_expression );
+        REYES_ASSERT( first_expression );
 
         const shared_ptr<SyntaxNode>& second_expression = start[3].user_data();
-        SWEET_ASSERT( second_expression );
+        REYES_ASSERT( second_expression );
 
         const shared_ptr<SyntaxNode>& third_expression = start[5].user_data();
-        SWEET_ASSERT( third_expression );
+        REYES_ASSERT( third_expression );
     
         shared_ptr<SyntaxNode> triple( new SyntaxNode(SHADER_NODE_TRIPLE, start[0].line()) );
         triple->add_node( first_expression );
@@ -964,7 +964,7 @@ public:
         for ( int i = 0; i < 16; ++i )
         {
             const shared_ptr<SyntaxNode>& expression = start[1 + i * 2].user_data();
-            SWEET_ASSERT( expression );
+            REYES_ASSERT( expression );
             sixteentuple->add_node( expression );
         }        
         return sixteentuple;
@@ -1028,7 +1028,7 @@ public:
     shared_ptr<SyntaxNode> assign_operator( SyntaxNodeType type, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start )
     {
         const shared_ptr<SyntaxNode>& expression = start[2].user_data();
-        SWEET_ASSERT( expression );
+        REYES_ASSERT( expression );
     
         shared_ptr<SyntaxNode> assign_operator( new SyntaxNode(type, start[0].line(), start[0].lexeme()) );
         assign_operator->add_node( expression );
@@ -1063,39 +1063,39 @@ public:
     
     shared_ptr<SyntaxNode> index_assign_expression( const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* finish )
     {
-        SWEET_ASSERT( false );
+        REYES_ASSERT( false );
         return shared_ptr<SyntaxNode>();
     }
     
     shared_ptr<SyntaxNode> index_add_assign_expression( const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* finish )
     {
-        SWEET_ASSERT( false );
+        REYES_ASSERT( false );
         return shared_ptr<SyntaxNode>();
     }
     
     shared_ptr<SyntaxNode> index_subtract_assign_expression( const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* finish )
     {
-        SWEET_ASSERT( false );
+        REYES_ASSERT( false );
         return shared_ptr<SyntaxNode>();
     }
     
     shared_ptr<SyntaxNode> index_multiply_assign_expression( const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* finish )
     {
-        SWEET_ASSERT( false );
+        REYES_ASSERT( false );
         return shared_ptr<SyntaxNode>();
     }
     
     shared_ptr<SyntaxNode> index_divide_assign_expression( const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* finish )
     {
-        SWEET_ASSERT( false );
+        REYES_ASSERT( false );
         return shared_ptr<SyntaxNode>();
     }
     
     shared_ptr<SyntaxNode> call_expression_( const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* finish )
     {
         const shared_ptr<SyntaxNode>& expressions = start[2].user_data();
-        SWEET_ASSERT( expressions );
-        SWEET_ASSERT( expressions->node_type() == SHADER_NODE_LIST );
+        REYES_ASSERT( expressions );
+        REYES_ASSERT( expressions->node_type() == SHADER_NODE_LIST );
     
         shared_ptr<SyntaxNode> call( new SyntaxNode(SHADER_NODE_CALL, start[0].line(), start[0].lexeme()) );
         call->add_nodes_at_end( expressions->get_nodes().begin(), expressions->get_nodes().end() );
@@ -1137,7 +1137,7 @@ public:
     
     shared_ptr<SyntaxNode> parse( Iterator start, Iterator finish, const char* name )
     {
-        SWEET_ASSERT( name );
+        REYES_ASSERT( name );
                
         extern lalr::ParserStateMachine shader_parser_state_machine;
         lalr::Parser<lalr::PositionIterator<Iterator>, shared_ptr<SyntaxNode>, char> parser( &shader_parser_state_machine, this );
@@ -1258,7 +1258,7 @@ ShaderParser::ShaderParser( SymbolTable& symbol_table, ErrorPolicy* error_policy
 
 shared_ptr<SyntaxNode> ShaderParser::parse( const char* filename )
 {    
-    SWEET_ASSERT( filename );
+    REYES_ASSERT( filename );
 
     shared_ptr<SyntaxNode> syntax_node;    
     std::ifstream stream( filename, std::ios::binary );
@@ -1278,9 +1278,9 @@ shared_ptr<SyntaxNode> ShaderParser::parse( const char* filename )
 
 shared_ptr<SyntaxNode> ShaderParser::parse( const char* start, const char* finish )
 {    
-    SWEET_ASSERT( start );
-    SWEET_ASSERT( finish );
-    SWEET_ASSERT( start <= finish );
+    REYES_ASSERT( start );
+    REYES_ASSERT( finish );
+    REYES_ASSERT( start <= finish );
 
     ShaderParserContext<const char*> shader_parser_context( symbol_table_, error_policy_ );
     return shader_parser_context.parse( start, finish, "from memory" );

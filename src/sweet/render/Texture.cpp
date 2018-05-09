@@ -57,7 +57,7 @@ Texture::Texture( TextureType type, const math::mat4x4& camera_transform, const 
   screen_transform_( screen_transform ),
   image_buffers_( NULL )
 {
-    SWEET_ASSERT( type_ >= TEXTURE_NULL && type_ < TEXTURE_COUNT );
+    REYES_ASSERT( type_ >= TEXTURE_NULL && type_ < TEXTURE_COUNT );
     image_buffers_ = new ImageBuffer [1];
 }
 
@@ -166,9 +166,9 @@ float Texture::shadow( const math::vec4& P, float bias ) const
 
 void Texture::load( const std::string& filename, TextureType type, ErrorPolicy* error_policy )
 {
-    SWEET_ASSERT( !filename.empty() );
-    SWEET_ASSERT( error_policy );
-    SWEET_ASSERT( type > TEXTURE_NULL && type < TEXTURE_COUNT );
+    REYES_ASSERT( !filename.empty() );
+    REYES_ASSERT( error_policy );
+    REYES_ASSERT( type > TEXTURE_NULL && type < TEXTURE_COUNT );
     
     type_ = type;
     size_t extension_begin = filename.rfind( '.' );
@@ -200,7 +200,7 @@ void Texture::load( const std::string& filename, TextureType type, ErrorPolicy* 
         }
         else
         {
-            SWEET_ASSERT( !image_buffers_ );
+            REYES_ASSERT( !image_buffers_ );
             image_buffers_ = new ImageBuffer [1];
             if ( extension == ".jpeg" || extension == ".jpg" )
             {

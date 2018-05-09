@@ -35,8 +35,8 @@ SampleBuffer::SampleBuffer( int horizontal_resolution, int vertical_resolution, 
   depths_( NULL ),
   positions_( NULL )
 {
-    SWEET_ASSERT( width_ > 0 );
-    SWEET_ASSERT( height_ > 0 );
+    REYES_ASSERT( width_ > 0 );
+    REYES_ASSERT( height_ > 0 );
 
     colors_ = new ImageBuffer( width_, height_, 4, FORMAT_F32 );
     depths_ = new ImageBuffer( width_, height_, 1, FORMAT_F32 );
@@ -85,25 +85,25 @@ int SampleBuffer::height() const
 
 float* SampleBuffer::color( int x, int y ) const
 {
-    SWEET_ASSERT( x >= 0 && x < width_ );
-    SWEET_ASSERT( y >= 0 && y < height_ );
-    SWEET_ASSERT( colors_ );
+    REYES_ASSERT( x >= 0 && x < width_ );
+    REYES_ASSERT( y >= 0 && y < height_ );
+    REYES_ASSERT( colors_ );
     return colors_->f32_data( x, y );
 }
 
 float* SampleBuffer::depth( int x, int y ) const
 {
-    SWEET_ASSERT( x >= 0 && x < width_ );
-    SWEET_ASSERT( y >= 0 && y < height_ );
-    SWEET_ASSERT( depths_ );
+    REYES_ASSERT( x >= 0 && x < width_ );
+    REYES_ASSERT( y >= 0 && y < height_ );
+    REYES_ASSERT( depths_ );
     return depths_->f32_data( x, y );
 }
 
 float* SampleBuffer::position( int x, int y ) const
 {
-    SWEET_ASSERT( x >= 0 && x < width_ );
-    SWEET_ASSERT( y >= 0 && y < height_ );
-    SWEET_ASSERT( positions_ );
+    REYES_ASSERT( x >= 0 && x < width_ );
+    REYES_ASSERT( y >= 0 && y < height_ );
+    REYES_ASSERT( positions_ );
     return positions_->f32_data( x, y );
 }
 
@@ -145,8 +145,8 @@ void SampleBuffer::save_png( int mode, const char* filename, ErrorPolicy* error_
 
 void SampleBuffer::filter( float (*filter_function)(float, float, float, float), ImageBuffer* image_buffer ) const
 {
-    SWEET_ASSERT( filter_function );
-    SWEET_ASSERT( image_buffer );
+    REYES_ASSERT( filter_function );
+    REYES_ASSERT( image_buffer );
 
     float horizontal_sampling_rate = float(horizontal_sampling_rate_);
     float vertical_sampling_rate = float(vertical_sampling_rate_);
@@ -187,7 +187,7 @@ void SampleBuffer::filter( float (*filter_function)(float, float, float, float),
 
 void SampleBuffer::pack( int mode, ImageBuffer* image_buffer ) const
 {
-    SWEET_ASSERT( image_buffer );
+    REYES_ASSERT( image_buffer );
 
     bool rgb = (mode & DISPLAY_MODE_RGB) != 0;
     bool alpha = (mode & DISPLAY_MODE_A) != 0;

@@ -32,8 +32,8 @@ CodeGenerator::Jump::Jump( int address, int distance_address )
 : address_( address ),
   distance_address_( distance_address )
 {
-    SWEET_ASSERT( address_ >= 0 );
-    SWEET_ASSERT( distance_address_ >= 0 );
+    REYES_ASSERT( address_ >= 0 );
+    REYES_ASSERT( distance_address_ >= 0 );
 }
 
 CodeGenerator::Loop::Loop( int begin )
@@ -84,7 +84,7 @@ CodeGenerator::CodeGenerator( const SymbolTable& symbol_table, ErrorPolicy* erro
 
 void CodeGenerator::generate( SyntaxNode* node, const char* name )
 {
-    SWEET_ASSERT( name );
+    REYES_ASSERT( name );
     
     permanent_registers_ = 0;
     parameters_ = 0;
@@ -146,7 +146,7 @@ shared_ptr<Symbol> CodeGenerator::find_symbol( const std::string& identifier ) c
 
 shared_ptr<Symbol> CodeGenerator::get_symbol( int index ) const
 {
-    SWEET_ASSERT( index < int(symbols_.size()) );
+    REYES_ASSERT( index < int(symbols_.size()) );
     return symbols_[index];
 }
 
@@ -273,26 +273,26 @@ void CodeGenerator::generate_symbols( const SyntaxNode& node )
 
 void CodeGenerator::generate_symbols_for_parameters( SyntaxNode* list_node )
 {
-    SWEET_ASSERT( list_node );
-    SWEET_ASSERT( list_node->node_type() == SHADER_NODE_LIST );
+    REYES_ASSERT( list_node );
+    REYES_ASSERT( list_node->node_type() == SHADER_NODE_LIST );
     
     const vector<shared_ptr<SyntaxNode> >& parameters = list_node->get_nodes();
     for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = parameters.begin(); i != parameters.end(); ++i )
     {
         const SyntaxNode* parameter_node = i->get();
-        SWEET_ASSERT( parameter_node );
-        SWEET_ASSERT( parameter_node->node_type() == SHADER_NODE_VARIABLE );
+        REYES_ASSERT( parameter_node );
+        REYES_ASSERT( parameter_node->node_type() == SHADER_NODE_VARIABLE );
         
         shared_ptr<Symbol> symbol = parameter_node->get_symbol();
-        SWEET_ASSERT( symbol );
-        SWEET_ASSERT( find(symbols_.begin(), symbols_.end(), symbol) == symbols_.end() );
+        REYES_ASSERT( symbol );
+        REYES_ASSERT( find(symbols_.begin(), symbols_.end(), symbol) == symbols_.end() );
         symbols_.push_back( symbol );
     }
 }
 
 shared_ptr<Value> CodeGenerator::generate_constants( SyntaxNode* node )
 {
-    SWEET_ASSERT( node );
+    REYES_ASSERT( node );
     
     shared_ptr<Value> value;
     
@@ -328,7 +328,7 @@ shared_ptr<Value> CodeGenerator::generate_constants( SyntaxNode* node )
             for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
             {
                 SyntaxNode* syntax_node = i->get();
-                SWEET_ASSERT( syntax_node );
+                REYES_ASSERT( syntax_node );
                 generate_constants( syntax_node );
             }
             break;
@@ -344,7 +344,7 @@ void CodeGenerator::generate_indexes_for_symbols()
     for ( vector<shared_ptr<Symbol> >::const_iterator i = symbols_.begin(); i != symbols_.end(); ++i )
     {
         Symbol* symbol = i->get();
-        SWEET_ASSERT( symbol );
+        REYES_ASSERT( symbol );
         symbol->set_index( index );
         ++index;
     }
@@ -355,22 +355,22 @@ void CodeGenerator::generate_indexes_for_symbols()
     while ( i != symbols_.end() && register_index < constants_ + parameters_ )
     {
         Symbol* symbol = i->get();
-        SWEET_ASSERT( symbol );
+        REYES_ASSERT( symbol );
         symbol->set_register_index( register_index  );
         ++register_index ;
         ++i;
     }
-    SWEET_ASSERT( register_index == constants_ + parameters_ );
+    REYES_ASSERT( register_index == constants_ + parameters_ );
     
     while ( i != symbols_.end() )
     {
         Symbol* symbol = i->get();
-        SWEET_ASSERT( symbol );
+        REYES_ASSERT( symbol );
         symbol->set_register_index( register_index );
         ++register_index;
         ++i;
     }
-    SWEET_ASSERT( register_index == parameters_ + constants_ + variables_ );
+    REYES_ASSERT( register_index == parameters_ + constants_ + variables_ );
     
     index_ = register_index;
     registers_ = register_index;
@@ -379,8 +379,8 @@ void CodeGenerator::generate_indexes_for_symbols()
 
 void CodeGenerator::evaluate_expression( shared_ptr<Value> value, const SyntaxNode* node ) const
 {
-    SWEET_ASSERT( value );
-    SWEET_ASSERT( node );
+    REYES_ASSERT( value );
+    REYES_ASSERT( node );
 
     switch ( node->node_type() )
     {
@@ -416,7 +416,7 @@ void CodeGenerator::evaluate_expression( shared_ptr<Value> value, const SyntaxNo
            
         default:
         {
-            SWEET_ASSERT( false );
+            REYES_ASSERT( false );
             float* values = value->float_values();
             values[0] = 1.0f;
             break;
@@ -426,7 +426,7 @@ void CodeGenerator::evaluate_expression( shared_ptr<Value> value, const SyntaxNo
 
 int CodeGenerator::assign_instruction_from_type( int instruction, ValueType type ) const
 {
-    SWEET_ASSERT( type > TYPE_NULL && type < TYPE_COUNT );
+    REYES_ASSERT( type > TYPE_NULL && type < TYPE_COUNT );
     const int INSTRUCTION_OFFSET_BY_TYPE[] =
     {
         0, // NULL
@@ -444,7 +444,7 @@ int CodeGenerator::assign_instruction_from_type( int instruction, ValueType type
 
 int CodeGenerator::arithmetic_instruction_from_type( int instruction, ValueType type ) const
 {
-    SWEET_ASSERT( type > TYPE_NULL && type < TYPE_COUNT );
+    REYES_ASSERT( type > TYPE_NULL && type < TYPE_COUNT );
     const int INSTRUCTION_OFFSET_BY_TYPE[] =
     {
         0, // NULL
@@ -462,7 +462,7 @@ int CodeGenerator::arithmetic_instruction_from_type( int instruction, ValueType 
 
 int CodeGenerator::promote_instruction_from_type( int instruction, ValueType type ) const
 {
-    SWEET_ASSERT( type > TYPE_NULL && type < TYPE_COUNT );
+    REYES_ASSERT( type > TYPE_NULL && type < TYPE_COUNT );
     const int INSTRUCTION_OFFSET_BY_TYPE[] =
     {
         0, // NULL
@@ -480,10 +480,10 @@ int CodeGenerator::promote_instruction_from_type( int instruction, ValueType typ
 
 int CodeGenerator::generate_binary_expression( const SyntaxNode* expression_node )
 {
-    SWEET_ASSERT( expression_node );
-    SWEET_ASSERT( expression_node->get_instruction() != INSTRUCTION_NULL );
-    SWEET_ASSERT( expression_node->node(0) );
-    SWEET_ASSERT( expression_node->node(1) );
+    REYES_ASSERT( expression_node );
+    REYES_ASSERT( expression_node->get_instruction() != INSTRUCTION_NULL );
+    REYES_ASSERT( expression_node->node(0) );
+    REYES_ASSERT( expression_node->node(1) );
     
     const SyntaxNode* node = expression_node->node(0);
     const SyntaxNode* other_node = expression_node->node(1);
@@ -504,7 +504,7 @@ int CodeGenerator::generate_binary_expression( const SyntaxNode* expression_node
 
 int CodeGenerator::generate_code_for_assign_expression( int instruction, const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.get_symbol() );
+    REYES_ASSERT( node.get_symbol() );
     
     int arg1 = generate_expression( *node.node(0) );
     arg1 = generate_type_conversion( arg1, node.node(0) );
@@ -518,13 +518,13 @@ int CodeGenerator::generate_code_for_assign_expression( int instruction, const S
 
 int CodeGenerator::generate_type_conversion( int register_index, const SyntaxNode* node )
 {
-    SWEET_ASSERT( register_index >= 0 );
-    SWEET_ASSERT( node );
+    REYES_ASSERT( register_index >= 0 );
+    REYES_ASSERT( node );
     
     if ( node->get_original_type() != TYPE_NULL && node->get_original_type() != node->get_type() )
     {
-        SWEET_ASSERT( node->get_original_type() == TYPE_FLOAT );
-        SWEET_ASSERT( node->get_type() != TYPE_FLOAT );
+        REYES_ASSERT( node->get_original_type() == TYPE_FLOAT );
+        REYES_ASSERT( node->get_type() != TYPE_FLOAT );
         static const Instruction INSTRUCTION_BY_TYPE [TYPE_COUNT] = 
         {
             INSTRUCTION_NULL, // NULL
@@ -539,7 +539,7 @@ int CodeGenerator::generate_type_conversion( int register_index, const SyntaxNod
         };
         
         ValueType to_type = node->get_type();
-        SWEET_ASSERT( INSTRUCTION_BY_TYPE[to_type] != INSTRUCTION_NULL );
+        REYES_ASSERT( INSTRUCTION_BY_TYPE[to_type] != INSTRUCTION_NULL );
         if ( INSTRUCTION_BY_TYPE[to_type] != INSTRUCTION_NULL )
         {
             instruction( INSTRUCTION_BY_TYPE[to_type] );
@@ -552,10 +552,10 @@ int CodeGenerator::generate_type_conversion( int register_index, const SyntaxNod
 
 int CodeGenerator::generate_storage_promotion( int register_index, const SyntaxNode* node )
 {
-    SWEET_ASSERT( node );
+    REYES_ASSERT( node );
     if ( node->get_original_storage() != STORAGE_NULL )
     {
-        SWEET_ASSERT( node->get_storage() == STORAGE_VARYING );
+        REYES_ASSERT( node->get_storage() == STORAGE_VARYING );
         instruction( promote_instruction_from_type(INSTRUCTION_PROMOTE_INTEGER, node->get_type()) );
         argument( register_index );
         register_index = allocate_register();
@@ -565,7 +565,7 @@ int CodeGenerator::generate_storage_promotion( int register_index, const SyntaxN
 
 void CodeGenerator::generate_code_for_list( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_LIST );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_LIST );
     
     const vector<shared_ptr<SyntaxNode> >& nodes = node.get_nodes();
     for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
@@ -579,7 +579,7 @@ void CodeGenerator::generate_code_for_list( const SyntaxNode& node )
 
 void CodeGenerator::generate_code_for_variable( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_VARIABLE );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_VARIABLE );
 
     if ( node.node(0)->node_type() != SHADER_NODE_NULL )
     {
@@ -595,14 +595,14 @@ void CodeGenerator::generate_code_for_variable( const SyntaxNode& node )
 
 void CodeGenerator::generate_code_for_parameters( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_LIST );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_LIST );
     
     const vector<shared_ptr<SyntaxNode> >& parameters = node.get_nodes();
     for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = parameters.begin(); i != parameters.end(); ++i )
     {
         const SyntaxNode* variable_node = i->get();
-        SWEET_ASSERT( variable_node );
-        SWEET_ASSERT( variable_node->node_type() == SHADER_NODE_VARIABLE );
+        REYES_ASSERT( variable_node );
+        REYES_ASSERT( variable_node->node_type() == SHADER_NODE_VARIABLE );
         if ( variable_node->node(0)->node_type() == SHADER_NODE_TYPECAST )
         {
             int register_index = generate_typecast_expression( *variable_node->node(0) );
@@ -681,7 +681,7 @@ void CodeGenerator::generate_statement( const SyntaxNode& node )
             break;
             
         case SHADER_NODE_SUBTRACT_ASSIGN:
-            SWEET_ASSERT( false );
+            REYES_ASSERT( false );
             break;
             
         case SHADER_NODE_MULTIPLY_ASSIGN:
@@ -689,18 +689,18 @@ void CodeGenerator::generate_statement( const SyntaxNode& node )
             break;
             
         case SHADER_NODE_DIVIDE_ASSIGN:
-            SWEET_ASSERT( false );
+            REYES_ASSERT( false );
             break;
             
         default:
-            SWEET_ASSERT( false );
+            REYES_ASSERT( false );
             break;
     }
 }
 
 void CodeGenerator::generate_if_statement( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_IF );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_IF );
     
     int mask = generate_expression( *node.node(0) );
     mask = generate_storage_promotion( mask, node.node(0) );
@@ -714,7 +714,7 @@ void CodeGenerator::generate_if_statement( const SyntaxNode& node )
 
 void CodeGenerator::generate_if_else_statement( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_IF_ELSE );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_IF_ELSE );
     
     int mask = generate_expression( *node.node(0) );
     mask = generate_storage_promotion( mask, node.node(0) );
@@ -730,7 +730,7 @@ void CodeGenerator::generate_if_else_statement( const SyntaxNode& node )
 
 void CodeGenerator::generate_while_statement( const SyntaxNode& while_node )
 {
-    SWEET_ASSERT( while_node.node_type() == SHADER_NODE_WHILE );
+    REYES_ASSERT( while_node.node_type() == SHADER_NODE_WHILE );
 
     push_loop();
     mark_loop_continue();
@@ -751,7 +751,7 @@ void CodeGenerator::generate_while_statement( const SyntaxNode& while_node )
 
 void CodeGenerator::generate_for_statement( const SyntaxNode& for_node )
 {
-    SWEET_ASSERT( for_node.node_type() == SHADER_NODE_FOR );
+    REYES_ASSERT( for_node.node_type() == SHADER_NODE_FOR );
 
     push_register();
     generate_statement( *for_node.node(0) );
@@ -779,7 +779,7 @@ void CodeGenerator::generate_for_statement( const SyntaxNode& for_node )
 
 void CodeGenerator::generate_ambient_statement( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_AMBIENT );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_AMBIENT );
 
     int light_color = generate_expression( *node.node(0) );
     int light_opacity = generate_expression( *node.node(1) );
@@ -790,7 +790,7 @@ void CodeGenerator::generate_ambient_statement( const SyntaxNode& node )
 
 void CodeGenerator::generate_solar_statement( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_SOLAR );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_SOLAR );
 
     const SyntaxNode* expressions_node = node.node(0);
     if ( expressions_node->get_nodes().size() == 0 )
@@ -815,7 +815,7 @@ void CodeGenerator::generate_solar_statement( const SyntaxNode& node )
 
 void CodeGenerator::generate_illuminate_statement( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_ILLUMINATE );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_ILLUMINATE );
 
     const SyntaxNode* expressions_node = node.node(0);
     if ( expressions_node->get_nodes().size() == 1 )
@@ -856,7 +856,7 @@ void CodeGenerator::generate_illuminate_statement( const SyntaxNode& node )
 
 void CodeGenerator::generate_illuminance_statement( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_ILLUMINANCE );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_ILLUMINANCE );
 
     const SyntaxNode* expressions_node = node.node(0);
     if ( expressions_node->get_nodes().size() == 1 )
@@ -868,7 +868,7 @@ void CodeGenerator::generate_illuminance_statement( const SyntaxNode& node )
         argument( arg0 );
         generate_statement( *node.node(1) );
         */
-        SWEET_ASSERT( false );
+        REYES_ASSERT( false );
     }
     else
     {
@@ -907,12 +907,12 @@ void CodeGenerator::generate_illuminance_statement( const SyntaxNode& node )
 
 void CodeGenerator::generate_break_statement( const SyntaxNode& break_node )
 {
-    SWEET_ASSERT( break_node.node_type() == SHADER_NODE_BREAK );
+    REYES_ASSERT( break_node.node_type() == SHADER_NODE_BREAK );
 
     int level = 1;
     if ( !break_node.get_nodes().empty() )
     {
-        SWEET_ASSERT( break_node.node(0) && break_node.node(0)->node_type() == SHADER_NODE_INTEGER );
+        REYES_ASSERT( break_node.node(0) && break_node.node(0)->node_type() == SHADER_NODE_INTEGER );
         level = ::atoi( break_node.node(0)->lexeme().c_str() );
     }
 
@@ -928,12 +928,12 @@ void CodeGenerator::generate_break_statement( const SyntaxNode& break_node )
 
 void CodeGenerator::generate_continue_statement( const SyntaxNode& continue_node )
 {
-    SWEET_ASSERT( continue_node.node_type() == SHADER_NODE_CONTINUE );
+    REYES_ASSERT( continue_node.node_type() == SHADER_NODE_CONTINUE );
 
     int level = 1;
     if ( !continue_node.get_nodes().empty() )
     {
-        SWEET_ASSERT( continue_node.node(0) && continue_node.node(0)->node_type() == SHADER_NODE_INTEGER );
+        REYES_ASSERT( continue_node.node(0) && continue_node.node(0)->node_type() == SHADER_NODE_INTEGER );
         level = ::atoi( continue_node.node(0)->lexeme().c_str() );
     }
 
@@ -949,7 +949,7 @@ void CodeGenerator::generate_continue_statement( const SyntaxNode& continue_node
 
 void CodeGenerator::generate_return_statement( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_RETURN );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_RETURN );
 }
 
 int CodeGenerator::generate_expression( const SyntaxNode& node )
@@ -962,7 +962,7 @@ int CodeGenerator::generate_expression( const SyntaxNode& node )
             break;
             
         case SHADER_NODE_CROSS:
-            SWEET_ASSERT( false );
+            REYES_ASSERT( false );
             break;
             
         case SHADER_NODE_DOT:
@@ -1005,15 +1005,15 @@ int CodeGenerator::generate_expression( const SyntaxNode& node )
             break;
             
         case SHADER_NODE_SUBTRACT_ASSIGN:
-            SWEET_ASSERT( false );
+            REYES_ASSERT( false );
             break;
             
         case SHADER_NODE_MULTIPLY_ASSIGN:
-            SWEET_ASSERT( false );
+            REYES_ASSERT( false );
             break;
             
         case SHADER_NODE_DIVIDE_ASSIGN:
-            SWEET_ASSERT( false );
+            REYES_ASSERT( false );
             break;
             
         case SHADER_NODE_INTEGER:
@@ -1037,7 +1037,7 @@ int CodeGenerator::generate_expression( const SyntaxNode& node )
             break;
             
         default:
-            SWEET_ASSERT( false );
+            REYES_ASSERT( false );
             break;
     }    
     return index;
@@ -1045,11 +1045,11 @@ int CodeGenerator::generate_expression( const SyntaxNode& node )
 
 int CodeGenerator::generate_call_expression( const SyntaxNode& call_node )
 {
-    SWEET_ASSERT( call_node.node_type() == SHADER_NODE_CALL );
+    REYES_ASSERT( call_node.node_type() == SHADER_NODE_CALL );
        
     const int MAXIMUM_ARGUMENTS = 256;
     int arguments [MAXIMUM_ARGUMENTS] = { 0 };
-    SWEET_ASSERT( int(call_node.get_nodes().size()) < MAXIMUM_ARGUMENTS );
+    REYES_ASSERT( int(call_node.get_nodes().size()) < MAXIMUM_ARGUMENTS );
     for ( int i = 0; i < int(call_node.get_nodes().size()); ++i )
     {
         const SyntaxNode* node = call_node.node( i );
@@ -1071,8 +1071,8 @@ int CodeGenerator::generate_call_expression( const SyntaxNode& call_node )
 
 int CodeGenerator::generate_divide_expression( const SyntaxNode& divide_node )
 {
-    SWEET_ASSERT( divide_node.node(0) );
-    SWEET_ASSERT( divide_node.node(1) );
+    REYES_ASSERT( divide_node.node(0) );
+    REYES_ASSERT( divide_node.node(1) );
     
     const SyntaxNode& node = *divide_node.node(0);
     const SyntaxNode& other_node = *divide_node.node(1);
@@ -1089,7 +1089,7 @@ int CodeGenerator::generate_divide_expression( const SyntaxNode& divide_node )
 
 int CodeGenerator::generate_negate_expression( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_NEGATE );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_NEGATE );
 
     int arg0 = generate_expression( *node.node(0) ); 
     instruction( arithmetic_instruction_from_type(INSTRUCTION_NEGATE_FLOAT, node.get_type()) );
@@ -1099,13 +1099,13 @@ int CodeGenerator::generate_negate_expression( const SyntaxNode& node )
 
 int CodeGenerator::generate_ternary_expression( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_TERNARY );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_TERNARY );
     return index_;
 }
 
 int CodeGenerator::generate_typecast_expression( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_TYPECAST );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_TYPECAST );
     
     int index = index_;
     if ( node.node(1)->node_type() == SHADER_NODE_TEXTURE )
@@ -1135,7 +1135,7 @@ int CodeGenerator::generate_typecast_expression( const SyntaxNode& node )
 
 int CodeGenerator::generate_vec3_typecast_expression( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_TYPECAST );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_TYPECAST );
     
     int index = SyntaxNode::REGISTER_NULL;
     if ( !node.node(0)->get_nodes().empty() )
@@ -1164,7 +1164,7 @@ int CodeGenerator::generate_vec3_typecast_expression( const SyntaxNode& node )
                 break;
 
             default:
-                SWEET_ASSERT( false );
+                REYES_ASSERT( false );
                 instruction( INSTRUCTION_TRANSFORM );
                 break;            
         }
@@ -1184,12 +1184,12 @@ int CodeGenerator::generate_vec3_typecast_expression( const SyntaxNode& node )
 
 int CodeGenerator::generate_mat4x4_typecast_expression( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_TYPECAST );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_TYPECAST );
     
     int index = SyntaxNode::REGISTER_NULL;
     if ( !node.node(0)->get_nodes().empty() )
     {
-        SWEET_ASSERT( node.node(0)->node_type() == SHADER_NODE_MATRIX_TYPE );
+        REYES_ASSERT( node.node(0)->node_type() == SHADER_NODE_MATRIX_TYPE );
         int arg0 = generate_expression( *node.node(0)->node(0) );
         int arg1 = generate_expression( *node.node(1) );
         arg1 = generate_type_conversion( arg1, node.node(1) );
@@ -1210,8 +1210,8 @@ int CodeGenerator::generate_mat4x4_typecast_expression( const SyntaxNode& node )
 
 int CodeGenerator::generate_texture_typecast_expression( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_TYPECAST );
-    SWEET_ASSERT( node.node(1)->node_type() == SHADER_NODE_TEXTURE );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_TYPECAST );
+    REYES_ASSERT( node.node(1)->node_type() == SHADER_NODE_TEXTURE );
     
     int index = index_;
     if ( node.node(1)->node_type() == SHADER_NODE_TEXTURE )
@@ -1230,7 +1230,7 @@ int CodeGenerator::generate_texture_typecast_expression( const SyntaxNode& node 
                 break;
                 
             default:
-                SWEET_ASSERT( false );
+                REYES_ASSERT( false );
                 index = index_;
                 break;
         }
@@ -1240,8 +1240,8 @@ int CodeGenerator::generate_texture_typecast_expression( const SyntaxNode& node 
 
 int CodeGenerator::generate_environment_typecast_expression( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_TYPECAST );
-    SWEET_ASSERT( node.node(1)->node_type() == SHADER_NODE_ENVIRONMENT );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_TYPECAST );
+    REYES_ASSERT( node.node(1)->node_type() == SHADER_NODE_ENVIRONMENT );
     
     int index = index_;
     if ( node.node(1)->node_type() == SHADER_NODE_ENVIRONMENT )
@@ -1260,7 +1260,7 @@ int CodeGenerator::generate_environment_typecast_expression( const SyntaxNode& n
                 break;
                 
             default:
-                SWEET_ASSERT( false );
+                REYES_ASSERT( false );
                 index = index_;
                 break;
         }
@@ -1270,7 +1270,7 @@ int CodeGenerator::generate_environment_typecast_expression( const SyntaxNode& n
 
 int CodeGenerator::generate_shadow_expression( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_SHADOW );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_SHADOW );
 
     int arg0 = generate_expression( *node.node(0) );
     int arg1 = generate_expression( *node.node(1) );
@@ -1284,7 +1284,7 @@ int CodeGenerator::generate_shadow_expression( const SyntaxNode& node )
 
 int CodeGenerator::generate_float_texture_expression( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_TEXTURE );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_TEXTURE );
 
     int arg0 = generate_expression( *node.node(0) );
     int arg1 = generate_expression( *node.node(1) );
@@ -1298,7 +1298,7 @@ int CodeGenerator::generate_float_texture_expression( const SyntaxNode& node )
 
 int CodeGenerator::generate_vec3_texture_expression( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_TEXTURE );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_TEXTURE );
 
     int arg0 = generate_expression( *node.node(0) );
     int arg1 = generate_expression( *node.node(1) );
@@ -1312,7 +1312,7 @@ int CodeGenerator::generate_vec3_texture_expression( const SyntaxNode& node )
 
 int CodeGenerator::generate_float_environment_expression( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_ENVIRONMENT );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_ENVIRONMENT );
 
     int arg0 = generate_expression( *node.node(0) );
     int arg1 = generate_expression( *node.node(1) );
@@ -1324,7 +1324,7 @@ int CodeGenerator::generate_float_environment_expression( const SyntaxNode& node
 
 int CodeGenerator::generate_vec3_environment_expression( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_ENVIRONMENT );
+    REYES_ASSERT( node.node_type() == SHADER_NODE_ENVIRONMENT );
 
     int arg0 = generate_expression( *node.node(0) );
     int arg1 = generate_expression( *node.node(1) );
@@ -1336,34 +1336,34 @@ int CodeGenerator::generate_vec3_environment_expression( const SyntaxNode& node 
 
 int CodeGenerator::generate_constant_expression( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.get_constant_index() >= 0 && node.get_constant_index() < int(values_.size()) );
+    REYES_ASSERT( node.get_constant_index() >= 0 && node.get_constant_index() < int(values_.size()) );
     return node.get_constant_index();
 }
 
 int CodeGenerator::generate_identifier_expression( const SyntaxNode& node )
 {
-    SWEET_ASSERT( node.node_type() == SHADER_NODE_IDENTIFIER );
-    SWEET_ASSERT( node.get_symbol() );    
+    REYES_ASSERT( node.node_type() == SHADER_NODE_IDENTIFIER );
+    REYES_ASSERT( node.get_symbol() );    
     return node.get_constant_index() == SyntaxNode::REGISTER_NULL ? node.get_symbol()->register_index() : node.get_constant_index();
 }
 
 void CodeGenerator::instruction( int instruction )
 {
-    SWEET_ASSERT( instruction >= 0 && instruction < 32768 );
+    REYES_ASSERT( instruction >= 0 && instruction < 32768 );
     code_.push_back( static_cast<short>(instruction) );
 }
 
 void CodeGenerator::argument( int argument )
 {
-    SWEET_ASSERT( argument >= -32767 && argument < 32768 );
+    REYES_ASSERT( argument >= -32767 && argument < 32768 );
     code_.push_back( static_cast<short>(argument) );
 }
 
 void CodeGenerator::patch_argument( int address, int distance )
 {
-    SWEET_ASSERT( address >= 0 && address < int(code_.size()) );
+    REYES_ASSERT( address >= 0 && address < int(code_.size()) );
     short* argument = &code_[address];
-    SWEET_ASSERT( *argument == 0 );
+    REYES_ASSERT( *argument == 0 );
     *argument = distance;
 }
 
@@ -1387,7 +1387,7 @@ void CodeGenerator::push_loop()
 
 void CodeGenerator::pop_loop()
 {
-    SWEET_ASSERT( !loops_.empty() );
+    REYES_ASSERT( !loops_.empty() );
     const Loop& loop = loops_.back();
     int continue_ = loop.continue_;
     int end = address();
@@ -1415,14 +1415,14 @@ void CodeGenerator::pop_loop()
 
 void CodeGenerator::mark_loop_continue()
 {
-    SWEET_ASSERT( !loops_.empty() );
+    REYES_ASSERT( !loops_.empty() );
     loops_.back().continue_ = address();
 }
 
 void CodeGenerator::jump_to_begin( int jump_instruction, int level )
 {
-    SWEET_ASSERT( level > 0 );
-    SWEET_ASSERT( level <= int(loops_.size()) );
+    REYES_ASSERT( level > 0 );
+    REYES_ASSERT( level <= int(loops_.size()) );
 
     instruction( jump_instruction );
     int jump_distance_address = argument_for_patching();
@@ -1433,8 +1433,8 @@ void CodeGenerator::jump_to_begin( int jump_instruction, int level )
 
 void CodeGenerator::jump_to_continue( int jump_instruction, int level )
 {
-    SWEET_ASSERT( level > 0 );
-    SWEET_ASSERT( level <= int(loops_.size()) );
+    REYES_ASSERT( level > 0 );
+    REYES_ASSERT( level <= int(loops_.size()) );
 
     instruction( jump_instruction );
     int jump_distance_address = argument_for_patching();
@@ -1445,8 +1445,8 @@ void CodeGenerator::jump_to_continue( int jump_instruction, int level )
 
 void CodeGenerator::jump_to_end( int jump_instruction, int level )
 {
-    SWEET_ASSERT( level > 0 );
-    SWEET_ASSERT( level <= int(loops_.size()) );
+    REYES_ASSERT( level > 0 );
+    REYES_ASSERT( level <= int(loops_.size()) );
     
     instruction( jump_instruction );
     int jump_distance_address = argument_for_patching();
@@ -1470,7 +1470,7 @@ void CodeGenerator::push_register()
 
 void CodeGenerator::pop_register()
 {
-    SWEET_ASSERT( !temporary_registers_.empty() );
+    REYES_ASSERT( !temporary_registers_.empty() );
     if ( index_ != temporary_registers_.back() )
     {
         index_ = temporary_registers_.back();

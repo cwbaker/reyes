@@ -68,7 +68,7 @@ Sampler::~Sampler()
 
 void Sampler::sample( const math::mat4x4& screen_transform, const Grid& grid, bool matte, bool two_sided, bool left_handed, SampleBuffer* sample_buffer )
 {
-    SWEET_ASSERT( sample_buffer );
+    REYES_ASSERT( sample_buffer );
 
     polygons_ = 0;
 
@@ -85,9 +85,9 @@ void Sampler::sample( const math::mat4x4& screen_transform, const Grid& grid, bo
 
 void Sampler::calculate_raster_positions( const math::mat4x4& screen_transform, const vec3* positions, int vertices )
 {
-    SWEET_ASSERT( positions );
-    SWEET_ASSERT( vertices >= 0 );
-    SWEET_ASSERT( raster_positions_ );
+    REYES_ASSERT( positions );
+    REYES_ASSERT( vertices >= 0 );
+    REYES_ASSERT( raster_positions_ );
     
     for ( int i = 0; i < vertices; ++i )
     {
@@ -283,9 +283,9 @@ void Sampler::calculate_indices_origins_and_edges_right_handed( const Grid& grid
 
 void Sampler::calculate_bounds( int width, int height, int polygons )
 {
-    SWEET_ASSERT( width >= 0 );
-    SWEET_ASSERT( height >= 0 );
-    SWEET_ASSERT( polygons >= 0 );
+    REYES_ASSERT( width >= 0 );
+    REYES_ASSERT( height >= 0 );
+    REYES_ASSERT( polygons >= 0 );
     
     for ( int i = 0; i < polygons; ++i )
     {
@@ -311,10 +311,10 @@ void Sampler::calculate_bounds( int width, int height, int polygons )
 
 void Sampler::calculate_samples( const math::vec3* colors, const math::vec3* opacities, bool matte, int polygons, SampleBuffer* sample_buffer )
 {
-    SWEET_ASSERT( colors );
-    SWEET_ASSERT( opacities );
-    SWEET_ASSERT( sample_buffer );
-    SWEET_ASSERT( polygons >= 0 );
+    REYES_ASSERT( colors );
+    REYES_ASSERT( opacities );
+    REYES_ASSERT( sample_buffer );
+    REYES_ASSERT( polygons >= 0 );
 
     Sample* sample = samples_;
 
@@ -336,7 +336,7 @@ void Sampler::calculate_samples( const math::vec3* colors, const math::vec3* opa
         const vec3& u = origins_and_edges_[i * 3 + 1];
         const vec3& v = origins_and_edges_[i * 3 + 2];
         const float one_over_determinant = 1.0f / (u.x * v.y - v.x * u.y);
-        SWEET_ASSERT( one_over_determinant != 0.0f );
+        REYES_ASSERT( one_over_determinant != 0.0f );
 
         for ( int y = sy0; y < sy1; ++y )
         {
@@ -376,11 +376,11 @@ void Sampler::calculate_samples( const math::vec3* colors, const math::vec3* opa
 
 void Sampler::calculate_colors_in_sample_buffer( const math::vec3* colors, const math::vec3* opacities, bool matte, int samples, SampleBuffer* sample_buffer )
 {
-    SWEET_ASSERT( colors );
-    SWEET_ASSERT( opacities );
-    SWEET_ASSERT( samples >= 0 );
-    SWEET_ASSERT( sample_buffer );
-    SWEET_ASSERT( samples_ );
+    REYES_ASSERT( colors );
+    REYES_ASSERT( opacities );
+    REYES_ASSERT( samples >= 0 );
+    REYES_ASSERT( sample_buffer );
+    REYES_ASSERT( samples_ );
 
     if ( matte )
     {

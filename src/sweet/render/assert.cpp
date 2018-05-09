@@ -5,7 +5,6 @@
 
 #include "stdafx.hpp"
 #include "assert.hpp"
-#include <sweet/build.hpp>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -21,7 +20,7 @@
 /**
 // Break in the debugger.
 */
-void sweet_break()
+void reyes_break()
 {
 #if defined(BUILD_OS_WINDOWS) && defined(_MSC_VER)
     DebugBreak();
@@ -47,7 +46,7 @@ void sweet_break()
 // @param line
 //  The line number that the assertion is on.
 */
-void sweet_assert( int expression, const char* description, const char* file, int line )
+void reyes_assert( int expression, const char* description, const char* file, int line )
 {
 #if defined(BUILD_OS_WINDOWS)
     int error = GetLastError();
@@ -65,7 +64,7 @@ void sweet_assert( int expression, const char* description, const char* file, in
         char message [1024];
         snprintf( message, sizeof(message), "%s(%i) : %s\n", file, line, description );
         message[sizeof(message) - 1] = 0;
-        __android_log_print( ANDROID_LOG_ERROR, "SWEET_ASSERT", message );
+        __android_log_print( ANDROID_LOG_ERROR, "REYES_ASSERT", message );
     }    
 #else
     if ( !expression )
@@ -90,11 +89,11 @@ void sweet_assert( int expression, const char* description, const char* file, in
 // @param line
 //  The line number that the assertion is on.
 */
-void sweet_assert_with_break( int expression, const char* description, const char* file, int line )
+void reyes_assert_with_break( int expression, const char* description, const char* file, int line )
 {
-    sweet_assert( expression, description, file, line );
+    reyes_assert( expression, description, file, line );
     if ( !expression )
     {
-        SWEET_BREAK();
+        REYES_BREAK();
     }
 }

@@ -132,7 +132,7 @@ Value& Value::operator=( float value )
         }
         
         default:
-            SWEET_ASSERT( false );
+            REYES_ASSERT( false );
             break;
     }
     
@@ -159,7 +159,7 @@ Value& Value::operator=( const math::mat4x4& value )
 
 Value& Value::operator=( const char* value )
 {
-    SWEET_ASSERT( value );
+    REYES_ASSERT( value );
     reset( TYPE_STRING, STORAGE_UNIFORM, 1 );
     string_value_ = value;
     return *this;
@@ -209,7 +209,7 @@ unsigned int Value::element_size() const
             break;
             
         default:
-            SWEET_ASSERT( false );
+            REYES_ASSERT( false );
             break;
     }
     return size;
@@ -217,7 +217,7 @@ unsigned int Value::element_size() const
 
 void Value::set_size( unsigned int size )
 {
-    SWEET_ASSERT( storage_ == STORAGE_VARYING );
+    REYES_ASSERT( storage_ == STORAGE_VARYING );
     size_ = size;
 }
 
@@ -228,8 +228,8 @@ unsigned int Value::size() const
 
 void Value::zero()
 {
-    SWEET_ASSERT( values_ );
-    SWEET_ASSERT( capacity_ > 0 );
+    REYES_ASSERT( values_ );
+    REYES_ASSERT( capacity_ > 0 );
     memset( values_, 0, capacity_ * element_size() );
     size_ = capacity_;
 }
@@ -256,11 +256,11 @@ void Value::reset( ValueType type, ValueStorage storage, unsigned int capacity )
 
 void Value::convert( ValueType type )
 {
-    SWEET_ASSERT( storage_ == STORAGE_CONSTANT || storage_ == STORAGE_UNIFORM );
+    REYES_ASSERT( storage_ == STORAGE_CONSTANT || storage_ == STORAGE_UNIFORM );
     
     if ( type == TYPE_COLOR || type == TYPE_POINT || type == TYPE_VECTOR || type == TYPE_NORMAL )
     {
-        SWEET_ASSERT( type == TYPE_FLOAT || type == TYPE_COLOR || type == TYPE_POINT || type == TYPE_VECTOR || type == TYPE_NORMAL );
+        REYES_ASSERT( type == TYPE_FLOAT || type == TYPE_COLOR || type == TYPE_POINT || type == TYPE_VECTOR || type == TYPE_NORMAL );
         if ( type_ == TYPE_FLOAT )
         {
             float value = *float_values();
@@ -284,61 +284,61 @@ void Value::set_string( const std::string& value )
 
 const std::string& Value::string_value() const
 {
-    SWEET_ASSERT( type_ == TYPE_STRING );
+    REYES_ASSERT( type_ == TYPE_STRING );
     return string_value_;
 }
 
 const math::mat4x4& Value::mat4x4_value() const
 {
-    SWEET_ASSERT( storage_ == STORAGE_UNIFORM );
+    REYES_ASSERT( storage_ == STORAGE_UNIFORM );
     return mat4x4_values()[0];
 }
 
 int* Value::int_values() const
 {
-    SWEET_ASSERT( type_ == TYPE_INTEGER );
+    REYES_ASSERT( type_ == TYPE_INTEGER );
     return reinterpret_cast<int*>( values_ );
 }
 
 float* Value::float_values() const
 {
-    SWEET_ASSERT( type_ == TYPE_FLOAT );
+    REYES_ASSERT( type_ == TYPE_FLOAT );
     return reinterpret_cast<float*>( values_ );
 }
 
 math::vec3* Value::vec3_values() const
 {
-    SWEET_ASSERT( type_ == TYPE_COLOR || type_ == TYPE_POINT || type_ == TYPE_VECTOR || type_ == TYPE_NORMAL );
+    REYES_ASSERT( type_ == TYPE_COLOR || type_ == TYPE_POINT || type_ == TYPE_VECTOR || type_ == TYPE_NORMAL );
     return reinterpret_cast<math::vec3*>( values_ );
 }
 
 math::mat4x4* Value::mat4x4_values() const
 {
-    SWEET_ASSERT( type_ == TYPE_MATRIX );
+    REYES_ASSERT( type_ == TYPE_MATRIX );
     return reinterpret_cast<math::mat4x4*>( values_ );
 }
 
 float Value::float_value() const
 {
-    SWEET_ASSERT( type_ == TYPE_FLOAT );
-    SWEET_ASSERT( storage_ == STORAGE_UNIFORM );
-    SWEET_ASSERT( size_ == 1 );
+    REYES_ASSERT( type_ == TYPE_FLOAT );
+    REYES_ASSERT( storage_ == STORAGE_UNIFORM );
+    REYES_ASSERT( size_ == 1 );
     return *(const float*) values_;
 }
 
 math::vec3 Value::vec3_value() const
 {
-    SWEET_ASSERT( type_ == TYPE_COLOR || type_ == TYPE_POINT || type_ == TYPE_VECTOR || type_ == TYPE_NORMAL );
-    SWEET_ASSERT( storage_ == STORAGE_UNIFORM );
-    SWEET_ASSERT( size_ == 1 );
+    REYES_ASSERT( type_ == TYPE_COLOR || type_ == TYPE_POINT || type_ == TYPE_VECTOR || type_ == TYPE_NORMAL );
+    REYES_ASSERT( storage_ == STORAGE_UNIFORM );
+    REYES_ASSERT( size_ == 1 );
     return *(const vec3*) values_;
 }
 
 void Value::float_to_vec3( ValueType type, std::shared_ptr<Value> value )
 {
-    SWEET_ASSERT( value );
-    SWEET_ASSERT( value->type() == TYPE_FLOAT );
-    SWEET_ASSERT( type == TYPE_COLOR || type == TYPE_POINT || type == TYPE_VECTOR || type == TYPE_NORMAL );
+    REYES_ASSERT( value );
+    REYES_ASSERT( value->type() == TYPE_FLOAT );
+    REYES_ASSERT( type == TYPE_COLOR || type == TYPE_POINT || type == TYPE_VECTOR || type == TYPE_NORMAL );
     
     reset( type, value->storage(), value->size() );
     size_ = value->size();
@@ -354,8 +354,8 @@ void Value::float_to_vec3( ValueType type, std::shared_ptr<Value> value )
 
 void Value::float_to_mat4x4( std::shared_ptr<Value> value )
 {
-    SWEET_ASSERT( value );
-    SWEET_ASSERT( value->type() == TYPE_FLOAT );
+    REYES_ASSERT( value );
+    REYES_ASSERT( value->type() == TYPE_FLOAT );
 
     reset( TYPE_MATRIX, value->storage(), value->size() );
     size_ = value->size();
@@ -384,8 +384,8 @@ void Value::float_to_mat4x4( std::shared_ptr<Value> value )
 */
 void Value::light_to_surface_vector( std::shared_ptr<Value> position, const math::vec3& light_position )
 {
-    SWEET_ASSERT( position );
-    SWEET_ASSERT( position->storage() == STORAGE_VARYING );
+    REYES_ASSERT( position );
+    REYES_ASSERT( position->storage() == STORAGE_VARYING );
     
     reset( TYPE_VECTOR, position->storage(), position->size() );
     size_ = position->size();
@@ -408,9 +408,9 @@ void Value::light_to_surface_vector( std::shared_ptr<Value> position, const math
 */
 void Value::surface_to_light_vector( std::shared_ptr<Value> position, const Light* light )
 {
-    SWEET_ASSERT( position );
-    SWEET_ASSERT( position->storage() == STORAGE_VARYING );
-    SWEET_ASSERT( light );
+    REYES_ASSERT( position );
+    REYES_ASSERT( position->storage() == STORAGE_VARYING );
+    REYES_ASSERT( light );
     
     reset( TYPE_VECTOR, position->storage(), position->size() );
     size_ = position->size();
@@ -431,13 +431,13 @@ void Value::surface_to_light_vector( std::shared_ptr<Value> position, const Ligh
 */
 void Value::illuminance_axis_angle( std::shared_ptr<Value> position, std::shared_ptr<Value> axis, std::shared_ptr<Value> angle, const Light* light )
 {
-    SWEET_ASSERT( position );
-    SWEET_ASSERT( position->storage() == STORAGE_VARYING );
-    SWEET_ASSERT( axis );
-    SWEET_ASSERT( axis->storage() == STORAGE_VARYING );
-    SWEET_ASSERT( position->size() == axis->size() );
-    SWEET_ASSERT( angle );
-    SWEET_ASSERT( light );
+    REYES_ASSERT( position );
+    REYES_ASSERT( position->storage() == STORAGE_VARYING );
+    REYES_ASSERT( axis );
+    REYES_ASSERT( axis->storage() == STORAGE_VARYING );
+    REYES_ASSERT( position->size() == axis->size() );
+    REYES_ASSERT( angle );
+    REYES_ASSERT( light );
     
     reset( TYPE_INTEGER, position->storage(), position->size() );
     size_ = position->size();
@@ -476,10 +476,10 @@ void Value::illuminance_axis_angle( std::shared_ptr<Value> position, std::shared
 
 void Value::logical_and( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs)
 {
-    SWEET_ASSERT( lhs );
-    SWEET_ASSERT( rhs );
-    SWEET_ASSERT( lhs->size() == rhs->size() );
-    SWEET_ASSERT( lhs->type() == TYPE_INTEGER && rhs->type() == TYPE_INTEGER );    
+    REYES_ASSERT( lhs );
+    REYES_ASSERT( rhs );
+    REYES_ASSERT( lhs->size() == rhs->size() );
+    REYES_ASSERT( lhs->type() == TYPE_INTEGER && rhs->type() == TYPE_INTEGER );    
     
     unsigned int size = lhs->size();
     reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), size );
@@ -495,10 +495,10 @@ void Value::logical_and( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs)
 
 void Value::logical_or( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
-    SWEET_ASSERT( lhs );
-    SWEET_ASSERT( rhs );
-    SWEET_ASSERT( lhs->size() == rhs->size() );
-    SWEET_ASSERT( lhs->type() == TYPE_INTEGER && rhs->type() == TYPE_INTEGER );    
+    REYES_ASSERT( lhs );
+    REYES_ASSERT( rhs );
+    REYES_ASSERT( lhs->size() == rhs->size() );
+    REYES_ASSERT( lhs->type() == TYPE_INTEGER && rhs->type() == TYPE_INTEGER );    
     
     unsigned int size = lhs->size();
     reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), size );
@@ -514,8 +514,8 @@ void Value::logical_or( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 
 void Value::transform( const math::mat4x4& m, std::shared_ptr<Value> p )
 {
-    SWEET_ASSERT( p );
-    SWEET_ASSERT( p->type() == TYPE_POINT || p->type() == TYPE_VECTOR || p->type() == TYPE_NORMAL );
+    REYES_ASSERT( p );
+    REYES_ASSERT( p->type() == TYPE_POINT || p->type() == TYPE_VECTOR || p->type() == TYPE_NORMAL );
 
     reset( p->type(), p->storage(), p->size() );
 
@@ -529,8 +529,8 @@ void Value::transform( const math::mat4x4& m, std::shared_ptr<Value> p )
 
 void Value::vtransform( const math::mat4x4& m, std::shared_ptr<Value> v )
 {
-    SWEET_ASSERT( v );
-    SWEET_ASSERT( v->type() == TYPE_POINT || v->type() == TYPE_VECTOR || v->type() == TYPE_NORMAL );
+    REYES_ASSERT( v );
+    REYES_ASSERT( v->type() == TYPE_POINT || v->type() == TYPE_VECTOR || v->type() == TYPE_NORMAL );
 
     reset( v->type(), v->storage(), v->size() );
 
@@ -544,8 +544,8 @@ void Value::vtransform( const math::mat4x4& m, std::shared_ptr<Value> v )
 
 void Value::ntransform( const math::mat4x4& mm, std::shared_ptr<Value> n )
 {
-    SWEET_ASSERT( n );
-    SWEET_ASSERT( n->type() == TYPE_POINT || n->type() == TYPE_VECTOR || n->type() == TYPE_NORMAL );
+    REYES_ASSERT( n );
+    REYES_ASSERT( n->type() == TYPE_POINT || n->type() == TYPE_VECTOR || n->type() == TYPE_NORMAL );
 
     reset( n->type(), n->storage(), n->size() );
 
@@ -560,8 +560,8 @@ void Value::ntransform( const math::mat4x4& mm, std::shared_ptr<Value> n )
 
 void Value::transform_matrix( const math::mat4x4& m, std::shared_ptr<Value> value )
 {
-    SWEET_ASSERT( value );
-    SWEET_ASSERT( value->type() == TYPE_MATRIX );
+    REYES_ASSERT( value );
+    REYES_ASSERT( value->type() == TYPE_MATRIX );
     
     const int size = value->size();
     reset( TYPE_MATRIX, value->storage(), value->size() );
@@ -576,9 +576,9 @@ void Value::transform_matrix( const math::mat4x4& m, std::shared_ptr<Value> valu
 
 void Value::promote_integer( int size, std::shared_ptr<Value> other_value )
 {
-    SWEET_ASSERT( size >= 1 );
-    SWEET_ASSERT( other_value );
-    SWEET_ASSERT( other_value->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( size >= 1 );
+    REYES_ASSERT( other_value );
+    REYES_ASSERT( other_value->storage() == STORAGE_UNIFORM );
     
     reset( other_value->type(), STORAGE_VARYING, size );
     size_ = capacity_;
@@ -593,9 +593,9 @@ void Value::promote_integer( int size, std::shared_ptr<Value> other_value )
  
 void Value::promote_float( int size, std::shared_ptr<Value> other_value )
 {
-    SWEET_ASSERT( size >= 1 );
-    SWEET_ASSERT( other_value );
-    SWEET_ASSERT( other_value->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( size >= 1 );
+    REYES_ASSERT( other_value );
+    REYES_ASSERT( other_value->storage() == STORAGE_UNIFORM );
     
     reset( other_value->type(), STORAGE_VARYING, size );
     size_ = capacity_;
@@ -610,9 +610,9 @@ void Value::promote_float( int size, std::shared_ptr<Value> other_value )
  
 void Value::promote_vec3( int size, std::shared_ptr<Value> other_value )
 {           
-    SWEET_ASSERT( size >= 1 );
-    SWEET_ASSERT( other_value );
-    SWEET_ASSERT( other_value->storage() == STORAGE_UNIFORM );
+    REYES_ASSERT( size >= 1 );
+    REYES_ASSERT( other_value );
+    REYES_ASSERT( other_value->storage() == STORAGE_UNIFORM );
     
     reset( other_value->type(), STORAGE_VARYING, size );
     size_ = capacity_;
@@ -627,7 +627,7 @@ void Value::promote_vec3( int size, std::shared_ptr<Value> other_value )
 
 void Value::assign_integer( std::shared_ptr<Value> value, const unsigned char* mask )
 {
-    SWEET_ASSERT( value );
+    REYES_ASSERT( value );
 
     reset( value->type(), value->storage(), value->size() );
                
@@ -656,7 +656,7 @@ void Value::assign_integer( std::shared_ptr<Value> value, const unsigned char* m
 
 void Value::assign_float( std::shared_ptr<Value> value, const unsigned char* mask )
 {
-    SWEET_ASSERT( value );
+    REYES_ASSERT( value );
 
     reset( value->type(), value->storage(), value->size() );
                
@@ -685,7 +685,7 @@ void Value::assign_float( std::shared_ptr<Value> value, const unsigned char* mas
 
 void Value::assign_vec3( std::shared_ptr<Value> value, const unsigned char* mask )
 {
-    SWEET_ASSERT( value );
+    REYES_ASSERT( value );
     
     reset( value->type(), value->storage(), value->size() );
                
@@ -714,7 +714,7 @@ void Value::assign_vec3( std::shared_ptr<Value> value, const unsigned char* mask
 
 void Value::assign_mat4x4( std::shared_ptr<Value> value, const unsigned char* mask )
 {
-    SWEET_ASSERT( value );
+    REYES_ASSERT( value );
     
     reset( value->type(), value->storage(), value->size() );
                
@@ -743,9 +743,9 @@ void Value::assign_mat4x4( std::shared_ptr<Value> value, const unsigned char* ma
 
 void Value::assign_string( std::shared_ptr<Value> value, const unsigned char* mask )
 {
-    SWEET_ASSERT( value );
-    SWEET_ASSERT( value->storage() != STORAGE_VARYING );
-    SWEET_ASSERT( value->size() == 1 );
+    REYES_ASSERT( value );
+    REYES_ASSERT( value->storage() != STORAGE_VARYING );
+    REYES_ASSERT( value->size() == 1 );
 
     reset( value->type(), value->storage(), value->size() );               
     string_value_ = value->string_value_;
@@ -753,7 +753,7 @@ void Value::assign_string( std::shared_ptr<Value> value, const unsigned char* ma
 
 void Value::add_assign_float( std::shared_ptr<Value> value, const unsigned char* mask )
 {
-    SWEET_ASSERT( value );
+    REYES_ASSERT( value );
     
     float* values = float_values();
     const float* other_values = value->float_values();
@@ -780,7 +780,7 @@ void Value::add_assign_float( std::shared_ptr<Value> value, const unsigned char*
 
 void Value::add_assign_vec3( std::shared_ptr<Value> value, const unsigned char* mask )
 {
-    SWEET_ASSERT( value );
+    REYES_ASSERT( value );
 
     vec3* values = vec3_values();
     const vec3* other_values = value->vec3_values();
@@ -807,7 +807,7 @@ void Value::add_assign_vec3( std::shared_ptr<Value> value, const unsigned char* 
 
 void Value::multiply_assign_float( std::shared_ptr<Value> value, const unsigned char* mask )
 {
-    SWEET_ASSERT( value );
+    REYES_ASSERT( value );
     
     float* values = float_values();
     const float* other_values = value->float_values();
@@ -834,7 +834,7 @@ void Value::multiply_assign_float( std::shared_ptr<Value> value, const unsigned 
 
 void Value::multiply_assign_vec3( std::shared_ptr<Value> value, const unsigned char* mask )
 {
-    SWEET_ASSERT( value );
+    REYES_ASSERT( value );
 
     vec3* values = vec3_values();
     const vec3* other_values = value->vec3_values();
@@ -861,9 +861,9 @@ void Value::multiply_assign_vec3( std::shared_ptr<Value> value, const unsigned c
 
 void Value::equal_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
-    SWEET_ASSERT( lhs );
-    SWEET_ASSERT( rhs );
-    SWEET_ASSERT( lhs->size() == rhs->size() );
+    REYES_ASSERT( lhs );
+    REYES_ASSERT( rhs );
+    REYES_ASSERT( lhs->size() == rhs->size() );
     
     unsigned int size = lhs->size();
     reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), size );
@@ -879,9 +879,9 @@ void Value::equal_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs 
 
 void Value::equal_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
-    SWEET_ASSERT( lhs );
-    SWEET_ASSERT( rhs );
-    SWEET_ASSERT( lhs->size() == rhs->size() );
+    REYES_ASSERT( lhs );
+    REYES_ASSERT( rhs );
+    REYES_ASSERT( lhs->size() == rhs->size() );
     
     unsigned int size = lhs->size();
     reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), size );
@@ -897,9 +897,9 @@ void Value::equal_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 
 void Value::not_equal_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
-    SWEET_ASSERT( lhs );
-    SWEET_ASSERT( rhs );
-    SWEET_ASSERT( lhs->size() == rhs->size() );
+    REYES_ASSERT( lhs );
+    REYES_ASSERT( rhs );
+    REYES_ASSERT( lhs->size() == rhs->size() );
     
     unsigned int size = lhs->size();
     reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), size );
@@ -915,9 +915,9 @@ void Value::not_equal_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> 
 
 void Value::not_equal_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
-    SWEET_ASSERT( lhs );
-    SWEET_ASSERT( rhs );
-    SWEET_ASSERT( lhs->size() == rhs->size() );
+    REYES_ASSERT( lhs );
+    REYES_ASSERT( rhs );
+    REYES_ASSERT( lhs->size() == rhs->size() );
     
     unsigned int size = lhs->size();
     reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), size );
@@ -933,11 +933,11 @@ void Value::not_equal_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> r
 
 void Value::greater_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
-    SWEET_ASSERT( lhs );
-    SWEET_ASSERT( rhs );
-    SWEET_ASSERT( lhs->type() == TYPE_FLOAT );
-    SWEET_ASSERT( rhs->type() == TYPE_FLOAT );
-    SWEET_ASSERT( lhs->size() == rhs->size() );
+    REYES_ASSERT( lhs );
+    REYES_ASSERT( rhs );
+    REYES_ASSERT( lhs->type() == TYPE_FLOAT );
+    REYES_ASSERT( rhs->type() == TYPE_FLOAT );
+    REYES_ASSERT( lhs->size() == rhs->size() );
 
     unsigned int size = lhs->size();
     reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), size );
@@ -953,11 +953,11 @@ void Value::greater_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rh
 
 void Value::greater_equal_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
-    SWEET_ASSERT( lhs );
-    SWEET_ASSERT( rhs );
-    SWEET_ASSERT( lhs->type() == TYPE_FLOAT );
-    SWEET_ASSERT( rhs->type() == TYPE_FLOAT );
-    SWEET_ASSERT( lhs->size() == rhs->size() );
+    REYES_ASSERT( lhs );
+    REYES_ASSERT( rhs );
+    REYES_ASSERT( lhs->type() == TYPE_FLOAT );
+    REYES_ASSERT( rhs->type() == TYPE_FLOAT );
+    REYES_ASSERT( lhs->size() == rhs->size() );
 
     unsigned int size = lhs->size();
     reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), size );
@@ -973,11 +973,11 @@ void Value::greater_equal_float( std::shared_ptr<Value> lhs, std::shared_ptr<Val
 
 void Value::less_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
-    SWEET_ASSERT( lhs );
-    SWEET_ASSERT( rhs );
-    SWEET_ASSERT( lhs->type() == TYPE_FLOAT );
-    SWEET_ASSERT( rhs->type() == TYPE_FLOAT );
-    SWEET_ASSERT( lhs->size() == rhs->size() );
+    REYES_ASSERT( lhs );
+    REYES_ASSERT( rhs );
+    REYES_ASSERT( lhs->type() == TYPE_FLOAT );
+    REYES_ASSERT( rhs->type() == TYPE_FLOAT );
+    REYES_ASSERT( lhs->size() == rhs->size() );
 
     unsigned int size = lhs->size();
     reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), size );
@@ -993,11 +993,11 @@ void Value::less_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 
 void Value::less_equal_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
-    SWEET_ASSERT( lhs );
-    SWEET_ASSERT( rhs );
-    SWEET_ASSERT( lhs->type() == TYPE_FLOAT );
-    SWEET_ASSERT( rhs->type() == TYPE_FLOAT );
-    SWEET_ASSERT( lhs->size() == rhs->size() );
+    REYES_ASSERT( lhs );
+    REYES_ASSERT( rhs );
+    REYES_ASSERT( lhs->type() == TYPE_FLOAT );
+    REYES_ASSERT( rhs->type() == TYPE_FLOAT );
+    REYES_ASSERT( lhs->size() == rhs->size() );
 
     unsigned int size = lhs->size();
     reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), size );
@@ -1013,9 +1013,9 @@ void Value::less_equal_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value>
 
 void Value::inside_cone( std::shared_ptr<Value> direction, const math::vec3& axis, float angle )
 {
-    SWEET_ASSERT( direction );
-    SWEET_ASSERT( direction->type() == TYPE_VECTOR );
-    SWEET_ASSERT( direction->storage() == STORAGE_VARYING );
+    REYES_ASSERT( direction );
+    REYES_ASSERT( direction->type() == TYPE_VECTOR );
+    REYES_ASSERT( direction->storage() == STORAGE_VARYING );
     
     unsigned int size = direction->size();
     reset( TYPE_INTEGER, STORAGE_VARYING, size );
@@ -1032,7 +1032,7 @@ void Value::inside_cone( std::shared_ptr<Value> direction, const math::vec3& axi
 
 void Value::negate_float( std::shared_ptr<Value> value )
 {
-    SWEET_ASSERT( value );
+    REYES_ASSERT( value );
     
     reset( value->type(), value->storage(), value->size() );
     const float* other_values = value->float_values();
@@ -1045,7 +1045,7 @@ void Value::negate_float( std::shared_ptr<Value> value )
             
 void Value::negate_vec3( std::shared_ptr<Value> value )
 {
-    SWEET_ASSERT( value );
+    REYES_ASSERT( value );
     
     reset( value->type(), value->storage(), value->size() );
     const vec3* other_values = value->vec3_values();
@@ -1058,11 +1058,11 @@ void Value::negate_vec3( std::shared_ptr<Value> value )
 
 void Value::add_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
-    SWEET_ASSERT( lhs );
-    SWEET_ASSERT( rhs );
-    SWEET_ASSERT( lhs->type() == TYPE_FLOAT );
-    SWEET_ASSERT( rhs->type() == TYPE_FLOAT );
-    SWEET_ASSERT( lhs->size() == rhs->size() );
+    REYES_ASSERT( lhs );
+    REYES_ASSERT( rhs );
+    REYES_ASSERT( lhs->type() == TYPE_FLOAT );
+    REYES_ASSERT( rhs->type() == TYPE_FLOAT );
+    REYES_ASSERT( lhs->size() == rhs->size() );
 
     unsigned int size = lhs->size();
     reset( TYPE_FLOAT, max(lhs->storage(), rhs->storage()), size );
@@ -1078,11 +1078,11 @@ void Value::add_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 
 void Value::add_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
-    SWEET_ASSERT( lhs );
-    SWEET_ASSERT( rhs );
-    SWEET_ASSERT( lhs->storage() == STORAGE_VARYING );
-    SWEET_ASSERT( rhs->storage() == STORAGE_VARYING );
-    SWEET_ASSERT( lhs->size() == rhs->size() );
+    REYES_ASSERT( lhs );
+    REYES_ASSERT( rhs );
+    REYES_ASSERT( lhs->storage() == STORAGE_VARYING );
+    REYES_ASSERT( rhs->storage() == STORAGE_VARYING );
+    REYES_ASSERT( lhs->size() == rhs->size() );
 
     unsigned int size = lhs->size();
     reset( TYPE_VECTOR, max(lhs->storage(), rhs->storage()), size );
@@ -1098,11 +1098,11 @@ void Value::add_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 
 void Value::subtract_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
-    SWEET_ASSERT( lhs );
-    SWEET_ASSERT( rhs );
-    SWEET_ASSERT( lhs->type() == TYPE_FLOAT );
-    SWEET_ASSERT( rhs->type() == TYPE_FLOAT );
-    SWEET_ASSERT( lhs->size() == rhs->size() );
+    REYES_ASSERT( lhs );
+    REYES_ASSERT( rhs );
+    REYES_ASSERT( lhs->type() == TYPE_FLOAT );
+    REYES_ASSERT( rhs->type() == TYPE_FLOAT );
+    REYES_ASSERT( lhs->size() == rhs->size() );
 
     unsigned int size = lhs->size();
     reset( TYPE_FLOAT, max(lhs->storage(), rhs->storage()), size );
@@ -1118,9 +1118,9 @@ void Value::subtract_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> r
 
 void Value::subtract_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
-    SWEET_ASSERT( lhs );
-    SWEET_ASSERT( rhs );
-    SWEET_ASSERT( lhs->size() == rhs->size() );
+    REYES_ASSERT( lhs );
+    REYES_ASSERT( rhs );
+    REYES_ASSERT( lhs->size() == rhs->size() );
 
     unsigned int size = lhs->size();
     reset( TYPE_VECTOR, max(lhs->storage(), rhs->storage()), size );
@@ -1136,9 +1136,9 @@ void Value::subtract_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rh
 
 void Value::dot_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
-    SWEET_ASSERT( lhs );
-    SWEET_ASSERT( rhs );
-    SWEET_ASSERT( lhs->size() == rhs->size() );
+    REYES_ASSERT( lhs );
+    REYES_ASSERT( rhs );
+    REYES_ASSERT( lhs->size() == rhs->size() );
 
     unsigned int size = lhs->size();
     reset( TYPE_FLOAT, max(lhs->storage(), rhs->storage()), size );
@@ -1154,11 +1154,11 @@ void Value::dot_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 
 void Value::multiply_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
-    SWEET_ASSERT( lhs );
-    SWEET_ASSERT( rhs );
-    SWEET_ASSERT( lhs->type() == TYPE_FLOAT );
-    SWEET_ASSERT( rhs->type() == TYPE_FLOAT );
-    SWEET_ASSERT( lhs->size() == rhs->size() );
+    REYES_ASSERT( lhs );
+    REYES_ASSERT( rhs );
+    REYES_ASSERT( lhs->type() == TYPE_FLOAT );
+    REYES_ASSERT( rhs->type() == TYPE_FLOAT );
+    REYES_ASSERT( lhs->size() == rhs->size() );
 
     unsigned int size = lhs->size();
     reset( TYPE_FLOAT, max(lhs->storage(), rhs->storage()), size );
@@ -1174,9 +1174,9 @@ void Value::multiply_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> r
 
 void Value::multiply_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
-    SWEET_ASSERT( lhs );
-    SWEET_ASSERT( rhs );
-    SWEET_ASSERT( lhs->size() == rhs->size() );
+    REYES_ASSERT( lhs );
+    REYES_ASSERT( rhs );
+    REYES_ASSERT( lhs->size() == rhs->size() );
 
     unsigned int size = lhs->size();
     reset( TYPE_VECTOR, max(lhs->storage(), rhs->storage()), size );
@@ -1192,11 +1192,11 @@ void Value::multiply_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rh
 
 void Value::divide_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
-    SWEET_ASSERT( lhs );
-    SWEET_ASSERT( rhs );
-    SWEET_ASSERT( lhs->type() == TYPE_FLOAT );
-    SWEET_ASSERT( rhs->type() == TYPE_FLOAT );
-    SWEET_ASSERT( lhs->size() == rhs->size() );
+    REYES_ASSERT( lhs );
+    REYES_ASSERT( rhs );
+    REYES_ASSERT( lhs->type() == TYPE_FLOAT );
+    REYES_ASSERT( rhs->type() == TYPE_FLOAT );
+    REYES_ASSERT( lhs->size() == rhs->size() );
 
     unsigned int size = lhs->size();
     reset( TYPE_FLOAT, max(lhs->storage(), rhs->storage()), size );
@@ -1212,10 +1212,10 @@ void Value::divide_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs
 
 void Value::divide_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
-    SWEET_ASSERT( lhs );
-    SWEET_ASSERT( rhs );
-    SWEET_ASSERT( lhs->size() == rhs->size() );
-    SWEET_ASSERT( rhs->type() == TYPE_FLOAT );
+    REYES_ASSERT( lhs );
+    REYES_ASSERT( rhs );
+    REYES_ASSERT( lhs->size() == rhs->size() );
+    REYES_ASSERT( rhs->type() == TYPE_FLOAT );
 
     unsigned int size = lhs->size();
     reset( lhs->type(), max(lhs->storage(), rhs->storage()), size );
@@ -1231,6 +1231,6 @@ void Value::divide_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs 
 
 void Value::allocate()
 {
-    SWEET_ASSERT( !values_ );
+    REYES_ASSERT( !values_ );
     values_ = malloc( sizeof(vec3) * MAXIMUM_VERTICES_PER_GRID );
 }

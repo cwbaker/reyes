@@ -43,7 +43,7 @@ void ErrorPolicy::error( int error, const char* format, ... )
 
 void ErrorPolicy::render_error( int /*error*/, const char* format, va_list args )
 {
-    SWEET_ASSERT( format );
+    REYES_ASSERT( format );
     fprintf( stderr, "render: ERROR: " );
     vfprintf( stderr, format, args );
     fprintf( stderr, "\n" );

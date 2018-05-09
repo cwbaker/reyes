@@ -328,14 +328,14 @@ void SymbolTable::push_scope()
 
 void SymbolTable::pop_scope()
 {
-    SWEET_ASSERT( symbols_.size() > 1 );
+    REYES_ASSERT( symbols_.size() > 1 );
     symbols_.pop_back();
 }
 
 std::shared_ptr<Symbol> SymbolTable::add_symbol( const std::string& identifier )
 {
-    SWEET_ASSERT( !identifier.empty() );
-    SWEET_ASSERT( !symbols_.empty() );
+    REYES_ASSERT( !identifier.empty() );
+    REYES_ASSERT( !symbols_.empty() );
     
     shared_ptr<Symbol> symbol( new Symbol(identifier) );
     symbols_.back().insert( make_pair(identifier, symbol) );
@@ -344,7 +344,7 @@ std::shared_ptr<Symbol> SymbolTable::add_symbol( const std::string& identifier )
 
 std::shared_ptr<Symbol> SymbolTable::find_symbol( const std::string& identifier ) const
 {
-    SWEET_ASSERT( !symbols_.empty() );
+    REYES_ASSERT( !symbols_.empty() );
 
     list<multimap<string, shared_ptr<Symbol>>>::const_reverse_iterator i = symbols_.rbegin();
     multimap<string, shared_ptr<Symbol>>::const_iterator j = i->find( identifier );
@@ -363,9 +363,9 @@ std::shared_ptr<Symbol> SymbolTable::find_symbol( const std::string& identifier 
 
 std::shared_ptr<Symbol> SymbolTable::find_symbol( const SyntaxNode* node ) const
 {
-    SWEET_ASSERT( node );
-    SWEET_ASSERT( node->node_type() == SHADER_NODE_CALL );
-    SWEET_ASSERT( !symbols_.empty() );
+    REYES_ASSERT( node );
+    REYES_ASSERT( node->node_type() == SHADER_NODE_CALL );
+    REYES_ASSERT( !symbols_.empty() );
     
     list<multimap<string, shared_ptr<Symbol>>>::const_reverse_iterator i = symbols_.rbegin();
     multimap<string, shared_ptr<Symbol>>::const_iterator j = i->find( node->lexeme() );
@@ -393,9 +393,9 @@ std::shared_ptr<Symbol> SymbolTable::find_symbol( const SyntaxNode* node ) const
 
 bool SymbolTable::matches( const std::shared_ptr<Symbol>& symbol, const SyntaxNode* node, const std::vector<std::shared_ptr<SyntaxNode>>& node_parameters )
 {
-    SWEET_ASSERT( symbol );
-    SWEET_ASSERT( node );
-    SWEET_ASSERT( node->node_type() == SHADER_NODE_CALL );
+    REYES_ASSERT( symbol );
+    REYES_ASSERT( node );
+    REYES_ASSERT( node->node_type() == SHADER_NODE_CALL );
 
     bool matches_return = symbol->matches_return( node->get_expected_type(), node->get_expected_storage() );
     const vector<SymbolParameter>& symbol_parameters = symbol->parameters();

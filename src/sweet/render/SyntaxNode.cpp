@@ -117,38 +117,38 @@ const std::string& SyntaxNode::lexeme() const
 
 float SyntaxNode::real() const
 {
-    SWEET_ASSERT( node_type_ == SHADER_NODE_REAL || node_type_ == SHADER_NODE_INTEGER );
+    REYES_ASSERT( node_type_ == SHADER_NODE_REAL || node_type_ == SHADER_NODE_INTEGER );
     return ::atof( lexeme_.c_str() );
 }
 
 int SyntaxNode::integer() const
 {
-    SWEET_ASSERT( node_type_ == SHADER_NODE_INTEGER );
+    REYES_ASSERT( node_type_ == SHADER_NODE_INTEGER );
     return ::atoi( lexeme_.c_str() );
 }
 
 const std::string& SyntaxNode::string() const
 {
-    SWEET_ASSERT( node_type_ == SHADER_NODE_STRING );
+    REYES_ASSERT( node_type_ == SHADER_NODE_STRING );
     return lexeme_;
 }
 
 math::vec3 SyntaxNode::vec3() const
 {
-    SWEET_ASSERT( node_type_ == SHADER_NODE_TRIPLE );
-    SWEET_ASSERT( nodes_.size() == 3 );
-    SWEET_ASSERT( nodes_[0] && nodes_[1] && nodes_[2] );
+    REYES_ASSERT( node_type_ == SHADER_NODE_TRIPLE );
+    REYES_ASSERT( nodes_.size() == 3 );
+    REYES_ASSERT( nodes_[0] && nodes_[1] && nodes_[2] );
     return math::vec3( node(0)->real(), node(1)->real(), node(2)->real() );
 }
 
 math::mat4x4 SyntaxNode::mat4x4() const
 {
-    SWEET_ASSERT( node_type_ == SHADER_NODE_SIXTEENTUPLE );
-    SWEET_ASSERT( nodes_.size() == 16 );
-    SWEET_ASSERT( nodes_[0] && nodes_[1] && nodes_[2] && nodes_[3] );
-    SWEET_ASSERT( nodes_[4] && nodes_[5] && nodes_[6] && nodes_[7] );
-    SWEET_ASSERT( nodes_[8] && nodes_[9] && nodes_[10] && nodes_[11] );
-    SWEET_ASSERT( nodes_[12] && nodes_[13] && nodes_[14] && nodes_[15] );
+    REYES_ASSERT( node_type_ == SHADER_NODE_SIXTEENTUPLE );
+    REYES_ASSERT( nodes_.size() == 16 );
+    REYES_ASSERT( nodes_[0] && nodes_[1] && nodes_[2] && nodes_[3] );
+    REYES_ASSERT( nodes_[4] && nodes_[5] && nodes_[6] && nodes_[7] );
+    REYES_ASSERT( nodes_[8] && nodes_[9] && nodes_[10] && nodes_[11] );
+    REYES_ASSERT( nodes_[12] && nodes_[13] && nodes_[14] && nodes_[15] );
 
     return math::mat4x4(
         node(0)->real(), node(1)->real(), node(2)->real(), node(3)->real(),
@@ -160,13 +160,13 @@ math::mat4x4 SyntaxNode::mat4x4() const
 
 void SyntaxNode::add_node( std::shared_ptr<SyntaxNode> node )
 {
-    SWEET_ASSERT( node );
+    REYES_ASSERT( node );
     nodes_.push_back( node );
 }
 
 void SyntaxNode::add_node_at_front( std::shared_ptr<SyntaxNode> node )
 {
-    SWEET_ASSERT( node );
+    REYES_ASSERT( node );
     nodes_.insert( nodes_.begin(), node );
 }
 
@@ -177,8 +177,8 @@ void SyntaxNode::add_nodes_at_end( const std::vector<std::shared_ptr<SyntaxNode>
 
 SyntaxNode* SyntaxNode::node( int index ) const
 {
-    SWEET_ASSERT( index >= 0 && index < int(nodes_.size()) );
-    SWEET_ASSERT( nodes_[index] );
+    REYES_ASSERT( index >= 0 && index < int(nodes_.size()) );
+    REYES_ASSERT( nodes_[index] );
     return nodes_[index].get();
 }
 
@@ -219,7 +219,7 @@ ValueType SyntaxNode::get_expected_type() const
 
 void SyntaxNode::set_type( ValueType type )
 {
-    SWEET_ASSERT( type >= TYPE_NULL && type < TYPE_COUNT );
+    REYES_ASSERT( type >= TYPE_NULL && type < TYPE_COUNT );
     type_ = type;
     original_type_ = type;
 }
@@ -231,8 +231,8 @@ ValueType SyntaxNode::get_type() const
 
 void SyntaxNode::set_type_for_conversion( ValueType type )
 {
-    SWEET_ASSERT( type_ > TYPE_NULL && type_ < TYPE_COUNT );
-    SWEET_ASSERT( type > TYPE_NULL && type < TYPE_COUNT );
+    REYES_ASSERT( type_ > TYPE_NULL && type_ < TYPE_COUNT );
+    REYES_ASSERT( type > TYPE_NULL && type < TYPE_COUNT );
     original_type_ = type_;
     type_ = type;
 }
@@ -254,7 +254,7 @@ ValueStorage SyntaxNode::get_expected_storage() const
 
 void SyntaxNode::set_storage( ValueStorage storage )
 {
-    SWEET_ASSERT( storage >= STORAGE_NULL && storage < STORAGE_COUNT );
+    REYES_ASSERT( storage >= STORAGE_NULL && storage < STORAGE_COUNT );
     storage_ = storage;
 }
 
@@ -265,8 +265,8 @@ ValueStorage SyntaxNode::get_storage() const
 
 void SyntaxNode::set_storage_for_promotion( ValueStorage storage )
 {
-    SWEET_ASSERT( storage_ >= STORAGE_NULL && storage_ < STORAGE_COUNT );
-    SWEET_ASSERT( storage > STORAGE_NULL && storage < STORAGE_COUNT );
+    REYES_ASSERT( storage_ >= STORAGE_NULL && storage_ < STORAGE_COUNT );
+    REYES_ASSERT( storage > STORAGE_NULL && storage < STORAGE_COUNT );
     original_storage_ = storage_;
     storage_ = storage;
 }
@@ -293,8 +293,8 @@ struct indirect_equal
 {
     bool operator()( const shared_ptr<SyntaxNode>& lhs, const shared_ptr<SyntaxNode>& rhs ) const
     {
-        SWEET_ASSERT( lhs );
-        SWEET_ASSERT( rhs );
+        REYES_ASSERT( lhs );
+        REYES_ASSERT( rhs );
         return *lhs == *rhs;
     }
 };

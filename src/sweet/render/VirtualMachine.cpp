@@ -41,8 +41,8 @@ VirtualMachine::ConditionMask::ConditionMask()
 
 void VirtualMachine::ConditionMask::generate( std::shared_ptr<Value> value )
 {
-    SWEET_ASSERT( value );
-    SWEET_ASSERT( value->type() == TYPE_INTEGER );
+    REYES_ASSERT( value );
+    REYES_ASSERT( value->type() == TYPE_INTEGER );
     
     const int size = value->size();
     const int* values = value->int_values();
@@ -60,9 +60,9 @@ void VirtualMachine::ConditionMask::generate( std::shared_ptr<Value> value )
 
 void VirtualMachine::ConditionMask::generate( const ConditionMask& condition_mask, std::shared_ptr<Value> value )
 {
-    SWEET_ASSERT( value );
-    SWEET_ASSERT( value->type() == TYPE_INTEGER );
-    SWEET_ASSERT( condition_mask.mask_.size() == value->size() );
+    REYES_ASSERT( value );
+    REYES_ASSERT( value->type() == TYPE_INTEGER );
+    REYES_ASSERT( condition_mask.mask_.size() == value->size() );
     
     const int size = value->size();
     const int* values = value->int_values();
@@ -142,7 +142,7 @@ void VirtualMachine::initialize( Grid& parameters, Shader& shader )
     for ( int i = 0; i < shader.parameters(); ++i )
     {
         const shared_ptr<Symbol>& symbol = symbols[i];
-        SWEET_ASSERT( symbol );
+        REYES_ASSERT( symbol );
         parameters.add_value( symbol->identifier(), symbol->type() );
     }
 
@@ -170,11 +170,11 @@ void VirtualMachine::shade( Grid& globals, Grid& parameters, Shader& shader )
 
 void VirtualMachine::construct( int start, int finish )
 {
-    SWEET_ASSERT( shader_ );
-    SWEET_ASSERT( !shader_->code().empty() );
-    SWEET_ASSERT( start >= 0 && start <= int(shader_->code().size()) );
-    SWEET_ASSERT( finish >= 0 && finish <= int(shader_->code().size()) );
-    SWEET_ASSERT( start <= finish );
+    REYES_ASSERT( shader_ );
+    REYES_ASSERT( !shader_->code().empty() );
+    REYES_ASSERT( start >= 0 && start <= int(shader_->code().size()) );
+    REYES_ASSERT( finish >= 0 && finish <= int(shader_->code().size()) );
+    REYES_ASSERT( start <= finish );
 
     code_begin_ = &shader_->code().front() + start;
     code_end_ = &shader_->code().front() + finish;
@@ -192,7 +192,7 @@ void VirtualMachine::construct( int start, int finish )
     registers_.insert( registers_.end(), max(shader_->registers() - int(registers_.size()), 0), shared_ptr<Value>() );
 
     // Initialize registers for constants.
-    SWEET_ASSERT( shader_->constants() == int(shader_->values().size()) );
+    REYES_ASSERT( shader_->constants() == int(shader_->values().size()) );
     unsigned int register_index = 0;
     while ( register_index < shader_->values().size() )
     {
@@ -232,9 +232,9 @@ void VirtualMachine::initialize_registers( Grid& grid )
 
 void VirtualMachine::execute()
 {
-    SWEET_ASSERT( code_begin_ );
-    SWEET_ASSERT( code_end_ );
-    SWEET_ASSERT( code_begin_ <= code_end_ );
+    REYES_ASSERT( code_begin_ );
+    REYES_ASSERT( code_end_ );
+    REYES_ASSERT( code_begin_ <= code_end_ );
     
     code_ = code_begin_;
     while ( code_ < code_end_ )
@@ -515,7 +515,7 @@ void VirtualMachine::execute()
                 break;
 
             default:    
-                SWEET_ASSERT( false );
+                REYES_ASSERT( false );
                 execute_halt();
                 break;                
         }
@@ -548,23 +548,23 @@ void VirtualMachine::jump_illuminance( int distance )
 
 void VirtualMachine::jump( int distance )
 {
-    SWEET_ASSERT( code_ + distance >= code_begin_ && code_ + distance < code_end_ );
+    REYES_ASSERT( code_ + distance >= code_begin_ && code_ + distance < code_end_ );
     code_ += distance;
 }
 
 int VirtualMachine::instruction()
 {
-    SWEET_ASSERT( code_ );
-    SWEET_ASSERT( code_end_ );
-    SWEET_ASSERT( code_ < code_end_ );
+    REYES_ASSERT( code_ );
+    REYES_ASSERT( code_end_ );
+    REYES_ASSERT( code_ < code_end_ );
     return *code_++;    
 }
 
 int VirtualMachine::argument()
 {
-    SWEET_ASSERT( code_ );
-    SWEET_ASSERT( code_end_ );
-    SWEET_ASSERT( code_ < code_end_ );
+    REYES_ASSERT( code_ );
+    REYES_ASSERT( code_end_ );
+    REYES_ASSERT( code_ < code_end_ );
     return *code_++;    
 }
 
@@ -631,7 +631,7 @@ void VirtualMachine::execute_transform()
     shared_ptr<Value> result = registers_[allocate_register()];
     int fromspace = argument();
     int point = argument();
-    SWEET_ASSERT( renderer_ );
+    REYES_ASSERT( renderer_ );
     result->transform( renderer_->transform_from(registers_[fromspace]->string_value()), registers_[point] );
 }
 
@@ -640,7 +640,7 @@ void VirtualMachine::execute_transform_vector()
     shared_ptr<Value> result = registers_[allocate_register()];
     int fromspace = argument();
     int vector = argument();
-    SWEET_ASSERT( renderer_ );
+    REYES_ASSERT( renderer_ );
     result->vtransform( renderer_->transform_from(registers_[fromspace]->string_value()), registers_[vector] );
 }
 
@@ -649,7 +649,7 @@ void VirtualMachine::execute_transform_normal()
     shared_ptr<Value> result = registers_[allocate_register()];
     int fromspace = argument();
     int vector = argument();
-    SWEET_ASSERT( renderer_ );
+    REYES_ASSERT( renderer_ );
     result->ntransform( renderer_->transform_from(registers_[fromspace]->string_value()), registers_[vector] );
 }
 
@@ -658,7 +658,7 @@ void VirtualMachine::execute_transform_color()
     shared_ptr<Value> result = registers_[allocate_register()];
     int fromspace = argument();
     int color = argument();
-    SWEET_ASSERT( renderer_ );
+    REYES_ASSERT( renderer_ );
     ctransform( *renderer_, *grid_, result, registers_[fromspace], registers_[color] );
 }
 
@@ -667,7 +667,7 @@ void VirtualMachine::execute_transform_matrix()
     shared_ptr<Value> result = registers_[allocate_register()];
     int tospace = argument();
     int matrix = argument();
-    SWEET_ASSERT( renderer_ );
+    REYES_ASSERT( renderer_ );
     result->transform_matrix( renderer_->transform_to(registers_[tospace]->string_value()), registers_[matrix] );
 }
 
@@ -971,7 +971,7 @@ void VirtualMachine::execute_float_texture()
     int texturename = argument();
     int s = argument();
     int t = argument();
-    SWEET_ASSERT( renderer_ );
+    REYES_ASSERT( renderer_ );
     float_texture( *renderer_, result, registers_[texturename], registers_[s], registers_[t] );
 }
 
@@ -981,7 +981,7 @@ void VirtualMachine::execute_vec3_texture()
     int texturename = argument();
     int s = argument();
     int t = argument();
-    SWEET_ASSERT( renderer_ );
+    REYES_ASSERT( renderer_ );
     vec3_texture( *renderer_, result, registers_[texturename], registers_[s], registers_[t] );
 }
 
@@ -990,7 +990,7 @@ void VirtualMachine::execute_float_environment()
     shared_ptr<Value> result = registers_[allocate_register()];
     int texturename = argument();
     int direction = argument();
-    SWEET_ASSERT( renderer_ );
+    REYES_ASSERT( renderer_ );
     float_environment( *renderer_, result, registers_[texturename], registers_[direction] );
 }
 
@@ -999,7 +999,7 @@ void VirtualMachine::execute_vec3_environment()
     shared_ptr<Value> result = registers_[allocate_register()];
     int texturename = argument();
     int direction = argument();
-    SWEET_ASSERT( renderer_ );
+    REYES_ASSERT( renderer_ );
     vec3_environment( *renderer_, result, registers_[texturename], registers_[direction] );
 }
 
@@ -1009,7 +1009,7 @@ void VirtualMachine::execute_shadow()
     int texturename = argument();
     int position = argument();
     int bias = argument();
-    SWEET_ASSERT( renderer_ );
+    REYES_ASSERT( renderer_ );
     shadow( *renderer_, result, registers_[texturename], registers_[position], registers_[bias] );
 }
 
@@ -1017,10 +1017,10 @@ void VirtualMachine::execute_call_0()
 {
     shared_ptr<Value> result = registers_[allocate_register()];
     shared_ptr<Symbol> symbol = shader_->symbols()[argument()];
-    SWEET_ASSERT( symbol->function() );
+    REYES_ASSERT( symbol->function() );
     typedef void (*FunctionType)( const Renderer&, const Grid&, shared_ptr<Value> );
     FunctionType function = reinterpret_cast<FunctionType>( symbol->function() );
-    SWEET_ASSERT( renderer_ );
+    REYES_ASSERT( renderer_ );
     (*function)( *renderer_, *grid_, result );
 }
 
@@ -1031,7 +1031,7 @@ void VirtualMachine::execute_call_1()
     shared_ptr<Value> arg0 = registers_[argument()];
     typedef void (*FunctionType)( const Renderer&, const Grid&, shared_ptr<Value>, shared_ptr<Value> );
     FunctionType function = reinterpret_cast<FunctionType>( symbol->function() );
-    SWEET_ASSERT( renderer_ );
+    REYES_ASSERT( renderer_ );
     (*function)( *renderer_, *grid_, result, arg0 );
 }
 
@@ -1043,7 +1043,7 @@ void VirtualMachine::execute_call_2()
     shared_ptr<Value> arg1 = registers_[argument()];
     typedef void (*FunctionType)( const Renderer&, const Grid&, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value> );
     FunctionType function = reinterpret_cast<FunctionType>( symbol->function() );
-    SWEET_ASSERT( renderer_ );
+    REYES_ASSERT( renderer_ );
     (*function)( *renderer_, *grid_, result, arg0, arg1 );
 }
 
@@ -1056,7 +1056,7 @@ void VirtualMachine::execute_call_3()
     shared_ptr<Value> arg2 = registers_[argument()];
     typedef void (*FunctionType)( const Renderer&, const Grid&, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value> );
     FunctionType function = reinterpret_cast<FunctionType>( symbol->function() );
-    SWEET_ASSERT( renderer_ );
+    REYES_ASSERT( renderer_ );
     (*function)( *renderer_, *grid_, result, arg0, arg1, arg2 );
 }
 
@@ -1070,7 +1070,7 @@ void VirtualMachine::execute_call_4()
     shared_ptr<Value> arg3 = registers_[argument()];
     typedef void (*FunctionType)( const Renderer&, const Grid&, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value> );
     FunctionType function = reinterpret_cast<FunctionType>( symbol->function() );
-    SWEET_ASSERT( renderer_ );
+    REYES_ASSERT( renderer_ );
     (*function)( *renderer_, *grid_, result, arg0, arg1, arg2, arg3 );
 }
 
@@ -1085,7 +1085,7 @@ void VirtualMachine::execute_call_5()
     shared_ptr<Value> arg4 = registers_[argument()];
     typedef void (*FunctionType)( const Renderer&, const Grid&, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value> );
     FunctionType function = reinterpret_cast<FunctionType>( symbol->function() );
-    SWEET_ASSERT( renderer_ );
+    REYES_ASSERT( renderer_ );
     (*function)( *renderer_, *grid_, result, arg0, arg1, arg2, arg3, arg4 );
 }
 
@@ -1179,16 +1179,16 @@ void VirtualMachine::execute_illuminance_axis_angle()
 
 void VirtualMachine::float_texture( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> s, std::shared_ptr<Value> t ) const
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( texturename );
-    SWEET_ASSERT( texturename->type() == TYPE_STRING );
-    SWEET_ASSERT( s );
-    SWEET_ASSERT( s->type() == TYPE_FLOAT );
-    SWEET_ASSERT( s->storage() == STORAGE_VARYING );
-    SWEET_ASSERT( t );
-    SWEET_ASSERT( t->type() == TYPE_FLOAT );
-    SWEET_ASSERT( t->storage() == STORAGE_VARYING );
-    SWEET_ASSERT( s->size() == t->size() );
+    REYES_ASSERT( result );
+    REYES_ASSERT( texturename );
+    REYES_ASSERT( texturename->type() == TYPE_STRING );
+    REYES_ASSERT( s );
+    REYES_ASSERT( s->type() == TYPE_FLOAT );
+    REYES_ASSERT( s->storage() == STORAGE_VARYING );
+    REYES_ASSERT( t );
+    REYES_ASSERT( t->type() == TYPE_FLOAT );
+    REYES_ASSERT( t->storage() == STORAGE_VARYING );
+    REYES_ASSERT( s->size() == t->size() );
 
     result->reset( TYPE_FLOAT, STORAGE_VARYING, s->size() );
 
@@ -1211,16 +1211,16 @@ void VirtualMachine::float_texture( const Renderer& renderer, std::shared_ptr<Va
 
 void VirtualMachine::vec3_texture( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> s, std::shared_ptr<Value> t ) const
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( texturename );
-    SWEET_ASSERT( texturename->type() == TYPE_STRING );
-    SWEET_ASSERT( s );
-    SWEET_ASSERT( s->type() == TYPE_FLOAT );
-    SWEET_ASSERT( s->storage() == STORAGE_VARYING );
-    SWEET_ASSERT( t );
-    SWEET_ASSERT( t->type() == TYPE_FLOAT );
-    SWEET_ASSERT( t->storage() == STORAGE_VARYING );
-    SWEET_ASSERT( s->size() == t->size() );
+    REYES_ASSERT( result );
+    REYES_ASSERT( texturename );
+    REYES_ASSERT( texturename->type() == TYPE_STRING );
+    REYES_ASSERT( s );
+    REYES_ASSERT( s->type() == TYPE_FLOAT );
+    REYES_ASSERT( s->storage() == STORAGE_VARYING );
+    REYES_ASSERT( t );
+    REYES_ASSERT( t->type() == TYPE_FLOAT );
+    REYES_ASSERT( t->storage() == STORAGE_VARYING );
+    REYES_ASSERT( s->size() == t->size() );
 
     result->reset( TYPE_COLOR, STORAGE_VARYING, s->size() );
 
@@ -1243,11 +1243,11 @@ void VirtualMachine::vec3_texture( const Renderer& renderer, std::shared_ptr<Val
 
 void VirtualMachine::float_environment( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> direction ) const
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( texturename );
-    SWEET_ASSERT( texturename->type() == TYPE_STRING );
-    SWEET_ASSERT( direction );
-    SWEET_ASSERT( direction->storage() == STORAGE_VARYING  );
+    REYES_ASSERT( result );
+    REYES_ASSERT( texturename );
+    REYES_ASSERT( texturename->type() == TYPE_STRING );
+    REYES_ASSERT( direction );
+    REYES_ASSERT( direction->storage() == STORAGE_VARYING  );
 
     result->reset( TYPE_FLOAT, STORAGE_VARYING, direction->size() );
 
@@ -1269,11 +1269,11 @@ void VirtualMachine::float_environment( const Renderer& renderer, std::shared_pt
 
 void VirtualMachine::vec3_environment( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> direction ) const
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( texturename );
-    SWEET_ASSERT( texturename->type() == TYPE_STRING );
-    SWEET_ASSERT( direction );
-    SWEET_ASSERT( direction->storage() == STORAGE_VARYING  );
+    REYES_ASSERT( result );
+    REYES_ASSERT( texturename );
+    REYES_ASSERT( texturename->type() == TYPE_STRING );
+    REYES_ASSERT( direction );
+    REYES_ASSERT( direction->storage() == STORAGE_VARYING  );
 
     result->reset( TYPE_COLOR, STORAGE_VARYING, direction->size() );
 
@@ -1295,14 +1295,14 @@ void VirtualMachine::vec3_environment( const Renderer& renderer, std::shared_ptr
 
 void VirtualMachine::shadow( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> position, std::shared_ptr<Value> bias ) const
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( texturename );
-    SWEET_ASSERT( texturename->type() == TYPE_STRING );
-    SWEET_ASSERT( position );
-    SWEET_ASSERT( position->type() == TYPE_POINT );
-    SWEET_ASSERT( position->storage() == STORAGE_VARYING );
-    SWEET_ASSERT( bias );
-    SWEET_ASSERT( bias->type() == TYPE_FLOAT );
+    REYES_ASSERT( result );
+    REYES_ASSERT( texturename );
+    REYES_ASSERT( texturename->type() == TYPE_STRING );
+    REYES_ASSERT( position );
+    REYES_ASSERT( position->type() == TYPE_POINT );
+    REYES_ASSERT( position->storage() == STORAGE_VARYING );
+    REYES_ASSERT( bias );
+    REYES_ASSERT( bias->type() == TYPE_FLOAT );
 
     result->reset( TYPE_FLOAT, STORAGE_VARYING, position->size() );
 
@@ -1326,18 +1326,18 @@ void VirtualMachine::shadow( const Renderer& renderer, std::shared_ptr<Value> re
 
 void VirtualMachine::push_mask( std::shared_ptr<Value> value )
 {
-    SWEET_ASSERT( value );
-    SWEET_ASSERT( value->type() == TYPE_INTEGER );
+    REYES_ASSERT( value );
+    REYES_ASSERT( value->type() == TYPE_INTEGER );
 
     if ( masks_.empty() )
     {
-        SWEET_ASSERT( masks_.capacity() > masks_.size() );
+        REYES_ASSERT( masks_.capacity() > masks_.size() );
         masks_.push_back( ConditionMask() );
         masks_.back().generate( value );
     }
     else
     {    
-        SWEET_ASSERT( masks_.capacity() > masks_.size() );
+        REYES_ASSERT( masks_.capacity() > masks_.size() );
         ConditionMask& existing_mask = masks_.back();
         masks_.push_back( ConditionMask() );
         masks_.back().generate( existing_mask, value );
@@ -1346,13 +1346,13 @@ void VirtualMachine::push_mask( std::shared_ptr<Value> value )
 
 void VirtualMachine::pop_mask()
 {
-    SWEET_ASSERT( !masks_.empty() );
+    REYES_ASSERT( !masks_.empty() );
     masks_.pop_back();
 }
 
 void VirtualMachine::invert_mask()
 {
-    SWEET_ASSERT( !masks_.empty() );
+    REYES_ASSERT( !masks_.empty() );
     masks_.back().invert();
 }
 
@@ -1365,7 +1365,7 @@ void VirtualMachine::invert_mask()
 */
 bool VirtualMachine::mask_empty() const
 {
-    SWEET_ASSERT( !masks_.empty() );
+    REYES_ASSERT( !masks_.empty() );
     return masks_.back().empty();
 }
 
@@ -1376,8 +1376,8 @@ const unsigned char* VirtualMachine::get_mask() const
 
 void VirtualMachine::reset_register( int index )
 {
-    SWEET_ASSERT( shader_ );
-    SWEET_ASSERT( index >= shader_->permanent_registers() );
+    REYES_ASSERT( shader_ );
+    REYES_ASSERT( index >= shader_->permanent_registers() );
     register_index_ = index;
 }
 

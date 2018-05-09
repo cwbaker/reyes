@@ -18,7 +18,7 @@ Light::Light( LightType type, std::shared_ptr<Value> color, std::shared_ptr<Valu
   axis_( axis ),
   angle_( angle )
 {
-    SWEET_ASSERT( type_ >= LIGHT_NULL && type_ < LIGHT_COUNT );
+    REYES_ASSERT( type_ >= LIGHT_NULL && type_ < LIGHT_COUNT );
 }
 
 Light::~Light()
