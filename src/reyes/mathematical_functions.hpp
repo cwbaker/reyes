@@ -1,7 +1,6 @@
 #ifndef REYES_MATHEMATICAL_FUNCTIONS_HPP_INCLUDED
 #define REYES_MATHEMATICAL_FUNCTIONS_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include <memory>
 
 namespace sweet

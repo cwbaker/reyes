@@ -1,7 +1,6 @@
 #ifndef REYES_SPHERE_HPP_INCLUDED
 #define REYES_SPHERE_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include "Geometry.hpp"
 #include <math/vec2.hpp>
 #include <math/vec3.hpp>
@@ -17,7 +16,7 @@ namespace render
 
 class Grid;
 
-class REYES_DECLSPEC Sphere : public Geometry
+class Sphere : public Geometry
 {
     float radius_;
     float zmin_;

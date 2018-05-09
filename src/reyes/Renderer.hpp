@@ -1,7 +1,6 @@
 #ifndef REYES_RENDERER_HPP_INCLUDED
 #define REYES_RENDERER_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include <math/vec3.hpp>
 #include <math/vec4.hpp>
 #include <math/mat4x4.hpp>
@@ -34,7 +33,7 @@ class Shader;
 /**
 // The main interface to the renderer.
 */
-class REYES_DECLSPEC Renderer
+class Renderer
 {
     ErrorPolicy* error_policy_; ///< The error policy that errors are reported to.
     SymbolTable* symbol_table_; ///< The symbol table used to store symbols when compiling shaders.

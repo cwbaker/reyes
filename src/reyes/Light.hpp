@@ -1,7 +1,6 @@
 #ifndef REYES_LIGHT_HPP_INCLUDED
 #define REYES_LIGHT_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include "LightType.hpp"
 #include <math/vec3.hpp>
 #include <memory>
@@ -18,7 +17,7 @@ class Value;
 // The results returned from a light shader for a diced grid of micropolygon
 // vertices.
 */
-class REYES_DECLSPEC Light
+class Light
 {
     LightType type_; ///< The type of light (@see LightType).
     std::shared_ptr<Value> color_; ///< The color values returned by the light shader (assigned to "Cl").

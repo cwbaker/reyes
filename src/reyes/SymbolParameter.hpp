@@ -1,7 +1,6 @@
 #ifndef REYES_SYMBOLPARAMETER_HPP_INCLUDED
 #define REYES_SYMBOLPARAMETER_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include "ValueType.hpp"
 #include "ValueStorage.hpp"
 
@@ -16,7 +15,7 @@ namespace render
 // and also to provide type checking, conversion, and promotion for parameters
 // passed to functions.
 */
-class REYES_DECLSPEC SymbolParameter
+class SymbolParameter
 {
     ValueType type_;
     ValueStorage storage_;

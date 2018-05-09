@@ -6,7 +6,6 @@
 #ifndef REYES_ATTRIBUTES_HPP_INCLUDED
 #define REYES_ATTRIBUTES_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include <math/vec3.hpp>
 #include <math/vec4.hpp>
 #include <math/mat4x4.hpp>
@@ -29,7 +28,7 @@ class VirtualMachine;
 /**
 // Attributes for a single level of the renderer's attribute stack.
 */
-class REYES_DECLSPEC Attributes
+class Attributes
 {
     VirtualMachine* virtual_machine_; ///< The VirtualMachine used to initialize shader parameters.
     float shading_rate_; ///< The current shading rate.

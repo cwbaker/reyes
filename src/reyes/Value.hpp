@@ -1,7 +1,6 @@
 #ifndef REYES_VALUE_HPP_INCLUDED
 #define REYES_VALUE_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include "ValueType.hpp"
 #include "ValueStorage.hpp"
 #include <math/vec2.hpp>
@@ -27,7 +26,7 @@ class Renderer;
 // A value stored by the renderer for a shader parameter or a varying variable
 // used in a diced grid of micropolygon vertices.
 */
-class REYES_DECLSPEC Value
+class Value
 {
     ValueType type_; ///< The type stored in this value.
     ValueStorage storage_; ///< The storage of this value.

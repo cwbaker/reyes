@@ -1,7 +1,6 @@
 #ifndef REYES_SHADER_HPP_INCLUDED
 #define REYES_SHADER_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include <memory>
 #include <string>
 #include <vector>
@@ -24,7 +23,7 @@ class ErrorPolicy;
 /**
 // A displacement, surface, or light shader.
 */
-class REYES_DECLSPEC Shader
+class Shader
 {
     std::vector<std::shared_ptr<Symbol>> symbols_; ///< The symbols that are used in the shader.
     std::vector<std::shared_ptr<Value>> values_; ///< The values of any constants used in the shader (including default parameter values).

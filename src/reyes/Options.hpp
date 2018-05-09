@@ -1,7 +1,6 @@
 #ifndef REYES_OPTIONS_HPP_INCLUDED
 #define REYES_OPTIONS_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include <math/vec4.hpp>
 #include <math/mat4x4.hpp>
 #include <string>
@@ -15,7 +14,7 @@ namespace render
 /**
 // Options that apply to at least one frame of a render.
 */
-class REYES_DECLSPEC Options
+class Options
 {
 public:
     typedef float (*FilterFunction)( float x, float y, float width, float height );

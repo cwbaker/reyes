@@ -1,7 +1,6 @@
 #ifndef REYES_CONE_HPP_INCLUDED
 #define REYES_CONE_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include "Geometry.hpp"
 #include <math/vec2.hpp>
 #include <math/vec3.hpp>
@@ -17,7 +16,7 @@ namespace render
 
 class Grid;
 
-class REYES_DECLSPEC Cone : public Geometry
+class Cone : public Geometry
 {
     float height_;
     float radius_;

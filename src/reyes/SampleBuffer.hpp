@@ -1,7 +1,6 @@
 #ifndef REYES_SAMPLEBUFFER_HPP_INCLUDED
 #define REYES_SAMPLEBUFFER_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include <math/vec4.hpp>
 #include <math/mat4x4.hpp>
 
@@ -17,7 +16,7 @@ class ImageBuffer;
 /**
 // A buffer of samples.
 */
-class REYES_DECLSPEC SampleBuffer
+class SampleBuffer
 {
     int horizontal_resolution_; ///< The number of pixels across.
     int vertical_resolution_; ///< The number of pixels down.

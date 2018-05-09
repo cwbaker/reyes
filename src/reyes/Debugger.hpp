@@ -6,7 +6,6 @@
 #ifndef REYES_DEBUGGER_HPP_INCLUDED
 #define REYES_DEBUGGER_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include <math/vec4.hpp>
 #include <math/mat4x4.hpp>
 #include <vector>
@@ -25,7 +24,7 @@ class Value;
 class Grid;
 class SampleBuffer;
 
-class REYES_DECLSPEC Debugger
+class Debugger
 {
 public:
     void dump_syntax_tree( const SyntaxNode* node, int level = 0 ) const;

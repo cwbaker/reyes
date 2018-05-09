@@ -6,7 +6,6 @@
 #ifndef REYES_CODEGENERATOR_HPP_INCLUDED
 #define REYES_CODEGENERATOR_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include "SyntaxNodeType.hpp"
 #include "ValueType.hpp"
 #include "ValueStorage.hpp"
@@ -29,7 +28,7 @@ class ErrorPolicy;
 /**
 // Generate code from a syntax tree after parsing and semantic analysis.
 */
-class REYES_DECLSPEC CodeGenerator
+class CodeGenerator
 {
     struct Jump
     {

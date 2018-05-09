@@ -1,7 +1,6 @@
 #ifndef REYES_SYMBOLTABLE_HPP_INCLUDED
 #define REYES_SYMBOLTABLE_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include "AddSymbolHelper.hpp"
 #include <list>
 #include <map>
@@ -22,7 +21,7 @@ class SyntaxNode;
 // by the shader parser as well as the parameters and variables that are
 // defined during parsing.
 */
-class REYES_DECLSPEC SymbolTable
+class SymbolTable
 {
     std::list<std::multimap<std::string, std::shared_ptr<Symbol>>> symbols_; ///< The stack of symbols used to represent the symbol hierarchy.
 

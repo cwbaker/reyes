@@ -1,7 +1,6 @@
 #ifndef REYES_ERRORPOLICY_HPP_INCLUDED
 #define REYES_ERRORPOLICY_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include <stdarg.h>
 
 namespace sweet
@@ -16,7 +15,7 @@ class Error;
 // An interface to be implemented by objects that wish to respond to or 
 // process errors encountered while rendering.
 */
-class REYES_DECLSPEC ErrorPolicy
+class ErrorPolicy
 {
     int total_errors_; ///< The total number of errors that have occured.
     int errors_; ///< The number of errors that have occured since the last clear.

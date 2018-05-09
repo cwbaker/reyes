@@ -1,7 +1,6 @@
 #ifndef REYES_PARABOLOID_HPP_INCLUDED
 #define REYES_PARABOLOID_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include "Geometry.hpp"
 #include <math/vec2.hpp>
 #include <math/vec3.hpp>
@@ -16,7 +15,7 @@ namespace render
 
 class Grid;
 
-class REYES_DECLSPEC Paraboloid : public Geometry
+class Paraboloid : public Geometry
 {
     float rmax_;
     float zmin_;

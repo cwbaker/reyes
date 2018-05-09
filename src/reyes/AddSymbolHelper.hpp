@@ -1,7 +1,6 @@
 #ifndef REYES_ADDSYMBOLHELPER_HPP_INCLUDED
 #define REYES_ADDSYMBOLHELPER_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include "ValueType.hpp"
 #include "ValueStorage.hpp"
 #include <vector>
@@ -23,7 +22,7 @@ class SymbolTable;
 // Syntax helper to provide a convenient syntax for constructing hierarchical
 // symbol tables.
 */
-class REYES_DECLSPEC AddSymbolHelper
+class AddSymbolHelper
 {
     SymbolTable* symbol_table_; ///< The SymbolTable to add Symbols to.
     std::shared_ptr<Symbol> symbol_; ///< The most recently added Symbol.

@@ -6,7 +6,6 @@
 #ifndef REYES_GRID_HPP_INCLUDED
 #define REYES_GRID_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include "ValueType.hpp"
 #include "ValueStorage.hpp"
 #include <math/mat4x4.hpp>
@@ -39,7 +38,7 @@ class Shader;
 // to shaders, vertices in a diced grid of micropolygons, and lighting values
 // returned by light shaders run against a diced grid of micropolygons.
 */
-class REYES_DECLSPEC Grid
+class Grid
 {
 public:
     int width_; ///< The number of vertices across the u direction of this grid.

@@ -1,7 +1,6 @@
 #ifndef REYES_LINEARPATCH_HPP_INCLUDED
 #define REYES_LINEARPATCH_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include "Geometry.hpp"
 #include <math/vec2.hpp>
 #include <math/vec3.hpp>
@@ -17,7 +16,7 @@ namespace render
 
 class Grid;
 
-class REYES_DECLSPEC LinearPatch : public Geometry
+class LinearPatch : public Geometry
 {
     math::vec3 positions_ [4];
     math::vec3 normals_ [4];

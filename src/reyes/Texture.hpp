@@ -1,7 +1,6 @@
 #ifndef REYES_TEXTURE_HPP_INCLUDED
 #define REYES_TEXTURE_HPP_INCLUDED
 
-#include "declspec.hpp"
 #include "TextureType.hpp"
 #include <math/vec4.hpp>
 #include <math/mat4x4.hpp>
@@ -19,7 +18,7 @@ class ImageBuffer;
 /**
 // A color map, shadow map, or environment map texture.
 */
-class REYES_DECLSPEC Texture
+class Texture
 {
     TextureType type_; ///< The type of texture.
     math::mat4x4 camera_transform_; ///< The camera transform in effect when a shadow map was created.
