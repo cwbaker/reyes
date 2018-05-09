@@ -1,55 +1,55 @@
 
-buildfile "render_examples/render_examples.build";
-buildfile "render_test/render_test.build";
+buildfile 'reyes_examples/reyes_examples.build';
+buildfile 'reyes_test/reyes_test.build';
 
-for _, build in build:default_builds("cc_.*") do
+for _, build in build:default_builds('cc_.*') do
     local build = build:configure {
         warning_level = 0;
     };
 
     build:all {
-        build:Library '${lib}/render_${architecture}' {
+        build:Library '${lib}/reyes_${architecture}' {
             build:Cxx () {
                 'assert.cpp'
             };
             build:Cxx () {
-                "AddSymbolHelper.cpp",
-                "Attributes.cpp",
-                "CodeGenerator.cpp",
-                "Cone.cpp",
-                "CubicPatch.cpp",
-                "Cylinder.cpp",        
-                "Debugger.cpp",
-                "Disk.cpp",
-                "ErrorPolicy.cpp",
-                "Geometry.cpp",
-                "Grid.cpp",
-                "Hyperboloid.cpp",
-                "ImageBuffer.cpp",
-                "Light.cpp",
-                "LinearPatch.cpp",
-                "Options.cpp",
-                "Paraboloid.cpp",
-                "Renderer.cpp",
-                "Sampler.cpp",
-                "SampleBuffer.cpp",
-                "Shader.cpp",
-                "ShaderParser.cpp",
-                "SemanticAnalyzer.cpp",
-                "Sphere.cpp",
-                "Symbol.cpp",
-                "SymbolParameter.cpp",
-                "SymbolTable.cpp",
-                "SyntaxNode.cpp",
-                "Texture.cpp",
-                "Torus.cpp",
-                "Value.cpp",
-                "VirtualMachine.cpp",
-                "color_functions.cpp",
-                "geometric_functions.cpp",
-                "mathematical_functions.cpp",
-                "matrix_functions.cpp",
-                "shading_and_lighting_functions.cpp",
+                'AddSymbolHelper.cpp',
+                'Attributes.cpp',
+                'CodeGenerator.cpp',
+                'Cone.cpp',
+                'CubicPatch.cpp',
+                'Cylinder.cpp',        
+                'Debugger.cpp',
+                'Disk.cpp',
+                'ErrorPolicy.cpp',
+                'Geometry.cpp',
+                'Grid.cpp',
+                'Hyperboloid.cpp',
+                'ImageBuffer.cpp',
+                'Light.cpp',
+                'LinearPatch.cpp',
+                'Options.cpp',
+                'Paraboloid.cpp',
+                'Renderer.cpp',
+                'Sampler.cpp',
+                'SampleBuffer.cpp',
+                'Shader.cpp',
+                'ShaderParser.cpp',
+                'SemanticAnalyzer.cpp',
+                'Sphere.cpp',
+                'Symbol.cpp',
+                'SymbolParameter.cpp',
+                'SymbolTable.cpp',
+                'SyntaxNode.cpp',
+                'Texture.cpp',
+                'Torus.cpp',
+                'Value.cpp',
+                'VirtualMachine.cpp',
+                'color_functions.cpp',
+                'geometric_functions.cpp',
+                'mathematical_functions.cpp',
+                'matrix_functions.cpp',
+                'shading_and_lighting_functions.cpp',
                 'shader_parser.g.cpp'
             };    
         }
