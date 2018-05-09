@@ -1,0 +1,42 @@
+
+build:all {
+    build:Executable '${bin}/reyes_test' {
+        '${lib}/reyes_${architecture}';
+        '${lib}/jpeg_${architecture}';
+        '${lib}/lalr_${architecture}';
+        '${lib}/libpng_${architecture}';
+        '${lib}/UnitTest++_${architecture}';
+        '${lib}/zlib_${architecture}';
+
+        build:Cxx () {
+            'CaptureErrorPolicy.cpp';
+        };
+
+        build:Cxx () {
+            defines = {
+                ('SHADERS_PATH=\\"%s/\\"'):format( build:absolute('../shaders') );
+            };
+            'main.cpp',
+            'AssignExpressions.cpp',
+            'BreakStatements.cpp',
+            'CodeGeneration.cpp',
+            'ColorFunctions.cpp',
+            'ContinueStatements.cpp',
+            'ForLoops.cpp',
+            'FunctionCalls.cpp',
+            'GeometricFunctions.cpp',
+            'IfStatements.cpp',
+            'LightShaders.cpp',
+            'LogicalExpressions.cpp',
+            'IfStatements.cpp',
+            'IlluminanceStatements.cpp',
+            'MathematicalFunctions.cpp',
+            'MatrixFunctions.cpp',
+            'NamedCoordinateSystems.cpp',
+            'Projection.cpp',
+            'ShaderParser.cpp',
+            'TypeConversion.cpp',
+            'WhileLoops.cpp'
+        };
+    };    
+};

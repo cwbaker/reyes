@@ -48,15 +48,15 @@ local settings = build:initialize {
 
 build:default_targets {
     'src/lalr/lalr/lalrc',
-    'src/sweet/render',
-    'src/sweet/render/render_examples',
-    'src/sweet/render/render_test'
+    'src/reyes',
+    'src/reyes/reyes_examples',
+    'src/reyes/reyes_test'
 };
 
 buildfile 'src/jpeg/jpeg.build';
 buildfile 'src/lalr/lalr/lalr.build';
 buildfile 'src/libpng/libpng.build';
 buildfile 'src/math/math.build';
-buildfile 'src/sweet/render/render.build';
+buildfile 'src/reyes/reyes.build';
 buildfile 'src/unittest-cpp/unittest-cpp.build';
 buildfile 'src/zlib/zlib.build';
