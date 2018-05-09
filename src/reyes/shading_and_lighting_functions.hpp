@@ -3,9 +3,6 @@
 
 #include <memory>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -19,8 +16,6 @@ void specular( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value
 void specularbrdf( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> l, std::shared_ptr<Value> n, std::shared_ptr<Value> v, std::shared_ptr<Value> roughness );
 void phong( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> normal, std::shared_ptr<Value> view, std::shared_ptr<Value> size_value );
 void trace( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> point, std::shared_ptr<Value> reflection );
-
-}
 
 }
 

@@ -8,9 +8,6 @@
 #include <list>
 #include <memory>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -36,8 +33,6 @@ public:
 private:
     math::vec3 position( float u, float v ) const;
 };
-
-}
 
 }
 

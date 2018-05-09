@@ -1,13 +1,5 @@
-//
-// DisplayMode.hpp
-// Copyright (c) 2011 - 2012 Charles Baker.  All rights reserved.
-//
-
 #ifndef REYES_DISPLAYMODE_HPP_INCLUDED
 #define REYES_DISPLAYMODE_HPP_INCLUDED
-
-namespace sweet
-{
 
 namespace reyes
 {
@@ -23,8 +15,6 @@ enum DisplayMode
     DISPLAY_MODE_A = 0x02,
     DISPLAY_MODE_Z = 0x04
 };
-
-}
 
 }
 

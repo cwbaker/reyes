@@ -31,7 +31,6 @@
 #include "ErrorPolicy.hpp"
 #include "DisplayMode.hpp"
 #include "ImageBufferFormat.hpp"
-#include "ErrorAction.hpp"
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
 #include <math/vec4.ipp>
@@ -57,9 +56,8 @@ using std::string;
 using std::pair;
 using std::make_pair;
 using std::shared_ptr;
-using namespace sweet;
-using namespace sweet::math;
-using namespace sweet::reyes;
+using namespace math;
+using namespace reyes;
 
 static const int ATTRIBUTES_RESERVE = 32;
 static const int MAXIMUM_VERTICES_PER_GRID = 64 * 64;

@@ -3,9 +3,6 @@
 
 #include <memory>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -27,8 +24,6 @@ public:
     std::shared_ptr<SyntaxNode> parse( const char* filename );
     std::shared_ptr<SyntaxNode> parse( const char* begin, const char* end );
 };
-
-}
 
 }
 

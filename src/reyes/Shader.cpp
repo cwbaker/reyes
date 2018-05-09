@@ -17,8 +17,7 @@ using std::map;
 using std::string;
 using std::vector;
 using std::shared_ptr;
-using namespace sweet;
-using namespace sweet::reyes;
+using namespace reyes;
 
 Shader::Shader()
 : symbols_(),

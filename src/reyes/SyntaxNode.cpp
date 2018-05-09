@@ -15,8 +15,7 @@ using std::equal;
 using std::string;
 using std::vector;
 using std::shared_ptr;
-using namespace sweet;
-using namespace sweet::reyes;
+using namespace reyes;
 
 SyntaxNode::SyntaxNode()
 : node_type_( SHADER_NODE_NULL ),

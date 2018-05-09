@@ -1,3 +1,7 @@
+//
+// color_functions.cpp
+// Copyright (c) Charles Baker. All rights reserved.
+//
 
 #include "stdafx.hpp"
 #include "color_functions.hpp"
@@ -12,11 +16,7 @@
 #include "assert.hpp"
 
 using std::shared_ptr;
-using namespace sweet;
-using namespace sweet::math;
-
-namespace sweet
-{
+using namespace math;
 
 namespace reyes
 {
@@ -129,8 +129,6 @@ void ctransform( const Renderer& renderer, const Grid& grid, std::shared_ptr<Val
     {
         renderer.error_policy().error( RENDER_ERROR_UNKNOWN_COLOR_SPACE, "Unknown color space '%s'", fromspace->string_value().c_str() );
     }
-}
-
 }
 
 }

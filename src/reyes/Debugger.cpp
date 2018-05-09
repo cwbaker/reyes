@@ -20,9 +20,8 @@
 using std::string;
 using std::vector;
 using std::shared_ptr;
-using namespace sweet;
-using namespace sweet::math;
-using namespace sweet::reyes;
+using namespace math;
+using namespace reyes;
 
 void Debugger::dump_syntax_tree( const SyntaxNode* node, int level ) const
 {

@@ -21,9 +21,8 @@ using std::max;
 using std::list;
 using std::vector;
 using std::shared_ptr;
-using namespace sweet;
-using namespace sweet::math;
-using namespace sweet::reyes;
+using namespace math;
+using namespace reyes;
 
 Hyperboloid::Hyperboloid( const math::vec3& point1, const math::vec3& point2, float thetamax )
 : Geometry(vec2(0.0f, 1.0f), vec2(0.0f, 1.0f)),

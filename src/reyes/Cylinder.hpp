@@ -1,8 +1,3 @@
-//
-// Cylinder.hpp
-// Copyright (c) 2012 Charles Baker.  All rights reserved.
-//
-
 #ifndef REYES_CYLINDER_HPP_INCLUDED
 #define REYES_CYLINDER_HPP_INCLUDED
 
@@ -12,9 +7,6 @@
 #include <math/mat4x4.hpp>
 #include <list>
 #include <memory>
-
-namespace sweet
-{
 
 namespace reyes
 {
@@ -43,8 +35,6 @@ private:
     math::vec3 position( float u, float v ) const;
     math::vec3 normal( float u, float v ) const;    
 };
-
-}
 
 }
 

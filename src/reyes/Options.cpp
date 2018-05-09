@@ -13,9 +13,8 @@
 #include <algorithm>
 
 using std::max;
-using namespace sweet;
-using namespace sweet::math;
-using namespace sweet::reyes;
+using namespace math;
+using namespace reyes;
 
 Options::Options()
 : horizontal_resolution_( 640 ),

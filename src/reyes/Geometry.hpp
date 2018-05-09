@@ -1,8 +1,3 @@
-//
-// Geometry.hpp
-// Copyright (c) 2012 Charles Baker.  All rights reserved.
-//
-
 #ifndef REYES_GEOMETRY_HPP_INCLUDED
 #define REYES_GEOMETRY_HPP_INCLUDED
 
@@ -11,9 +6,6 @@
 #include <math/mat4x4.hpp>
 #include <list>
 #include <memory>
-
-namespace sweet
-{
 
 namespace reyes
 {
@@ -42,8 +34,6 @@ public:
     virtual bool diceable() const;
     virtual void dice( const math::mat4x4& transform, int width, int height, Grid* grid ) const;
 };
-
-}
 
 }
 

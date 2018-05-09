@@ -7,9 +7,6 @@
 #include <math/mat4x4.hpp>
 #include <list>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -36,8 +33,6 @@ public:
 private:
     math::vec3 position( float u, float v ) const;
 };
-
-}
 
 }
 

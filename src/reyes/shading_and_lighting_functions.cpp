@@ -20,11 +20,7 @@ using std::min;
 using std::max;
 using std::vector;
 using std::shared_ptr;
-using namespace sweet;
-using namespace sweet::math;
-
-namespace sweet
-{
+using namespace math;
 
 namespace reyes
 {
@@ -428,8 +424,6 @@ void trace( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> r
     REYES_ASSERT( result );
     result->reset( TYPE_COLOR, STORAGE_VARYING, grid.size() );
     result->zero();
-}
-
 }
 
 }

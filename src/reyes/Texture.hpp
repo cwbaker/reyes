@@ -6,9 +6,6 @@
 #include <math/mat4x4.hpp>
 #include <string>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -42,8 +39,6 @@ public:
 private:
     void load( const std::string& filename, TextureType type, ErrorPolicy* error_policy );
 };
-
-}
 
 }
 

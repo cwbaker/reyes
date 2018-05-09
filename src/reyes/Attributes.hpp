@@ -1,8 +1,3 @@
-//
-// Attributes.hpp
-// Copyright (c) 2012 Charles Baker.  All rights reserved.
-//
-
 #ifndef REYES_ATTRIBUTES_HPP_INCLUDED
 #define REYES_ATTRIBUTES_HPP_INCLUDED
 
@@ -14,9 +9,6 @@
 #include <string>
 #include <map>
 #include <memory>
-
-namespace sweet
-{
 
 namespace reyes
 {
@@ -104,8 +96,6 @@ public:
     void remove_coordinate_system( const char* name );
     math::mat4x4 transform_from( const std::string& name ) const;
 };
-
-}
 
 }
 

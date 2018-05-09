@@ -1,9 +1,6 @@
 #ifndef REYES_INSTRUCTION_HPP_INCLUDED
 #define REYES_INSTRUCTION_HPP_INCLUDED
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -84,8 +81,6 @@ enum Instruction
     INSTRUCTION_ILLUMINANCE_AXIS_ANGLE,
     INSTRUCTION_COUNT
 };
-
-}
 
 }
 

@@ -6,9 +6,6 @@
 #include "ValueStorage.hpp"
 #include <string>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -80,8 +77,6 @@ private:
     ValueType type_from_type_node( const SyntaxNode* type_node ) const;
     ValueType type_from_literal( const SyntaxNode* literal_node ) const;    
 };
-
-}
 
 }
 

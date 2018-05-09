@@ -1,13 +1,5 @@
-//
-// SyntaxNodeType.hpp
-// Copyright (c) 2011 - 2012 Charles Baker.  All rights reserved.
-//
-
 #ifndef REYES_SHADERNODETYPE_HPP_INCLUDED
 #define REYES_SHADERNODETYPE_HPP_INCLUDED
-
-namespace sweet
-{
 
 namespace reyes
 {
@@ -82,8 +74,6 @@ enum SyntaxNodeType
     SHADER_NODE_IDENTIFIER,
     SHADER_NODE_COUNT
 };
-
-}
 
 }
 

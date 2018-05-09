@@ -1,13 +1,5 @@
-//
-// LightType.hpp
-// Copyright (c) 2012 Charles Baker.  All rights reserved.
-//
-
 #ifndef REYES_LIGHTTYPE_HPP_INCLUDED
 #define REYES_LIGHTTYPE_HPP_INCLUDED
-
-namespace sweet
-{
 
 namespace reyes
 {
@@ -26,8 +18,6 @@ enum LightType
     LIGHT_ILLUMINATE_AXIS_ANGLE,
     LIGHT_COUNT
 };
-
-}
 
 }
 

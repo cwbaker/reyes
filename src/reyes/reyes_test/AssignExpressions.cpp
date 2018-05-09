@@ -7,7 +7,6 @@
 #include <reyes/Grid.hpp>
 #include <reyes/Value.hpp>
 #include <reyes/ErrorCode.hpp>
-#include <reyes/ErrorAction.hpp>
 #include <reyes/assert.hpp>
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -15,9 +14,8 @@
 
 using std::vector;
 using std::shared_ptr;
-using namespace sweet;
-using namespace sweet::math;
-using namespace sweet::reyes;
+using namespace math;
+using namespace reyes;
 
 static const float TOLERANCE = 0.01f;
 

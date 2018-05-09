@@ -1,13 +1,5 @@
-//
-// TextureType.hpp
-// Copyright (c) 2012 Charles Baker.  All rights reserved.
-//
-
 #ifndef REYES_TEXTURETYPE_HPP_INCLUDED
 #define REYES_TEXTURETYPE_HPP_INCLUDED
-
-namespace sweet
-{
 
 namespace reyes
 {
@@ -24,8 +16,6 @@ enum TextureType
     TEXTURE_CUBIC_ENVIRONMENT, ///< A cube environment map.
     TEXTURE_COUNT
 };
-
-}
 
 }
 

@@ -14,9 +14,8 @@ using std::map;
 using std::string;
 using std::vector;
 using std::shared_ptr;
-using namespace sweet;
-using namespace sweet::math;
-using namespace sweet::reyes;
+using namespace math;
+using namespace reyes;
 
 Grid::Grid()
 : width_( 1 ),

@@ -1,8 +1,3 @@
-//
-// Debugger.hpp
-// Copyright (c) 2012 Charles Baker.  All rights reserved.
-//
-
 #ifndef REYES_DEBUGGER_HPP_INCLUDED
 #define REYES_DEBUGGER_HPP_INCLUDED
 
@@ -10,9 +5,6 @@
 #include <math/mat4x4.hpp>
 #include <vector>
 #include <memory>
-
-namespace sweet
-{
 
 namespace reyes
 {
@@ -41,8 +33,6 @@ public:
 private:
     math::vec3 unproject( const float* raster_position, const math::mat4x4& inverse_screen_transform, float width, float height ) const;
 };
-
-}
 
 }
 

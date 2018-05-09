@@ -6,7 +6,6 @@
 #include "stdafx.hpp"
 #include "ShaderParser.hpp"
 #include "ErrorCode.hpp"
-#include "parser.hpp"
 #include "SyntaxNode.hpp"
 #include "SymbolTable.hpp"
 #include "Symbol.hpp"
@@ -28,8 +27,7 @@ using std::istream_iterator;
 using std::bind;
 using std::shared_ptr;
 using namespace std::placeholders;
-using namespace sweet;
-using namespace sweet::reyes;
+using namespace reyes;
 
 template <class Iterator>
 class ShaderParserContext : public lalr::ErrorPolicy

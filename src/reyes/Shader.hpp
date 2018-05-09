@@ -6,9 +6,6 @@
 #include <vector>
 #include <map>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -55,8 +52,6 @@ public:
 
     std::shared_ptr<Symbol> find_symbol( const std::string& identitifer ) const;
 };
-
-}
 
 }
 

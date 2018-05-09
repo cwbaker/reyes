@@ -4,9 +4,6 @@
 #include <math/vec4.hpp>
 #include <math/mat4x4.hpp>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -45,8 +42,6 @@ class SampleBuffer
         void filter( float (*filter_function)(float, float, float, float), ImageBuffer* image_buffer ) const;
         void pack( int mode, ImageBuffer* image_buffer ) const;        
 };
-
-}
 
 }
 

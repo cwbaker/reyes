@@ -7,7 +7,6 @@
 #include <reyes/SymbolTable.hpp>
 #include <reyes/VirtualMachine.hpp>
 #include <reyes/ErrorCode.hpp>
-#include <reyes/ErrorAction.hpp>
 #include <reyes/ErrorPolicy.hpp>
 #include <reyes/assert.hpp>
 #define _USE_MATH_DEFINES
@@ -16,9 +15,8 @@
 
 using std::vector;
 using std::shared_ptr;
-using namespace sweet;
-using namespace sweet::math;
-using namespace sweet::reyes;
+using namespace math;
+using namespace reyes;
 
 using std::string;
 

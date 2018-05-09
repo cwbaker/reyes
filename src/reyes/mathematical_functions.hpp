@@ -3,9 +3,6 @@
 
 #include <memory>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -56,8 +53,6 @@ void uniform_float_random( const Renderer& renderer, const Grid& grid, std::shar
 void uniform_vec3_random( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result );
 void float_random( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result );
 void vec3_random( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result );
-
-}
 
 }
 

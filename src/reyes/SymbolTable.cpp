@@ -21,8 +21,7 @@ using std::list;
 using std::vector;
 using std::string;
 using std::shared_ptr;
-using namespace sweet;
-using namespace sweet::reyes;
+using namespace reyes;
 
 SymbolTable::SymbolTable()
 : symbols_()

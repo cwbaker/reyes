@@ -20,11 +20,7 @@
 
 using std::max;
 using std::shared_ptr;
-using namespace sweet;
-using namespace sweet::math;
-
-namespace sweet
-{
+using namespace math;
 
 namespace reyes
 {
@@ -587,8 +583,6 @@ void calculatenormal( const Renderer& renderer, const Grid& grid, std::shared_pt
             values[i] = cross( dpdv_values[i], dpdu_values[i] );
         }
     }
-}
-
 }
 
 }

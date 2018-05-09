@@ -9,8 +9,7 @@
 #include <reyes/assert.hpp>
 
 using std::vector;
-using namespace sweet;
-using namespace sweet::reyes;
+using namespace reyes;
 
 SUITE( TestLightShaders )
 {

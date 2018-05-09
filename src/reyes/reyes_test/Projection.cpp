@@ -5,7 +5,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-using namespace sweet::math;
+using namespace math;
 
 // static void project( const mat4x4& projection, const vec4& point )
 // {

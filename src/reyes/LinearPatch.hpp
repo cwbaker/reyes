@@ -8,9 +8,6 @@
 #include <list>
 #include <memory>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -37,8 +34,6 @@ private:
     math::vec3 bilerp( const math::vec3* x, float u, float v ) const;
     math::vec2 bilerp( const math::vec2* x, float u, float v ) const;
 };
-
-}
 
 }
 

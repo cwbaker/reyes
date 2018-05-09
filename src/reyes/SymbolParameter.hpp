@@ -4,9 +4,6 @@
 #include "ValueType.hpp"
 #include "ValueStorage.hpp"
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -26,8 +23,6 @@ public:
     ValueStorage storage() const;
     bool matches( ValueType type, ValueStorage storage ) const;
 };
-
-}
 
 }
 

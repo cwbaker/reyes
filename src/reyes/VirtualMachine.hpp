@@ -7,9 +7,6 @@
 #include <map>
 #include <memory>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -148,8 +145,6 @@ private:
     void reset_register( int index );
     int allocate_register();
 };
-
-}
 
 }
 

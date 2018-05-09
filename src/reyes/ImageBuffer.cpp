@@ -19,9 +19,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-using namespace sweet;
-using namespace sweet::math;
-using namespace sweet::reyes;
+using namespace math;
+using namespace reyes;
 
 ImageBuffer::ImageBuffer()
 : width_( 0 ),

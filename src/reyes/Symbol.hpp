@@ -7,9 +7,6 @@
 #include <string>
 #include <vector>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -54,8 +51,6 @@ public:
     void add_parameter( ValueType type, ValueStorage storage );
     const std::vector<SymbolParameter>& parameters() const;
 };
-
-}
 
 }
 

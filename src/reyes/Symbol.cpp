@@ -8,8 +8,7 @@
 #include "assert.hpp"
 
 using std::string;
-using namespace sweet;
-using namespace sweet::reyes;
+using namespace reyes;
 
 Symbol::Symbol()
 : identifier_(),

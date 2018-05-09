@@ -10,9 +10,6 @@
 #include <map>
 #include <string>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -155,8 +152,6 @@ class Renderer
         float max( float a, float b, float c, float d ) const;
         float lb( float x ) const;
 };
-
-}
 
 }
 

@@ -7,8 +7,7 @@
 #include "Light.hpp"
 #include "assert.hpp"
 
-using namespace sweet;
-using namespace sweet::reyes;
+using namespace reyes;
 
 Light::Light( LightType type, std::shared_ptr<Value> color, std::shared_ptr<Value> opacity, const math::vec3& position, const math::vec3& axis, float angle )
 : type_( type ),

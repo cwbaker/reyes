@@ -3,9 +3,6 @@
 
 #include <stdarg.h>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -30,8 +27,6 @@ public:
 private:
     virtual void render_error( int error, const char* format, va_list args );
 };
-
-}
 
 }
 

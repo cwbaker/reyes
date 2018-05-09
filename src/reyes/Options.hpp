@@ -5,9 +5,6 @@
 #include <math/mat4x4.hpp>
 #include <string>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -89,8 +86,6 @@ public:
     static float gaussian_filter( float x, float y, float width, float height );
     static float sinc_filter( float x, float y, float width, float height );
 };
-
-}
 
 }
 

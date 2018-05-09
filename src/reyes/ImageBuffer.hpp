@@ -3,9 +3,6 @@
 
 #include <math/vec4.hpp>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -58,8 +55,6 @@ class ImageBuffer
         
         void load_jpeg( const char* filename, ErrorPolicy* error_policy = nullptr );
 };
-
-}
 
 }
 

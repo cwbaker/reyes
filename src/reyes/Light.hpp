@@ -5,9 +5,6 @@
 #include <math/vec3.hpp>
 #include <memory>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -37,8 +34,6 @@ public:
     const math::vec3& axis() const;
     float angle() const;
 };
-
-}
 
 }
 

@@ -1,9 +1,6 @@
 #ifndef REYES_VALUESTORAGE_HPP_INCLUDED
 #define REYES_VALUESTORAGE_HPP_INCLUDED
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -30,8 +27,6 @@ enum ValueStorage
     STORAGE_VARYING, ///< Varying storage has one value per grid vertex.
     STORAGE_COUNT
 };
-
-}
 
 }
 

@@ -1,8 +1,3 @@
-//
-// Grid.hpp
-// Copyright (c) 2010 - 2012 Charles Baker.  All rights reserved.
-//
-
 #ifndef REYES_GRID_HPP_INCLUDED
 #define REYES_GRID_HPP_INCLUDED
 
@@ -13,9 +8,6 @@
 #include <vector>
 #include <map>
 #include <memory>
-
-namespace sweet
-{
 
 namespace math
 {
@@ -85,8 +77,6 @@ public:
         void set_transform( const math::mat4x4& transform );
         const math::mat4x4& get_transform() const;
 };
-
-}
 
 }
 

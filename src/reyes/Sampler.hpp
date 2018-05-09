@@ -4,9 +4,6 @@
 #include <math/vec3.hpp>
 #include <math/mat4x4.hpp>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -59,8 +56,6 @@ private:
     float min( float a, float b, float c ) const;
     float max( float a, float b, float c ) const;
 };
-
-}
 
 }
 

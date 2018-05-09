@@ -13,11 +13,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-using namespace sweet;
-using namespace sweet::math;
-
-namespace sweet
-{
+using namespace math;
 
 namespace reyes
 {
@@ -773,8 +769,6 @@ void vec3_random( const Renderer& renderer, const Grid& grid, std::shared_ptr<Va
             float(rand() / RAND_MAX)
         );
     }    
-}
-
 }
 
 }

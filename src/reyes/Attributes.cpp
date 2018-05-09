@@ -1,6 +1,6 @@
 //
 // Attributes.cpp
-// Copyright (c) 2012 Charles Baker.  All rights reserved.
+// Copyright (c) Charles Baker. All rights reserved.
 //
 
 #include "stdafx.hpp"
@@ -21,9 +21,8 @@ using std::vector;
 using std::swap;
 using std::make_pair;
 using std::shared_ptr;
-using namespace sweet;
-using namespace sweet::math;
-using namespace sweet::reyes;
+using namespace math;
+using namespace reyes;
 
 Attributes::Attributes( VirtualMachine* virtual_machine )
 : virtual_machine_( virtual_machine ),

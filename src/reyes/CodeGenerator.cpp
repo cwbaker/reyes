@@ -24,9 +24,8 @@ using std::find;
 using std::vector;
 using std::string;
 using std::shared_ptr;
-using namespace sweet;
-using namespace sweet::math;
-using namespace sweet::reyes;
+using namespace math;
+using namespace reyes;
 
 CodeGenerator::Jump::Jump( int address, int distance_address )
 : address_( address ),

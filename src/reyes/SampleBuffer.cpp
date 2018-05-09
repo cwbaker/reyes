@@ -18,9 +18,8 @@
 #include <algorithm>
 
 using std::max;
-using namespace sweet;
-using namespace sweet::math;
-using namespace sweet::reyes;
+using namespace math;
+using namespace reyes;
 
 SampleBuffer::SampleBuffer( int horizontal_resolution, int vertical_resolution, int horizontal_sampling_rate, int vertical_sampling_rate, float filter_width, float filter_height )
 : horizontal_resolution_( horizontal_resolution ),

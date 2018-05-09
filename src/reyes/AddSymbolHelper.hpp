@@ -6,9 +6,6 @@
 #include <vector>
 #include <memory>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -40,8 +37,6 @@ public:
     AddSymbolHelper& operator()( ValueType type, ValueStorage storage = STORAGE_VARYING );
     AddSymbolHelper& operator()( const char* identifier, float value );
 };
-
-}
 
 }
 

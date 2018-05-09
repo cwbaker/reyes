@@ -3,9 +3,6 @@
 
 #include <memory>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -46,8 +43,6 @@ void ntransform_mv( const Renderer& renderer, const Grid& grid, std::shared_ptr<
 void ntransform_smv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> m, std::shared_ptr<Value> p );
 void depth( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p );
 void calculatenormal( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p );
-
-}
 
 }
 

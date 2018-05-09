@@ -22,9 +22,8 @@
 using std::min;
 using std::max;
 using std::vector;
-using namespace sweet;
-using namespace sweet::math;
-using namespace sweet::reyes;
+using namespace math;
+using namespace reyes;
 
 // @todo
 //  Make sure that MAXIMUM_VERTICES_PER_GRID in Value.cpp is unified with the

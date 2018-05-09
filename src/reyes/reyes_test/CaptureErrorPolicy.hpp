@@ -5,9 +5,6 @@
 #include <vector>
 #include <string>
 
-namespace sweet
-{
-
 namespace reyes
 {
 	
@@ -19,8 +16,6 @@ struct CaptureErrorPolicy : public reyes::ErrorPolicy
     CaptureErrorPolicy();    
     void render_error( int error, const char* format, va_list args );
 };
-
-}
 
 }
 

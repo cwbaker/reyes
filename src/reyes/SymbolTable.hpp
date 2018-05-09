@@ -7,9 +7,6 @@
 #include <string>
 #include <memory>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -35,8 +32,6 @@ public:
     std::shared_ptr<Symbol> find_symbol( const SyntaxNode* node ) const;
     static bool matches( const std::shared_ptr<Symbol>& symbol, const SyntaxNode* node, const std::vector<std::shared_ptr<SyntaxNode>>& node_parameters );
 };
-
-}
 
 }
 

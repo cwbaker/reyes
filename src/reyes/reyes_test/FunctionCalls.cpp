@@ -4,14 +4,12 @@
 #include <reyes/SymbolTable.hpp>
 #include <reyes/Shader.hpp>
 #include <reyes/ErrorCode.hpp>
-#include <reyes/ErrorAction.hpp>
 #include <reyes/assert.hpp>
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <string.h>
 
-using namespace sweet;
-using namespace sweet::reyes;
+using namespace reyes;
 
 SUITE( FunctionCalls )
 {

@@ -1,9 +1,6 @@
 #ifndef REYES_ERRORCODE_HPP_INCLUDED
 #define REYES_ERRORCODE_HPP_INCLUDED
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -27,8 +24,6 @@ enum ErrorCode
     RENDER_ERROR_INVALID_DISPLAY_MODE, ///< A display mode was requested for a device or file format that doesn't support it.
     RENDER_ERROR_COUNT
 };
-
-}
 
 }
 

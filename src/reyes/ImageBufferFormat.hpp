@@ -1,9 +1,6 @@
 #ifndef REYES_IMAGEBUFFERFORMAT_HPP_INCLUDED
 #define REYES_IMAGEBUFFERFORMAT_HPP_INCLUDED
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -16,8 +13,6 @@ enum ImageBufferFormat
     FORMAT_F32, ///< Each element is a 32 bit float.
     FORMAT_COUNT
 };
-
-}
 
 }
 

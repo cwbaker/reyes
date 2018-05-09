@@ -13,9 +13,8 @@
 #include <string.h>
 
 using std::shared_ptr;
-using namespace sweet;
-using namespace sweet::math;
-using namespace sweet::reyes;
+using namespace math;
+using namespace reyes;
 
 static const float TOLERANCE = 0.01f;
 

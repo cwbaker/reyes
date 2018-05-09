@@ -10,9 +10,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-using namespace sweet;
-using namespace sweet::math;
-using namespace sweet::reyes;
+using namespace math;
+using namespace reyes;
 
 void render_shaders_example()
 {  

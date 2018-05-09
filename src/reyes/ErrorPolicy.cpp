@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-using namespace sweet::reyes;
+using namespace reyes;
 
 ErrorPolicy::ErrorPolicy()
 : total_errors_( 0 ),

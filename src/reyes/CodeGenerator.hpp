@@ -1,8 +1,3 @@
-//
-// CodeGenerator.hpp
-// Copyright (c) 2011 - 2012 Charles Baker.  All rights reserved.
-//
-
 #ifndef REYES_CODEGENERATOR_HPP_INCLUDED
 #define REYES_CODEGENERATOR_HPP_INCLUDED
 
@@ -12,9 +7,6 @@
 #include <vector>
 #include <string>
 #include <memory>
-
-namespace sweet
-{
 
 namespace reyes
 {
@@ -153,8 +145,6 @@ private:
     void push_register();
     void pop_register();
 };
-
-}
 
 }
 

@@ -20,11 +20,7 @@ using std::max;
 using std::string;
 using std::vector;
 using std::shared_ptr;
-using namespace sweet;
-using namespace sweet::reyes;
-
-namespace sweet
-{
+using namespace reyes;
 
 namespace reyes
 {
@@ -48,8 +44,6 @@ struct OperationMetadata
     ValueType result;
     Instruction instruction;
 };
-
-}
 
 }
 

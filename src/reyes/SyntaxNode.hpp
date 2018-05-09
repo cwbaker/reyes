@@ -11,9 +11,6 @@
 #include <string>
 #include <vector>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -95,8 +92,6 @@ public:
     
     bool operator==( const SyntaxNode& node ) const;
 };
-
-}
 
 }
 

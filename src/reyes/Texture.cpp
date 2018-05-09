@@ -20,9 +20,8 @@
 #include <math.h>
 
 using std::string;
-using namespace sweet;
-using namespace sweet::math;
-using namespace sweet::reyes;
+using namespace math;
+using namespace reyes;
 
 #if defined(BUILD_OS_WINDOWS)
 #define snprintf _snprintf

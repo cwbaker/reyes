@@ -11,9 +11,6 @@
 #include <vector>
 #include <memory>
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -133,8 +130,6 @@ public:
 private:
     void allocate();
 };
-
-}
 
 }
 

@@ -9,11 +9,7 @@
 #include <math/mat4x4.ipp>
 #include "assert.hpp"
 
-using namespace sweet;
-using namespace sweet::math;
-
-namespace sweet
-{
+using namespace math;
 
 namespace reyes
 {
@@ -108,8 +104,6 @@ void scale_matrix( const Renderer& render, const Grid& grid, std::shared_ptr<Val
     const mat4x4& m = matrix->mat4x4_value();
     mat4x4* values = result->mat4x4_values();
     values[0] = m * math::scale( s->vec3_value() );
-}
-
 }
 
 }

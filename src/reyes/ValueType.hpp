@@ -1,9 +1,6 @@
 #ifndef REYES_VALUETYPE_HPP_INCLUDED
 #define REYES_VALUETYPE_HPP_INCLUDED
 
-namespace sweet
-{
-
 namespace reyes
 {
 
@@ -23,8 +20,6 @@ enum ValueType
     TYPE_STRING, ///< A string.
     TYPE_COUNT
 };
-
-}
 
 }
 
