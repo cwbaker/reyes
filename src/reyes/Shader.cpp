@@ -18,7 +18,7 @@ using std::string;
 using std::vector;
 using std::shared_ptr;
 using namespace sweet;
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 Shader::Shader()
 : symbols_(),

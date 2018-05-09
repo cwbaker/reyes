@@ -21,7 +21,7 @@
 
 using namespace sweet;
 using namespace sweet::math;
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 ImageBuffer::ImageBuffer()
 : width_( 0 ),

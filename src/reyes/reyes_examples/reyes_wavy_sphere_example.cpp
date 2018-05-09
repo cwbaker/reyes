@@ -9,7 +9,7 @@
 
 using namespace sweet;
 using namespace sweet::math;
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 void render_wavy_sphere_example()
 {  

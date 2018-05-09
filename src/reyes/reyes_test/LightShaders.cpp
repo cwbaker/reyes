@@ -10,7 +10,7 @@
 
 using std::vector;
 using namespace sweet;
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 SUITE( TestLightShaders )
 {

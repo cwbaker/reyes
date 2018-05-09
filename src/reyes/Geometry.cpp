@@ -19,7 +19,7 @@ using std::vector;
 using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 Geometry::Geometry( const math::vec2& u_range, const math::vec2& v_range )
 : u_range_( u_range ),

@@ -16,7 +16,7 @@ using std::vector;
 using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 Grid::Grid()
 : width_( 1 ),

@@ -10,7 +10,7 @@
 #include "assert.hpp"
 
 using namespace sweet;
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 AddSymbolHelper::AddSymbolHelper( SymbolTable* symbol_table )
 : symbol_table_( symbol_table ),

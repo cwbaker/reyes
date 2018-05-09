@@ -18,7 +18,7 @@ using namespace sweet::math;
 namespace sweet
 {
 
-namespace render
+namespace reyes
 {
 
 void comp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> color, std::shared_ptr<Value> index_value )

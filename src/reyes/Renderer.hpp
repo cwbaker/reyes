@@ -13,7 +13,7 @@
 namespace sweet
 {
 
-namespace render
+namespace reyes
 {
 
 class ErrorPolicy;

@@ -6,7 +6,7 @@
 #include "stdafx.hpp"
 #include "SymbolParameter.hpp"
 
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 SymbolParameter::SymbolParameter( ValueType type, ValueStorage storage )
 : type_( type ),

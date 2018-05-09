@@ -9,7 +9,7 @@
 
 using std::string;
 using namespace sweet;
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 Symbol::Symbol()
 : identifier_(),

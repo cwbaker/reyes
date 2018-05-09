@@ -21,7 +21,7 @@ using std::vector;
 using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 CubicPatch::CubicPatch( const math::vec3* p, const math::vec4* u_basis, const math::vec4* v_basis )
 : Geometry(vec2(0.0f, 1.0f), vec2(0.0f, 1.0f)),

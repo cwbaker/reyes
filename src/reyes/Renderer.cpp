@@ -59,7 +59,7 @@ using std::make_pair;
 using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 static const int ATTRIBUTES_RESERVE = 32;
 static const int MAXIMUM_VERTICES_PER_GRID = 64 * 64;

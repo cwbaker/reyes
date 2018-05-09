@@ -15,7 +15,7 @@
 using std::max;
 using namespace sweet;
 using namespace sweet::math;
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 Options::Options()
 : horizontal_resolution_( 640 ),

@@ -11,11 +11,11 @@
 #include <string.h>
 
 using namespace sweet;
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 SUITE( FunctionCalls )
 {
-    struct CheckErrorPolicy : public render::ErrorPolicy
+    struct CheckErrorPolicy : public reyes::ErrorPolicy
     {
         int error;
         

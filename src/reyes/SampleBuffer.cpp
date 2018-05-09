@@ -20,7 +20,7 @@
 using std::max;
 using namespace sweet;
 using namespace sweet::math;
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 SampleBuffer::SampleBuffer( int horizontal_resolution, int vertical_resolution, int horizontal_sampling_rate, int vertical_sampling_rate, float filter_width, float filter_height )
 : horizontal_resolution_( horizontal_resolution ),

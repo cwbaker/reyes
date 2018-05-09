@@ -8,10 +8,10 @@
 namespace sweet
 {
 
-namespace render
+namespace reyes
 {
 	
-struct CaptureErrorPolicy : public render::ErrorPolicy
+struct CaptureErrorPolicy : public reyes::ErrorPolicy
 {
     std::vector<int> errors;
     std::vector<std::string> messages;

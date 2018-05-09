@@ -22,7 +22,7 @@ using std::vector;
 using std::string;
 using std::shared_ptr;
 using namespace sweet;
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 SymbolTable::SymbolTable()
 : symbols_()

@@ -15,7 +15,7 @@ using namespace sweet::math;
 namespace sweet
 {
 
-namespace render
+namespace reyes
 {
 
 void comp_matrix( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> matrix, std::shared_ptr<Value> row_value, std::shared_ptr<Value> column_value )

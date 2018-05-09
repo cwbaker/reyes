@@ -23,7 +23,7 @@ using std::vector;
 using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 LinearPatch::LinearPatch( const math::vec3* positions, const math::vec3* normals, const math::vec2* texture_coordinates )
 : Geometry(vec2(0.0f, 1.0f), vec2(0.0f, 1.0f))

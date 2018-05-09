@@ -17,13 +17,13 @@ using std::vector;
 using std::shared_ptr;
 using namespace sweet;
 using namespace sweet::math;
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 static const float TOLERANCE = 0.01f;
 
 SUITE( AssignExpressions )
 {
-    struct CheckErrorPolicy : public render::ErrorPolicy
+    struct CheckErrorPolicy : public reyes::ErrorPolicy
     {
         int error;
 

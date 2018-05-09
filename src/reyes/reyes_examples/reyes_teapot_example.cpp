@@ -10,7 +10,7 @@
 
 using namespace sweet;
 using namespace sweet::math;
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 static void render_teapot( Renderer& renderer );
 

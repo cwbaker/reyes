@@ -29,19 +29,19 @@ using std::bind;
 using std::shared_ptr;
 using namespace std::placeholders;
 using namespace sweet;
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 template <class Iterator>
 class ShaderParserContext : public lalr::ErrorPolicy
 {
     SymbolTable& symbol_table_;
-    render::ErrorPolicy* error_policy_;
+    reyes::ErrorPolicy* error_policy_;
     const lalr::Parser<lalr::PositionIterator<Iterator>, shared_ptr<SyntaxNode>, char>* parser_;
     int solar_and_illuminate_statements_;
     int errors_;
 
 public:
-    ShaderParserContext( SymbolTable& symbol_table, render::ErrorPolicy* error_policy )
+    ShaderParserContext( SymbolTable& symbol_table, reyes::ErrorPolicy* error_policy )
     : lalr::ErrorPolicy(),
       symbol_table_( symbol_table ),
       error_policy_( error_policy ),

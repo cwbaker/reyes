@@ -24,7 +24,7 @@ using std::max;
 using std::vector;
 using namespace sweet;
 using namespace sweet::math;
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 // @todo
 //  Make sure that MAXIMUM_VERTICES_PER_GRID in Value.cpp is unified with the

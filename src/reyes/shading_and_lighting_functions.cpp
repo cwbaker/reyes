@@ -26,7 +26,7 @@ using namespace sweet::math;
 namespace sweet
 {
 
-namespace render
+namespace reyes
 {
 
 void ambient( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> color )

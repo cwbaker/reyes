@@ -7,10 +7,10 @@
 #include <reyes/ErrorCode.hpp>
 #include <reyes/assert.hpp>
 
-using namespace sweet::render;
+using namespace sweet::reyes;
 
 CaptureErrorPolicy::CaptureErrorPolicy()
-: ErrorPolicy(),
+: reyes::ErrorPolicy(),
   errors(),
   messages()
 {
