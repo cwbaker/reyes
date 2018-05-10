@@ -6,8 +6,8 @@
 ## Features
 
 - Simple REYES-based micropolygon renderer
-- Based on [the RenderMan Interface Specification](https://en.wikipedia.org/wiki/RenderMan_Interface_Specification) v3.2.1
-- A compiler and virtual machine implementing the RenderMan Shading Language
+- Based on the [RenderMan Interface Specification v3.2.1](https://en.wikipedia.org/wiki/RenderMan_Interface_Specification)
+- Compiler and virtual machine implementing the RenderMan Shading Language
 - Complete hierarchical graphics state
 - Orthographic and perspective projections
 - Depth based hidden surface elimination
@@ -20,20 +20,19 @@
 
 ## Example
 
-![Wavy Sphere Example Image](src/sweet/render/render_examples/wavy_sphere.png)
+![Wavy Sphere Example Image](src/reyes/reyes_examples/wavy_sphere.png)
 
 ~~~c++
-#include <sweet/render/Grid.hpp>
-#include <sweet/render/Value.hpp>
-#include <sweet/render/Options.hpp>
-#include <sweet/render/Renderer.hpp>
-#include <sweet/math/vec3.ipp>
+#include <reyes/Grid.hpp>
+#include <reyes/Value.hpp>
+#include <reyes/Options.hpp>
+#include <reyes/Renderer.hpp>
+#include <math/vec3.ipp>
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-using namespace sweet;
-using namespace sweet::math;
-using namespace sweet::render;
+using namespace math;
+using namespace reyes;
 
 void render_wavy_sphere_example()
 {  
@@ -80,7 +79,7 @@ void render_wavy_sphere_example()
 
     renderer.end_world();
     renderer.end();
-    renderer.save_image_as_png( RENDER_EXAMPLES_PATH "wavy_sphere.png" );
+    renderer.save_image_as_png( REYES_EXAMPLES_PATH "wavy_sphere.png" );
 }
 ~~~
 
@@ -92,19 +91,19 @@ void render_wavy_sphere_example()
 
 - Install Xcode
 - Install [Sweet Build](https:/www.github.com/cwbaker/sweet_build)
-- `git clone git@github.com:cwbaker/sweet_render.git sweet_render`
-- `cd sweet_render/src`
+- `git clone git@github.com:cwbaker/reyes.git reyes`
+- `cd reyes/src`
 - `build variant=release`
-- `../release/bin/render_examples`
+- `../release/bin/reyes_examples`
 
 **Windows**:
 
 - Install Visual Studio 2017
 - Install [Sweet Build](https:/www.github.com/cwbaker/sweet_build)
-- `git clone git@github.com:cwbaker/sweet_render.git sweet_render`
-- `cd sweet_render\src`
+- `git clone git@github.com:cwbaker/reyes.git reyes`
+- `cd reyes\src`
 - `build variant=release`
-- `..\release\bin\render_examples.exe`
+- `..\release\bin\reyes_examples.exe`
 
 ## Usage
 
