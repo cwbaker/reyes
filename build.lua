@@ -31,10 +31,10 @@ local settings = build:initialize {
         build:root( ("%s/lib"):format(variant) ),
     };
     visual_studio = {
-        sln = build:root( "sweet_render.sln" );
+        sln = build:root( "reyes.sln" );
     };
     xcode = {
-        xcodeproj = build:root( "sweet_render.xcodeproj" );
+        xcodeproj = build:root( "reyes.xcodeproj" );
     };
     lalr = {
         lalrc = build:switch {
