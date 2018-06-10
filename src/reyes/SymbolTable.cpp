@@ -380,7 +380,7 @@ std::shared_ptr<Symbol> SymbolTable::find_symbol( const SyntaxNode* node ) const
 
     if ( i != symbols_.rend() )
     {
-        const vector<shared_ptr<SyntaxNode>>& parameters = node->get_nodes();        
+        const vector<shared_ptr<SyntaxNode>>& parameters = node->nodes();        
         while ( j != i->end() && j->first == node->lexeme() && !matches(j->second, node, parameters) )
         {
             ++j;
@@ -396,11 +396,11 @@ bool SymbolTable::matches( const std::shared_ptr<Symbol>& symbol, const SyntaxNo
     REYES_ASSERT( node );
     REYES_ASSERT( node->node_type() == SHADER_NODE_CALL );
 
-    bool matches_return = symbol->matches_return( node->get_expected_type(), node->get_expected_storage() );
+    bool matches_return = symbol->matches_return( node->expected_type(), node->expected_storage() );
     const vector<SymbolParameter>& symbol_parameters = symbol->parameters();
     vector<SymbolParameter>::const_iterator i = symbol_parameters.begin();
     vector<shared_ptr<SyntaxNode>>::const_iterator j = node_parameters.begin();
-    while ( i != symbol_parameters.end() && j != node_parameters.end() && i->matches((*j)->get_type(), (*j)->get_storage()) )
+    while ( i != symbol_parameters.end() && j != node_parameters.end() && i->matches((*j)->type(), (*j)->storage()) )
     {
         ++i;
         ++j;

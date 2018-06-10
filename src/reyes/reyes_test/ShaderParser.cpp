@@ -227,8 +227,8 @@ SUITE( ShaderParser )
         shared_ptr<SyntaxNode> root() const
         {
             REYES_ASSERT( nodes_.size() == 1 );
-            REYES_ASSERT( nodes_.back()->get_nodes().size() == 1 );
-            return nodes_.back()->get_nodes().at( 0 );
+            REYES_ASSERT( nodes_.back()->nodes().size() == 1 );
+            return nodes_.back()->nodes().at( 0 );
         }
     };
 

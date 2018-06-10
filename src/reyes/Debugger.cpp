@@ -125,19 +125,19 @@ void Debugger::dump_syntax_tree( const SyntaxNode* node, int level ) const
             "string "
         };
         
-        printf( "%s %s'%s' ", NODE_TYPES[node->node_type()], STORAGES[node->get_storage()], node->lexeme().c_str() );
-        shared_ptr<Symbol> symbol = node->get_symbol();
+        printf( "%s %s'%s' ", NODE_TYPES[node->node_type()], STORAGES[node->storage()], node->lexeme().c_str() );
+        shared_ptr<Symbol> symbol = node->symbol();
         if ( symbol )
         {
             printf( "'%s' %s%s", symbol->identifier().c_str(), STORAGES[symbol->storage()], TYPES[symbol->type()] );
         }        
-        if ( node->get_expected_storage() != STORAGE_NULL || node->get_expected_type() != TYPE_NULL )
+        if ( node->expected_storage() != STORAGE_NULL || node->expected_type() != TYPE_NULL )
         {
-            printf( "(%s%s)", STORAGES[node->get_expected_storage()], TYPES[node->get_expected_type()] );
+            printf( "(%s%s)", STORAGES[node->expected_storage()], TYPES[node->expected_type()] );
         }        
         printf( "\n" );
         
-        const vector<shared_ptr<SyntaxNode> >& nodes = node->get_nodes();
+        const vector<shared_ptr<SyntaxNode> >& nodes = node->nodes();
         for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
         {
             const SyntaxNode* node = i->get();

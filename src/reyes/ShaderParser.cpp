@@ -353,7 +353,7 @@ public:
         }
         else
         {
-            list->add_nodes_at_end( back->user_data()->get_nodes().begin(), back->user_data()->get_nodes().end() );
+            list->add_nodes_at_end( back->user_data()->nodes().begin(), back->user_data()->nodes().end() );
         }
         return list;
     }
@@ -384,7 +384,7 @@ public:
         ValueStorage storage = storage_from_syntax_node( start[1].user_data(), STORAGE_UNIFORM );
         ValueType type = type_from_syntax_node( start[2].user_data() );
         
-        const vector<shared_ptr<SyntaxNode> >& nodes = start[3].user_data()->get_nodes();
+        const vector<shared_ptr<SyntaxNode> >& nodes = start[3].user_data()->nodes();
         for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
         {
             SyntaxNode* variable_node = i->get();
@@ -406,7 +406,7 @@ public:
         ValueStorage storage = storage_from_syntax_node( start[1].user_data(), STORAGE_VARYING );
         ValueType type = type_from_syntax_node( start[2].user_data() );
         
-        const vector<shared_ptr<SyntaxNode> >& nodes = start[3].user_data()->get_nodes();
+        const vector<shared_ptr<SyntaxNode> >& nodes = start[3].user_data()->nodes();
         for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
         {
             SyntaxNode* variable_node = i->get();
@@ -1096,14 +1096,14 @@ public:
         REYES_ASSERT( expressions->node_type() == SHADER_NODE_LIST );
     
         shared_ptr<SyntaxNode> call( new SyntaxNode(SHADER_NODE_CALL, start[0].line(), start[0].lexeme()) );
-        call->add_nodes_at_end( expressions->get_nodes().begin(), expressions->get_nodes().end() );
+        call->add_nodes_at_end( expressions->nodes().begin(), expressions->nodes().end() );
         return call;
     }
 
     shared_ptr<SyntaxNode> texture_expression_( const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* finish )
     {
         shared_ptr<SyntaxNode> texture( new SyntaxNode(SHADER_NODE_TEXTURE, start[0].line()) );
-        const vector<shared_ptr<SyntaxNode> >& parameters = start[2].user_data()->get_nodes();
+        const vector<shared_ptr<SyntaxNode> >& parameters = start[2].user_data()->nodes();
         texture->add_nodes_at_end( parameters.begin(), parameters.end() );
         if ( parameters.size() == 1 )
         {
@@ -1120,7 +1120,7 @@ public:
     shared_ptr<SyntaxNode> shadow_expression_( const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* finish )
     {
         shared_ptr<SyntaxNode> shadow( new SyntaxNode(SHADER_NODE_SHADOW, start[0].line()) );
-        const vector<shared_ptr<SyntaxNode> >& parameters = start[2].user_data()->get_nodes();
+        const vector<shared_ptr<SyntaxNode> >& parameters = start[2].user_data()->nodes();
         shadow->add_nodes_at_end( parameters.begin(), parameters.end() );
         return shadow;
     }
@@ -1128,7 +1128,7 @@ public:
     shared_ptr<SyntaxNode> environment_expression_( const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* start, const lalr::ParserNode<shared_ptr<SyntaxNode>, char>* finish )
     {
         shared_ptr<SyntaxNode> environment( new SyntaxNode(SHADER_NODE_ENVIRONMENT, start[0].line()) );
-        const vector<shared_ptr<SyntaxNode> >& parameters = start[2].user_data()->get_nodes();
+        const vector<shared_ptr<SyntaxNode> >& parameters = start[2].user_data()->nodes();
         environment->add_nodes_at_end( parameters.begin(), parameters.end() );
         return environment;
     }
