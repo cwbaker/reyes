@@ -46,51 +46,40 @@ public:
     SyntaxNode( SyntaxNodeType node_type, int line, const std::string& lexeme );
 
     int line() const;
-    void set_node_type( SyntaxNodeType type );
     SyntaxNodeType node_type() const;    
-    
-    void set_lexeme( const std::string& lexeme );
     const std::string& lexeme() const;
     float real() const;
     int integer() const;
     const std::string& string() const;
     math::vec3 vec3() const;
     math::mat4x4 mat4x4() const;
+    SyntaxNode* node( int index ) const;
+    const std::vector<std::shared_ptr<SyntaxNode>>& nodes() const;
+    std::shared_ptr<Symbol> symbol() const;
+    int constant_index() const;
+    ValueType expected_type() const;
+    ValueType type() const;
+    ValueType original_type() const;
+    ValueStorage expected_storage() const;
+    ValueStorage storage() const;
+    ValueStorage original_storage() const;
+    Instruction instruction() const;
+    bool operator==( const SyntaxNode& node ) const;
     
+    void set_node_type( SyntaxNodeType type );
+    void set_lexeme( const std::string& lexeme );
     void add_node( std::shared_ptr<SyntaxNode> node );
     void add_node_at_front( std::shared_ptr<SyntaxNode> node );
-    void add_nodes_at_end( const std::vector<std::shared_ptr<SyntaxNode>>::const_iterator begin, const std::vector<std::shared_ptr<SyntaxNode>>::const_iterator end );
-    SyntaxNode* node( int index ) const;
-    const std::vector<std::shared_ptr<SyntaxNode>>& get_nodes() const;
-    
-    void set_symbol( std::shared_ptr<Symbol> symbol );
-    std::shared_ptr<Symbol> get_symbol() const;
-    
-    void set_constant_index( int index );
-    int get_constant_index() const;
-    
-    void set_expected_type( ValueType type );
-    ValueType get_expected_type() const;
-    
+    void add_nodes_at_end( const std::vector<std::shared_ptr<SyntaxNode>>::const_iterator begin, const std::vector<std::shared_ptr<SyntaxNode>>::const_iterator end );   
+    void set_symbol( std::shared_ptr<Symbol> symbol );    
+    void set_constant_index( int index );    
+    void set_expected_type( ValueType type );    
     void set_type( ValueType type );
-    ValueType get_type() const;
-
-    void set_type_for_conversion( ValueType type );
-    ValueType get_original_type() const;
-    
-    void set_expected_storage( ValueStorage storage );
-    ValueStorage get_expected_storage() const;
-    
-    void set_storage( ValueStorage storage );
-    ValueStorage get_storage() const;
-    
-    void set_storage_for_promotion( ValueStorage storage );
-    ValueStorage get_original_storage() const;
-    
-    void set_instruction( Instruction instruction );
-    Instruction get_instruction() const;
-    
-    bool operator==( const SyntaxNode& node ) const;
+    void set_type_for_conversion( ValueType type );    
+    void set_expected_storage( ValueStorage storage );    
+    void set_storage( ValueStorage storage );    
+    void set_storage_for_promotion( ValueStorage storage );    
+    void set_instruction( Instruction instruction );    
 };
 
 }

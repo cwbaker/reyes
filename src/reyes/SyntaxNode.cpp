@@ -94,19 +94,9 @@ int SyntaxNode::line() const
     return line_;
 }
 
-void SyntaxNode::set_node_type( SyntaxNodeType node_type )
-{
-    node_type_ = node_type;
-}
-
 SyntaxNodeType SyntaxNode::node_type() const
 {
     return node_type_;
-}
-
-void SyntaxNode::set_lexeme( const std::string& lexeme )
-{
-    lexeme_ = lexeme;
 }
 
 const std::string& SyntaxNode::lexeme() const
@@ -157,23 +147,6 @@ math::mat4x4 SyntaxNode::mat4x4() const
     );    
 }
 
-void SyntaxNode::add_node( std::shared_ptr<SyntaxNode> node )
-{
-    REYES_ASSERT( node );
-    nodes_.push_back( node );
-}
-
-void SyntaxNode::add_node_at_front( std::shared_ptr<SyntaxNode> node )
-{
-    REYES_ASSERT( node );
-    nodes_.insert( nodes_.begin(), node );
-}
-
-void SyntaxNode::add_nodes_at_end( const std::vector<std::shared_ptr<SyntaxNode>>::const_iterator begin, const std::vector<std::shared_ptr<SyntaxNode>>::const_iterator end )
-{
-    nodes_.insert( nodes_.end(), begin, end );
-}
-
 SyntaxNode* SyntaxNode::node( int index ) const
 {
     REYES_ASSERT( index >= 0 && index < int(nodes_.size()) );
@@ -181,106 +154,52 @@ SyntaxNode* SyntaxNode::node( int index ) const
     return nodes_[index].get();
 }
 
-const std::vector<std::shared_ptr<SyntaxNode>>& SyntaxNode::get_nodes() const
+const std::vector<std::shared_ptr<SyntaxNode>>& SyntaxNode::nodes() const
 {
     return nodes_;
 }
 
-void SyntaxNode::set_symbol( std::shared_ptr<Symbol> symbol )
-{
-    symbol_ = symbol;
-}
-
-std::shared_ptr<Symbol> SyntaxNode::get_symbol() const
+std::shared_ptr<Symbol> SyntaxNode::symbol() const
 {
     return symbol_;
 }
 
-void SyntaxNode::set_constant_index( int index )
-{
-    constant_index_ = index;
-}
-
-int SyntaxNode::get_constant_index() const
+int SyntaxNode::constant_index() const
 {
     return constant_index_;
 }
 
-void SyntaxNode::set_expected_type( ValueType type )
-{
-    expected_type_ = type;
-}
-
-ValueType SyntaxNode::get_expected_type() const
+ValueType SyntaxNode::expected_type() const
 {
     return expected_type_;
 }
 
-void SyntaxNode::set_type( ValueType type )
-{
-    REYES_ASSERT( type >= TYPE_NULL && type < TYPE_COUNT );
-    type_ = type;
-    original_type_ = type;
-}
-
-ValueType SyntaxNode::get_type() const
+ValueType SyntaxNode::type() const
 {
     return type_;
 }
 
-void SyntaxNode::set_type_for_conversion( ValueType type )
-{
-    REYES_ASSERT( type_ > TYPE_NULL && type_ < TYPE_COUNT );
-    REYES_ASSERT( type > TYPE_NULL && type < TYPE_COUNT );
-    original_type_ = type_;
-    type_ = type;
-}
-
-ValueType SyntaxNode::get_original_type() const
+ValueType SyntaxNode::original_type() const
 {
     return original_type_;
 }
 
-void SyntaxNode::set_expected_storage( ValueStorage storage )
-{
-    expected_storage_ = storage;
-}
-
-ValueStorage SyntaxNode::get_expected_storage() const
+ValueStorage SyntaxNode::expected_storage() const
 {
     return expected_storage_;
 }
 
-void SyntaxNode::set_storage( ValueStorage storage )
-{
-    REYES_ASSERT( storage >= STORAGE_NULL && storage < STORAGE_COUNT );
-    storage_ = storage;
-}
-
-ValueStorage SyntaxNode::get_storage() const
+ValueStorage SyntaxNode::storage() const
 {
     return storage_;
 }
 
-void SyntaxNode::set_storage_for_promotion( ValueStorage storage )
-{
-    REYES_ASSERT( storage_ >= STORAGE_NULL && storage_ < STORAGE_COUNT );
-    REYES_ASSERT( storage > STORAGE_NULL && storage < STORAGE_COUNT );
-    original_storage_ = storage_;
-    storage_ = storage;
-}
-
-ValueStorage SyntaxNode::get_original_storage() const
+ValueStorage SyntaxNode::original_storage() const
 {
     return original_storage_;
 }
 
-void SyntaxNode::set_instruction( Instruction instruction )
-{
-    instruction_ = instruction;
-}
-
-Instruction SyntaxNode::get_instruction() const
+Instruction SyntaxNode::instruction() const
 {
     return instruction_;
 }
@@ -307,4 +226,85 @@ bool SyntaxNode::operator==( const SyntaxNode& node ) const
         && nodes_.size() == node.nodes_.size()
         && equal( nodes_.begin(), nodes_.end(), node.nodes_.begin(), indirect_equal() )
     ;
+}
+
+void SyntaxNode::set_node_type( SyntaxNodeType node_type )
+{
+    node_type_ = node_type;
+}
+
+void SyntaxNode::set_lexeme( const std::string& lexeme )
+{
+    lexeme_ = lexeme;
+}
+
+void SyntaxNode::add_node( std::shared_ptr<SyntaxNode> node )
+{
+    REYES_ASSERT( node );
+    nodes_.push_back( node );
+}
+
+void SyntaxNode::add_node_at_front( std::shared_ptr<SyntaxNode> node )
+{
+    REYES_ASSERT( node );
+    nodes_.insert( nodes_.begin(), node );
+}
+
+void SyntaxNode::add_nodes_at_end( const std::vector<std::shared_ptr<SyntaxNode>>::const_iterator begin, const std::vector<std::shared_ptr<SyntaxNode>>::const_iterator end )
+{
+    nodes_.insert( nodes_.end(), begin, end );
+}
+
+void SyntaxNode::set_symbol( std::shared_ptr<Symbol> symbol )
+{
+    symbol_ = symbol;
+}
+
+void SyntaxNode::set_constant_index( int index )
+{
+    constant_index_ = index;
+}
+
+void SyntaxNode::set_expected_type( ValueType type )
+{
+    expected_type_ = type;
+}
+
+void SyntaxNode::set_type( ValueType type )
+{
+    REYES_ASSERT( type >= TYPE_NULL && type < TYPE_COUNT );
+    type_ = type;
+    original_type_ = type;
+}
+
+void SyntaxNode::set_type_for_conversion( ValueType type )
+{
+    REYES_ASSERT( type_ > TYPE_NULL && type_ < TYPE_COUNT );
+    REYES_ASSERT( type > TYPE_NULL && type < TYPE_COUNT );
+    original_type_ = type_;
+    type_ = type;
+}
+
+void SyntaxNode::set_expected_storage( ValueStorage storage )
+{
+    expected_storage_ = storage;
+}
+
+void SyntaxNode::set_storage( ValueStorage storage )
+{
+    REYES_ASSERT( storage >= STORAGE_NULL && storage < STORAGE_COUNT );
+    storage_ = storage;
+}
+
+void SyntaxNode::set_storage_for_promotion( ValueStorage storage )
+{
+    REYES_ASSERT( storage_ >= STORAGE_NULL && storage_ < STORAGE_COUNT );
+    REYES_ASSERT( storage > STORAGE_NULL && storage < STORAGE_COUNT );
+    original_storage_ = storage_;
+    storage_ = storage;
+}
+
+void SyntaxNode::set_instruction( Instruction instruction )
+{
+    instruction_ = instruction;
 }
