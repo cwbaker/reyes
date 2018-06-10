@@ -24,7 +24,7 @@ class Shader
 {
     std::vector<std::shared_ptr<Symbol>> symbols_; ///< The symbols that are used in the shader.
     std::vector<std::shared_ptr<Value>> values_; ///< The values of any constants used in the shader (including default parameter values).
-    std::vector<short> code_; ///< The byte code generated for the shader.
+    std::vector<unsigned char> code_; ///< The byte code generated for the shader.
     int initialize_address_; ///< The index of the start of the initialize code fragment.
     int shade_address_; ///< The index of the start of the shade code fragment.
     int parameters_; ///< The number of parameters to the shader.
@@ -40,7 +40,7 @@ public:
     
     const std::vector<std::shared_ptr<Symbol> >& symbols() const;
     const std::vector<std::shared_ptr<Value> >& values() const;
-    const std::vector<short>& code() const;
+    const std::vector<unsigned char>& code() const;
     int initialize_address() const;
     int shade_address() const;
     int end_address() const;

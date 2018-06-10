@@ -21,6 +21,7 @@ for _, build in build:default_builds('cc_.*') do
                 'Cylinder.cpp',        
                 'Debugger.cpp',
                 'Disk.cpp',
+                'Encoder.cpp',
                 'ErrorPolicy.cpp',
                 'Geometry.cpp',
                 'Grid.cpp',

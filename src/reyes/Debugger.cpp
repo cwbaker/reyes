@@ -250,8 +250,9 @@ void Debugger::dump_values( const std::vector<std::shared_ptr<Value> >& values )
     printf( "\n\n" );
 }
 
-void Debugger::dump_code( const std::vector<short>& code ) const
+void Debugger::dump_code( const std::vector<unsigned char>& code ) const
 {
+    /*
     struct InstructionMetadata
     {
         const char* name;
@@ -362,6 +363,7 @@ void Debugger::dump_code( const std::vector<short>& code ) const
     }
     
     printf( "\n\n" );
+    */
 }
 
 void Debugger::dump_grid( const Grid& grid, const math::vec4& color, const char* format, ... ) const

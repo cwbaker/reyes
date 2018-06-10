@@ -58,7 +58,7 @@ Shader::Shader( const char* filename, SymbolTable& symbol_table, ErrorPolicy& er
     
     symbols_.swap( code_generator.symbols() );
     values_.swap( code_generator.values() );
-    code_.swap( code_generator.code() );
+    code_ = code_generator.code();
 
     initialize_address_ = code_generator.initialize_address();
     shade_address_ = code_generator.shade_address();
@@ -96,7 +96,7 @@ Shader::Shader( const char* start, const char* finish, SymbolTable& symbol_table
     
     symbols_.swap( code_generator.symbols() );
     values_.swap( code_generator.values() );
-    code_.swap( code_generator.code() );
+    code_ = code_generator.code();
 
     initialize_address_ = code_generator.initialize_address();
     shade_address_ = code_generator.shade_address();
@@ -117,7 +117,7 @@ const std::vector<std::shared_ptr<Value> >& Shader::values() const
     return values_;
 }
 
-const std::vector<short>& Shader::code() const
+const std::vector<unsigned char>& Shader::code() const
 {
     return code_;
 }

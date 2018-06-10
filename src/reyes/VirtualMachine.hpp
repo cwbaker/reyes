@@ -40,10 +40,10 @@ class VirtualMachine
     std::vector<std::shared_ptr<Value> > registers_; ///< The values loaded into registers by this virtual machine (some from grid, some temporary).
     int register_index_; ///< The index of the next available register.
     int light_index_; ///< The index of the current light (or INT_MAX if there is no current light).
-    const short* code_begin_; ///< The address of the beginning of loaded code.
-    const short* code_end_; ///< The address one past the end of loaded code.
+    const unsigned char* code_begin_; ///< The address of the beginning of loaded code.
+    const unsigned char* code_end_; ///< The address one past the end of loaded code.
     std::vector<ConditionMask> masks_; ///< The stack of condition masks that specify which elements to use during assignment.
-    const short* code_; ///< The currently executed instruction.
+    const unsigned char* code_; ///< The currently executed instruction.
     
 public:
     VirtualMachine();
@@ -59,6 +59,8 @@ private:
     void jump( int distance );
     int instruction();
     int argument();
+    int word();
+    int quad();
     
     void execute_halt();
     void execute_reset();

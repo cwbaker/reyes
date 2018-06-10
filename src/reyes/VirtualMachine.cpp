@@ -553,18 +553,32 @@ void VirtualMachine::jump( int distance )
 
 int VirtualMachine::instruction()
 {
-    REYES_ASSERT( code_ );
-    REYES_ASSERT( code_end_ );
-    REYES_ASSERT( code_ < code_end_ );
-    return *code_++;    
+    return word();
 }
 
 int VirtualMachine::argument()
 {
+    return quad();
+}
+
+int VirtualMachine::word()
+{
     REYES_ASSERT( code_ );
     REYES_ASSERT( code_end_ );
     REYES_ASSERT( code_ < code_end_ );
-    return *code_++;    
+    int value = *(const short*) code_;
+    code_ += sizeof(short);
+    return value;
+}
+
+int VirtualMachine::quad()
+{
+    REYES_ASSERT( code_ );
+    REYES_ASSERT( code_end_ );
+    REYES_ASSERT( code_ < code_end_ );
+    int value = *(const int*) code_;
+    code_ += sizeof(int);
+    return value;
 }
 
 void VirtualMachine::execute_halt()
@@ -574,28 +588,33 @@ void VirtualMachine::execute_halt()
 
 void VirtualMachine::execute_reset()
 {
+    word();
     int index = argument();
     reset_register( index );
 }
 
 void VirtualMachine::execute_clear_mask()
 {
+    word();
     pop_mask();
 }
 
 void VirtualMachine::execute_generate_mask()
 {
+    word();
     int mask = argument();
     push_mask( registers_[mask] );
 }
 
 void VirtualMachine::execute_invert_mask()
 {
+    word();
     invert_mask();
 }
 
 void VirtualMachine::execute_jump_empty()
 {
+    word();
     int distance = argument();
     if ( mask_empty() )
     {
@@ -606,6 +625,7 @@ void VirtualMachine::execute_jump_empty()
 
 void VirtualMachine::execute_jump_not_empty()
 {
+    word();
     int distance = argument();
     if ( !mask_empty() )
     {
@@ -615,18 +635,21 @@ void VirtualMachine::execute_jump_not_empty()
 
 void VirtualMachine::execute_jump_illuminance()
 {
+    word();
     int distance = argument();
     jump_illuminance( distance );
 }
 
 void VirtualMachine::execute_jump()
 {
+    word();
     int distance = argument();
     jump( distance );
 }
 
 void VirtualMachine::execute_transform()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int fromspace = argument();
     int point = argument();
@@ -636,6 +659,7 @@ void VirtualMachine::execute_transform()
 
 void VirtualMachine::execute_transform_vector()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int fromspace = argument();
     int vector = argument();
@@ -645,6 +669,7 @@ void VirtualMachine::execute_transform_vector()
 
 void VirtualMachine::execute_transform_normal()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int fromspace = argument();
     int vector = argument();
@@ -654,6 +679,7 @@ void VirtualMachine::execute_transform_normal()
 
 void VirtualMachine::execute_transform_color()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int fromspace = argument();
     int color = argument();
@@ -663,6 +689,7 @@ void VirtualMachine::execute_transform_color()
 
 void VirtualMachine::execute_transform_matrix()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int tospace = argument();
     int matrix = argument();
@@ -672,6 +699,7 @@ void VirtualMachine::execute_transform_matrix()
 
 void VirtualMachine::execute_dot()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
@@ -680,6 +708,7 @@ void VirtualMachine::execute_dot()
 
 void VirtualMachine::execute_multiply_float()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
@@ -688,6 +717,7 @@ void VirtualMachine::execute_multiply_float()
 
 void VirtualMachine::execute_multiply_vec3()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
@@ -696,6 +726,7 @@ void VirtualMachine::execute_multiply_vec3()
 
 void VirtualMachine::execute_divide_float()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
@@ -704,6 +735,7 @@ void VirtualMachine::execute_divide_float()
 
 void VirtualMachine::execute_divide_vec3()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
@@ -712,6 +744,7 @@ void VirtualMachine::execute_divide_vec3()
 
 void VirtualMachine::execute_add_float()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
@@ -720,6 +753,7 @@ void VirtualMachine::execute_add_float()
 
 void VirtualMachine::execute_add_vec3()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
@@ -728,6 +762,7 @@ void VirtualMachine::execute_add_vec3()
 
 void VirtualMachine::execute_subtract_float()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
@@ -736,6 +771,7 @@ void VirtualMachine::execute_subtract_float()
 
 void VirtualMachine::execute_subtract_vec3()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
@@ -744,6 +780,7 @@ void VirtualMachine::execute_subtract_vec3()
 
 void VirtualMachine::execute_greater()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
@@ -752,6 +789,7 @@ void VirtualMachine::execute_greater()
 
 void VirtualMachine::execute_greater_equal()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
@@ -760,6 +798,7 @@ void VirtualMachine::execute_greater_equal()
 
 void VirtualMachine::execute_less()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
@@ -768,6 +807,7 @@ void VirtualMachine::execute_less()
 
 void VirtualMachine::execute_less_equal()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
@@ -776,6 +816,7 @@ void VirtualMachine::execute_less_equal()
 
 void VirtualMachine::execute_and()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
@@ -784,6 +825,7 @@ void VirtualMachine::execute_and()
 
 void VirtualMachine::execute_or()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
@@ -792,6 +834,7 @@ void VirtualMachine::execute_or()
 
 void VirtualMachine::execute_equal_float()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
@@ -800,6 +843,7 @@ void VirtualMachine::execute_equal_float()
 
 void VirtualMachine::execute_equal_vec3()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
@@ -808,6 +852,7 @@ void VirtualMachine::execute_equal_vec3()
 
 void VirtualMachine::execute_not_equal_float()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
@@ -816,6 +861,7 @@ void VirtualMachine::execute_not_equal_float()
 
 void VirtualMachine::execute_not_equal_vec3()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int lhs = argument();
     int rhs = argument();
@@ -824,6 +870,7 @@ void VirtualMachine::execute_not_equal_vec3()
 
 void VirtualMachine::execute_negate_float()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->negate_float( registers_[rhs] );
@@ -831,6 +878,7 @@ void VirtualMachine::execute_negate_float()
 
 void VirtualMachine::execute_negate_vec3()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->negate_vec3( registers_[rhs] );
@@ -838,6 +886,7 @@ void VirtualMachine::execute_negate_vec3()
 
 void VirtualMachine::execute_promote_integer()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->promote_integer( grid_->size(), registers_[rhs] );
@@ -845,6 +894,7 @@ void VirtualMachine::execute_promote_integer()
 
 void VirtualMachine::execute_promote_float()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->promote_float( grid_->size(), registers_[rhs] );
@@ -852,6 +902,7 @@ void VirtualMachine::execute_promote_float()
 
 void VirtualMachine::execute_promote_vec3()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->promote_vec3( grid_->size(), registers_[rhs] );
@@ -859,6 +910,7 @@ void VirtualMachine::execute_promote_vec3()
 
 void VirtualMachine::execute_float_to_color()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->float_to_vec3( TYPE_COLOR, registers_[rhs] );
@@ -866,6 +918,7 @@ void VirtualMachine::execute_float_to_color()
 
 void VirtualMachine::execute_float_to_point()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->float_to_vec3( TYPE_POINT, registers_[rhs] );
@@ -873,6 +926,7 @@ void VirtualMachine::execute_float_to_point()
 
 void VirtualMachine::execute_float_to_vector()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->float_to_vec3( TYPE_VECTOR, registers_[rhs] );
@@ -880,6 +934,7 @@ void VirtualMachine::execute_float_to_vector()
 
 void VirtualMachine::execute_float_to_normal()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->float_to_vec3( TYPE_NORMAL, registers_[rhs] );
@@ -887,6 +942,7 @@ void VirtualMachine::execute_float_to_normal()
 
 void VirtualMachine::execute_float_to_matrix()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int rhs = argument();
     result->float_to_mat4x4( registers_[rhs] );
@@ -894,6 +950,7 @@ void VirtualMachine::execute_float_to_matrix()
 
 void VirtualMachine::execute_assign_float()
 {
+    word();
     shared_ptr<Value> result = registers_[argument()];
     shared_ptr<Value> value = registers_[argument()];
     const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
@@ -902,6 +959,7 @@ void VirtualMachine::execute_assign_float()
 
 void VirtualMachine::execute_assign_vec3()
 {
+    word();
     shared_ptr<Value> result = registers_[argument()];
     shared_ptr<Value> value = registers_[argument()];
     const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
@@ -910,6 +968,7 @@ void VirtualMachine::execute_assign_vec3()
 
 void VirtualMachine::execute_assign_mat4x4()
 {
+    word();
     shared_ptr<Value> result = registers_[argument()];
     shared_ptr<Value> value = registers_[argument()];
     const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
@@ -918,6 +977,7 @@ void VirtualMachine::execute_assign_mat4x4()
 
 void VirtualMachine::execute_assign_integer()
 {
+    word();
     shared_ptr<Value> result = registers_[argument()];
     shared_ptr<Value> value = registers_[argument()];
     const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
@@ -926,6 +986,7 @@ void VirtualMachine::execute_assign_integer()
 
 void VirtualMachine::execute_assign_string()
 {
+    word();
     shared_ptr<Value> result = registers_[argument()];
     shared_ptr<Value> value = registers_[argument()];
     const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
@@ -934,6 +995,7 @@ void VirtualMachine::execute_assign_string()
 
 void VirtualMachine::execute_add_assign_float()
 {
+    word();
     shared_ptr<Value> result = registers_[argument()];
     shared_ptr<Value> value = registers_[argument()];
     const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
@@ -942,6 +1004,7 @@ void VirtualMachine::execute_add_assign_float()
 
 void VirtualMachine::execute_add_assign_vec3()
 {
+    word();
     shared_ptr<Value> result = registers_[argument()];
     shared_ptr<Value> value = registers_[argument()];
     const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
@@ -950,6 +1013,7 @@ void VirtualMachine::execute_add_assign_vec3()
 
 void VirtualMachine::execute_multiply_assign_float()
 {
+    word();
     shared_ptr<Value> result = registers_[argument()];
     shared_ptr<Value> value = registers_[argument()];
     const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
@@ -958,6 +1022,7 @@ void VirtualMachine::execute_multiply_assign_float()
 
 void VirtualMachine::execute_multiply_assign_vec3()
 {
+    word();
     shared_ptr<Value> result = registers_[argument()];
     shared_ptr<Value> value = registers_[argument()];
     const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
@@ -966,6 +1031,7 @@ void VirtualMachine::execute_multiply_assign_vec3()
 
 void VirtualMachine::execute_float_texture()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int texturename = argument();
     int s = argument();
@@ -976,6 +1042,7 @@ void VirtualMachine::execute_float_texture()
 
 void VirtualMachine::execute_vec3_texture()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int texturename = argument();
     int s = argument();
@@ -986,6 +1053,7 @@ void VirtualMachine::execute_vec3_texture()
 
 void VirtualMachine::execute_float_environment()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int texturename = argument();
     int direction = argument();
@@ -995,6 +1063,7 @@ void VirtualMachine::execute_float_environment()
 
 void VirtualMachine::execute_vec3_environment()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int texturename = argument();
     int direction = argument();
@@ -1004,6 +1073,7 @@ void VirtualMachine::execute_vec3_environment()
 
 void VirtualMachine::execute_shadow()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     int texturename = argument();
     int position = argument();
@@ -1014,6 +1084,7 @@ void VirtualMachine::execute_shadow()
 
 void VirtualMachine::execute_call_0()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     shared_ptr<Symbol> symbol = shader_->symbols()[argument()];
     REYES_ASSERT( symbol->function() );
@@ -1025,6 +1096,7 @@ void VirtualMachine::execute_call_0()
 
 void VirtualMachine::execute_call_1()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     shared_ptr<Symbol> symbol = shader_->symbols()[argument()];
     shared_ptr<Value> arg0 = registers_[argument()];
@@ -1036,6 +1108,7 @@ void VirtualMachine::execute_call_1()
 
 void VirtualMachine::execute_call_2()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     shared_ptr<Symbol> symbol = shader_->symbols()[argument()];
     shared_ptr<Value> arg0 = registers_[argument()];
@@ -1048,6 +1121,7 @@ void VirtualMachine::execute_call_2()
 
 void VirtualMachine::execute_call_3()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     shared_ptr<Symbol> symbol = shader_->symbols()[argument()];
     shared_ptr<Value> arg0 = registers_[argument()];
@@ -1061,6 +1135,7 @@ void VirtualMachine::execute_call_3()
 
 void VirtualMachine::execute_call_4()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     shared_ptr<Symbol> symbol = shader_->symbols()[argument()];
     shared_ptr<Value> arg0 = registers_[argument()];
@@ -1075,6 +1150,7 @@ void VirtualMachine::execute_call_4()
 
 void VirtualMachine::execute_call_5()
 {
+    word();
     shared_ptr<Value> result = registers_[allocate_register()];
     shared_ptr<Symbol> symbol = shader_->symbols()[argument()];
     shared_ptr<Value> arg0 = registers_[argument()];
@@ -1090,6 +1166,8 @@ void VirtualMachine::execute_call_5()
 
 void VirtualMachine::execute_ambient()
 {
+    word();
+
     shared_ptr<Value>& light_color = registers_[argument()];
     light_color.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
     light_color->zero();
@@ -1104,6 +1182,8 @@ void VirtualMachine::execute_ambient()
 
 void VirtualMachine::execute_solar_axis_angle()
 {
+    word();
+
     shared_ptr<Value> axis = registers_[argument()];
     shared_ptr<Value> angle = registers_[argument()];
     
@@ -1121,6 +1201,8 @@ void VirtualMachine::execute_solar_axis_angle()
 
 void VirtualMachine::execute_illuminate()
 {
+    word();
+
     shared_ptr<Value> P = registers_[argument()];
     shared_ptr<Value> Ps = registers_[argument()];
     shared_ptr<Value> L = registers_[argument()];
@@ -1140,6 +1222,8 @@ void VirtualMachine::execute_illuminate()
 
 void VirtualMachine::execute_illuminate_axis_angle()
 {
+    word();
+
     shared_ptr<Value> P = registers_[argument()];
     shared_ptr<Value> axis = registers_[argument()];
     shared_ptr<Value> angle = registers_[argument()];                
@@ -1161,6 +1245,7 @@ void VirtualMachine::execute_illuminate_axis_angle()
 
 void VirtualMachine::execute_illuminance_axis_angle()
 {
+    word();
     shared_ptr<Value> P = registers_[argument()];
     shared_ptr<Value> axis = registers_[argument()];
     shared_ptr<Value> angle = registers_[argument()];

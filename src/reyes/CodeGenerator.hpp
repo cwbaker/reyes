@@ -15,6 +15,7 @@ class Symbol;
 class Value;
 class SyntaxNode;
 class SymbolTable;
+class Encoder;
 class ErrorPolicy;
 
 /**
@@ -50,14 +51,15 @@ class CodeGenerator
     int errors_; ///< The number of errors detected during code generation.
     std::vector<std::shared_ptr<Symbol> > symbols_; ///< The symbols that are used in the shader.
     std::vector<std::shared_ptr<Value> > values_; ///< The values of any constants used in the shader (including default parameter values).
-    std::vector<short> code_; ///< The byte code generated for the shader.
     std::vector<int> temporary_registers_; ///< The stack of register indices that are being used to store values that are still being used.
     std::vector<Loop> loops_; ///< The Loops used to patch jumps to the beginning or the end of an enclosing loop.
     int index_; ///< The index of the next available register.  
     int registers_; ///< The number of registers that are used by the most recently generated code (variables and temporaries).
+    Encoder* encoder_; ///< Write byte code instructions and arguments.
 
 public:
     CodeGenerator( const SymbolTable& symbol_table, ErrorPolicy* error_policy = NULL );
+    ~CodeGenerator();
     void generate( SyntaxNode* node, const char* name );
 
     std::shared_ptr<Symbol> find_symbol( const std::string& identifier ) const;
@@ -73,8 +75,7 @@ public:
     const std::vector<std::shared_ptr<Symbol> >& symbols() const;
     std::vector<std::shared_ptr<Value> >& values();
     const std::vector<std::shared_ptr<Value> >& values() const;
-    std::vector<short>& code();
-    const std::vector<short>& code() const;
+    const std::vector<unsigned char>& code() const;
     int registers() const;
     
 private:
@@ -129,6 +130,8 @@ private:
     int generate_identifier_expression( const SyntaxNode& node );
     
     void instruction( int instruction );
+    void instruction( int instruction, int type, int storage );
+    void instruction( int instruction, int type, int storage, int other_type, int other_storage );
     void argument( int argument );
     void patch_argument( int address, int distance );
     int argument_for_patching();
