@@ -90,8 +90,8 @@ private:
     int promote_instruction_from_type( int instruction, ValueType type ) const;
     int generate_binary_expression( const SyntaxNode* node );
     int generate_code_for_assign_expression( int instruction, const SyntaxNode& node );
-    int generate_type_conversion( int register_index, const SyntaxNode* node );
-    int generate_storage_promotion( int register_index, const SyntaxNode* node );
+    int generate_type_conversion( int register_index, const SyntaxNode& node );
+    int generate_storage_promotion( int register_index, const SyntaxNode& node );
     
     void generate_code_for_list( const SyntaxNode& node );
     void generate_code_for_variable( const SyntaxNode& node );
