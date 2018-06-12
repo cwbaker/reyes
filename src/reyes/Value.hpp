@@ -98,9 +98,6 @@ public:
     void multiply_assign_float( std::shared_ptr<Value> value, const unsigned char* mask );
     void multiply_assign_vec3( std::shared_ptr<Value> value, const unsigned char* mask );
 
-    void equal_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
-    void equal_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
-
     void not_equal_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
     void not_equal_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
 

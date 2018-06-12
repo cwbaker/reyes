@@ -87,8 +87,7 @@ private:
     void execute_less_equal();
     void execute_and();
     void execute_or();
-    void execute_equal_float();
-    void execute_equal_vec3();
+    void execute_equal();
     void execute_not_equal_float();
     void execute_not_equal_vec3();
     void execute_negate();

@@ -16,6 +16,7 @@
 #include "color_functions.hpp"
 #include <reyes/reyes_virtual_machine/add.hpp>
 #include <reyes/reyes_virtual_machine/divide.hpp>
+#include <reyes/reyes_virtual_machine/equal.hpp>
 #include <reyes/reyes_virtual_machine/multiply.hpp>
 #include <reyes/reyes_virtual_machine/negate.hpp>
 #include <reyes/reyes_virtual_machine/subtract.hpp>
@@ -346,12 +347,8 @@ void VirtualMachine::execute()
                 execute_or();
                 break;
             
-            case INSTRUCTION_EQUAL_FLOAT:
-                execute_equal_float();
-                break;
-            
-            case INSTRUCTION_EQUAL_VEC3:
-                execute_equal_vec3();
+            case INSTRUCTION_EQUAL:
+                execute_equal();
                 break;
             
             case INSTRUCTION_NOT_EQUAL_FLOAT:
@@ -810,22 +807,20 @@ void VirtualMachine::execute_or()
     result->logical_or( registers_[lhs], registers_[rhs] );
 }
 
-void VirtualMachine::execute_equal_float()
+void VirtualMachine::execute_equal()
 {
-    word();
+    int dispatch = word();
     shared_ptr<Value> result = registers_[allocate_register()];
-    int lhs = argument();
-    int rhs = argument();
-    result->equal_float( registers_[lhs], registers_[rhs] );
-}
-
-void VirtualMachine::execute_equal_vec3()
-{
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    int lhs = argument();
-    int rhs = argument();
-    result->equal_vec3( registers_[lhs], registers_[rhs] );
+    const shared_ptr<Value>& lhs = registers_[argument()];
+    const shared_ptr<Value>& rhs = registers_[argument()];
+    result->reset( lhs->type(), max(lhs->storage(), rhs->storage()), lhs->size() );
+    equal(
+        dispatch,
+        reinterpret_cast<int*>(result->values()),
+        reinterpret_cast<const float*>(lhs->values()),
+        reinterpret_cast<const float*>(rhs->values()),
+        lhs->size()
+    );
 }
 
 void VirtualMachine::execute_not_equal_float()

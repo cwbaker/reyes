@@ -858,42 +858,6 @@ void Value::multiply_assign_vec3( std::shared_ptr<Value> value, const unsigned c
     }
 }
 
-void Value::equal_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
-{
-    REYES_ASSERT( lhs );
-    REYES_ASSERT( rhs );
-    REYES_ASSERT( lhs->size() == rhs->size() );
-    
-    unsigned int size = lhs->size();
-    reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), size );
-        
-    const float* lhs_values = lhs->float_values();
-    const float* rhs_values = rhs->float_values();
-    int* values = int_values();
-    for ( unsigned int i = 0; i < size; ++i )
-    {
-        values[i] = int(lhs_values[i] == rhs_values[i]);
-    }
-}
-
-void Value::equal_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
-{
-    REYES_ASSERT( lhs );
-    REYES_ASSERT( rhs );
-    REYES_ASSERT( lhs->size() == rhs->size() );
-    
-    unsigned int size = lhs->size();
-    reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), size );
-        
-    const vec3* lhs_values = lhs->vec3_values();
-    const vec3* rhs_values = rhs->vec3_values();
-    int* values = int_values();
-    for ( unsigned int i = 0; i < size; ++i )
-    {
-        values[i] = int(lhs_values[i] == rhs_values[i]);
-    }
-}
-
 void Value::not_equal_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     REYES_ASSERT( lhs );

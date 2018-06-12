@@ -10,7 +10,7 @@ for _, build in build:default_builds('cc_.*') do
             'divide.cpp';
             -- 'divide_assign.cpp';
             -- 'dt.cpp';
-            -- 'equal.cpp';
+            'equal.cpp';
             -- 'evaluate.cpp';
             -- 'greater.cpp';
             -- 'greater_equal.cpp';
