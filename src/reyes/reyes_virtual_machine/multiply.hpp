@@ -1,15 +1,10 @@
-#ifndef SWEET_FX_MULTIPLY_HPP_INCLUDED
-#define SWEET_FX_MULTIPLY_HPP_INCLUDED
+#ifndef REYES_MULTIPLY_HPP_INCLUDED
+#define REYES_MULTIPLY_HPP_INCLUDED
 
-namespace sweet
-{
-
-namespace fx
+namespace reyes
 {
 
 void multiply( int dispatch, float* result, const float* lhs, const float* rhs, unsigned int length );
-
-}
 
 }
 

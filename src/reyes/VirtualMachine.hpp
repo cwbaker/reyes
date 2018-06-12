@@ -77,8 +77,7 @@ private:
     void execute_transform_color();
     void execute_transform_matrix();
     void execute_dot();
-    void execute_multiply_float();
-    void execute_multiply_vec3();
+    void execute_multiply();
     void execute_divide();
     void execute_add();
     void execute_subtract_float();

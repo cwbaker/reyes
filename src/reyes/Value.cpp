@@ -1047,44 +1047,6 @@ void Value::dot_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
     }
 }
 
-void Value::multiply_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
-{
-    REYES_ASSERT( lhs );
-    REYES_ASSERT( rhs );
-    REYES_ASSERT( lhs->type() == TYPE_FLOAT );
-    REYES_ASSERT( rhs->type() == TYPE_FLOAT );
-    REYES_ASSERT( lhs->size() == rhs->size() );
-
-    unsigned int size = lhs->size();
-    reset( TYPE_FLOAT, max(lhs->storage(), rhs->storage()), size );
-
-    const float* lhs_values = lhs->float_values();
-    const float* rhs_values = rhs->float_values();
-    float* values = float_values();
-    for ( unsigned int i = 0; i < size; ++i )
-    {
-        values[i] = lhs_values[i] * rhs_values[i];
-    }
-}
-
-void Value::multiply_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
-{
-    REYES_ASSERT( lhs );
-    REYES_ASSERT( rhs );
-    REYES_ASSERT( lhs->size() == rhs->size() );
-
-    unsigned int size = lhs->size();
-    reset( TYPE_VECTOR, max(lhs->storage(), rhs->storage()), size );
-
-    const vec3* lhs_values = lhs->vec3_values();
-    const vec3* rhs_values = rhs->vec3_values();
-    vec3* values = vec3_values();
-    for ( unsigned int i = 0; i < size; ++i )
-    {
-        values[i] = lhs_values[i] * rhs_values[i];
-    }
-}
-
 void Value::divide_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     REYES_ASSERT( lhs );

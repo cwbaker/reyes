@@ -112,9 +112,6 @@ public:
 
     void dot_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
 
-    void multiply_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
-    void multiply_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
-
     void divide_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
     void divide_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
     
