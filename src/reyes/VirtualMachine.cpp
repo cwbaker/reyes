@@ -16,10 +16,14 @@
 #include "color_functions.hpp"
 #include <reyes/reyes_virtual_machine/add.hpp>
 #include <reyes/reyes_virtual_machine/divide.hpp>
-#include <reyes/reyes_virtual_machine/equal.hpp>
 #include <reyes/reyes_virtual_machine/multiply.hpp>
 #include <reyes/reyes_virtual_machine/negate.hpp>
 #include <reyes/reyes_virtual_machine/subtract.hpp>
+#include <reyes/reyes_virtual_machine/equal.hpp>
+#include <reyes/reyes_virtual_machine/greater.hpp>
+#include <reyes/reyes_virtual_machine/greater_equal.hpp>
+#include <reyes/reyes_virtual_machine/less.hpp>
+#include <reyes/reyes_virtual_machine/less_equal.hpp>
 #include <reyes/reyes_virtual_machine/Dispatch.hpp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
@@ -755,38 +759,66 @@ void VirtualMachine::execute_subtract()
 
 void VirtualMachine::execute_greater()
 {
-    word();
+    int dispatch = word();
     shared_ptr<Value> result = registers_[allocate_register()];
-    int lhs = argument();
-    int rhs = argument();
-    result->greater_float( registers_[lhs], registers_[rhs] );
+    const shared_ptr<Value>& lhs = registers_[argument()];
+    const shared_ptr<Value>& rhs = registers_[argument()];
+    result->reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), lhs->size() );
+    greater(
+        dispatch,
+        reinterpret_cast<int*>(result->values()),
+        reinterpret_cast<const float*>(lhs->values()),
+        reinterpret_cast<const float*>(rhs->values()),
+        lhs->size() 
+    );
 }
 
 void VirtualMachine::execute_greater_equal()
 {
-    word();
+    int dispatch = word();
     shared_ptr<Value> result = registers_[allocate_register()];
-    int lhs = argument();
-    int rhs = argument();
-    result->greater_equal_float( registers_[lhs], registers_[rhs] );
+    const shared_ptr<Value>& lhs = registers_[argument()];
+    const shared_ptr<Value>& rhs = registers_[argument()];
+    result->reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), lhs->size() );
+    greater_equal(
+        dispatch,
+        reinterpret_cast<int*>(result->values()),
+        reinterpret_cast<const float*>(lhs->values()),
+        reinterpret_cast<const float*>(rhs->values()),
+        lhs->size() 
+    );
 }
 
 void VirtualMachine::execute_less()
 {
-    word();
+    int dispatch = word();
     shared_ptr<Value> result = registers_[allocate_register()];
-    int lhs = argument();
-    int rhs = argument();
-    result->less_float( registers_[lhs], registers_[rhs] );
+    const shared_ptr<Value>& lhs = registers_[argument()];
+    const shared_ptr<Value>& rhs = registers_[argument()];
+    result->reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), lhs->size() );
+    less(
+        dispatch,
+        reinterpret_cast<int*>(result->values()),
+        reinterpret_cast<const float*>(lhs->values()),
+        reinterpret_cast<const float*>(rhs->values()),
+        lhs->size() 
+    );
 }
 
 void VirtualMachine::execute_less_equal()
 {
-    word();
+    int dispatch = word();
     shared_ptr<Value> result = registers_[allocate_register()];
-    int lhs = argument();
-    int rhs = argument();
-    result->less_equal_float( registers_[lhs], registers_[rhs] );
+    const shared_ptr<Value>& lhs = registers_[argument()];
+    const shared_ptr<Value>& rhs = registers_[argument()];
+    result->reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), lhs->size() );
+    less_equal(
+        dispatch,
+        reinterpret_cast<int*>(result->values()),
+        reinterpret_cast<const float*>(lhs->values()),
+        reinterpret_cast<const float*>(rhs->values()),
+        lhs->size() 
+    );
 }
 
 void VirtualMachine::execute_and()

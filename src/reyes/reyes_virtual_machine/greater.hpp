@@ -1,15 +1,10 @@
-#ifndef SWEET_FX_GREATER_HPP_INCLUDED
-#define SWEET_FX_GREATER_HPP_INCLUDED
+#ifndef REYES_GREATER_HPP_INCLUDED
+#define REYES_GREATER_HPP_INCLUDED
 
-namespace sweet
+namespace reyes
 {
 
-namespace fx
-{
-
-void greater( int dispatch, float* result, const float* lhs, const float* rhs, unsigned int length );
-
-}
+void greater( int dispatch, int* result, const float* lhs, const float* rhs, unsigned int length );
 
 }
 

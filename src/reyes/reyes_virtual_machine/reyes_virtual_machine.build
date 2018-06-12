@@ -12,11 +12,11 @@ for _, build in build:default_builds('cc_.*') do
             -- 'dt.cpp';
             'equal.cpp';
             -- 'evaluate.cpp';
-            -- 'greater.cpp';
-            -- 'greater_equal.cpp';
+            'greater.cpp';
+            'greater_equal.cpp';
             -- 'lerp.cpp';
-            -- 'less.cpp';
-            -- 'less_equal.cpp';
+            'less.cpp';
+            'less_equal.cpp';
             'multiply.cpp';
             -- 'multiply_assign.cpp';
             'negate.cpp';
