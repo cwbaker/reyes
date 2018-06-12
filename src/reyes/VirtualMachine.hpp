@@ -95,8 +95,7 @@ private:
     void execute_equal_vec3();
     void execute_not_equal_float();
     void execute_not_equal_vec3();
-    void execute_negate_float();
-    void execute_negate_vec3();
+    void execute_negate();
     void execute_promote_integer();
     void execute_promote_float();
     void execute_promote_vec3();

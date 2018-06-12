@@ -1029,32 +1029,6 @@ void Value::inside_cone( std::shared_ptr<Value> direction, const math::vec3& axi
     }
 }
 
-void Value::negate_float( std::shared_ptr<Value> value )
-{
-    REYES_ASSERT( value );
-    
-    reset( value->type(), value->storage(), value->size() );
-    const float* other_values = value->float_values();
-    float* values = float_values();
-    for ( unsigned int i = 0; i < value->size(); ++i )
-    {
-        values[i] = -other_values[i];
-    }
-}
-            
-void Value::negate_vec3( std::shared_ptr<Value> value )
-{
-    REYES_ASSERT( value );
-    
-    reset( value->type(), value->storage(), value->size() );
-    const vec3* other_values = value->vec3_values();
-    vec3* values = vec3_values();
-    for ( unsigned int i = 0; i < value->size(); ++i )
-    {
-        values[i] = -other_values[i];
-    }
-}
-
 void Value::add_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
 {
     REYES_ASSERT( lhs );

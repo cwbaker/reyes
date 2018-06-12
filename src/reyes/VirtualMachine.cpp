@@ -14,6 +14,8 @@
 #include "Light.hpp"
 #include "Instruction.hpp"
 #include "color_functions.hpp"
+#include <reyes/reyes_virtual_machine/negate.hpp>
+#include <reyes/reyes_virtual_machine/Dispatch.hpp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
 #include <math/vec4.ipp>
@@ -372,12 +374,8 @@ void VirtualMachine::execute()
                 execute_not_equal_vec3();
                 break;
             
-            case INSTRUCTION_NEGATE_FLOAT:
-                execute_negate_float();
-                break;
-                
-            case INSTRUCTION_NEGATE_VEC3:
-                execute_negate_vec3();
+            case INSTRUCTION_NEGATE:
+                execute_negate();
                 break;
                 
             case INSTRUCTION_PROMOTE_INTEGER:
@@ -868,20 +866,13 @@ void VirtualMachine::execute_not_equal_vec3()
     result->not_equal_vec3( registers_[lhs], registers_[rhs] );
 }
 
-void VirtualMachine::execute_negate_float()
+void VirtualMachine::execute_negate()
 {
-    word();
+    int dispatch = word();
     shared_ptr<Value> result = registers_[allocate_register()];
-    int rhs = argument();
-    result->negate_float( registers_[rhs] );
-}
-
-void VirtualMachine::execute_negate_vec3()
-{
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    int rhs = argument();
-    result->negate_vec3( registers_[rhs] );
+    const shared_ptr<Value>& value = registers_[argument()];
+    result->reset( value->type(), value->storage(), value->size() );
+    negate( dispatch, reinterpret_cast<float*>(result->values()), reinterpret_cast<const float*>(value->values()), value->size() );
 }
 
 void VirtualMachine::execute_promote_integer()

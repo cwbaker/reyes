@@ -49,8 +49,8 @@ void negate_v2( float* result, const float* rhs, unsigned int length )
 {
     for ( unsigned int i = 0; i < length; ++i )
     {
-        result[i + 0] = -rhs[i + 0];
-        result[i + 1] = -rhs[i + 1];
+        result[i * 2 + 0] = -rhs[i * 2 + 0];
+        result[i * 2 + 1] = -rhs[i * 2 + 1];
     }
 }
 
@@ -58,9 +58,9 @@ void negate_v3( float* result, const float* rhs, unsigned int length )
 {
     for ( unsigned int i = 0; i < length; ++i )
     {
-        result[i + 0] = -rhs[i + 0];
-        result[i + 1] = -rhs[i + 1];
-        result[i + 2] = -rhs[i + 2];
+        result[i * 3 + 0] = -rhs[i * 3 + 0];
+        result[i * 3 + 1] = -rhs[i * 3 + 1];
+        result[i * 3 + 2] = -rhs[i * 3 + 2];
     }
 }
 
@@ -68,10 +68,10 @@ void negate_v4( float* result, const float* rhs, unsigned int length )
 {
     for ( unsigned int i = 0; i < length; ++i )
     {
-        result[i + 0] = -rhs[i + 0];
-        result[i + 1] = -rhs[i + 1];
-        result[i + 2] = -rhs[i + 2];
-        result[i + 3] = -rhs[i + 3];
+        result[i * 4 + 0] = -rhs[i * 4 + 0];
+        result[i * 4 + 1] = -rhs[i * 4 + 1];
+        result[i * 4 + 2] = -rhs[i * 4 + 2];
+        result[i * 4 + 3] = -rhs[i * 4 + 3];
     }
 }
 

@@ -513,7 +513,6 @@ int CodeGenerator::generate_code_for_assign_expression( int instruction, const S
         assign_instruction_from_type(instruction, node.symbol()->type()),
         symbol->type(), symbol->storage(),
         expression_node->type(), expression_node->storage()
-
     );
     argument( symbol->register_index() );
     argument( arg1 );
@@ -1110,12 +1109,8 @@ int CodeGenerator::generate_divide_expression( const SyntaxNode& divide_node )
 int CodeGenerator::generate_negate_expression( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_NEGATE );
-
     int arg0 = generate_expression( *node.node(0) ); 
-    instruction( 
-        arithmetic_instruction_from_type(INSTRUCTION_NEGATE_FLOAT, node.type()),
-        node.type(), node.storage()
-    );
+    instruction( INSTRUCTION_NEGATE, node.type(), node.storage() );
     argument( arg0 );
     return allocate_register();
 }
