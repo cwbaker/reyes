@@ -1,15 +1,10 @@
-#ifndef SWEET_FX_DIVIDE_HPP_INCLUDED
-#define SWEET_FX_DIVIDE_HPP_INCLUDED
+#ifndef REYES_DIVIDE_HPP_INCLUDED
+#define REYES_DIVIDE_HPP_INCLUDED
 
-namespace sweet
-{
-
-namespace fx
+namespace reyes
 {
 
 void divide( int dispatch, float* result, const float* lhs, const float* rhs, unsigned int length );
-
-}
 
 }
 

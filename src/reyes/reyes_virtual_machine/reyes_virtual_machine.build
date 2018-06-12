@@ -7,7 +7,7 @@ for _, build in build:default_builds('cc_.*') do
             -- 'assign.cpp';
             -- 'add_assign.cpp';
             -- 'convert.cpp';
-            -- 'divide.cpp';
+            'divide.cpp';
             -- 'divide_assign.cpp';
             -- 'dt.cpp';
             -- 'equal.cpp';

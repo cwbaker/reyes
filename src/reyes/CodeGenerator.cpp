@@ -1097,7 +1097,7 @@ int CodeGenerator::generate_divide_expression( const SyntaxNode& divide_node )
     int arg0 = generate_expression( node );
     int arg1 = generate_expression( other_node );
     instruction( 
-        arithmetic_instruction_from_type(INSTRUCTION_DIVIDE_FLOAT, divide_node.type()),
+        INSTRUCTION_DIVIDE,
         node.type(), node.storage(),
         other_node.type(), other_node.storage()
     );
