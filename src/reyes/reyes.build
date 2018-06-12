@@ -1,6 +1,7 @@
 
 buildfile 'reyes_examples/reyes_examples.build';
 buildfile 'reyes_test/reyes_test.build';
+buildfile 'reyes_virtual_machine/reyes_virtual_machine.build';
 
 for _, build in build:default_builds('cc_.*') do
     local build = build:configure {

@@ -1,0 +1,32 @@
+
+for _, build in build:default_builds('cc_.*') do
+    build:Library '${lib}/reyes_virtual_machine_${architecture}' {
+        build:Cxx () {
+            'add.cpp';
+            -- 'and.cpp';
+            -- 'assign.cpp';
+            -- 'add_assign.cpp';
+            -- 'convert.cpp';
+            -- 'divide.cpp';
+            -- 'divide_assign.cpp';
+            -- 'dt.cpp';
+            -- 'equal.cpp';
+            -- 'evaluate.cpp';
+            -- 'greater.cpp';
+            -- 'greater_equal.cpp';
+            -- 'lerp.cpp';
+            -- 'less.cpp';
+            -- 'less_equal.cpp';
+            -- 'multiply.cpp';
+            -- 'multiply_assign.cpp';
+            'negate.cpp';
+            -- 'normalize.cpp';
+            -- 'not_equal.cpp';
+            -- 'or.cpp';
+            -- 'promote.cpp';
+            -- 'random.cpp';
+            -- 'subtract.cpp';
+            -- 'subtract_assign.cp';
+        };
+    };
+end

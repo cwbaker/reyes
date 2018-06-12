@@ -2,6 +2,7 @@
 build:all {
     build:Executable '${bin}/reyes_examples' {
         '${lib}/reyes_${architecture}';
+        '${lib}/reyes_virtual_machine_${architecture}';
         '${lib}/jpeg_${architecture}';
         '${lib}/lalr_${architecture}';
         '${lib}/libpng_${architecture}';
