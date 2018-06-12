@@ -1,15 +1,10 @@
-#ifndef SWEET_FX_SUBTRACT_HPP_INCLUDED
-#define SWEET_FX_SUBTRACT_HPP_INCLUDED
+#ifndef REYES_SUBTRACT_HPP_INCLUDED
+#define REYES_SUBTRACT_HPP_INCLUDED
 
-namespace sweet
-{
-
-namespace fx
+namespace reyes
 {
 
 void subtract( int dispatch, float* result, const float* lhs, const float* rhs, unsigned int length );
-
-}
 
 }
 

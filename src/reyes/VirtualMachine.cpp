@@ -18,6 +18,7 @@
 #include <reyes/reyes_virtual_machine/divide.hpp>
 #include <reyes/reyes_virtual_machine/multiply.hpp>
 #include <reyes/reyes_virtual_machine/negate.hpp>
+#include <reyes/reyes_virtual_machine/subtract.hpp>
 #include <reyes/reyes_virtual_machine/Dispatch.hpp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
@@ -317,12 +318,8 @@ void VirtualMachine::execute()
                 execute_add();
                 break;
             
-            case INSTRUCTION_SUBTRACT_FLOAT:
-                execute_subtract_float();
-                break;
-            
-            case INSTRUCTION_SUBTRACT_VEC3:
-                execute_subtract_vec3();
+            case INSTRUCTION_SUBTRACT:
+                execute_subtract();
                 break;
             
             case INSTRUCTION_GREATER:
@@ -743,22 +740,20 @@ void VirtualMachine::execute_add()
     );
 }
 
-void VirtualMachine::execute_subtract_float()
+void VirtualMachine::execute_subtract()
 {
-    word();
+    int dispatch = word();
     shared_ptr<Value> result = registers_[allocate_register()];
-    int lhs = argument();
-    int rhs = argument();
-    result->subtract_float( registers_[lhs], registers_[rhs] );
-}
-
-void VirtualMachine::execute_subtract_vec3()
-{
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    int lhs = argument();
-    int rhs = argument();
-    result->subtract_vec3( registers_[lhs], registers_[rhs] );
+    const shared_ptr<Value>& lhs = registers_[argument()];
+    const shared_ptr<Value>& rhs = registers_[argument()];
+    result->reset( lhs->type(), max(lhs->storage(), rhs->storage()), lhs->size() );
+    subtract( 
+        dispatch,
+        reinterpret_cast<float*>(result->values()),
+        reinterpret_cast<const float*>(lhs->values()),
+        reinterpret_cast<const float*>(rhs->values()),
+        lhs->size()
+    );
 }
 
 void VirtualMachine::execute_greater()

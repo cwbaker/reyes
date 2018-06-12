@@ -25,7 +25,7 @@ for _, build in build:default_builds('cc_.*') do
             -- 'or.cpp';
             -- 'promote.cpp';
             -- 'random.cpp';
-            -- 'subtract.cpp';
+            'subtract.cpp';
             -- 'subtract_assign.cp';
         };
     };

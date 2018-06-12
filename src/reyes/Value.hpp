@@ -111,9 +111,6 @@ public:
     void inside_cone( std::shared_ptr<Value> direction, const math::vec3& axis, float angle );
 
     void dot_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
-
-    void divide_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
-    void divide_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
     
 private:
     void allocate();

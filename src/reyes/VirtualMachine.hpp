@@ -80,8 +80,7 @@ private:
     void execute_multiply();
     void execute_divide();
     void execute_add();
-    void execute_subtract_float();
-    void execute_subtract_vec3();
+    void execute_subtract();
     void execute_greater();
     void execute_greater_equal();
     void execute_less();
