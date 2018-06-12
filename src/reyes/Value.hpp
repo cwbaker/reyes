@@ -110,12 +110,6 @@ public:
     void less_equal_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
     void inside_cone( std::shared_ptr<Value> direction, const math::vec3& axis, float angle );
 
-    void add_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
-    void add_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
-    
-    void subtract_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
-    void subtract_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
-
     void dot_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
 
     void multiply_float( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );

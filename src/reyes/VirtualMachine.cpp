@@ -14,8 +14,9 @@
 #include "Light.hpp"
 #include "Instruction.hpp"
 #include "color_functions.hpp"
-#include <reyes/reyes_virtual_machine/negate.hpp>
+#include <reyes/reyes_virtual_machine/add.hpp>
 #include <reyes/reyes_virtual_machine/divide.hpp>
+#include <reyes/reyes_virtual_machine/negate.hpp>
 #include <reyes/reyes_virtual_machine/Dispatch.hpp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
@@ -315,12 +316,8 @@ void VirtualMachine::execute()
                 execute_divide();
                 break;
                 
-            case INSTRUCTION_ADD_FLOAT:
-                execute_add_float();
-                break;
-            
-            case INSTRUCTION_ADD_VEC3:
-                execute_add_vec3();
+            case INSTRUCTION_ADD:
+                execute_add();
                 break;
             
             case INSTRUCTION_SUBTRACT_FLOAT:
@@ -735,22 +732,20 @@ void VirtualMachine::execute_divide()
     );
 }
 
-void VirtualMachine::execute_add_float()
+void VirtualMachine::execute_add()
 {
-    word();
+    int dispatch = word();
     shared_ptr<Value> result = registers_[allocate_register()];
-    int lhs = argument();
-    int rhs = argument();
-    result->add_float( registers_[lhs], registers_[rhs] );
-}
-
-void VirtualMachine::execute_add_vec3()
-{
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    int lhs = argument();
-    int rhs = argument();
-    result->add_vec3( registers_[lhs], registers_[rhs] );
+    const shared_ptr<Value>& lhs = registers_[argument()];
+    const shared_ptr<Value>& rhs = registers_[argument()];
+    result->reset( lhs->type(), max(lhs->storage(), rhs->storage()), lhs->size() );
+    add( 
+        dispatch, 
+        reinterpret_cast<float*>(result->values()),
+        reinterpret_cast<const float*>(lhs->values()),
+        reinterpret_cast<const float*>(rhs->values()),
+        lhs->size()
+    );
 }
 
 void VirtualMachine::execute_subtract_float()

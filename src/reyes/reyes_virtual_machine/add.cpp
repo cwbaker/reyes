@@ -14,23 +14,23 @@ void add_u1u1( float* result, const float* lhs, const float* rhs, unsigned int /
 
 void add_u2u2( float* result, const float* lhs, const float* rhs, unsigned int /*length*/ )
 {
-    result[0 + 0] = lhs[0 + 0] + rhs[0 + 0];
-    result[0 + 1] = lhs[0 + 1] + rhs[0 + 1];
+    result[0] = lhs[0] + rhs[0];
+    result[1] = lhs[1] + rhs[1];
 }
 
 void add_u3u3( float* result, const float* lhs, const float* rhs, unsigned int /*length*/ )
 {
-    result[0 + 0] = lhs[0 + 0] + rhs[0 + 0];
-    result[0 + 1] = lhs[0 + 1] + rhs[0 + 1];
-    result[0 + 2] = lhs[0 + 2] + rhs[0 + 2];
+    result[0] = lhs[0] + rhs[0];
+    result[1] = lhs[1] + rhs[1];
+    result[2] = lhs[2] + rhs[2];
 }
 
 void add_u4u4( float* result, const float* lhs, const float* rhs, unsigned int /*length*/ )
 {
-    result[0 + 0] = lhs[0 + 0] + rhs[0 + 0];
-    result[0 + 1] = lhs[0 + 1] + rhs[0 + 1];
-    result[0 + 2] = lhs[0 + 2] + rhs[0 + 2];
-    result[0 + 3] = lhs[0 + 3] + rhs[0 + 3];
+    result[0] = lhs[0] + rhs[0];
+    result[1] = lhs[1] + rhs[1];
+    result[2] = lhs[2] + rhs[2];
+    result[3] = lhs[3] + rhs[3];
 }
 
 void add_u1v1( float* result, const float* lhs, const float* rhs, unsigned int length )
@@ -45,8 +45,8 @@ void add_u2v2( float* result, const float* lhs, const float* rhs, unsigned int l
 {
     for ( unsigned int i = 0; i < length; ++i )
     {
-        result[i + 0] = lhs[0 + 0] + rhs[i + 0];
-        result[i + 1] = lhs[0 + 1] + rhs[i + 1];
+        result[i * 2 + 0] = lhs[0] + rhs[i * 2 + 0];
+        result[i * 2 + 1] = lhs[1] + rhs[i * 2 + 1];
     }
 }
 
@@ -54,9 +54,9 @@ void add_u3v3( float* result, const float* lhs, const float* rhs, unsigned int l
 {
     for ( unsigned int i = 0; i < length; ++i )
     {
-        result[i + 0] = lhs[0 + 0] + rhs[i + 0];
-        result[i + 1] = lhs[0 + 1] + rhs[i + 1];
-        result[i + 2] = lhs[0 + 2] + rhs[i + 2];
+        result[i * 3 + 0] = lhs[0] + rhs[i * 3 + 0];
+        result[i * 3 + 1] = lhs[1] + rhs[i * 3 + 1];
+        result[i * 3 + 2] = lhs[2] + rhs[i * 3 + 2];
     }
 }
 
@@ -64,10 +64,10 @@ void add_u4v4( float* result, const float* lhs, const float* rhs, unsigned int l
 {
     for ( unsigned int i = 0; i < length; ++i )
     {
-        result[i + 0] = lhs[0 + 0] + rhs[i + 0];
-        result[i + 1] = lhs[0 + 1] + rhs[i + 1];
-        result[i + 2] = lhs[0 + 2] + rhs[i + 2];
-        result[i + 3] = lhs[0 + 3] + rhs[i + 3];
+        result[i * 4 + 0] = lhs[0] + rhs[i * 4 + 0];
+        result[i * 4 + 1] = lhs[1] + rhs[i * 4 + 1];
+        result[i * 4 + 2] = lhs[2] + rhs[i * 4 + 2];
+        result[i * 4 + 3] = lhs[3] + rhs[i * 4 + 3];
     }
 }
 
@@ -83,8 +83,8 @@ void add_v2u2( float* result, const float* lhs, const float* rhs, unsigned int l
 {
     for ( unsigned int i = 0; i < length; ++i )
     {
-        result[i + 0] = lhs[i + 0] + rhs[0 + 0];
-        result[i + 1] = lhs[i + 1] + rhs[0 + 1];
+        result[i * 2 + 0] = lhs[i * 2 + 0] + rhs[0];
+        result[i * 2 + 1] = lhs[i * 2 + 1] + rhs[1];
     }
 }
 
@@ -92,9 +92,9 @@ void add_v3u3( float* result, const float* lhs, const float* rhs, unsigned int l
 {
     for ( unsigned int i = 0; i < length; ++i )
     {
-        result[i + 0] = lhs[i + 0] + rhs[0 + 0];
-        result[i + 1] = lhs[i + 1] + rhs[0 + 1];
-        result[i + 2] = lhs[i + 2] + rhs[0 + 2];
+        result[i * 3 + 0] = lhs[i * 3 + 0] + rhs[0];
+        result[i * 3 + 1] = lhs[i * 3 + 1] + rhs[1];
+        result[i * 3 + 2] = lhs[i * 3 + 2] + rhs[2];
     }
 }
 
@@ -102,10 +102,10 @@ void add_v4u4( float* result, const float* lhs, const float* rhs, unsigned int l
 {
     for ( unsigned int i = 0; i < length; ++i )
     {
-        result[i + 0] = lhs[i + 0] + rhs[0 + 0];
-        result[i + 1] = lhs[i + 1] + rhs[0 + 1];
-        result[i + 2] = lhs[i + 2] + rhs[0 + 2];
-        result[i + 3] = lhs[i + 3] + rhs[0 + 3];
+        result[i * 4 + 0] = lhs[i * 4 + 0] + rhs[0];
+        result[i * 4 + 1] = lhs[i * 4 + 1] + rhs[1];
+        result[i * 4 + 2] = lhs[i * 4 + 2] + rhs[2];
+        result[i * 4 + 3] = lhs[i * 4 + 3] + rhs[3];
     }
 }
 
@@ -121,8 +121,8 @@ void add_v2v2( float* result, const float* lhs, const float* rhs, unsigned int l
 {
     for ( unsigned int i = 0; i < length; ++i )
     {
-        result[i + 0] = lhs[i + 0] + rhs[i + 0];
-        result[i + 1] = lhs[i + 1] + rhs[i + 1];
+        result[i * 2 + 0] = lhs[i * 2 + 0] + rhs[i * 2 + 0];
+        result[i * 2 + 1] = lhs[i * 2 + 1] + rhs[i * 2 + 1];
     }
 }
 
@@ -130,9 +130,9 @@ void add_v3v3( float* result, const float* lhs, const float* rhs, unsigned int l
 {
     for ( unsigned int i = 0; i < length; ++i )
     {
-        result[i + 0] = lhs[i + 0] + rhs[i + 0];
-        result[i + 1] = lhs[i + 1] + rhs[i + 1];
-        result[i + 2] = lhs[i + 2] + rhs[i + 2];
+        result[i * 3 + 0] = lhs[i * 3 + 0] + rhs[i * 3 + 0];
+        result[i * 3 + 1] = lhs[i * 3 + 1] + rhs[i * 3 + 1];
+        result[i * 3 + 2] = lhs[i * 3 + 2] + rhs[i * 3 + 2];
     }
 }
 
@@ -140,10 +140,10 @@ void add_v4v4( float* result, const float* lhs, const float* rhs, unsigned int l
 {
     for ( unsigned int i = 0; i < length; ++i )
     {
-        result[i + 0] = lhs[i + 0] + rhs[i + 0];
-        result[i + 1] = lhs[i + 1] + rhs[i + 1];
-        result[i + 2] = lhs[i + 2] + rhs[i + 2];
-        result[i + 3] = lhs[i + 3] + rhs[i + 3];
+        result[i * 4 + 0] = lhs[i * 4 + 0] + rhs[i * 4 + 0];
+        result[i * 4 + 1] = lhs[i * 4 + 1] + rhs[i * 4 + 1];
+        result[i * 4 + 2] = lhs[i * 4 + 2] + rhs[i * 4 + 2];
+        result[i * 4 + 3] = lhs[i * 4 + 3] + rhs[i * 4 + 3];
     }
 }
 
