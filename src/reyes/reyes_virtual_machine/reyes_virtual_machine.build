@@ -21,7 +21,7 @@ for _, build in build:default_builds('cc_.*') do
             -- 'multiply_assign.cpp';
             'negate.cpp';
             -- 'normalize.cpp';
-            -- 'not_equal.cpp';
+            'not_equal.cpp';
             -- 'or.cpp';
             -- 'promote.cpp';
             -- 'random.cpp';

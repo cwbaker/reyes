@@ -20,6 +20,7 @@
 #include <reyes/reyes_virtual_machine/negate.hpp>
 #include <reyes/reyes_virtual_machine/subtract.hpp>
 #include <reyes/reyes_virtual_machine/equal.hpp>
+#include <reyes/reyes_virtual_machine/not_equal.hpp>
 #include <reyes/reyes_virtual_machine/greater.hpp>
 #include <reyes/reyes_virtual_machine/greater_equal.hpp>
 #include <reyes/reyes_virtual_machine/less.hpp>
@@ -355,14 +356,10 @@ void VirtualMachine::execute()
                 execute_equal();
                 break;
             
-            case INSTRUCTION_NOT_EQUAL_FLOAT:
-                execute_not_equal_float();
+            case INSTRUCTION_NOT_EQUAL:
+                execute_not_equal();
                 break;
-            
-            case INSTRUCTION_NOT_EQUAL_VEC3:
-                execute_not_equal_vec3();
-                break;
-            
+                        
             case INSTRUCTION_NEGATE:
                 execute_negate();
                 break;
@@ -855,22 +852,20 @@ void VirtualMachine::execute_equal()
     );
 }
 
-void VirtualMachine::execute_not_equal_float()
+void VirtualMachine::execute_not_equal()
 {
-    word();
+    int dispatch = word();
     shared_ptr<Value> result = registers_[allocate_register()];
-    int lhs = argument();
-    int rhs = argument();
-    result->not_equal_float( registers_[lhs], registers_[rhs] );
-}
-
-void VirtualMachine::execute_not_equal_vec3()
-{
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    int lhs = argument();
-    int rhs = argument();
-    result->not_equal_vec3( registers_[lhs], registers_[rhs] );
+    const shared_ptr<Value>& lhs = registers_[argument()];
+    const shared_ptr<Value>& rhs = registers_[argument()];
+    result->reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), lhs->size() );
+    not_equal( 
+        dispatch,
+        reinterpret_cast<int*>(result->values()),
+        reinterpret_cast<const float*>(lhs->values()),
+        reinterpret_cast<const float*>(rhs->values()),
+        lhs->size()
+    );
 }
 
 void VirtualMachine::execute_negate()

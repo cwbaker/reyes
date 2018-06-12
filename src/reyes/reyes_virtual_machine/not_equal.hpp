@@ -1,15 +1,10 @@
-#ifndef SWEET_FX_NOT_EQUAL_HPP_INCLUDED
-#define SWEET_FX_NOT_EQUAL_HPP_INCLUDED
+#ifndef REYES_NOT_EQUAL_HPP_INCLUDED
+#define REYES_NOT_EQUAL_HPP_INCLUDED
 
-namespace sweet
+namespace reyes
 {
 
-namespace fx
-{
-
-void not_equal( int dispatch, float* result, const float* lhs, const float* rhs, unsigned int length );
-
-}
+void not_equal( int dispatch, int* result, const float* lhs, const float* rhs, unsigned int length );
 
 }
 
