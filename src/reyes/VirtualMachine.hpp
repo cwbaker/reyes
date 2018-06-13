@@ -98,10 +98,8 @@ private:
     void execute_float_to_vector();
     void execute_float_to_normal();
     void execute_float_to_matrix();
-    void execute_assign_float();
-    void execute_assign_vec3();
+    void execute_assign();
     void execute_assign_mat4x4();
-    void execute_assign_integer();
     void execute_assign_string();
     void execute_add_assign();
     void execute_multiply_assign();

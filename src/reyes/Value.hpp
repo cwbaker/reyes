@@ -84,8 +84,6 @@ public:
     void promote_float( int size, std::shared_ptr<Value> value );
     void promote_vec3( int size, std::shared_ptr<Value> value );
 
-    void assign_integer( std::shared_ptr<Value> value, const unsigned char* mask );
-    void assign_float( std::shared_ptr<Value> value, const unsigned char* mask );
     void assign_vec3( std::shared_ptr<Value> value, const unsigned char* mask );
     void assign_mat4x4( std::shared_ptr<Value> value, const unsigned char* mask );
     void assign_string( std::shared_ptr<Value> value, const unsigned char* mask );

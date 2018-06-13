@@ -586,64 +586,6 @@ void Value::promote_vec3( int size, std::shared_ptr<Value> other_value )
     }
 }
 
-void Value::assign_integer( std::shared_ptr<Value> value, const unsigned char* mask )
-{
-    REYES_ASSERT( value );
-
-    reset( value->type(), value->storage(), value->size() );
-               
-    int* values = int_values();
-    const int* other_values = value->int_values();
-    const int size = value->size();
-
-    if ( !mask )
-    {
-        for ( int i = 0; i < size; ++i )
-        {
-            values[i] = other_values[i];
-        }
-    }
-    else
-    {
-        for ( int i = 0; i < size; ++i )
-        {
-            if ( mask[i] )
-            {
-                values[i] = other_values[i];
-            }
-        }
-    }
-}
-
-void Value::assign_float( std::shared_ptr<Value> value, const unsigned char* mask )
-{
-    REYES_ASSERT( value );
-
-    reset( value->type(), value->storage(), value->size() );
-               
-    float* values = float_values();
-    const float* other_values = value->float_values();
-    const int size = value->size();
-
-    if ( !mask )
-    {
-        for ( int i = 0; i < size; ++i )
-        {
-            values[i] = other_values[i];
-        }
-    }
-    else
-    {
-        for ( int i = 0; i < size; ++i )
-        {
-            if ( mask[i] )
-            {
-                values[i] = other_values[i];
-            }
-        }
-    }
-}
-
 void Value::assign_vec3( std::shared_ptr<Value> value, const unsigned char* mask )
 {
     REYES_ASSERT( value );

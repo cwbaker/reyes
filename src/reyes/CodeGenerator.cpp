@@ -433,14 +433,14 @@ int CodeGenerator::assign_instruction_from_type( int instruction, ValueType type
     const int INSTRUCTION_OFFSET_BY_TYPE[] =
     {
         0, // NULL
-        3, // INTEGER
+        0, // INTEGER
         0, // FLOAT
-        1, // COLOR
-        1, // POINT
-        1, // VECTOR
-        1, // NORMAL
-        2, // MATRIX
-        4 // STRING
+        0, // COLOR
+        0, // POINT
+        0, // VECTOR
+        0, // NORMAL
+        1, // MATRIX
+        2 // STRING
     };
     return instruction + INSTRUCTION_OFFSET_BY_TYPE[type];
 }
@@ -591,9 +591,15 @@ void CodeGenerator::generate_code_for_variable( const SyntaxNode& node )
 
     if ( node.node(0)->node_type() != SHADER_NODE_NULL )
     {
-        int arg0 = node.symbol()->register_index();
-        int arg1 = generate_expression( *node.node(0) );
-        instruction( assign_instruction_from_type(INSTRUCTION_ASSIGN_FLOAT, node.symbol()->type()) );
+        const shared_ptr<Symbol>& symbol = node.symbol();
+        const SyntaxNode* expression_node = node.node( 0 );
+        int arg0 = symbol->register_index();
+        int arg1 = generate_expression( *expression_node );
+        instruction( 
+            assign_instruction_from_type(INSTRUCTION_ASSIGN, symbol->type()),
+            symbol->type(), symbol->storage(),
+            expression_node->type(), expression_node->storage()
+        );
         argument( arg0 );
         argument( arg1 );
     }
@@ -679,7 +685,7 @@ void CodeGenerator::generate_statement( const SyntaxNode& node )
             break;
             
         case SHADER_NODE_ASSIGN:    
-            generate_code_for_assign_expression( INSTRUCTION_ASSIGN_FLOAT, node );
+            generate_code_for_assign_expression( INSTRUCTION_ASSIGN, node );
             break;
             
         case SHADER_NODE_ADD_ASSIGN:
@@ -1014,7 +1020,7 @@ int CodeGenerator::generate_expression( const SyntaxNode& node )
             break;
             
         case SHADER_NODE_ASSIGN:    
-            index = generate_code_for_assign_expression( INSTRUCTION_ASSIGN_FLOAT, node );
+            index = generate_code_for_assign_expression( INSTRUCTION_ASSIGN, node );
             break;
             
         case SHADER_NODE_ADD_ASSIGN:

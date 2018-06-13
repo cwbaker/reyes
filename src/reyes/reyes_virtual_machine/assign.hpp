@@ -1,15 +1,10 @@
-#ifndef SWEET_FX_ASSIGN_HPP_INCLUDED
-#define SWEET_FX_ASSIGN_HPP_INCLUDED
+#ifndef REYES_ASSIGN_HPP_INCLUDED
+#define REYES_ASSIGN_HPP_INCLUDED
 
-namespace sweet
-{
-
-namespace fx
+namespace reyes
 {
 
 void assign( int dispatch, float* result, const float* rhs, const unsigned char* mask, unsigned int length );
-
-}
 
 }
 
