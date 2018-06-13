@@ -17,12 +17,12 @@ for _, build in build:default_builds('cc_.*') do
             'less.cpp';
             'less_equal.cpp';
             'logical_and.cpp';
+            'logical_or.cpp';
             'multiply.cpp';
             -- 'multiply_assign.cpp';
             'negate.cpp';
             -- 'normalize.cpp';
             'not_equal.cpp';
-            -- 'or.cpp';
             -- 'promote.cpp';
             -- 'random.cpp';
             'subtract.cpp';

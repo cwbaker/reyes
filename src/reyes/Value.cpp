@@ -473,25 +473,6 @@ void Value::illuminance_axis_angle( std::shared_ptr<Value> position, std::shared
     }        
 }
 
-void Value::logical_or( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
-{
-    REYES_ASSERT( lhs );
-    REYES_ASSERT( rhs );
-    REYES_ASSERT( lhs->size() == rhs->size() );
-    REYES_ASSERT( lhs->type() == TYPE_INTEGER && rhs->type() == TYPE_INTEGER );    
-    
-    unsigned int size = lhs->size();
-    reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), size );
-    
-    const int* lhs_values = lhs->int_values();
-    const int* rhs_values = rhs->int_values();
-    int* values = int_values();
-    for ( unsigned int i = 0; i < size; ++i )
-    {
-        values[i] = int(lhs_values[i] != 0 || rhs_values[i] != 0);
-    }
-}
-
 void Value::transform( const math::mat4x4& m, std::shared_ptr<Value> p )
 {
     REYES_ASSERT( p );

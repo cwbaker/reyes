@@ -75,7 +75,6 @@ public:
     void light_to_surface_vector( std::shared_ptr<Value> position, const math::vec3& light_position );
     void surface_to_light_vector( std::shared_ptr<Value> position, const Light* light );
     void illuminance_axis_angle( std::shared_ptr<Value> position, std::shared_ptr<Value> axis, std::shared_ptr<Value> angle, const Light* light );
-    void logical_or( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
     void transform( const math::mat4x4& m, std::shared_ptr<Value> p );
     void vtransform( const math::mat4x4& m, std::shared_ptr<Value> v );
     void ntransform( const math::mat4x4& m, std::shared_ptr<Value> v );
