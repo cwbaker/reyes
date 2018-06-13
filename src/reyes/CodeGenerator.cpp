@@ -683,7 +683,7 @@ void CodeGenerator::generate_statement( const SyntaxNode& node )
             break;
             
         case SHADER_NODE_ADD_ASSIGN:
-            generate_code_for_assign_expression( INSTRUCTION_ADD_ASSIGN_FLOAT, node );
+            generate_code_for_assign_expression( INSTRUCTION_ADD_ASSIGN, node );
             break;
             
         case SHADER_NODE_SUBTRACT_ASSIGN:
@@ -691,7 +691,7 @@ void CodeGenerator::generate_statement( const SyntaxNode& node )
             break;
             
         case SHADER_NODE_MULTIPLY_ASSIGN:
-            generate_code_for_assign_expression( INSTRUCTION_MULTIPLY_ASSIGN_FLOAT, node );
+            generate_code_for_assign_expression( INSTRUCTION_MULTIPLY_ASSIGN, node );
             break;
             
         case SHADER_NODE_DIVIDE_ASSIGN:
@@ -1018,7 +1018,7 @@ int CodeGenerator::generate_expression( const SyntaxNode& node )
             break;
             
         case SHADER_NODE_ADD_ASSIGN:
-            index = generate_code_for_assign_expression( INSTRUCTION_ADD_ASSIGN_FLOAT, node );
+            index = generate_code_for_assign_expression( INSTRUCTION_ADD_ASSIGN, node );
             break;
             
         case SHADER_NODE_SUBTRACT_ASSIGN:

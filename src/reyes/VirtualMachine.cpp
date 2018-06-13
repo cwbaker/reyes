@@ -27,6 +27,8 @@
 #include <reyes/reyes_virtual_machine/less_equal.hpp>
 #include <reyes/reyes_virtual_machine/logical_and.hpp>
 #include <reyes/reyes_virtual_machine/logical_or.hpp>
+#include <reyes/reyes_virtual_machine/add_assign.hpp>
+#include <reyes/reyes_virtual_machine/multiply_assign.hpp>
 #include <reyes/reyes_virtual_machine/Dispatch.hpp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
@@ -418,20 +420,12 @@ void VirtualMachine::execute()
                 execute_assign_string();
                 break;
             
-            case INSTRUCTION_ADD_ASSIGN_FLOAT:
-                execute_add_assign_float();
+            case INSTRUCTION_ADD_ASSIGN:
+                execute_add_assign();
                 break;
             
-            case INSTRUCTION_ADD_ASSIGN_VEC3:
-                execute_add_assign_vec3();
-                break;
-            
-            case INSTRUCTION_MULTIPLY_ASSIGN_FLOAT:
-                execute_multiply_assign_float();
-                break;
-            
-            case INSTRUCTION_MULTIPLY_ASSIGN_VEC3:
-                execute_multiply_assign_vec3();
+            case INSTRUCTION_MULTIPLY_ASSIGN:
+                execute_multiply_assign();
                 break;
             
             case INSTRUCTION_FLOAT_TEXTURE:
@@ -1002,40 +996,34 @@ void VirtualMachine::execute_assign_string()
     result->assign_string( value, mask );
 }
 
-void VirtualMachine::execute_add_assign_float()
+void VirtualMachine::execute_add_assign()
 {
-    word();
+    int dispatch = word();
     shared_ptr<Value> result = registers_[argument()];
-    shared_ptr<Value> value = registers_[argument()];
-    const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
-    result->add_assign_float( value, mask );
+    const shared_ptr<Value>& rhs = registers_[argument()];
+    const unsigned char* mask = rhs->storage() == STORAGE_VARYING ? get_mask() : NULL;
+    add_assign( 
+        dispatch, 
+        reinterpret_cast<float*>(result->values()),
+        reinterpret_cast<const float*>(rhs->values()),
+        mask,
+        rhs->size()
+    );
 }
 
-void VirtualMachine::execute_add_assign_vec3()
+void VirtualMachine::execute_multiply_assign()
 {
-    word();
+    int dispatch = word();
     shared_ptr<Value> result = registers_[argument()];
-    shared_ptr<Value> value = registers_[argument()];
-    const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
-    result->add_assign_vec3( value, mask );
-}
-
-void VirtualMachine::execute_multiply_assign_float()
-{
-    word();
-    shared_ptr<Value> result = registers_[argument()];
-    shared_ptr<Value> value = registers_[argument()];
-    const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
-    result->multiply_assign_float( value, mask );
-}
-
-void VirtualMachine::execute_multiply_assign_vec3()
-{
-    word();
-    shared_ptr<Value> result = registers_[argument()];
-    shared_ptr<Value> value = registers_[argument()];
-    const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
-    result->multiply_assign_vec3( value, mask );
+    const shared_ptr<Value>& rhs = registers_[argument()];
+    const unsigned char* mask = rhs->storage() == STORAGE_VARYING ? get_mask() : NULL;
+    multiply_assign( 
+        dispatch, 
+        reinterpret_cast<float*>(result->values()),
+        reinterpret_cast<const float*>(rhs->values()),
+        mask,
+        rhs->size()
+    );
 }
 
 void VirtualMachine::execute_float_texture()

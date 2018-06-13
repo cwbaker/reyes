@@ -1,16 +1,14 @@
 //
 // multiply_assign.cpp
-// Copyright (c) Charles Baker.  All rights reserved.
+// Copyright (c) Charles Baker. All rights reserved.
 //
 
 #include "multiply_assign.hpp"
-#include "Instruction.hpp"
-#include <sweet/assert/assert.hpp>
+#include "Dispatch.hpp"
+#include <reyes/Instruction.hpp>
+#include <reyes/assert.hpp>
 
-namespace sweet
-{
-    
-namespace fx
+namespace reyes
 {
     
 void multiply_assign_u1u1( float* result, const float* rhs, unsigned int /*length*/ )
@@ -406,96 +404,94 @@ void multiply_assign( int dispatch, float* result, const float* rhs, const unsig
 {
     switch ( dispatch )
     {
-        case INSTRUCTION_U1U1:
+        case DISPATCH_U1U1:
             multiply_assign_u1u1( result, rhs, length );
             break;
 
-        case INSTRUCTION_U2U1:
+        case DISPATCH_U2U1:
             multiply_assign_u2u1( result, rhs, length );
             break;
 
-        case INSTRUCTION_U3U1:
+        case DISPATCH_U3U1:
             multiply_assign_u3u1( result, rhs, length );
             break;
 
-        case INSTRUCTION_U4U1:
+        case DISPATCH_U4U1:
             multiply_assign_u4u1( result, rhs, length );
             break;
 
-        case INSTRUCTION_U2U2:
+        case DISPATCH_U2U2:
             multiply_assign_u2u2( result, rhs, length );
             break;
 
-        case INSTRUCTION_U3U3:
+        case DISPATCH_U3U3:
             multiply_assign_u3u3( result, rhs, length );
             break;
 
-        case INSTRUCTION_U4U4:
+        case DISPATCH_U4U4:
             multiply_assign_u4u4( result, rhs, length );
             break;
 
-        case INSTRUCTION_V1U1:
+        case DISPATCH_V1U1:
             multiply_assign_v1u1( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V2U1:
+        case DISPATCH_V2U1:
             multiply_assign_v2u1( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V3U1:
+        case DISPATCH_V3U1:
             multiply_assign_v3u1( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V4U1:
+        case DISPATCH_V4U1:
             multiply_assign_v4u1( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V2U2:
+        case DISPATCH_V2U2:
             multiply_assign_v2u2( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V3U3:
+        case DISPATCH_V3U3:
             multiply_assign_v3u3( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V4U4:
+        case DISPATCH_V4U4:
             multiply_assign_v4u4( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V1V1:
+        case DISPATCH_V1V1:
             multiply_assign_v1v1( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V2V1:
+        case DISPATCH_V2V1:
             multiply_assign_v2v1( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V3V1:
+        case DISPATCH_V3V1:
             multiply_assign_v3v1( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V4V1:
+        case DISPATCH_V4V1:
             multiply_assign_v4v1( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V2V2:
+        case DISPATCH_V2V2:
             multiply_assign_v2v2( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V3V3:
+        case DISPATCH_V3V3:
             multiply_assign_v3v3( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V4V4:
+        case DISPATCH_V4V4:
             multiply_assign_v4v4( result, rhs, mask, length );
             break;
 
         default:
-            SWEET_ASSERT( false );
+            REYES_ASSERT( false );
             break;
     }
-}
-
 }
 
 }

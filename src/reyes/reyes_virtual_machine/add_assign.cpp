@@ -1,12 +1,10 @@
 
 #include "add_assign.hpp"
-#include "Instruction.hpp"
-#include <sweet/assert/assert.hpp>
+#include "Dispatch.hpp"
+#include <reyes/Instruction.hpp>
+#include <reyes/assert.hpp>
 
-namespace sweet
-{
-    
-namespace fx
+namespace reyes
 {
     
 void add_assign_u1u1( float* result, const float* rhs, unsigned int /*length*/ )
@@ -229,65 +227,63 @@ void add_assign_v4v4( float* result, const float* rhs, const unsigned char* mask
 
 void add_assign( int dispatch, float* result, const float* rhs, const unsigned char* mask, unsigned int length )
 {
-    SWEET_ASSERT( result );
-    SWEET_ASSERT( rhs );
+    REYES_ASSERT( result );
+    REYES_ASSERT( rhs );
 
     switch ( dispatch )
     {
-        case INSTRUCTION_U1U1:
+        case DISPATCH_U1U1:
             add_assign_u1u1( result, rhs, length );
             break;
 
-        case INSTRUCTION_U2U2:
+        case DISPATCH_U2U2:
             add_assign_u2u2( result, rhs, length );
             break;
 
-        case INSTRUCTION_U3U3:
+        case DISPATCH_U3U3:
             add_assign_u3u3( result, rhs, length );
             break;
 
-        case INSTRUCTION_U4U4:
+        case DISPATCH_U4U4:
             add_assign_u4u4( result, rhs, length );
             break;
 
-        case INSTRUCTION_V1U1:
+        case DISPATCH_V1U1:
             add_assign_v1u1( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V2U2:
+        case DISPATCH_V2U2:
             add_assign_v2u2( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V3U3:
+        case DISPATCH_V3U3:
             add_assign_v3u3( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V4U4:
+        case DISPATCH_V4U4:
             add_assign_v4u4( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V1V1:
+        case DISPATCH_V1V1:
             add_assign_v1v1( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V2V2:
+        case DISPATCH_V2V2:
             add_assign_v2v2( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V3V3:
+        case DISPATCH_V3V3:
             add_assign_v3v3( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V4V4:
+        case DISPATCH_V4V4:
             add_assign_v4v4( result, rhs, mask, length );
             break;
 
         default:
-            SWEET_ASSERT( false );
+            REYES_ASSERT( false );
             break;
     }
-}
-
 }
 
 }

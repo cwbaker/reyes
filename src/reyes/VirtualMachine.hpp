@@ -103,10 +103,8 @@ private:
     void execute_assign_mat4x4();
     void execute_assign_integer();
     void execute_assign_string();
-    void execute_add_assign_float();
-    void execute_add_assign_vec3();
-    void execute_multiply_assign_float();
-    void execute_multiply_assign_vec3();
+    void execute_add_assign();
+    void execute_multiply_assign();
     void execute_float_texture();
     void execute_vec3_texture();
     void execute_float_environment();

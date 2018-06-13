@@ -4,7 +4,7 @@ for _, build in build:default_builds('cc_.*') do
         build:Cxx () {
             'add.cpp';
             -- 'assign.cpp';
-            -- 'add_assign.cpp';
+            'add_assign.cpp';
             -- 'convert.cpp';
             'divide.cpp';
             -- 'divide_assign.cpp';
@@ -19,7 +19,7 @@ for _, build in build:default_builds('cc_.*') do
             'logical_and.cpp';
             'logical_or.cpp';
             'multiply.cpp';
-            -- 'multiply_assign.cpp';
+            'multiply_assign.cpp';
             'negate.cpp';
             -- 'normalize.cpp';
             'not_equal.cpp';
