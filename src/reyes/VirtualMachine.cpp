@@ -25,6 +25,7 @@
 #include <reyes/reyes_virtual_machine/greater_equal.hpp>
 #include <reyes/reyes_virtual_machine/less.hpp>
 #include <reyes/reyes_virtual_machine/less_equal.hpp>
+#include <reyes/reyes_virtual_machine/logical_and.hpp>
 #include <reyes/reyes_virtual_machine/Dispatch.hpp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
@@ -820,11 +821,18 @@ void VirtualMachine::execute_less_equal()
 
 void VirtualMachine::execute_and()
 {
-    word();
+    int dispatch = word();
     shared_ptr<Value> result = registers_[allocate_register()];
-    int lhs = argument();
-    int rhs = argument();
-    result->logical_and( registers_[lhs], registers_[rhs] );
+    const shared_ptr<Value>& lhs = registers_[argument()];
+    const shared_ptr<Value>& rhs = registers_[argument()];
+    result->reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), lhs->size() );
+    logical_and( 
+        dispatch,
+        reinterpret_cast<int*>(result->values()),
+        reinterpret_cast<const int*>(lhs->values()),
+        reinterpret_cast<const int*>(rhs->values()),
+        lhs->size()
+    );
 }
 
 void VirtualMachine::execute_or()
