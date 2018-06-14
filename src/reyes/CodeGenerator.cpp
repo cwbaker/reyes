@@ -702,7 +702,7 @@ void CodeGenerator::generate_statement( const SyntaxNode& node )
             break;
             
         case SHADER_NODE_DIVIDE_ASSIGN:
-            REYES_ASSERT( false );
+            generate_code_for_assign_expression( INSTRUCTION_DIVIDE_ASSIGN, node );
             break;
             
         default:

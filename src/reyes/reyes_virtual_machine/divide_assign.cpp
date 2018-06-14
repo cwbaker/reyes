@@ -1,18 +1,16 @@
 //
 // divide_assign.cpp
-// Copyright (c) Charles Baker.  All rights reserved.
+// Copyright (c) Charles Baker. All rights reserved.
 //
 
 #include "divide_assign.hpp"
-#include "Instruction.hpp"
-#include <sweet/assert/assert.hpp>
+#include "Dispatch.hpp"
+#include <reyes/Instruction.hpp>
+#include <reyes/assert.hpp>
 
-namespace sweet
+namespace reyes
 {
 
-namespace fx
-{
-    
 void divide_assign_u1u1( float* result, const float* rhs, unsigned int /*length*/ )
 {
     result[0] /= rhs[0];
@@ -235,60 +233,58 @@ void divide_assign( int dispatch, float* result, const float* rhs, const unsigne
 {
     switch ( dispatch )
     {
-        case INSTRUCTION_U1U1:
+        case DISPATCH_U1U1:
             divide_assign_u1u1( result, rhs, length );
             break;
 
-        case INSTRUCTION_U2U1:
+        case DISPATCH_U2U1:
             divide_assign_u2u1( result, rhs, length );
             break;
 
-        case INSTRUCTION_U3U1:
+        case DISPATCH_U3U1:
             divide_assign_u3u1( result, rhs, length );
             break;
 
-        case INSTRUCTION_U4U1:
+        case DISPATCH_U4U1:
             divide_assign_u4u1( result, rhs, length );
             break;
 
-        case INSTRUCTION_V1U1:
+        case DISPATCH_V1U1:
             divide_assign_v1u1( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V2U1:
+        case DISPATCH_V2U1:
             divide_assign_v2u1( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V3U1:
+        case DISPATCH_V3U1:
             divide_assign_v3u1( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V4U1:
+        case DISPATCH_V4U1:
             divide_assign_v4u1( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V1V1:
+        case DISPATCH_V1V1:
             divide_assign_v1v1( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V2V1:
+        case DISPATCH_V2V1:
             divide_assign_v2v1( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V3V1:
+        case DISPATCH_V3V1:
             divide_assign_v3v1( result, rhs, mask, length );
             break;
 
-        case INSTRUCTION_V4V1:
+        case DISPATCH_V4V1:
             divide_assign_v4v1( result, rhs, mask, length );
             break;
 
         default:
-            SWEET_ASSERT( false );
+            REYES_ASSERT( false );
             break;
     }
-}
-
 }
 
 }

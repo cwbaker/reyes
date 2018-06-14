@@ -30,6 +30,7 @@
 #include <reyes/reyes_virtual_machine/assign.hpp>
 #include <reyes/reyes_virtual_machine/add_assign.hpp>
 #include <reyes/reyes_virtual_machine/multiply_assign.hpp>
+#include <reyes/reyes_virtual_machine/divide_assign.hpp>
 #include <reyes/reyes_virtual_machine/promote.hpp>
 #include <reyes/reyes_virtual_machine/Dispatch.hpp>
 #include <math/vec2.ipp>
@@ -412,6 +413,10 @@ void VirtualMachine::execute()
             
             case INSTRUCTION_MULTIPLY_ASSIGN:
                 execute_multiply_assign();
+                break;
+            
+            case INSTRUCTION_DIVIDE_ASSIGN:
+                execute_divide_assign();
                 break;
             
             case INSTRUCTION_FLOAT_TEXTURE:
@@ -982,6 +987,21 @@ void VirtualMachine::execute_multiply_assign()
     const shared_ptr<Value>& rhs = registers_[argument()];
     const unsigned char* mask = rhs->storage() == STORAGE_VARYING ? get_mask() : NULL;
     multiply_assign( 
+        dispatch, 
+        reinterpret_cast<float*>(result->values()),
+        reinterpret_cast<const float*>(rhs->values()),
+        mask,
+        rhs->size()
+    );
+}
+
+void VirtualMachine::execute_divide_assign()
+{
+    int dispatch = word();
+    shared_ptr<Value> result = registers_[argument()];
+    const shared_ptr<Value>& rhs = registers_[argument()];
+    const unsigned char* mask = rhs->storage() == STORAGE_VARYING ? get_mask() : NULL;
+    divide_assign( 
         dispatch, 
         reinterpret_cast<float*>(result->values()),
         reinterpret_cast<const float*>(rhs->values()),
