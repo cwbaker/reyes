@@ -77,7 +77,6 @@ public:
     void ntransform( const math::mat4x4& m, std::shared_ptr<Value> v );
     void transform_matrix( const math::mat4x4& m, std::shared_ptr<Value> value );
     
-    void assign_vec3( std::shared_ptr<Value> value, const unsigned char* mask );
     void assign_mat4x4( std::shared_ptr<Value> value, const unsigned char* mask );
     void assign_string( std::shared_ptr<Value> value, const unsigned char* mask );
     

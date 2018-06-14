@@ -1234,8 +1234,10 @@ void VirtualMachine::execute_illuminance_axis_angle()
     const Light* light = grid_->get_light( light_index_ );                
     result->illuminance_axis_angle( P, axis, angle, light );
     L->surface_to_light_vector( P, light );
-    light_color->assign_vec3( light->color(), NULL );
-    light_opacity->assign_vec3( light->opacity(), NULL );
+    light_color->reset( TYPE_COLOR, STORAGE_VARYING, grid_->size() );
+    assign( DISPATCH_V3V3, (float*) light_color->values(), (const float*) light->color()->values(), nullptr, grid_->size() );
+    light_opacity->reset( TYPE_COLOR, STORAGE_VARYING, grid_->size() );
+    assign( DISPATCH_V3V3, (float*) light_opacity->values(), (const float*) light->opacity()->values(), nullptr, grid_->size() );
 }
 
 
