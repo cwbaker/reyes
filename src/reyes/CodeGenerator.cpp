@@ -694,7 +694,7 @@ void CodeGenerator::generate_statement( const SyntaxNode& node )
             break;
             
         case SHADER_NODE_SUBTRACT_ASSIGN:
-            REYES_ASSERT( false );
+            generate_code_for_assign_expression( INSTRUCTION_SUBTRACT_ASSIGN, node );
             break;
             
         case SHADER_NODE_MULTIPLY_ASSIGN:

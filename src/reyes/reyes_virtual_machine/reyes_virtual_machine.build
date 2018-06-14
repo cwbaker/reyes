@@ -23,7 +23,7 @@ for _, build in build:default_builds('cc_.*') do
             'not_equal.cpp';
             'promote.cpp';
             'subtract.cpp';
-            -- 'subtract_assign.cp';
+            'subtract_assign.cpp';
         };
     };
 end

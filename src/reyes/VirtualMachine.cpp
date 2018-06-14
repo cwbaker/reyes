@@ -29,6 +29,7 @@
 #include <reyes/reyes_virtual_machine/logical_or.hpp>
 #include <reyes/reyes_virtual_machine/assign.hpp>
 #include <reyes/reyes_virtual_machine/add_assign.hpp>
+#include <reyes/reyes_virtual_machine/subtract_assign.hpp>
 #include <reyes/reyes_virtual_machine/multiply_assign.hpp>
 #include <reyes/reyes_virtual_machine/divide_assign.hpp>
 #include <reyes/reyes_virtual_machine/promote.hpp>
@@ -972,6 +973,21 @@ void VirtualMachine::execute_add_assign()
     const shared_ptr<Value>& rhs = registers_[argument()];
     const unsigned char* mask = rhs->storage() == STORAGE_VARYING ? get_mask() : NULL;
     add_assign( 
+        dispatch, 
+        reinterpret_cast<float*>(result->values()),
+        reinterpret_cast<const float*>(rhs->values()),
+        mask,
+        rhs->size()
+    );
+}
+
+void VirtualMachine::execute_subtract_assign()
+{
+    int dispatch = word();
+    shared_ptr<Value> result = registers_[argument()];
+    const shared_ptr<Value>& rhs = registers_[argument()];
+    const unsigned char* mask = rhs->storage() == STORAGE_VARYING ? get_mask() : NULL;
+    subtract_assign( 
         dispatch, 
         reinterpret_cast<float*>(result->values()),
         reinterpret_cast<const float*>(rhs->values()),
