@@ -253,23 +253,6 @@ void Value::reset( ValueType type, ValueStorage storage, unsigned int capacity )
     size_ = capacity;
 }
 
-void Value::convert( ValueType type )
-{
-    REYES_ASSERT( storage_ == STORAGE_CONSTANT || storage_ == STORAGE_UNIFORM );
-    
-    if ( type == TYPE_COLOR || type == TYPE_POINT || type == TYPE_VECTOR || type == TYPE_NORMAL )
-    {
-        REYES_ASSERT( type == TYPE_FLOAT || type == TYPE_COLOR || type == TYPE_POINT || type == TYPE_VECTOR || type == TYPE_NORMAL );
-        if ( type_ == TYPE_FLOAT )
-        {
-            float value = *float_values();
-            reset( type, storage_, 1 );
-            vec3* values = vec3_values();
-            values[0] = vec3( value, value, value );
-        }
-    }
-}
-
 bool Value::empty() const
 {
     return size_ == 0;
@@ -310,7 +293,6 @@ math::vec3* Value::vec3_values() const
 
 math::mat4x4* Value::mat4x4_values() const
 {
-    REYES_ASSERT( type_ == TYPE_MATRIX );
     return reinterpret_cast<math::mat4x4*>( values_ );
 }
 
@@ -328,47 +310,6 @@ math::vec3 Value::vec3_value() const
     REYES_ASSERT( storage_ == STORAGE_UNIFORM );
     REYES_ASSERT( size_ == 1 );
     return *(const vec3*) values_;
-}
-
-void Value::float_to_vec3( ValueType type, std::shared_ptr<Value> value )
-{
-    REYES_ASSERT( value );
-    REYES_ASSERT( value->type() == TYPE_FLOAT );
-    REYES_ASSERT( type == TYPE_COLOR || type == TYPE_POINT || type == TYPE_VECTOR || type == TYPE_NORMAL );
-    
-    reset( type, value->storage(), value->size() );
-    size_ = value->size();
-    
-    const int size = size_;
-    vec3* values = vec3_values();
-    const float* other_values = value->float_values();
-    for ( int i = 0; i < size; ++i )
-    {
-        values[i] = vec3( other_values[i], other_values[i], other_values[i] );
-    }
-}
-
-void Value::float_to_mat4x4( std::shared_ptr<Value> value )
-{
-    REYES_ASSERT( value );
-    REYES_ASSERT( value->type() == TYPE_FLOAT );
-
-    reset( TYPE_MATRIX, value->storage(), value->size() );
-    size_ = value->size();
-    
-    const int size = size_;
-    mat4x4* values = mat4x4_values();
-    const float* other_values = value->float_values();
-    for ( int i = 0; i < size; ++i )
-    {
-        float x = other_values[i];
-        values[i] = mat4x4( 
-            x, 0.0f, 0.0f, 0.0f,
-            0.0f, x, 0.0f, 0.0f,
-            0.0f, 0.0f, x, 0.0f,
-            0.0f, 0.0f, 0.0f, x
-        );
-    }
 }
 
 /**

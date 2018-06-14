@@ -527,27 +527,14 @@ int CodeGenerator::generate_type_conversion( int register_index, const SyntaxNod
     {
         REYES_ASSERT( node.original_type() == TYPE_FLOAT );
         REYES_ASSERT( node.type() != TYPE_FLOAT );
-        static const Instruction INSTRUCTION_BY_TYPE [TYPE_COUNT] = 
-        {
-            INSTRUCTION_NULL, // NULL
-            INSTRUCTION_NULL, // INTEGER
-            INSTRUCTION_NULL, // FLOAT
-            INSTRUCTION_FLOAT_TO_COLOR, // COLOR
-            INSTRUCTION_FLOAT_TO_POINT, // POINT
-            INSTRUCTION_FLOAT_TO_VECTOR, // VECTOR
-            INSTRUCTION_FLOAT_TO_NORMAL, // NORMAL
-            INSTRUCTION_FLOAT_TO_MATRIX, // MATRIX
-            INSTRUCTION_NULL // STRING
-        };
         
         ValueType to_type = node.type();
-        REYES_ASSERT( INSTRUCTION_BY_TYPE[to_type] != INSTRUCTION_NULL );
-        if ( INSTRUCTION_BY_TYPE[to_type] != INSTRUCTION_NULL )
+        if ( node.type() != node.original_type() )
         {
-            instruction( 
-                INSTRUCTION_BY_TYPE[to_type],
-                node.original_type(), node.storage(),
-                node.type(), node.storage()
+            instruction(
+                INSTRUCTION_CONVERT,
+                node.type(), node.storage(),
+                node.original_type(), node.storage()
             );
             argument( register_index );
             register_index = allocate_register();

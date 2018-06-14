@@ -1,15 +1,10 @@
-#ifndef SWEET_FX_CONVERT_HPP_INCLUDED
-#define SWEET_FX_CONVERT_HPP_INCLUDED
+#ifndef REYES_CONVERT_HPP_INCLUDED
+#define REYES_CONVERT_HPP_INCLUDED
 
-namespace sweet
+namespace reyes
 {
 
-namespace fx
-{
-
-void convert( int dispatch, float* result, const float* rhs );
-
-}
+void convert( int dispatch, float* result, const float* rhs, int length );
 
 }
 

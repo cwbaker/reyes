@@ -57,7 +57,6 @@ public:
     void clear();
     void reserve( unsigned int capacity );
     void reset( ValueType type, ValueStorage storage, unsigned int capacity );
-    void convert( ValueType type );
 
     bool empty() const;
     void set_string( const std::string& value );
@@ -70,8 +69,6 @@ public:
     float float_value() const;
     math::vec3 vec3_value() const;
     
-    void float_to_vec3( ValueType type, std::shared_ptr<Value> value );
-    void float_to_mat4x4( std::shared_ptr<Value> value );
     void light_to_surface_vector( std::shared_ptr<Value> position, const math::vec3& light_position );
     void surface_to_light_vector( std::shared_ptr<Value> position, const Light* light );
     void illuminance_axis_angle( std::shared_ptr<Value> position, std::shared_ptr<Value> axis, std::shared_ptr<Value> angle, const Light* light );

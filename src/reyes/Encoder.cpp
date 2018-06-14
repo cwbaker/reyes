@@ -108,22 +108,22 @@ unsigned int Encoder::dispatch_by_type_and_storage( int type, int storage ) cons
     {
         case TYPE_INTEGER:
         case TYPE_FLOAT:
-            dispatch_by_type = 1;
+            dispatch_by_type = 0;
             break;
 
         case TYPE_COLOR:
         case TYPE_POINT:
         case TYPE_VECTOR:
         case TYPE_NORMAL:
-            dispatch_by_type = 3;
+            dispatch_by_type = 2;
             break;
 
         case TYPE_MATRIX:
-            dispatch_by_type = 16;
+            dispatch_by_type = 15;
             break;
 
         case TYPE_STRING:
-            dispatch_by_type = 1;
+            dispatch_by_type = 0;
             break;
 
         default:
@@ -133,5 +133,5 @@ unsigned int Encoder::dispatch_by_type_and_storage( int type, int storage ) cons
     }
 
     unsigned int dispatch_by_storage = storage == STORAGE_VARYING ? DISPATCH_VARYING : DISPATCH_UNIFORM;
-    return dispatch_by_type | dispatch_by_storage;
+    return dispatch_by_storage | dispatch_by_type;
 }

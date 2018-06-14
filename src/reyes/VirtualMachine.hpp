@@ -90,12 +90,8 @@ private:
     void execute_equal();
     void execute_not_equal();
     void execute_negate();
+    void execute_convert();
     void execute_promote();
-    void execute_float_to_color();
-    void execute_float_to_point();
-    void execute_float_to_vector();
-    void execute_float_to_normal();
-    void execute_float_to_matrix();
     void execute_assign();
     void execute_assign_mat4x4();
     void execute_assign_string();

@@ -33,6 +33,7 @@
 #include <reyes/reyes_virtual_machine/multiply_assign.hpp>
 #include <reyes/reyes_virtual_machine/divide_assign.hpp>
 #include <reyes/reyes_virtual_machine/promote.hpp>
+#include <reyes/reyes_virtual_machine/convert.hpp>
 #include <reyes/reyes_virtual_machine/Dispatch.hpp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
@@ -372,28 +373,12 @@ void VirtualMachine::execute()
                 execute_negate();
                 break;
                 
+            case INSTRUCTION_CONVERT:
+                execute_convert();
+                break;
+
             case INSTRUCTION_PROMOTE:
                 execute_promote();
-                break;
-            
-            case INSTRUCTION_FLOAT_TO_COLOR:
-                execute_float_to_color();
-                break;
-            
-            case INSTRUCTION_FLOAT_TO_POINT:
-                execute_float_to_point();
-                break;
-            
-            case INSTRUCTION_FLOAT_TO_VECTOR:
-                execute_float_to_vector();
-                break;
-            
-            case INSTRUCTION_FLOAT_TO_NORMAL:
-                execute_float_to_normal();
-                break;
-            
-            case INSTRUCTION_FLOAT_TO_MATRIX:
-                execute_float_to_matrix();
                 break;
             
             case INSTRUCTION_ASSIGN:
@@ -879,6 +864,42 @@ void VirtualMachine::execute_negate()
     negate( dispatch, reinterpret_cast<float*>(result->values()), reinterpret_cast<const float*>(value->values()), value->size() );
 }
 
+void VirtualMachine::execute_convert()
+{
+    int dispatch = word();
+    ValueType type = TYPE_NULL;
+    switch ( dispatch >> 8 )
+    {
+        case DISPATCH_U1:
+        case DISPATCH_V1:
+            type = TYPE_FLOAT;
+            break;
+
+        case DISPATCH_U3:
+        case DISPATCH_V3:
+            type = TYPE_VECTOR;
+            break;
+
+        case DISPATCH_U16:
+        case DISPATCH_V16:
+            type = TYPE_MATRIX;
+            break;
+
+        default:
+            break;
+    }    
+
+    shared_ptr<Value> result = registers_[allocate_register()];
+    const shared_ptr<Value>& rhs = registers_[argument()];
+    result->reset( type, rhs->storage(), rhs->size() );
+    convert( 
+        dispatch,
+        reinterpret_cast<float*>(result->values()),
+        reinterpret_cast<const float*>(rhs->values()),
+        rhs->size()
+    );
+}
+
 void VirtualMachine::execute_promote()
 {
     int dispatch = word();
@@ -891,46 +912,6 @@ void VirtualMachine::execute_promote()
         reinterpret_cast<const float*>(rhs->values()),
         grid_->size()
     );
-}
-
-void VirtualMachine::execute_float_to_color()
-{
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    int rhs = argument();
-    result->float_to_vec3( TYPE_COLOR, registers_[rhs] );
-}
-
-void VirtualMachine::execute_float_to_point()
-{
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    int rhs = argument();
-    result->float_to_vec3( TYPE_POINT, registers_[rhs] );
-}
-
-void VirtualMachine::execute_float_to_vector()
-{
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    int rhs = argument();
-    result->float_to_vec3( TYPE_VECTOR, registers_[rhs] );
-}
-
-void VirtualMachine::execute_float_to_normal()
-{
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    int rhs = argument();
-    result->float_to_vec3( TYPE_NORMAL, registers_[rhs] );
-}
-
-void VirtualMachine::execute_float_to_matrix()
-{
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    int rhs = argument();
-    result->float_to_mat4x4( registers_[rhs] );
 }
 
 void VirtualMachine::execute_assign()
