@@ -295,19 +295,16 @@ const math::mat4x4& Value::mat4x4_value() const
 
 int* Value::int_values() const
 {
-    REYES_ASSERT( type_ == TYPE_INTEGER );
     return reinterpret_cast<int*>( values_ );
 }
 
 float* Value::float_values() const
 {
-    REYES_ASSERT( type_ == TYPE_FLOAT );
     return reinterpret_cast<float*>( values_ );
 }
 
 math::vec3* Value::vec3_values() const
 {
-    REYES_ASSERT( type_ == TYPE_COLOR || type_ == TYPE_POINT || type_ == TYPE_VECTOR || type_ == TYPE_NORMAL );
     return reinterpret_cast<math::vec3*>( values_ );
 }
 
