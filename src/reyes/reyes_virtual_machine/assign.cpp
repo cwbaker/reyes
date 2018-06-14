@@ -400,6 +400,33 @@ void assign_v4v4( float* result, const float* rhs, const unsigned char* mask, un
     }
 }
 
+void assign_v16v16( float* result, const float* rhs, const unsigned char* mask, unsigned int length )
+{
+    if ( !mask )
+    {
+        for ( unsigned int i = 0; i < length; ++i )
+        {
+            for ( unsigned int j = 0; j < 16; ++j )
+            {
+                result[i * 16 + j] = rhs[i * 16 + j];
+            }
+        }
+    }
+    else
+    {
+        for ( unsigned int i = 0; i < length; ++i )
+        {
+            if ( mask[i] )
+            {
+                for ( unsigned int j = 0; j < 16; ++j )
+                {
+                    result[i * 16 + j] = rhs[i * 16 + j];
+                }
+            }
+        }
+    }
+}
+
 void assign( int dispatch, float* result, const float* rhs, const unsigned char* mask, unsigned int length )
 {
     REYES_ASSERT( result );
@@ -433,6 +460,10 @@ void assign( int dispatch, float* result, const float* rhs, const unsigned char*
 
         case DISPATCH_U4U4:
             assign_u4u4( result, rhs, length );
+            break;
+
+        case DISPATCH_U16U16:
+            assign_v16v16( result, rhs, nullptr, 1 );
             break;
 
         case DISPATCH_V1U1:
@@ -489,6 +520,10 @@ void assign( int dispatch, float* result, const float* rhs, const unsigned char*
 
         case DISPATCH_V4V4:
             assign_v4v4( result, rhs, mask, length );
+            break;
+
+        case DISPATCH_V16V16:
+            assign_v16v16( result, rhs, mask, length );
             break;
 
         default:

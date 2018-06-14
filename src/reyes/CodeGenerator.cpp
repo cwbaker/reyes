@@ -439,8 +439,8 @@ int CodeGenerator::assign_instruction_from_type( int instruction, ValueType type
         0, // POINT
         0, // VECTOR
         0, // NORMAL
-        1, // MATRIX
-        2 // STRING
+        0, // MATRIX
+        1 // STRING
     };
     return instruction + INSTRUCTION_OFFSET_BY_TYPE[type];
 }
@@ -1016,15 +1016,15 @@ int CodeGenerator::generate_expression( const SyntaxNode& node )
             break;
             
         case SHADER_NODE_SUBTRACT_ASSIGN:
-            REYES_ASSERT( false );
+            index = generate_code_for_assign_expression( INSTRUCTION_SUBTRACT_ASSIGN, node );
             break;
             
         case SHADER_NODE_MULTIPLY_ASSIGN:
-            REYES_ASSERT( false );
+            index = generate_code_for_assign_expression( INSTRUCTION_MULTIPLY_ASSIGN, node );
             break;
             
         case SHADER_NODE_DIVIDE_ASSIGN:
-            REYES_ASSERT( false );
+            index = generate_code_for_assign_expression( INSTRUCTION_DIVIDE_ASSIGN, node );
             break;
             
         case SHADER_NODE_INTEGER:

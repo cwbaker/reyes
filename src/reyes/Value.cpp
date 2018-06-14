@@ -473,35 +473,6 @@ void Value::transform_matrix( const math::mat4x4& m, std::shared_ptr<Value> valu
     }
 }
 
-void Value::assign_mat4x4( std::shared_ptr<Value> value, const unsigned char* mask )
-{
-    REYES_ASSERT( value );
-    
-    reset( value->type(), value->storage(), value->size() );
-               
-    mat4x4* values = mat4x4_values();
-    const mat4x4* other_values = value->mat4x4_values();
-    const int size = value->size();
-
-    if ( !mask )
-    {
-        for ( int i = 0; i < size; ++i )
-        {
-            values[i] = other_values[i];
-        }
-    }
-    else
-    {
-        for ( int i = 0; i < size; ++i )
-        {
-            if ( mask[i] )
-            {
-                values[i] = other_values[i];
-            }
-        }
-    }
-}
-
 void Value::assign_string( std::shared_ptr<Value> value, const unsigned char* mask )
 {
     REYES_ASSERT( value );

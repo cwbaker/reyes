@@ -93,7 +93,6 @@ private:
     void execute_convert();
     void execute_promote();
     void execute_assign();
-    void execute_assign_mat4x4();
     void execute_assign_string();
     void execute_add_assign();
     void execute_subtract_assign();

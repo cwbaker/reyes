@@ -384,11 +384,7 @@ void VirtualMachine::execute()
             case INSTRUCTION_ASSIGN:
                 execute_assign();
                 break;
-            
-            case INSTRUCTION_ASSIGN_MAT4X4:
-                execute_assign_mat4x4();
-                break;
-            
+                        
             case INSTRUCTION_ASSIGN_STRING:
                 execute_assign_string();
                 break;
@@ -920,6 +916,7 @@ void VirtualMachine::execute_assign()
     shared_ptr<Value> result = registers_[argument()];
     const shared_ptr<Value>& rhs = registers_[argument()];
     const unsigned char* mask = rhs->storage() == STORAGE_VARYING ? get_mask() : NULL;
+    result->reset( rhs->type(), rhs->storage(), rhs->size() );
     assign(
         dispatch,
         reinterpret_cast<float*>(result->values()),
@@ -927,15 +924,6 @@ void VirtualMachine::execute_assign()
         mask,
         rhs->size()
     );
-}
-
-void VirtualMachine::execute_assign_mat4x4()
-{
-    word();
-    shared_ptr<Value> result = registers_[argument()];
-    shared_ptr<Value> value = registers_[argument()];
-    const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
-    result->assign_mat4x4( value, mask );
 }
 
 void VirtualMachine::execute_assign_string()
