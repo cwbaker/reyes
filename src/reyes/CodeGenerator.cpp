@@ -562,8 +562,9 @@ int CodeGenerator::generate_storage_promotion( int register_index, const SyntaxN
     {
         REYES_ASSERT( node.storage() == STORAGE_VARYING );
         instruction( 
-            promote_instruction_from_type(INSTRUCTION_PROMOTE_INTEGER, node.type()),
-            node.type(), node.storage() 
+            INSTRUCTION_PROMOTE,
+            node.type(), node.storage(),
+            node.type(), node.original_storage()
         );
         argument( register_index );
         register_index = allocate_register();

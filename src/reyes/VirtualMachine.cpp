@@ -30,6 +30,7 @@
 #include <reyes/reyes_virtual_machine/assign.hpp>
 #include <reyes/reyes_virtual_machine/add_assign.hpp>
 #include <reyes/reyes_virtual_machine/multiply_assign.hpp>
+#include <reyes/reyes_virtual_machine/promote.hpp>
 #include <reyes/reyes_virtual_machine/Dispatch.hpp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
@@ -369,16 +370,8 @@ void VirtualMachine::execute()
                 execute_negate();
                 break;
                 
-            case INSTRUCTION_PROMOTE_INTEGER:
-                execute_promote_integer();
-                break;
-            
-            case INSTRUCTION_PROMOTE_FLOAT:
-                execute_promote_float();
-                break;
-            
-            case INSTRUCTION_PROMOTE_VEC3:
-                execute_promote_vec3();
+            case INSTRUCTION_PROMOTE:
+                execute_promote();
                 break;
             
             case INSTRUCTION_FLOAT_TO_COLOR:
@@ -880,28 +873,18 @@ void VirtualMachine::execute_negate()
     negate( dispatch, reinterpret_cast<float*>(result->values()), reinterpret_cast<const float*>(value->values()), value->size() );
 }
 
-void VirtualMachine::execute_promote_integer()
+void VirtualMachine::execute_promote()
 {
-    word();
+    int dispatch = word();
     shared_ptr<Value> result = registers_[allocate_register()];
-    int rhs = argument();
-    result->promote_integer( grid_->size(), registers_[rhs] );
-}
-
-void VirtualMachine::execute_promote_float()
-{
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    int rhs = argument();
-    result->promote_float( grid_->size(), registers_[rhs] );
-}
-
-void VirtualMachine::execute_promote_vec3()
-{
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    int rhs = argument();
-    result->promote_vec3( grid_->size(), registers_[rhs] );
+    const shared_ptr<Value>& rhs = registers_[argument()];
+    result->reset( rhs->type(), STORAGE_VARYING, grid_->size() );
+    promote( 
+        dispatch,
+        reinterpret_cast<float*>(result->values()),
+        reinterpret_cast<const float*>(rhs->values()),
+        grid_->size()
+    );
 }
 
 void VirtualMachine::execute_float_to_color()

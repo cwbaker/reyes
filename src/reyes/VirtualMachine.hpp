@@ -90,9 +90,7 @@ private:
     void execute_equal();
     void execute_not_equal();
     void execute_negate();
-    void execute_promote_integer();
-    void execute_promote_float();
-    void execute_promote_vec3();
+    void execute_promote();
     void execute_float_to_color();
     void execute_float_to_point();
     void execute_float_to_vector();

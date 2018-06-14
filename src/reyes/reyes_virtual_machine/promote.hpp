@@ -1,15 +1,10 @@
-#ifndef SWEET_FX_PROMOTE_HPP_INCLUDED
-#define SWEET_FX_PROMOTE_HPP_INCLUDED
+#ifndef REYES_PROMOTE_HPP_INCLUDED
+#define REYES_PROMOTE_HPP_INCLUDED
 
-namespace sweet
-{
-
-namespace fx
+namespace reyes
 {
 
 void promote( int dispatch, float* result, const float* rhs, unsigned int length );
-
-}
 
 }
 

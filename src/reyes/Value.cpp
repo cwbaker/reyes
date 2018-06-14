@@ -535,57 +535,6 @@ void Value::transform_matrix( const math::mat4x4& m, std::shared_ptr<Value> valu
     }
 }
 
-void Value::promote_integer( int size, std::shared_ptr<Value> other_value )
-{
-    REYES_ASSERT( size >= 1 );
-    REYES_ASSERT( other_value );
-    REYES_ASSERT( other_value->storage() == STORAGE_UNIFORM );
-    
-    reset( other_value->type(), STORAGE_VARYING, size );
-    size_ = capacity_;
-
-    int value = other_value->int_values()[0];
-    int* values = int_values();
-    for ( int i = 0; i < size; ++i )
-    {
-        values[i] = value;
-    }
-}
- 
-void Value::promote_float( int size, std::shared_ptr<Value> other_value )
-{
-    REYES_ASSERT( size >= 1 );
-    REYES_ASSERT( other_value );
-    REYES_ASSERT( other_value->storage() == STORAGE_UNIFORM );
-    
-    reset( other_value->type(), STORAGE_VARYING, size );
-    size_ = capacity_;
-
-    float value = other_value->float_values()[0];
-    float* values = float_values();
-    for ( int i = 0; i < size; ++i )
-    {
-        values[i] = value;
-    }
-}
- 
-void Value::promote_vec3( int size, std::shared_ptr<Value> other_value )
-{           
-    REYES_ASSERT( size >= 1 );
-    REYES_ASSERT( other_value );
-    REYES_ASSERT( other_value->storage() == STORAGE_UNIFORM );
-    
-    reset( other_value->type(), STORAGE_VARYING, size );
-    size_ = capacity_;
-
-    vec3 value = other_value->vec3_values()[0];
-    vec3* values = vec3_values();
-    for ( int i = 0; i < size; ++i )
-    {
-        values[i] = value;
-    }
-}
-
 void Value::assign_vec3( std::shared_ptr<Value> value, const unsigned char* mask )
 {
     REYES_ASSERT( value );
