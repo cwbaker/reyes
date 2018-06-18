@@ -279,9 +279,9 @@ SymbolTable::SymbolTable()
             ( TYPE_COLOR, STORAGE_UNIFORM )( TYPE_COLOR, STORAGE_UNIFORM )( TYPE_FLOAT, STORAGE_UNIFORM )
         ( "mix", &mix_vec3, TYPE_COLOR, STORAGE_VARYING )
             ( TYPE_COLOR, STORAGE_VARYING )( TYPE_COLOR, STORAGE_VARYING )( TYPE_FLOAT, STORAGE_VARYING )
-        ( "ctransform", &ctransform, TYPE_COLOR )
+        ( "ctransform", &ctransform_function, TYPE_COLOR )
             ( TYPE_STRING, STORAGE_UNIFORM )( TYPE_COLOR )
-        ( "ctransform", &ctransform, TYPE_COLOR, STORAGE_UNIFORM )
+        ( "ctransform", &ctransform_function, TYPE_COLOR, STORAGE_UNIFORM )
             ( TYPE_STRING, STORAGE_UNIFORM )( TYPE_COLOR, STORAGE_UNIFORM )
     ;
     
