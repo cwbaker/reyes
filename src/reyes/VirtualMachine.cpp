@@ -35,6 +35,7 @@
 #include <reyes/reyes_virtual_machine/divide_assign.hpp>
 #include <reyes/reyes_virtual_machine/promote.hpp>
 #include <reyes/reyes_virtual_machine/convert.hpp>
+#include <reyes/reyes_virtual_machine/transform.hpp>
 #include <reyes/reyes_virtual_machine/Dispatch.hpp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
@@ -603,12 +604,19 @@ void VirtualMachine::execute_jump()
 
 void VirtualMachine::execute_transform()
 {
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    int fromspace = argument();
-    int point = argument();
+    int dispatch = word();
+    const shared_ptr<Value>& result = registers_[allocate_register()];
+    const shared_ptr<Value>& fromspace = registers_[argument()];
+    const shared_ptr<Value>& point = registers_[argument()];
     REYES_ASSERT( renderer_ );
-    result->transform( renderer_->transform_from(registers_[fromspace]->string_value()), registers_[point] );
+    result->reset( point->type(), point->storage(), point->size() );
+    transform( 
+        dispatch,
+        result->vec3_values(),
+        renderer_->transform_from( fromspace->string_value() ),
+        point->vec3_values(),
+        point->size()
+    );
 }
 
 void VirtualMachine::execute_transform_vector()

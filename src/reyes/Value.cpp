@@ -411,21 +411,6 @@ void Value::illuminance_axis_angle( std::shared_ptr<Value> position, std::shared
     }        
 }
 
-void Value::transform( const math::mat4x4& m, std::shared_ptr<Value> p )
-{
-    REYES_ASSERT( p );
-    REYES_ASSERT( p->type() == TYPE_POINT || p->type() == TYPE_VECTOR || p->type() == TYPE_NORMAL );
-
-    reset( p->type(), p->storage(), p->size() );
-
-    const vec3* p_values = p->vec3_values();
-    vec3* values = vec3_values();
-    for ( unsigned int i = 0; i < p->size(); ++i )
-    {
-        values[i] = vec3( m * vec4(p_values[i], 1.0f) );
-    }
-}
-
 void Value::vtransform( const math::mat4x4& m, std::shared_ptr<Value> v )
 {
     REYES_ASSERT( v );

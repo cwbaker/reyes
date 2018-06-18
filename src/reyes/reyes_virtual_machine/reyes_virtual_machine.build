@@ -25,6 +25,7 @@ for _, build in build:default_builds('cc_.*') do
             'promote.cpp';
             'subtract.cpp';
             'subtract_assign.cpp';
+            'transform.cpp';
         };
     };
 end

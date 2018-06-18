@@ -1150,13 +1150,16 @@ int CodeGenerator::generate_vec3_typecast_expression( const SyntaxNode& node )
     int index = SyntaxNode::REGISTER_NULL;
     if ( !node.node(0)->nodes().empty() )
     {
-        int arg0 = generate_expression( *node.node(0)->node(0) );
-        int arg1 = generate_expression( *node.node(1) );
+        const SyntaxNode* space_expression = node.node( 0 )->node( 0 );
+        int arg0 = generate_expression( *space_expression );
+
+        const SyntaxNode* value_expression = node.node( 1 );
+        int arg1 = generate_expression( *value_expression );
 
         switch ( node.node(0)->node_type() )
         {
             case SHADER_NODE_POINT_TYPE:
-                instruction( INSTRUCTION_TRANSFORM );
+                instruction( INSTRUCTION_TRANSFORM, value_expression->type(), value_expression->storage() );
                 break;
             
             case SHADER_NODE_VECTOR_TYPE:

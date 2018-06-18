@@ -10,6 +10,8 @@
 #include "Value.hpp"
 #include "Renderer.hpp"
 #include "Attributes.hpp"
+#include <reyes/reyes_virtual_machine/Dispatch.hpp>
+#include <reyes/reyes_virtual_machine/transform.hpp>
 #include <math/scalar.ipp>
 #include <math/vec3.ipp>
 #include <math/mat4x4.ipp>
@@ -416,8 +418,13 @@ void transform_mv( const Renderer& renderer, const Grid& grid, std::shared_ptr<V
     REYES_ASSERT( m->type() == TYPE_MATRIX );
     REYES_ASSERT( p );
     REYES_ASSERT( p->type() == TYPE_POINT || p->type() == TYPE_VECTOR || p->type() == TYPE_NORMAL );
-    
-    result->transform( m->mat4x4_values()[0], p );
+    transform( 
+        p->size() > 1 ? DISPATCH_V3 : DISPATCH_U3,
+        result->vec3_values(),
+        m->mat4x4_value(),
+        p->vec3_values(),
+        p->size()
+    );
 }
 
 void transform_smv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
