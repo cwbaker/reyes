@@ -9,6 +9,7 @@ for _, build in build:default_builds('cc_.*') do
             'divide.cpp';
             'divide_assign.cpp';
             -- 'dt.cpp';
+            'dot.cpp';
             'equal.cpp';
             'greater.cpp';
             'greater_equal.cpp';

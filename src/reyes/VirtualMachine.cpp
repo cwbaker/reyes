@@ -15,10 +15,11 @@
 #include "Instruction.hpp"
 #include "color_functions.hpp"
 #include <reyes/reyes_virtual_machine/add.hpp>
-#include <reyes/reyes_virtual_machine/divide.hpp>
-#include <reyes/reyes_virtual_machine/multiply.hpp>
-#include <reyes/reyes_virtual_machine/negate.hpp>
 #include <reyes/reyes_virtual_machine/subtract.hpp>
+#include <reyes/reyes_virtual_machine/multiply.hpp>
+#include <reyes/reyes_virtual_machine/divide.hpp>
+#include <reyes/reyes_virtual_machine/dot.hpp>
+#include <reyes/reyes_virtual_machine/negate.hpp>
 #include <reyes/reyes_virtual_machine/equal.hpp>
 #include <reyes/reyes_virtual_machine/not_equal.hpp>
 #include <reyes/reyes_virtual_machine/greater.hpp>
@@ -652,11 +653,19 @@ void VirtualMachine::execute_transform_matrix()
 
 void VirtualMachine::execute_dot()
 {
-    word();
+    int dispatch = word();
     shared_ptr<Value> result = registers_[allocate_register()];
-    int lhs = argument();
-    int rhs = argument();
-    result->dot_vec3( registers_[lhs], registers_[rhs] );
+    const shared_ptr<Value>& lhs = registers_[argument()];
+    const shared_ptr<Value>& rhs = registers_[argument()];
+    const unsigned int length = max( lhs->size(), rhs->size() );
+    result->reset( TYPE_FLOAT, max(lhs->storage(), rhs->storage()), length );
+    dot( 
+        dispatch, 
+        reinterpret_cast<float*>(result->values()),
+        reinterpret_cast<const float*>(lhs->values()),
+        reinterpret_cast<const float*>(rhs->values()),
+        length
+    );
 }
 
 void VirtualMachine::execute_multiply()
