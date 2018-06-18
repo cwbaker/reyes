@@ -36,6 +36,7 @@
 #include <reyes/reyes_virtual_machine/promote.hpp>
 #include <reyes/reyes_virtual_machine/convert.hpp>
 #include <reyes/reyes_virtual_machine/transform.hpp>
+#include <reyes/reyes_virtual_machine/vtransform.hpp>
 #include <reyes/reyes_virtual_machine/Dispatch.hpp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
@@ -621,12 +622,19 @@ void VirtualMachine::execute_transform()
 
 void VirtualMachine::execute_transform_vector()
 {
-    word();
+    int dispatch = word();
     shared_ptr<Value> result = registers_[allocate_register()];
-    int fromspace = argument();
-    int vector = argument();
+    const shared_ptr<Value>& fromspace = registers_[argument()];
+    const shared_ptr<Value>& vector = registers_[argument()];
     REYES_ASSERT( renderer_ );
-    result->vtransform( renderer_->transform_from(registers_[fromspace]->string_value()), registers_[vector] );
+    result->reset( vector->type(), vector->storage(), vector->size() );
+    vtransform( 
+        dispatch,
+        result->vec3_values(),
+        renderer_->transform_from( fromspace->string_value() ),
+        vector->vec3_values(),
+        vector->size()
+    );
 }
 
 void VirtualMachine::execute_transform_normal()

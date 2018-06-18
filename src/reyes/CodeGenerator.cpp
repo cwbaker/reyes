@@ -1163,7 +1163,7 @@ int CodeGenerator::generate_vec3_typecast_expression( const SyntaxNode& node )
                 break;
             
             case SHADER_NODE_VECTOR_TYPE:
-                instruction( INSTRUCTION_TRANSFORM_VECTOR );
+                instruction( INSTRUCTION_TRANSFORM_VECTOR, value_expression->type(), value_expression->storage() );
                 break;
 
             case SHADER_NODE_NORMAL_TYPE:
