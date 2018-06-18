@@ -17,6 +17,7 @@ for _, build in build:default_builds('cc_.*') do
             'less_equal.cpp';
             'logical_and.cpp';
             'logical_or.cpp';
+            'mtransform.cpp';
             'multiply.cpp';
             'multiply_assign.cpp';
             'negate.cpp';

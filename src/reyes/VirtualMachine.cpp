@@ -38,6 +38,7 @@
 #include <reyes/reyes_virtual_machine/transform.hpp>
 #include <reyes/reyes_virtual_machine/vtransform.hpp>
 #include <reyes/reyes_virtual_machine/ntransform.hpp>
+#include <reyes/reyes_virtual_machine/mtransform.hpp>
 #include <reyes/reyes_virtual_machine/Dispatch.hpp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
@@ -667,12 +668,19 @@ void VirtualMachine::execute_transform_color()
 
 void VirtualMachine::execute_transform_matrix()
 {
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    int tospace = argument();
-    int matrix = argument();
+    int dispatch = word();
+    const shared_ptr<Value>& result = registers_[allocate_register()];
+    const shared_ptr<Value>& tospace = registers_[argument()];
+    const shared_ptr<Value>& matrix = registers_[argument()];
     REYES_ASSERT( renderer_ );
-    result->transform_matrix( renderer_->transform_to(registers_[tospace]->string_value()), registers_[matrix] );
+    result->reset( TYPE_MATRIX, matrix->storage(), matrix->size() );
+    mtransform( 
+        dispatch,
+        result->mat4x4_values(),
+        renderer_->transform_to(tospace->string_value()),
+        matrix->mat4x4_values(),
+        matrix->size()
+    );
 }
 
 void VirtualMachine::execute_dot()

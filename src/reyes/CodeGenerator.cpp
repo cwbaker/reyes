@@ -1199,9 +1199,11 @@ int CodeGenerator::generate_mat4x4_typecast_expression( const SyntaxNode& node )
     if ( !node.node(0)->nodes().empty() )
     {
         REYES_ASSERT( node.node(0)->node_type() == SHADER_NODE_MATRIX_TYPE );
-        int arg0 = generate_expression( *node.node(0)->node(0) );
-        int arg1 = generate_expression( *node.node(1) );
-        instruction( INSTRUCTION_TRANSFORM_MATRIX );
+        const SyntaxNode* tospace_node = node.node( 0 )->node( 0 );
+        int arg0 = generate_expression( *tospace_node );
+        const SyntaxNode* value_node = node.node( 1 );
+        int arg1 = generate_expression( *value_node );
+        instruction( INSTRUCTION_TRANSFORM_MATRIX, value_node->type(), value_node->storage() );
         argument( arg0 );
         argument( arg1 );
         index = allocate_register();

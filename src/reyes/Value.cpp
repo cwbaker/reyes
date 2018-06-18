@@ -411,22 +411,6 @@ void Value::illuminance_axis_angle( std::shared_ptr<Value> position, std::shared
     }        
 }
 
-void Value::transform_matrix( const math::mat4x4& m, std::shared_ptr<Value> value )
-{
-    REYES_ASSERT( value );
-    REYES_ASSERT( value->type() == TYPE_MATRIX );
-    
-    const int size = value->size();
-    reset( TYPE_MATRIX, value->storage(), value->size() );
-    
-    mat4x4* values = mat4x4_values();
-    const mat4x4* other_values = value->mat4x4_values();
-    for ( unsigned int i = 0; i < size; ++i )
-    {
-        values[i] = m * other_values[i];
-    }
-}
-
 void Value::assign_string( std::shared_ptr<Value> value, const unsigned char* mask )
 {
     REYES_ASSERT( value );
