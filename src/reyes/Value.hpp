@@ -80,9 +80,6 @@ public:
     void assign_vec3( std::shared_ptr<Value> value, const unsigned char* mask );
     void assign_mat4x4( std::shared_ptr<Value> value, const unsigned char* mask );
     void assign_string( std::shared_ptr<Value> value, const unsigned char* mask );
-
-    void inside_cone( std::shared_ptr<Value> direction, const math::vec3& axis, float angle );
-    void dot_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs );
     
 private:
     void allocate();

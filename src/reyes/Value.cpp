@@ -541,43 +541,6 @@ void Value::assign_string( std::shared_ptr<Value> value, const unsigned char* ma
     string_value_ = value->string_value_;
 }
 
-void Value::inside_cone( std::shared_ptr<Value> direction, const math::vec3& axis, float angle )
-{
-    REYES_ASSERT( direction );
-    REYES_ASSERT( direction->type() == TYPE_VECTOR );
-    REYES_ASSERT( direction->storage() == STORAGE_VARYING );
-    
-    unsigned int size = direction->size();
-    reset( TYPE_INTEGER, STORAGE_VARYING, size );
-    size_ = size;
-    
-    int* inside = int_values();
-    const vec3* direction_values = direction->vec3_values();
-    const float cosine = cosf( angle );
-    for ( unsigned int i = 0; i < size; ++i )
-    {
-        inside[i] = int(dot( math::normalize(direction_values[i]), axis ) >= cosine);
-    }
-}
-
-void Value::dot_vec3( std::shared_ptr<Value> lhs, std::shared_ptr<Value> rhs )
-{
-    REYES_ASSERT( lhs );
-    REYES_ASSERT( rhs );
-    REYES_ASSERT( lhs->size() == rhs->size() );
-
-    unsigned int size = lhs->size();
-    reset( TYPE_FLOAT, max(lhs->storage(), rhs->storage()), size );
-
-    const vec3* lhs_values = lhs->vec3_values();
-    const vec3* rhs_values = rhs->vec3_values();    
-    float* values = float_values();
-    for ( unsigned int i = 0; i < size; ++i )
-    {
-        values[i] = math::dot( lhs_values[i], rhs_values[i] );
-    }
-}
-
 void Value::allocate()
 {
     REYES_ASSERT( !values_ );
