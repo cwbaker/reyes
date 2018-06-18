@@ -2,6 +2,10 @@
 for _, build in build:default_builds('cc_.*') do
     build:Library '${lib}/reyes_virtual_machine_${architecture}' {
         build:Cxx () {
+            'ConditionMask.cpp';
+        };
+
+        build:Cxx () {
             'add.cpp';
             'assign.cpp';
             'add_assign.cpp';

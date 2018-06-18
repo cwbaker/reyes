@@ -1,6 +1,7 @@
 #ifndef REYES_VIRTUALMACHINE_HPP_INCLUDED
 #define REYES_VIRTUALMACHINE_HPP_INCLUDED
 
+#include <reyes/reyes_virtual_machine/ConditionMask.hpp>
 #include <math/vec4.hpp>
 #include <math/vec3.hpp>
 #include <vector>
@@ -21,18 +22,6 @@ class Renderer;
 */
 class VirtualMachine
 {
-    struct ConditionMask
-    {
-        std::vector<unsigned char> mask_; ///< The mask that specifies whether or not an element is to be processed.
-        int processed_; ///< The number of elements that are to be processed by this mask.
-
-        ConditionMask();
-        void generate( std::shared_ptr<Value> value );
-        void generate( const ConditionMask& condition_mask, std::shared_ptr<Value> value );
-        void invert();
-        bool empty() const;
-    };
-
     const Renderer* renderer_; ///< The Renderer that this virtual machine is part of.
     Grid* grid_; ///< The grid of micropolygon vertices that is currently being shaded (null if no shader is being executed).
     Shader* shader_; ///< The shader that is currently being executed (null if no shader is being executed).
@@ -42,8 +31,8 @@ class VirtualMachine
     int light_index_; ///< The index of the current light (or INT_MAX if there is no current light).
     const unsigned char* code_begin_; ///< The address of the beginning of loaded code.
     const unsigned char* code_end_; ///< The address one past the end of loaded code.
-    std::vector<ConditionMask> masks_; ///< The stack of condition masks that specify which elements to use during assignment.
     const unsigned char* code_; ///< The currently executed instruction.
+    std::vector<ConditionMask> masks_; ///< The stack of condition masks that specify which elements to use during assignment.
     
 public:
     VirtualMachine();

@@ -58,71 +58,6 @@ using std::shared_ptr;
 using namespace math;
 using namespace reyes;
 
-VirtualMachine::ConditionMask::ConditionMask()
-: mask_(),
-  processed_( 0 )
-{
-}
-
-void VirtualMachine::ConditionMask::generate( std::shared_ptr<Value> value )
-{
-    REYES_ASSERT( value );
-    REYES_ASSERT( value->type() == TYPE_INTEGER );
-    
-    const int size = value->size();
-    const int* values = value->int_values();
-
-    mask_.insert( mask_.end(), size, 0 );
-    processed_ = 0;
-    unsigned char* mask = &mask_[0];
-    for ( unsigned int i = 0; i < size; ++i )
-    {
-        int process = values[i];
-        mask[i] = process != 0;
-        processed_ += process != 0;
-    }
-}
-
-void VirtualMachine::ConditionMask::generate( const ConditionMask& condition_mask, std::shared_ptr<Value> value )
-{
-    REYES_ASSERT( value );
-    REYES_ASSERT( value->type() == TYPE_INTEGER );
-    REYES_ASSERT( condition_mask.mask_.size() == value->size() );
-    
-    const int size = value->size();
-    const int* values = value->int_values();
-    const unsigned char* existing_mask = &condition_mask.mask_[0];
-
-    mask_.insert( mask_.end(), size, 0 );
-    processed_ = 0;
-    unsigned char* mask = &mask_[0];
-    for ( unsigned int i = 0; i < size; ++i )
-    {
-        int process = values[i] && existing_mask[i];
-        mask[i] = process != 0;
-        processed_ += process != 0;
-    }
-}
-
-void VirtualMachine::ConditionMask::invert()
-{
-    const unsigned int size = mask_.size();
-    unsigned char* mask = &mask_[0];
-    
-    processed_ = 0;
-    for ( unsigned int i = 0; i < size; ++i )
-    {
-        int process = !mask[i];
-        mask[i] = process != 0;
-        processed_ += process != 0;
-    }
-}
-
-bool VirtualMachine::ConditionMask::empty() const
-{
-    return processed_ == 0;
-}
-
 VirtualMachine::VirtualMachine()
 : renderer_( NULL ),
   grid_( NULL ),
@@ -1464,7 +1399,7 @@ bool VirtualMachine::mask_empty() const
 
 const unsigned char* VirtualMachine::get_mask() const
 {
-    return !masks_.empty() ? &masks_.back().mask_[0] : NULL;
+    return !masks_.empty() ? &masks_.back().mask()[0] : NULL;
 }
 
 void VirtualMachine::reset_register( int index )
