@@ -13,6 +13,7 @@
 #include <reyes/reyes_virtual_machine/Dispatch.hpp>
 #include <reyes/reyes_virtual_machine/transform.hpp>
 #include <reyes/reyes_virtual_machine/vtransform.hpp>
+#include <reyes/reyes_virtual_machine/ntransform.hpp>
 #include <math/scalar.ipp>
 #include <math/vec3.ipp>
 #include <math/mat4x4.ipp>
@@ -528,8 +529,14 @@ void ntransform_sv( const Renderer& renderer, const Grid& grid, std::shared_ptr<
     REYES_ASSERT( tospace );
     REYES_ASSERT( tospace->type() == TYPE_STRING );
     REYES_ASSERT( p );
-    
-    result->ntransform( renderer.transform_to(tospace->string_value()), p );
+    result->reset( p->type(), p->storage(), p->size() );
+    ntransform(
+        p->size() > 1 ? DISPATCH_V3 : DISPATCH_U3,
+        result->vec3_values(),
+        renderer.transform_to(tospace->string_value()),
+        p->vec3_values(),
+        p->size()
+    );
 }
 
 void ntransform_ssv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
@@ -540,8 +547,14 @@ void ntransform_ssv( const Renderer& renderer, const Grid& grid, std::shared_ptr
     REYES_ASSERT( tospace );
     REYES_ASSERT( tospace->type() == TYPE_STRING );
     REYES_ASSERT( p );
-    
-    result->ntransform( renderer.transform_between(fromspace->string_value(), tospace->string_value()), p );
+    result->reset( p->type(), p->storage(), p->size() );
+    ntransform(
+        p->size() > 1 ? DISPATCH_V3 : DISPATCH_U3,
+        result->vec3_values(),
+        renderer.transform_between(fromspace->string_value(), tospace->string_value()),
+        p->vec3_values(),
+        p->size()
+    );
 }
 
 void ntransform_mv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
@@ -551,8 +564,14 @@ void ntransform_mv( const Renderer& renderer, const Grid& grid, std::shared_ptr<
     REYES_ASSERT( m->type() == TYPE_MATRIX );
     REYES_ASSERT( m->storage() == STORAGE_UNIFORM );
     REYES_ASSERT( p );
-    
-    result->ntransform( m->mat4x4_value(), p );
+    result->reset( p->type(), p->storage(), p->size() );
+    ntransform(
+        p->size() > 1 ? DISPATCH_V3 : DISPATCH_U3,
+        result->vec3_values(),
+        m->mat4x4_value(),
+        p->vec3_values(),
+        p->size()
+    );
 }
 
 void ntransform_smv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
@@ -564,8 +583,14 @@ void ntransform_smv( const Renderer& renderer, const Grid& grid, std::shared_ptr
     REYES_ASSERT( m->type() == TYPE_MATRIX );
     REYES_ASSERT( m->storage() == STORAGE_UNIFORM );
     REYES_ASSERT( p );
-    
-    result->ntransform( m->mat4x4_value() * renderer.transform_from(fromspace->string_value()), p );
+    result->reset( p->type(), p->storage(), p->size() );
+    ntransform(
+        p->size() > 1 ? DISPATCH_V3 : DISPATCH_U3,
+        result->vec3_values(),
+        m->mat4x4_value() * renderer.transform_from(fromspace->string_value()),
+        p->vec3_values(),
+        p->size()
+    );
 }
 
 void depth( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )

@@ -22,6 +22,7 @@ for _, build in build:default_builds('cc_.*') do
             'negate.cpp';
             -- 'normalize.cpp';
             'not_equal.cpp';
+            'ntransform.cpp';
             'promote.cpp';
             'subtract.cpp';
             'subtract_assign.cpp';
