@@ -60,7 +60,7 @@ private:
     void execute_jump_not_empty();
     void execute_jump_illuminance();
     void execute_jump();
-    void execute_transform();
+    void execute_transform_point();
     void execute_transform_vector();
     void execute_transform_normal();
     void execute_transform_color();

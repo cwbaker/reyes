@@ -237,8 +237,8 @@ void VirtualMachine::execute()
                 execute_jump();
                 break;
             
-            case INSTRUCTION_TRANSFORM:
-                execute_transform();
+            case INSTRUCTION_TRANSFORM_POINT:
+                execute_transform_point();
                 break;
                 
             case INSTRUCTION_TRANSFORM_VECTOR:
@@ -540,7 +540,7 @@ void VirtualMachine::execute_jump()
     jump( distance );
 }
 
-void VirtualMachine::execute_transform()
+void VirtualMachine::execute_transform_point()
 {
     int dispatch = word();
     const shared_ptr<Value>& result = registers_[allocate_register()];

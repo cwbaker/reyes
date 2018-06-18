@@ -1159,7 +1159,7 @@ int CodeGenerator::generate_vec3_typecast_expression( const SyntaxNode& node )
         switch ( node.node(0)->node_type() )
         {
             case SHADER_NODE_POINT_TYPE:
-                instruction( INSTRUCTION_TRANSFORM, value_expression->type(), value_expression->storage() );
+                instruction( INSTRUCTION_TRANSFORM_POINT, value_expression->type(), value_expression->storage() );
                 break;
             
             case SHADER_NODE_VECTOR_TYPE:
@@ -1176,7 +1176,7 @@ int CodeGenerator::generate_vec3_typecast_expression( const SyntaxNode& node )
 
             default:
                 REYES_ASSERT( false );
-                instruction( INSTRUCTION_TRANSFORM );
+                instruction( INSTRUCTION_HALT );
                 break;            
         }
 
