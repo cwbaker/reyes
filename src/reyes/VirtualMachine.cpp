@@ -1115,13 +1115,14 @@ void VirtualMachine::execute_call_5()
 
 void VirtualMachine::execute_ambient()
 {
-    word();
+    int dispatch = word();
+    (void) dispatch;
 
     shared_ptr<Value>& light_color = registers_[argument()];
-    light_color.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
-    light_color->zero();
-    
     shared_ptr<Value>& light_opacity = registers_[argument()];
+
+    light_color.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
+    light_color->zero();    
     light_opacity.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
     light_opacity->zero();
     
@@ -1131,37 +1132,37 @@ void VirtualMachine::execute_ambient()
 
 void VirtualMachine::execute_solar_axis_angle()
 {
-    word();
+    int dispatch = word();
+    (void) dispatch;
 
-    shared_ptr<Value> axis = registers_[argument()];
-    shared_ptr<Value> angle = registers_[argument()];
-    
+    const shared_ptr<Value>& axis = registers_[argument()];
+    const shared_ptr<Value>& angle = registers_[argument()];    
     shared_ptr<Value>& light_color = registers_[argument()];
+    shared_ptr<Value>& light_opacity = registers_[argument()];
+
     light_color.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
     light_color->zero();
-    
-    shared_ptr<Value>& light_opacity = registers_[argument()];
     light_opacity.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
     light_opacity->zero();
-    
+
     shared_ptr<Light> light( new Light(LIGHT_SOLAR_AXIS_ANGLE, light_color, light_opacity, axis->vec3_value(), axis->vec3_value(), angle->float_value()) );
-    grid_->add_light( light );                
+    grid_->add_light( light );             
 }
 
 void VirtualMachine::execute_illuminate()
 {
-    word();
+    int dispatch = word();
+    (void) dispatch;
 
-    shared_ptr<Value> P = registers_[argument()];
-    shared_ptr<Value> Ps = registers_[argument()];
-    shared_ptr<Value> L = registers_[argument()];
-    L->light_to_surface_vector( Ps, P->vec3_value() );
-
+    const shared_ptr<Value>& P = registers_[argument()];
+    const shared_ptr<Value>& Ps = registers_[argument()];
+    const shared_ptr<Value>& L = registers_[argument()];
     shared_ptr<Value>& light_color = registers_[argument()];
+    shared_ptr<Value>& light_opacity = registers_[argument()];
+
+    L->light_to_surface_vector( Ps, P->vec3_value() );
     light_color.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
     light_color->zero();
-
-    shared_ptr<Value>& light_opacity = registers_[argument()];
     light_opacity.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
     light_opacity->zero();
 
@@ -1171,20 +1172,20 @@ void VirtualMachine::execute_illuminate()
 
 void VirtualMachine::execute_illuminate_axis_angle()
 {
-    word();
+    int dispatch = word();
+    (void) dispatch;
 
-    shared_ptr<Value> P = registers_[argument()];
-    shared_ptr<Value> axis = registers_[argument()];
-    shared_ptr<Value> angle = registers_[argument()];                
-    shared_ptr<Value> Ps = registers_[argument()];
-    shared_ptr<Value> L = registers_[argument()];
-    L->light_to_surface_vector( Ps, P->vec3_value() );
-
+    const shared_ptr<Value>& P = registers_[argument()];
+    const shared_ptr<Value>& axis = registers_[argument()];
+    const shared_ptr<Value>& angle = registers_[argument()];                
+    const shared_ptr<Value>& Ps = registers_[argument()];
+    const shared_ptr<Value>& L = registers_[argument()];
     shared_ptr<Value>& light_color = registers_[argument()];
+    shared_ptr<Value>& light_opacity = registers_[argument()];
+
+    L->light_to_surface_vector( Ps, P->vec3_value() );
     light_color.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
     light_color->zero();
-
-    shared_ptr<Value>& light_opacity = registers_[argument()];
     light_opacity.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
     light_opacity->zero();
 
@@ -1194,14 +1195,17 @@ void VirtualMachine::execute_illuminate_axis_angle()
 
 void VirtualMachine::execute_illuminance_axis_angle()
 {
-    word();
-    shared_ptr<Value> P = registers_[argument()];
-    shared_ptr<Value> axis = registers_[argument()];
-    shared_ptr<Value> angle = registers_[argument()];
-    shared_ptr<Value> L = registers_[argument()];
-    shared_ptr<Value> light_color = registers_[argument()];
-    shared_ptr<Value> light_opacity = registers_[argument()];                
-    shared_ptr<Value> result = registers_[allocate_register()];
+    int dispatch = word();
+    (void) dispatch;
+
+    const shared_ptr<Value>& P = registers_[argument()];
+    const shared_ptr<Value>& axis = registers_[argument()];
+    const shared_ptr<Value>& angle = registers_[argument()];
+    const shared_ptr<Value>& L = registers_[argument()];
+    const shared_ptr<Value>& light_color = registers_[argument()];
+    const shared_ptr<Value>& light_opacity = registers_[argument()];                
+    const shared_ptr<Value>& result = registers_[allocate_register()];
+
     const Light* light = grid_->get_light( light_index_ );                
     result->illuminance_axis_angle( P, axis, angle, light );
     L->surface_to_light_vector( P, light );
