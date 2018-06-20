@@ -13,7 +13,6 @@ for _, build in build:default_builds('cc_.*') do
             'ctransform.cpp';
             'divide.cpp';
             'divide_assign.cpp';
-            -- 'dt.cpp';
             'dot.cpp';
             'equal.cpp';
             'greater.cpp';
@@ -26,7 +25,6 @@ for _, build in build:default_builds('cc_.*') do
             'multiply.cpp';
             'multiply_assign.cpp';
             'negate.cpp';
-            -- 'normalize.cpp';
             'not_equal.cpp';
             'ntransform.cpp';
             'promote.cpp';
