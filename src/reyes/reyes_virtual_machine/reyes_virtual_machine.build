@@ -33,5 +33,13 @@ for _, build in build:default_builds('cc_.*') do
             'transform.cpp';
             'vtransform.cpp';
         };
+
+        build:Cxx () {
+            'color_functions.cpp';
+            'geometric_functions.cpp';
+            'mathematical_functions.cpp';
+            'matrix_functions.cpp';
+            'shading_and_lighting_functions.cpp';
+        };
     };
 end

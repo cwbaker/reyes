@@ -13,7 +13,7 @@
 #include "Grid.hpp"
 #include "Light.hpp"
 #include "Instruction.hpp"
-#include "color_functions.hpp"
+#include <reyes/reyes_virtual_machine/color_functions.hpp>
 #include <reyes/reyes_virtual_machine/add.hpp>
 #include <reyes/reyes_virtual_machine/subtract.hpp>
 #include <reyes/reyes_virtual_machine/multiply.hpp>

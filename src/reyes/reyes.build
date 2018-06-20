@@ -47,11 +47,6 @@ for _, build in build:default_builds('cc_.*') do
                 'Torus.cpp',
                 'Value.cpp',
                 'VirtualMachine.cpp',
-                'color_functions.cpp',
-                'geometric_functions.cpp',
-                'mathematical_functions.cpp',
-                'matrix_functions.cpp',
-                'shading_and_lighting_functions.cpp',
                 'shader_parser.g.cpp'
             };    
         }

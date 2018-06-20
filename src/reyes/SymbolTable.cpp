@@ -7,11 +7,11 @@
 #include "SymbolTable.hpp"
 #include "Symbol.hpp"
 #include "SyntaxNode.hpp"
-#include "mathematical_functions.hpp"
-#include "geometric_functions.hpp"
-#include "color_functions.hpp"
-#include "matrix_functions.hpp"
-#include "shading_and_lighting_functions.hpp"
+#include <reyes/reyes_virtual_machine/mathematical_functions.hpp>
+#include <reyes/reyes_virtual_machine/geometric_functions.hpp>
+#include <reyes/reyes_virtual_machine/color_functions.hpp>
+#include <reyes/reyes_virtual_machine/matrix_functions.hpp>
+#include <reyes/reyes_virtual_machine/shading_and_lighting_functions.hpp>
 #include "assert.hpp"
 #define _USE_MATH_DEFINES
 #include <math.h>

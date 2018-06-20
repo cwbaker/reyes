@@ -3,17 +3,16 @@
 // Copyright (c) Charles Baker. All rights reserved.
 //
 
-#include "stdafx.hpp"
-#include "Grid.hpp"
-#include "Texture.hpp"
-#include "Value.hpp"
-#include "VirtualMachine.hpp"
-#include "Light.hpp"
-#include "Renderer.hpp"
+#include <reyes/Grid.hpp>
+#include <reyes/Texture.hpp>
+#include <reyes/Value.hpp>
+#include <reyes/VirtualMachine.hpp>
+#include <reyes/Light.hpp>
+#include <reyes/Renderer.hpp>
+#include <reyes/assert.hpp>
 #include <math/scalar.ipp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
-#include "assert.hpp"
 #include <algorithm>
 
 using std::min;
@@ -25,7 +24,7 @@ using namespace math;
 namespace reyes
 {
 
-void ambient( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> color )
+void ambient( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Value> color )
 {
     REYES_ASSERT( color );
     
@@ -53,11 +52,11 @@ void ambient( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value>
     }
 }
 
-void diffuse( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> color, std::shared_ptr<Value> normal )
+void diffuse( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Value> color, std::shared_ptr<Value> normal )
 {
     REYES_ASSERT( color );
     REYES_ASSERT( normal );
-    REYES_ASSERT( normal->size() == grid.size() );
+    REYES_ASSERT( int(normal->size()) == grid.size() );
     
     color->reset( TYPE_COLOR, STORAGE_VARYING, grid.size() );
     color->zero();
@@ -143,7 +142,7 @@ void diffuse( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value>
                     const vec3& light_position = light->position();
                     const vec3& light_axis = light->axis();
                     const float light_angle_cosine = cosf( light->angle() );
-                    for ( unsigned int i = 0; i < size; ++i )
+                    for ( int i = 0; i < size; ++i )
                     {
                         const vec3 L = normalize( light_position - positions[i] );
                         const vec3& N = normals[i];
@@ -163,7 +162,7 @@ void diffuse( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value>
     }    
 }
 
-void specular( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> color, std::shared_ptr<Value> normal, std::shared_ptr<Value> view, std::shared_ptr<Value> roughness_value )
+void specular( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Value> color, std::shared_ptr<Value> normal, std::shared_ptr<Value> view, std::shared_ptr<Value> roughness_value )
 {
     REYES_ASSERT( color );
     REYES_ASSERT( normal );
@@ -278,7 +277,7 @@ void specular( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value
     }
 }
 
-void specularbrdf( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> l, std::shared_ptr<Value> n, std::shared_ptr<Value> v, std::shared_ptr<Value> roughness_value )
+void specularbrdf( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> l, std::shared_ptr<Value> n, std::shared_ptr<Value> v, std::shared_ptr<Value> roughness_value )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( l );
@@ -304,7 +303,7 @@ void specularbrdf( const Renderer& renderer, const Grid& grid, std::shared_ptr<V
     }
 }
 
-void phong( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> normal, std::shared_ptr<Value> view, std::shared_ptr<Value> power_value )
+void phong( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> normal, std::shared_ptr<Value> view, std::shared_ptr<Value> power_value )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( normal );
@@ -419,7 +418,7 @@ void phong( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> r
     }
 }
 
-void trace( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> point, std::shared_ptr<Value> reflection )
+void trace( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> /*point*/, std::shared_ptr<Value> /*reflection*/ )
 {
     REYES_ASSERT( result );
     result->reset( TYPE_COLOR, STORAGE_VARYING, grid.size() );

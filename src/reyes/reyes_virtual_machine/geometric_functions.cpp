@@ -3,21 +3,20 @@
 // Copyright (c) Charles Baker. All rights reserved.
 //
 
-#include "stdafx.hpp"
 #include "geometric_functions.hpp"
 #include "mathematical_functions.hpp"
-#include "Grid.hpp"
-#include "Value.hpp"
-#include "Renderer.hpp"
-#include "Attributes.hpp"
-#include <reyes/reyes_virtual_machine/Dispatch.hpp>
-#include <reyes/reyes_virtual_machine/transform.hpp>
-#include <reyes/reyes_virtual_machine/vtransform.hpp>
-#include <reyes/reyes_virtual_machine/ntransform.hpp>
+#include "transform.hpp"
+#include "vtransform.hpp"
+#include "ntransform.hpp"
+#include "Dispatch.hpp"
+#include <reyes/Grid.hpp>
+#include <reyes/Value.hpp>
+#include <reyes/Renderer.hpp>
+#include <reyes/Attributes.hpp>
+#include <reyes/assert.hpp>
 #include <math/scalar.ipp>
 #include <math/vec3.ipp>
 #include <math/mat4x4.ipp>
-#include "assert.hpp"
 #include <algorithm>
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -29,7 +28,7 @@ using namespace math;
 namespace reyes
 {
 
-void xcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
+void xcomp( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( p );
@@ -45,7 +44,7 @@ void xcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> r
     }
 }
 
-void ycomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
+void ycomp( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( p );
@@ -61,7 +60,7 @@ void ycomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> r
     }
 }
 
-void zcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
+void zcomp( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( p );
@@ -77,7 +76,7 @@ void zcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> r
     }
 }
 
-void setxcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> p, std::shared_ptr<Value> x )
+void setxcomp( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> p, std::shared_ptr<Value> x )
 {
     REYES_ASSERT( p );
     REYES_ASSERT( x );
@@ -92,7 +91,7 @@ void setxcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value
     }
 }
 
-void setycomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> p, std::shared_ptr<Value> y )
+void setycomp( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> p, std::shared_ptr<Value> y )
 {
     REYES_ASSERT( p );
     REYES_ASSERT( y );
@@ -107,7 +106,7 @@ void setycomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value
     }
 }
 
-void setzcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> p, std::shared_ptr<Value> z )
+void setzcomp( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> p, std::shared_ptr<Value> z )
 {
     REYES_ASSERT( p );
     REYES_ASSERT( z );
@@ -122,7 +121,7 @@ void setzcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value
     }
 }
 
-void length( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
+void length( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> x )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( x );
@@ -138,7 +137,7 @@ void length( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> 
     }
 }
 
-void normalize( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> n )
+void normalize( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> n )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( n );
@@ -154,7 +153,7 @@ void normalize( const Renderer& renderer, const Grid& grid, std::shared_ptr<Valu
         {
             const vec3* n_values = n->vec3_values();
             vec3* values = result->vec3_values();
-            for ( int i = 0; i < n->size(); ++i )
+            for ( unsigned int i = 0; i < n->size(); ++i )
             {
                 values[i] = length( n_values[i] ) > 0.0f ? math::normalize( n_values[i] ) : n_values[i];
             }
@@ -167,7 +166,7 @@ void normalize( const Renderer& renderer, const Grid& grid, std::shared_ptr<Valu
     }    
 }
 
-void distance( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p0, std::shared_ptr<Value> p1 )
+void distance( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> p0, std::shared_ptr<Value> p1 )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( p0 );
@@ -186,7 +185,7 @@ void distance( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value
     }
 }
 
-void rotate( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> q, std::shared_ptr<Value> angle, std::shared_ptr<Value> p0, std::shared_ptr<Value> p1 )
+void rotate( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> q, std::shared_ptr<Value> angle, std::shared_ptr<Value> p0, std::shared_ptr<Value> p1 )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( q );
@@ -209,7 +208,7 @@ void rotate( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> 
     }    
 }
 
-void area( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
+void area( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( p );
@@ -219,7 +218,6 @@ void area( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> re
     int i = 0;
     int width = grid.width_;
     int height = grid.height_;
-    float du = grid.du_;
     const vec3* other_values = p->vec3_values();    
     float* values = result->float_values();
     
@@ -247,7 +245,7 @@ void faceforward_vv( const Renderer& renderer, const Grid& grid, std::shared_ptr
     faceforward_vvv( renderer, grid, result, n, i, n );
 }
 
-void faceforward_vvv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> n, std::shared_ptr<Value> i, std::shared_ptr<Value> nref )
+void faceforward_vvv( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> n, std::shared_ptr<Value> i, std::shared_ptr<Value> nref )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( n );
@@ -269,7 +267,7 @@ void faceforward_vvv( const Renderer& renderer, const Grid& grid, std::shared_pt
             const vec3* n_values = n->vec3_values();
             const vec3* i_values = i->vec3_values();
             vec3* values = result->vec3_values();
-            for ( int i = 0; i < n->size(); ++i )
+            for ( unsigned int i = 0; i < n->size(); ++i )
             {
                 values[i] = math::sign( dot(-i_values[i], nref_values[i]) ) * n_values[i];
             }
@@ -282,7 +280,7 @@ void faceforward_vvv( const Renderer& renderer, const Grid& grid, std::shared_pt
     }    
 }
 
-void reflect( const Renderer& render, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> i, std::shared_ptr<Value> n )
+void reflect( const Renderer& /*render*/, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> i, std::shared_ptr<Value> n )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( i );
@@ -294,13 +292,13 @@ void reflect( const Renderer& render, const Grid& grid, std::shared_ptr<Value> r
     const vec3* n_values = n->vec3_values();
     const vec3* i_values = i->vec3_values();
     vec3* values = result->vec3_values();
-    for ( int i = 0; i < n->size(); ++i )
+    for ( unsigned int i = 0; i < n->size(); ++i )
     {
         values[i] = i_values[i] - 2.0f * dot(i_values[i], n_values[i]) * n_values[i];
     }
 }
 
-void refract( const Renderer& render, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> incident, std::shared_ptr<Value> normal, std::shared_ptr<Value> eta_value )
+void refract( const Renderer& /*render*/, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> incident, std::shared_ptr<Value> normal, std::shared_ptr<Value> eta_value )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( incident );
@@ -326,7 +324,7 @@ void refract( const Renderer& render, const Grid& grid, std::shared_ptr<Value> r
     }
 }
 
-void fresnel( const Renderer& render, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> incident, std::shared_ptr<Value> normal, std::shared_ptr<Value> eta_value, std::shared_ptr<Value> Kr, std::shared_ptr<Value> Kt )
+void fresnel( const Renderer& /*render*/, const Grid& grid, std::shared_ptr<Value> /*result*/, std::shared_ptr<Value> incident, std::shared_ptr<Value> normal, std::shared_ptr<Value> eta_value, std::shared_ptr<Value> Kr, std::shared_ptr<Value> Kt )
 {
     REYES_ASSERT( incident );
     REYES_ASSERT( normal );
@@ -371,7 +369,7 @@ void fresnel( const Renderer& render, const Grid& grid, std::shared_ptr<Value> r
     }
 }
 
-void transform_sv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
+void transform_sv( const Renderer& renderer, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( tospace );
@@ -385,13 +383,13 @@ void transform_sv( const Renderer& renderer, const Grid& grid, std::shared_ptr<V
     const math::mat4x4 transform = renderer.transform_to( tospace->string_value() );
     const vec3* p_values = p->vec3_values();
     vec3* return_values = result->vec3_values();
-    for ( unsigned int i = 0; i < size; ++i )
+    for ( int i = 0; i < size; ++i )
     {
         return_values[i] = vec3( transform * vec4(p_values[i], 1.0f) );
     }
 }
 
-void transform_ssv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
+void transform_ssv( const Renderer& renderer, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( fromspace );
@@ -407,13 +405,13 @@ void transform_ssv( const Renderer& renderer, const Grid& grid, std::shared_ptr<
     const math::mat4x4 transform = renderer.transform_between( fromspace->string_value(), tospace->string_value() );
     const vec3* p_values = p->vec3_values();
     vec3* return_values = result->vec3_values();
-    for ( unsigned int i = 0; i < size; ++i )
+    for ( int i = 0; i < size; ++i )
     {
         return_values[i] = vec3( transform * vec4(p_values[i], 1.0f) );
     }
 }
 
-void transform_mv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
+void transform_mv( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( m );
@@ -430,7 +428,7 @@ void transform_mv( const Renderer& renderer, const Grid& grid, std::shared_ptr<V
     );
 }
 
-void transform_smv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
+void transform_smv( const Renderer& renderer, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( fromspace );
@@ -447,13 +445,13 @@ void transform_smv( const Renderer& renderer, const Grid& grid, std::shared_ptr<
     const math::mat4x4 transform = to * renderer.transform_from( fromspace->string_value() );
     const vec3* p_values = p->vec3_values();
     vec3* return_values = result->vec3_values();
-    for ( unsigned int i = 0; i < size; ++i )
+    for ( int i = 0; i < size; ++i )
     {
         return_values[i] = vec3( transform * vec4(p_values[i], 1.0f) );
     }
 }
 
-void vtransform_sv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
+void vtransform_sv( const Renderer& renderer, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( tospace );
@@ -469,7 +467,7 @@ void vtransform_sv( const Renderer& renderer, const Grid& grid, std::shared_ptr<
     );    
 }
 
-void vtransform_ssv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
+void vtransform_ssv( const Renderer& renderer, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( fromspace );
@@ -487,7 +485,7 @@ void vtransform_ssv( const Renderer& renderer, const Grid& grid, std::shared_ptr
     );
 }
 
-void vtransform_mv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
+void vtransform_mv( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( m );
@@ -504,7 +502,7 @@ void vtransform_mv( const Renderer& renderer, const Grid& grid, std::shared_ptr<
     );    
 }
 
-void vtransform_smv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
+void vtransform_smv( const Renderer& renderer, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( fromspace );
@@ -523,7 +521,7 @@ void vtransform_smv( const Renderer& renderer, const Grid& grid, std::shared_ptr
     );    
 }
 
-void ntransform_sv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
+void ntransform_sv( const Renderer& renderer, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( tospace );
@@ -539,7 +537,7 @@ void ntransform_sv( const Renderer& renderer, const Grid& grid, std::shared_ptr<
     );
 }
 
-void ntransform_ssv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
+void ntransform_ssv( const Renderer& renderer, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> tospace, std::shared_ptr<Value> p )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( fromspace );
@@ -557,7 +555,7 @@ void ntransform_ssv( const Renderer& renderer, const Grid& grid, std::shared_ptr
     );
 }
 
-void ntransform_mv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
+void ntransform_mv( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( m );
@@ -574,7 +572,7 @@ void ntransform_mv( const Renderer& renderer, const Grid& grid, std::shared_ptr<
     );
 }
 
-void ntransform_smv( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
+void ntransform_smv( const Renderer& renderer, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> m, std::shared_ptr<Value> p )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( fromspace );
@@ -593,7 +591,7 @@ void ntransform_smv( const Renderer& renderer, const Grid& grid, std::shared_ptr
     );
 }
 
-void depth( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
+void depth( const Renderer& renderer, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> p )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( p );
@@ -629,14 +627,14 @@ void calculatenormal( const Renderer& renderer, const Grid& grid, std::shared_pt
     
     if ( renderer.attributes().geometry_left_handed() )
     {
-        for ( unsigned int i = 0; i < size; ++i )
+        for ( int i = 0; i < size; ++i )
         {
             values[i] = cross( dpdu_values[i], dpdv_values[i] );
         }
     }
     else
     {
-        for ( unsigned int i = 0; i < size; ++i )
+        for ( int i = 0; i < size; ++i )
         {
             values[i] = cross( dpdv_values[i], dpdu_values[i] );
         }

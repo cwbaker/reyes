@@ -3,19 +3,18 @@
 // Copyright (c) Charles Baker. All rights reserved.
 //
 
-#include "stdafx.hpp"
 #include "color_functions.hpp"
-#include "Grid.hpp"
-#include "Value.hpp"
-#include "Renderer.hpp"
-#include "ErrorCode.hpp"
-#include "ErrorPolicy.hpp"
-#include <reyes/reyes_virtual_machine/Dispatch.hpp>
-#include <reyes/reyes_virtual_machine/ctransform.hpp>
+#include "ctransform.hpp"
+#include "Dispatch.hpp"
+#include <reyes/Grid.hpp>
+#include <reyes/Value.hpp>
+#include <reyes/Renderer.hpp>
+#include <reyes/ErrorCode.hpp>
+#include <reyes/ErrorPolicy.hpp>
+#include <reyes/assert.hpp>
 #include <math/scalar.ipp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
-#include "assert.hpp"
 
 using std::shared_ptr;
 using namespace math;
@@ -23,7 +22,7 @@ using namespace math;
 namespace reyes
 {
 
-void comp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> color, std::shared_ptr<Value> index_value )
+void comp( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> color, std::shared_ptr<Value> index_value )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( color );
@@ -62,7 +61,7 @@ void comp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> re
     }
 }
 
-void setcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> color, std::shared_ptr<Value> index_value, std::shared_ptr<Value> value )
+void setcomp( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> /*result*/, std::shared_ptr<Value> color, std::shared_ptr<Value> index_value, std::shared_ptr<Value> value )
 {
     REYES_ASSERT( color );
     REYES_ASSERT( index_value );
@@ -100,7 +99,7 @@ void setcomp( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value>
     }
 }
 
-void ctransform_function( const Renderer& renderer, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> color )
+void ctransform_function( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> color )
 {
     REYES_ASSERT( result );
     REYES_ASSERT( fromspace );
