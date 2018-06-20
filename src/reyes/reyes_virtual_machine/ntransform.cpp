@@ -5,7 +5,7 @@
 
 #include "ntransform.hpp"
 #include "Dispatch.hpp"
-#include <reyes/Instruction.hpp>
+#include "Instruction.hpp"
 #include <reyes/assert.hpp>
 #include <math/mat3x3.ipp>
 #include <math/mat4x4.ipp>

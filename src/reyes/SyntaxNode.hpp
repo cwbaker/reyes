@@ -4,7 +4,7 @@
 #include "SyntaxNodeType.hpp"
 #include "ValueType.hpp"
 #include "ValueStorage.hpp"
-#include "Instruction.hpp"
+#include <reyes/reyes_virtual_machine/Instruction.hpp>
 #include <math/vec3.hpp>
 #include <math/mat4x4.hpp>
 #include <memory>

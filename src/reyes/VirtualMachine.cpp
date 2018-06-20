@@ -12,7 +12,7 @@
 #include "Texture.hpp"
 #include "Grid.hpp"
 #include "Light.hpp"
-#include "Instruction.hpp"
+#include <reyes/reyes_virtual_machine/Instruction.hpp>
 #include <reyes/reyes_virtual_machine/color_functions.hpp>
 #include <reyes/reyes_virtual_machine/add.hpp>
 #include <reyes/reyes_virtual_machine/subtract.hpp>

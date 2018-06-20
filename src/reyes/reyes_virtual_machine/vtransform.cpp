@@ -5,7 +5,7 @@
 
 #include "vtransform.hpp"
 #include "Dispatch.hpp"
-#include <reyes/Instruction.hpp>
+#include "Instruction.hpp"
 #include <reyes/assert.hpp>
 #include <math/mat4x4.ipp>
 #include <math/vec4.ipp>

@@ -5,7 +5,7 @@
 
 #include "negate.hpp"
 #include "Dispatch.hpp"
-#include <reyes/Instruction.hpp>
+#include "Instruction.hpp"
 #include <reyes/assert.hpp>
 
 namespace reyes

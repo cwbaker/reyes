@@ -9,7 +9,7 @@
 #include "Symbol.hpp"
 #include "SymbolTable.hpp"
 #include "ValueType.hpp"
-#include "Instruction.hpp"
+#include <reyes/reyes_virtual_machine/Instruction.hpp>
 #include "ErrorCode.hpp"
 #include "ErrorPolicy.hpp"
 #include "assert.hpp"

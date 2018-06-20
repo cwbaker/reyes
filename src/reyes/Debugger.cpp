@@ -7,7 +7,7 @@
 #include "SampleBuffer.hpp"
 #include "SyntaxNode.hpp"
 #include "Shader.hpp"
-#include "Instruction.hpp"
+#include <reyes/reyes_virtual_machine/Instruction.hpp>
 #include "ValueStorage.hpp"
 #include <math/vec3.ipp>
 #include <math/mat4x4.ipp>

@@ -4,7 +4,7 @@
 //
 
 #include "Encoder.hpp"
-#include "Instruction.hpp"
+#include <reyes/reyes_virtual_machine/Instruction.hpp>
 #include "ValueType.hpp"
 #include "ValueStorage.hpp"
 #include <reyes/reyes_virtual_machine/Dispatch.hpp>
