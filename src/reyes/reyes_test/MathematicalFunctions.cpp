@@ -419,7 +419,7 @@ SUITE( MathematicalFunctions )
 
     TEST_FIXTURE( MathematicalFunctionTest, tan_varying )
     {
-        x[0] = float(M_PI) / 2.0f;
+        x[0] = float(M_PI) / 4.0f;
         x[1] = float(M_PI);
         x[2] = 2.0f * float(M_PI);
         x[3] = 4.0f * float(M_PI);
