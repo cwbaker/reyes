@@ -2,6 +2,7 @@
 #define REYES_CONDITIONMASK_HPP_INCLUDED
 
 #include <vector>
+#include <memory>
 
 namespace reyes
 {
