@@ -72,11 +72,11 @@ void ConditionMask::generate( const ConditionMask& condition_mask, std::shared_p
 
 void ConditionMask::invert()
 {
-    const unsigned int size = mask_.size();
+    const int size = int(mask_.size());
     unsigned char* mask = &mask_[0];
     
     processed_ = 0;
-    for ( unsigned int i = 0; i < size; ++i )
+    for ( int i = 0; i < size; ++i )
     {
         int process = !mask[i];
         mask[i] = process != 0;
