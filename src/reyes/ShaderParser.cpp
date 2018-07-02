@@ -1136,9 +1136,9 @@ public:
     shared_ptr<SyntaxNode> parse( Iterator start, Iterator finish, const char* name )
     {
         REYES_ASSERT( name );
-               
-        extern lalr::ParserStateMachine shader_parser_state_machine;
-        lalr::Parser<lalr::PositionIterator<Iterator>, shared_ptr<SyntaxNode>, char> parser( &shader_parser_state_machine, this );
+
+        extern const lalr::ParserStateMachine* shader_parser_state_machine;
+        lalr::Parser<lalr::PositionIterator<Iterator>, shared_ptr<SyntaxNode>, char> parser( shader_parser_state_machine, this );
         parser.lexer_action_handlers()
             ( "string", &string_ )
         ;

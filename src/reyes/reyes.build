@@ -11,8 +11,10 @@ for _, build in build:default_builds('cc_.*') do
     build:all {
         build:Library '${lib}/reyes_${architecture}' {
             build:Cxx () {
-                'assert.cpp'
+                'assert.cpp';
+                'shader_parser.g.cpp';
             };
+
             build:Cxx () {
                 'AddSymbolHelper.cpp',
                 'Attributes.cpp',
@@ -47,7 +49,6 @@ for _, build in build:default_builds('cc_.*') do
                 'Torus.cpp',
                 'Value.cpp',
                 'VirtualMachine.cpp',
-                'shader_parser.g.cpp'
             };    
         }
     };
