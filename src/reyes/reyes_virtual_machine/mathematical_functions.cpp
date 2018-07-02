@@ -29,7 +29,7 @@ void radians( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_pt
     const float* degree_values = degrees->float_values();
     for ( int i = 0; i < size; ++i )
     {
-        values[i] = degree_values[i] * M_PI / 180.0f;
+        values[i] = degree_values[i] * float(M_PI) / 180.0f;
     }
 }
 
@@ -45,7 +45,7 @@ void degrees( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_pt
     const float* radian_values = radians->float_values();
     for ( int i = 0; i < size; ++i )
     {
-        values[i] = radian_values[i] * 180.0f / M_PI;
+        values[i] = radian_values[i] * 180.0f / float(M_PI);
     }
 }
 
