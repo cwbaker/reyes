@@ -1,4 +1,3 @@
-
 sweet_render.sln
 sweet_render.xcodeproj
 debug
@@ -8,3 +7,4 @@ local_settings.lua
 /reyes.sublime-project
 /reyes.sublime-workspace
 /reyes.xcodeproj
+/src/reyes/shader_parser.g.cpp
