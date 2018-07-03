@@ -1,5 +1,10 @@
 
-package.path = ('%s;%s;%s'):format( package.path, build:root('src/lalr/lalr/?.lua'), build:root('src/lalr/lalr/?/init.lua') );
+local paths = {
+    package.path;
+    build:root( 'src/lalr/lalr/?.lua' );
+    build:root( 'src/lalr/lalr/?/init.lua' );
+};
+package.path = table.concat( paths, ';' );
 
 require "build";
 require "build.cc";
@@ -39,9 +44,9 @@ local settings = build:initialize {
     lalr = {
         lalrc = build:switch {
             build:operating_system();
-            linux = build:root( '%s/bin/lalrc' );
-            macos = build:root( '%s/bin/lalrc' );
-            windows = build:root( '%s/bin/lalrc.exe' );
+            linux = build:root( ('%s/bin/lalrc'):format(variant) );
+            macos = build:root( ('%s/bin/lalrc'):format(variant) );
+            windows = build:root( ('%s/bin/lalrc.exe'):format(variant) );
         };
     };
 };
