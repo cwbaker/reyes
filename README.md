@@ -83,27 +83,42 @@ void render_wavy_sphere_example()
 }
 ~~~
 
+~~~
+displacement wavy(
+    float Km = 1;
+    float sfreq = 32;
+    float tfreq = 32;
+)
+{
+    float amp = Km * sin(sfreq * s) * cos(tfreq * t);
+    P += amp * normalize(N);
+    N = calculatenormal(P);
+}
+~~~
+
 ## Installation
 
-*Reyes* is built with XCode or Visual Studio using the [Sweet Build](https:/www.github.com/cwbaker/sweet_build) build tool.
+*Reyes* is built with XCode or Visual Studio using the [Forge](https:/www.github.com/cwbaker/forge#forge) build tool.
 
 **macOS**
 
 - Install Xcode
-- Install [Sweet Build](https:/www.github.com/cwbaker/sweet_build)
+- Install [Forge](https:/www.github.com/cwbaker/forge#forge)
 - `git clone git@github.com:cwbaker/reyes.git reyes`
-- `cd reyes/src`
+- `cd reyes`
+- `git submodule update --init`
 - `build variant=release`
-- `../release/bin/reyes_examples`
+- `./release/bin/reyes_examples`
 
 **Windows**:
 
 - Install Visual Studio 2017
-- Install [Sweet Build](https:/www.github.com/cwbaker/sweet_build)
+- Install [Forge](https:/www.github.com/cwbaker/forge#forge)
 - `git clone git@github.com:cwbaker/reyes.git reyes`
-- `cd reyes\src`
+- `cd reyes`
+- `git submodule update --init`
 - `build variant=release`
-- `..\release\bin\reyes_examples.exe`
+- `.\release\bin\reyes_examples.exe`
 
 ## Usage
 
