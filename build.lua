@@ -6,13 +6,13 @@ local paths = {
 };
 package.path = table.concat( paths, ';' );
 
-require "build";
-require "build.cc";
-require "build.lalr";
-require "build.macos";
-require "build.windows";
-require "build.xcode";
-require "build.visual_studio";
+require 'forge';
+require 'forge.cc';
+require 'forge.lalr';
+require 'forge.macos';
+require 'forge.windows';
+require 'forge.xcode';
+require 'forge.visual_studio';
 
 platform = platform or build:operating_system();
 variant = build:lower( variant or 'debug' );
