@@ -107,7 +107,7 @@ displacement wavy(
 - `git clone git@github.com:cwbaker/reyes.git reyes`
 - `cd reyes`
 - `git submodule update --init`
-- `build variant=release`
+- `forge variant=release`
 - `./release/bin/reyes_examples`
 
 **Windows**:
@@ -117,7 +117,7 @@ displacement wavy(
 - `git clone git@github.com:cwbaker/reyes.git reyes`
 - `cd reyes`
 - `git submodule update --init`
-- `build variant=release`
+- `forge variant=release`
 - `.\release\bin\reyes_examples.exe`
 
 ## Usage
