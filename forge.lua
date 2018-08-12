@@ -58,10 +58,10 @@ forge:default_targets {
     'src/reyes/reyes_test'
 };
 
-buildfile 'src/jpeg/jpeg.build';
-buildfile 'src/lalr/lalr/lalr.build';
-buildfile 'src/libpng/libpng.build';
-buildfile 'src/math/math.build';
-buildfile 'src/reyes/reyes.build';
-buildfile 'src/unittest-cpp/unittest-cpp.build';
-buildfile 'src/zlib/zlib.build';
+buildfile 'src/jpeg/jpeg.forge';
+buildfile 'src/lalr/lalr/lalr.forge';
+buildfile 'src/libpng/libpng.forge';
+buildfile 'src/math/math.forge';
+buildfile 'src/reyes/reyes.forge';
+buildfile 'src/unittest-cpp/unittest-cpp.forge';
+buildfile 'src/zlib/zlib.forge';
