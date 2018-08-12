@@ -1,17 +1,17 @@
 
-build:all {
-    build:Executable '${bin}/reyes_examples' {
+forge:all {
+    forge:Executable '${bin}/reyes_examples' {
         '${lib}/reyes_${architecture}';
         '${lib}/reyes_virtual_machine_${architecture}';
         '${lib}/jpeg_${architecture}';
         '${lib}/lalr_${architecture}';
-        '${lib}/libpng_${architecture}';
-        '${lib}/zlib_${architecture}';
+        '${lib}/libpng_${platform}_${architecture}';
+        '${lib}/zlib_${platform}_${architecture}';
         
-        build:Cxx () {
+        forge:Cxx () {
             defines = {
-                ('SHADERS_PATH=\\"%s/\\"'):format( build:absolute('../shaders') );
-                ('REYES_EXAMPLES_PATH=\\"%s/\\"'):format( build:absolute('.') );
+                ('SHADERS_PATH=\\"%s/\\"'):format( forge:absolute('../shaders') );
+                ('REYES_EXAMPLES_PATH=\\"%s/\\"'):format( forge:absolute('.') );
             };
             'main.cpp',
             'reyes_shaders_example.cpp',

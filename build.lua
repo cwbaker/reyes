@@ -1,8 +1,8 @@
 
 local paths = {
     package.path;
-    build:root( 'src/lalr/lalr/?.lua' );
-    build:root( 'src/lalr/lalr/?/init.lua' );
+    forge:root( 'src/lalr/lalr/?.lua' );
+    forge:root( 'src/lalr/lalr/?/init.lua' );
 };
 package.path = table.concat( paths, ';' );
 
@@ -14,44 +14,44 @@ require 'forge.windows';
 require 'forge.xcode';
 require 'forge.visual_studio';
 
-platform = platform or build:operating_system();
-variant = build:lower( variant or 'debug' );
+platform = platform or forge:operating_system();
+variant = forge:lower( variant or 'debug' );
 version = version or ('%s %s %s'):format( os.date('%Y.%m.%d %H:%M:%S'), platform, variant );
 goal = goal or "";
 jobs = jobs or 8;
 
-local settings = build:initialize {
+local settings = forge:initialize {
     variants = { "debug", "release", "shipping" };
-    bin = build:root( ('%s/bin'):format(variant) );
-    lib = build:root( ('%s/lib'):format(variant) );
-    obj = build:root( ('%s/obj'):format(variant) );
+    bin = forge:root( ('%s/bin'):format(variant) );
+    lib = forge:root( ('%s/lib'):format(variant) );
+    obj = forge:root( ('%s/obj'):format(variant) );
     include_directories = {
-        build:root( 'src' ),
-        build:root( 'src/zlib' ),
-        build:root( 'src/libpng' ),
-        build:root( 'src/unittest-cpp' );
-        build:root( 'src/lalr/lalr' );
+        forge:root( 'src' ),
+        forge:root( 'src/zlib' ),
+        forge:root( 'src/libpng' ),
+        forge:root( 'src/unittest-cpp' );
+        forge:root( 'src/lalr/lalr' );
     };
     library_directories = {
-        build:root( ("%s/lib"):format(variant) ),
+        forge:root( ("%s/lib"):format(variant) ),
     };
     visual_studio = {
-        sln = build:root( "reyes.sln" );
+        sln = forge:root( "reyes.sln" );
     };
     xcode = {
-        xcodeproj = build:root( "reyes.xcodeproj" );
+        xcodeproj = forge:root( "reyes.xcodeproj" );
     };
     lalr = {
-        lalrc = build:switch {
-            build:operating_system();
-            linux = build:root( ('%s/bin/lalrc'):format(variant) );
-            macos = build:root( ('%s/bin/lalrc'):format(variant) );
-            windows = build:root( ('%s/bin/lalrc.exe'):format(variant) );
+        lalrc = forge:switch {
+            forge:operating_system();
+            linux = forge:root( ('%s/bin/lalrc'):format(variant) );
+            macos = forge:root( ('%s/bin/lalrc'):format(variant) );
+            windows = forge:root( ('%s/bin/lalrc.exe'):format(variant) );
         };
     };
 };
 
-build:default_targets {
+forge:default_targets {
     'src/lalr/lalr/lalrc',
     'src/reyes',
     'src/reyes/reyes_examples',

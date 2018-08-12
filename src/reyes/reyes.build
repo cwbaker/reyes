@@ -3,21 +3,21 @@ buildfile 'reyes_examples/reyes_examples.build';
 buildfile 'reyes_test/reyes_test.build';
 buildfile 'reyes_virtual_machine/reyes_virtual_machine.build';
 
-for _, build in build:default_builds('cc_.*') do
-    local build = build:configure {
+for _, forge in forge:default_builds('cc_.*') do
+    local forge = forge:configure {
         warning_level = 0;
     };
 
-    build:all {
-        build:Library '${lib}/reyes_${architecture}' {
-            build:Cxx () {
+    forge:all {
+        forge:Library '${lib}/reyes_${architecture}' {
+            forge:Cxx () {
                 'assert.cpp';
-                build:Lalrc 'shader_parser.g.cpp' {
+                forge:Lalrc 'shader_parser.g.cpp' {
                     'shader_parser.g';
                 };
             };
 
-            build:Cxx () {
+            forge:Cxx () {
                 'AddSymbolHelper.cpp',
                 'Attributes.cpp',
                 'CodeGenerator.cpp',

@@ -1,21 +1,21 @@
 
-build:all {
-    build:Executable '${bin}/reyes_test' {
+forge:all {
+    forge:Executable '${bin}/reyes_test' {
         '${lib}/reyes_${architecture}';
         '${lib}/reyes_virtual_machine_${architecture}';
         '${lib}/jpeg_${architecture}';
         '${lib}/lalr_${architecture}';
-        '${lib}/libpng_${architecture}';
         '${lib}/UnitTest++_${architecture}';
-        '${lib}/zlib_${architecture}';
+        '${lib}/libpng_${platform}_${architecture}';
+        '${lib}/zlib_${platform}_${architecture}';
 
-        build:Cxx () {
+        forge:Cxx () {
             'CaptureErrorPolicy.cpp';
         };
 
-        build:Cxx () {
+        forge:Cxx () {
             defines = {
-                ('SHADERS_PATH=\\"%s/\\"'):format( build:absolute('../shaders') );
+                ('SHADERS_PATH=\\"%s/\\"'):format( forge:absolute('../shaders') );
             };
             'main.cpp',
             'AssignExpressions.cpp',
