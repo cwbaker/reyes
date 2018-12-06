@@ -7,7 +7,6 @@ local paths = {
 package.path = table.concat( paths, ';' );
 
 require 'forge';
-require 'forge.cc';
 require 'forge.lalr';
 require 'forge.macos';
 require 'forge.windows';
@@ -42,12 +41,7 @@ local settings = forge:initialize {
         xcodeproj = forge:root( "reyes.xcodeproj" );
     };
     lalr = {
-        lalrc = forge:switch {
-            forge:operating_system();
-            linux = forge:root( ('%s/bin/lalrc'):format(variant) );
-            macos = forge:root( ('%s/bin/lalrc'):format(variant) );
-            windows = forge:root( ('%s/bin/lalrc.exe'):format(variant) );
-        };
+        lalrc = '${bin}/lalrc';
     };
 };
 
