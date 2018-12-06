@@ -1,4 +1,6 @@
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <UnitTest++/UnitTest++.h>
 #include <reyes/Renderer.hpp>
 #include <reyes/VirtualMachine.hpp>
