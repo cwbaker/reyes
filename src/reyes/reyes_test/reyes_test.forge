@@ -9,11 +9,11 @@ forge:all {
         '${lib}/libpng_${platform}_${architecture}';
         '${lib}/zlib_${platform}_${architecture}';
 
-        forge:Cxx () {
+        forge:Cxx '${obj}/%1' {
             'CaptureErrorPolicy.cpp';
         };
 
-        forge:Cxx () {
+        forge:Cxx '${obj}/%1' {
             defines = {
                 ('SHADERS_PATH=\\"%s/\\"'):format( forge:absolute('../shaders') );
             };

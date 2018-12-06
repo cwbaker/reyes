@@ -8,7 +8,7 @@ forge:all {
         '${lib}/libpng_${platform}_${architecture}';
         '${lib}/zlib_${platform}_${architecture}';
         
-        forge:Cxx () {
+        forge:Cxx '${obj}/%1' {
             defines = {
                 ('SHADERS_PATH=\\"%s/\\"'):format( forge:absolute('../shaders') );
                 ('REYES_EXAMPLES_PATH=\\"%s/\\"'):format( forge:absolute('.') );

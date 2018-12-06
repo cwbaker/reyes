@@ -1,11 +1,11 @@
 
 for _, forge in forge:default_builds('cc_.*') do
     forge:Library '${lib}/reyes_virtual_machine_${architecture}' {
-        forge:Cxx () {
+        forge:Cxx '${obj}/%1' {
             'ConditionMask.cpp';
         };
 
-        forge:Cxx () {
+        forge:Cxx '${obj}/%1' {
             'add.cpp';
             'assign.cpp';
             'add_assign.cpp';
@@ -34,7 +34,7 @@ for _, forge in forge:default_builds('cc_.*') do
             'vtransform.cpp';
         };
 
-        forge:Cxx () {
+        forge:Cxx '${obj}/%1' {
             'color_functions.cpp';
             'geometric_functions.cpp';
             'mathematical_functions.cpp';
