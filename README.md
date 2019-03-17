@@ -98,9 +98,19 @@ displacement wavy(
 
 ## Installation
 
-*Reyes* is built with XCode or Visual Studio using the [Forge](https:/www.github.com/cwbaker/forge#forge) build tool.
+*Reyes* is built with GCC, XCode, or Visual Studio using the [Forge](https:/www.github.com/cwbaker/forge#forge) build tool.
 
-**macOS**
+**Linux:**
+
+- Install GCC
+- Install [Forge](https:/www.github.com/cwbaker/forge#forge)
+- `git clone git@github.com:cwbaker/reyes.git reyes`
+- `cd reyes`
+- `git submodule update --init`
+- `forge variant=release`
+- `./release/bin/reyes_examples`
+
+**macOS:**
 
 - Install Xcode
 - Install [Forge](https:/www.github.com/cwbaker/forge#forge)
@@ -110,7 +120,7 @@ displacement wavy(
 - `forge variant=release`
 - `./release/bin/reyes_examples`
 
-**Windows**:
+**Windows:**
 
 - Install Visual Studio 2017
 - Install [Forge](https:/www.github.com/cwbaker/forge#forge)
