@@ -7,6 +7,7 @@
 #include "Dispatch.hpp"
 #include <math/vec3.ipp>
 #include <reyes/assert.hpp>
+#include <string.h>
 
 namespace reyes
 {
