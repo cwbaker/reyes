@@ -3,13 +3,13 @@ buildfile 'reyes_examples/reyes_examples.forge';
 buildfile 'reyes_test/reyes_test.forge';
 buildfile 'reyes_virtual_machine/reyes_virtual_machine.forge';
 
-for _, forge in forge:default_builds('cc_.*') do
-    local forge = forge:configure {
+for _, forge in forge:builds('cc_.*') do
+    local forge = forge:inherit {
         warning_level = 0;
     };
 
     forge:all {
-        forge:Library '${lib}/reyes_${architecture}' {
+        forge:StaticLibrary '${lib}/reyes_${architecture}' {
             forge:Cxx '${obj}/%1' {
                 'assert.cpp';
                 forge:Lalrc 'shader_parser.g.cpp' {

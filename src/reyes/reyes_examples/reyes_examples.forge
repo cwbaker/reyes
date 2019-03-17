@@ -1,22 +1,24 @@
 
-forge:all {
-    forge:Executable '${bin}/reyes_examples' {
-        '${lib}/reyes_${architecture}';
-        '${lib}/reyes_virtual_machine_${architecture}';
-        '${lib}/jpeg_${architecture}';
-        '${lib}/lalr_${architecture}';
-        '${lib}/libpng_${platform}_${architecture}';
-        '${lib}/zlib_${platform}_${architecture}';
-        
-        forge:Cxx '${obj}/%1' {
-            defines = {
-                ('SHADERS_PATH=\\"%s/\\"'):format( forge:absolute('../shaders') );
-                ('REYES_EXAMPLES_PATH=\\"%s/\\"'):format( forge:absolute('.') );
+for _, forge in forge:builds('cc_.*') do
+    forge:all {
+        forge:Executable '${bin}/reyes_examples' {
+            '${lib}/reyes_${architecture}';
+            '${lib}/reyes_virtual_machine_${architecture}';
+            '${lib}/jpeg_${architecture}';
+            '${lib}/lalr_${architecture}';
+            '${lib}/libpng_${platform}_${architecture}';
+            '${lib}/zlib_${platform}_${architecture}';
+            
+            forge:Cxx '${obj}/%1' {
+                defines = {
+                    ('SHADERS_PATH=\\"%s/\\"'):format( forge:absolute('../shaders') );
+                    ('REYES_EXAMPLES_PATH=\\"%s/\\"'):format( forge:absolute('.') );
+                };
+                'main.cpp',
+                'reyes_shaders_example.cpp',
+                'reyes_wavy_sphere_example.cpp',
+                'reyes_teapot_example.cpp',
             };
-            'main.cpp',
-            'reyes_shaders_example.cpp',
-            'reyes_wavy_sphere_example.cpp',
-            'reyes_teapot_example.cpp',
-        };
-    };    
-};
+        };    
+    };
+end

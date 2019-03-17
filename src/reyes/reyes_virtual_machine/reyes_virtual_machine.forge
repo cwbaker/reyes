@@ -1,6 +1,6 @@
 
-for _, forge in forge:default_builds('cc_.*') do
-    forge:Library '${lib}/reyes_virtual_machine_${architecture}' {
+for _, forge in forge:builds('cc_.*') do
+    forge:StaticLibrary '${lib}/reyes_virtual_machine_${architecture}' {
         forge:Cxx '${obj}/%1' {
             'ConditionMask.cpp';
         };
