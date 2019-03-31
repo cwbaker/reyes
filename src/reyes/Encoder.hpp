@@ -2,6 +2,7 @@
 #define _REYES_ENCODER_HPP_
 
 #include <vector>
+#include <stddef.h>
 
 namespace reyes
 {
