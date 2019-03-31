@@ -1,18 +1,18 @@
 [submodule "src/unittest-cpp"]
 	path = src/unittest-cpp
-	url = git@github.com:cwbaker/unittest-cpp.git
+	url = https://github.com/cwbaker/unittest-cpp.git
 [submodule "src/lalr"]
 	path = src/lalr
-	url = git@github.com:cwbaker/lalr.git
+	url = https://github.com/cwbaker/lalr.git
 [submodule "src/zlib"]
 	path = src/zlib
-	url = git@github.com:cwbaker/zlib.git
+	url = https://github.com/cwbaker/zlib.git
 [submodule "src/math"]
 	path = src/math
-	url = git@github.com:cwbaker/math.git
+	url = https://github.com/cwbaker/math.git
 [submodule "src/libpng"]
 	path = src/libpng
-	url = git@github.com:cwbaker/libpng.git
+	url = https://github.com/cwbaker/libpng.git
 [submodule "src/jpeg"]
 	path = src/jpeg
-	url = git@github.com:cwbaker/jpeg.git
+	url = https://github.com/cwbaker/jpeg.git
