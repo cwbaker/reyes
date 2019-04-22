@@ -29,8 +29,6 @@ using std::shared_ptr;
 using namespace std::placeholders;
 using namespace reyes;
 
-const int LINE = 0;
-
 template <class Iterator>
 class ShaderParserContext : public lalr::ErrorPolicy
 {
@@ -188,7 +186,7 @@ public:
         symbol_table_.pop_scope();
     }
 
-    shared_ptr<Symbol> find_symbol( const std::string& identifier )
+    shared_ptr<Symbol> find_symbol( const std::string& identifier, int line = 0 )
     {
         REYES_ASSERT( parser_ );
         REYES_ASSERT( !identifier.empty() );
@@ -196,7 +194,7 @@ public:
         shared_ptr<Symbol> symbol = symbol_table_.find_symbol( identifier );
         if ( !symbol )
         {
-            error( parser_->position().line(), "Unknown identifier '%s'", identifier.c_str() );
+            error( line, "Unknown identifier '%s'", identifier.c_str() );
         }
         return symbol;
     }
@@ -272,29 +270,31 @@ public:
         return type;
     }
     
-    static void string_( lalr::PositionIterator<Iterator>* begin, lalr::PositionIterator<Iterator> end, std::string* lexeme, const void** /*symbol*/ )
+    static void string_( lalr::PositionIterator<Iterator> begin, lalr::PositionIterator<Iterator> end, std::string* lexeme, const void** /*symbol*/, lalr::PositionIterator<Iterator>* position, int* lines )
     {
-        REYES_ASSERT( begin );
         REYES_ASSERT( lexeme );
         REYES_ASSERT( lexeme->length() == 1 );
+        REYES_ASSERT( position );
+        REYES_ASSERT( lines );
 
-        lalr::PositionIterator<Iterator> position = *begin;
+        lalr::PositionIterator<Iterator> i = begin;
         int terminator = lexeme->at( 0 );
         REYES_ASSERT( terminator == '"' );
         lexeme->clear();
         
-        while ( position != end && *position != terminator )
+        while ( i != end && *i != terminator )
         {
-            *lexeme += *position;
-            ++position;
+            *lexeme += *i;
+            ++i;
         }
         
-        if ( position != end )
+        if ( i != end )
         {
-            ++position;
+            ++i;
         }
         
-        *begin = position;
+        *position = i;
+        *lines = 0;
     }
 
     shared_ptr<SyntaxNode> shader_definition_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
@@ -334,7 +334,7 @@ public:
     
     shared_ptr<SyntaxNode> function_definition_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> function( new SyntaxNode(SHADER_NODE_FUNCTION, LINE, nodes[1].lexeme()) );
+        shared_ptr<SyntaxNode> function( new SyntaxNode(SHADER_NODE_FUNCTION, nodes[1].line(), nodes[1].lexeme()) );
         shared_ptr<Symbol> symbol = symbol_table_.add_symbol( nodes[1].lexeme() );
         symbol->set_type( type_from_syntax_node(start[0]) );
         function->set_symbol( symbol );
@@ -365,7 +365,7 @@ public:
         shared_ptr<SyntaxNode> list;
         if ( start[0]->node_type() != SHADER_NODE_LIST )
         {
-            list.reset( new SyntaxNode(SHADER_NODE_LIST, LINE) );
+            list.reset( new SyntaxNode(SHADER_NODE_LIST, start[0]->line()) );
             list->add_node( start[0] );
         }
         else
@@ -377,17 +377,17 @@ public:
     
     static shared_ptr<SyntaxNode> empty_list( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> list( new SyntaxNode(SHADER_NODE_LIST, LINE) );
+        shared_ptr<SyntaxNode> list( new SyntaxNode(SHADER_NODE_LIST, 0) );
         return list;
     }
     
-    shared_ptr<SyntaxNode> formal_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* /*nodes*/, size_t length )
+    shared_ptr<SyntaxNode> formal_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {       
         ValueStorage storage = storage_from_syntax_node( start[1], STORAGE_UNIFORM );
         ValueType type = type_from_syntax_node( start[2] );
         
-        const vector<shared_ptr<SyntaxNode> >& nodes = start[3]->nodes();
-        for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+        const vector<shared_ptr<SyntaxNode>>& syntax_nodes = start[3]->nodes();
+        for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = syntax_nodes.begin(); i != syntax_nodes.end(); ++i )
         {
             SyntaxNode* variable_node = i->get();
             REYES_ASSERT( variable_node );
@@ -398,8 +398,8 @@ public:
             variable_node->set_symbol( symbol );
         }
         
-        shared_ptr<SyntaxNode> variable( new SyntaxNode(SHADER_NODE_LIST, LINE) );
-        variable->add_nodes_at_end( nodes.begin(), nodes.end() );
+        shared_ptr<SyntaxNode> variable( new SyntaxNode(SHADER_NODE_LIST, start[2]->line()) );
+        variable->add_nodes_at_end( syntax_nodes.begin(), syntax_nodes.end() );
         return variable;
     }
 
@@ -420,22 +420,22 @@ public:
             variable_node->set_symbol( symbol );
         }
         
-        shared_ptr<SyntaxNode> variable( new SyntaxNode(SHADER_NODE_LIST, LINE) );
+        shared_ptr<SyntaxNode> variable( new SyntaxNode(SHADER_NODE_LIST, start[2]->line()) );
         variable->add_nodes_at_end( nodes.begin(), nodes.end() );
         return variable;
     }
 
     shared_ptr<SyntaxNode> definition_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> variable( new SyntaxNode(SHADER_NODE_VARIABLE, LINE, nodes[0].lexeme()) );
-        shared_ptr<SyntaxNode> null( new SyntaxNode(SHADER_NODE_NULL, LINE) );
+        shared_ptr<SyntaxNode> variable( new SyntaxNode(SHADER_NODE_VARIABLE, nodes[0].line(), nodes[0].lexeme()) );
+        shared_ptr<SyntaxNode> null( new SyntaxNode(SHADER_NODE_NULL, nodes[0].line()) );
         variable->add_node( null );
         return variable;
     }
     
     shared_ptr<SyntaxNode> definition_expression_with_assignment( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {        
-        shared_ptr<SyntaxNode> variable( new SyntaxNode(SHADER_NODE_VARIABLE, LINE, nodes[0].lexeme()) );
+        shared_ptr<SyntaxNode> variable( new SyntaxNode(SHADER_NODE_VARIABLE, nodes[0].line(), nodes[0].lexeme()) );
         const shared_ptr<SyntaxNode>& expression = start[2];
         variable->add_node( expression );
         return variable;
@@ -444,113 +444,113 @@ public:
     shared_ptr<SyntaxNode> light_shader( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
         push_light_scope();       
-        shared_ptr<SyntaxNode> light_shader( new SyntaxNode(SHADER_NODE_LIGHT_SHADER, LINE) );
+        shared_ptr<SyntaxNode> light_shader( new SyntaxNode(SHADER_NODE_LIGHT_SHADER, nodes[0].line()) );
         return light_shader;
     }
 
     shared_ptr<SyntaxNode> surface_shader( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
         push_surface_scope();
-        shared_ptr<SyntaxNode> surface_shader( new SyntaxNode(SHADER_NODE_SURFACE_SHADER, LINE) );
+        shared_ptr<SyntaxNode> surface_shader( new SyntaxNode(SHADER_NODE_SURFACE_SHADER, nodes[0].line()) );
         return surface_shader;
     }
 
     shared_ptr<SyntaxNode> volume_shader( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
         push_volume_scope();
-        shared_ptr<SyntaxNode> volume_shader( new SyntaxNode(SHADER_NODE_VOLUME_SHADER, LINE) );
+        shared_ptr<SyntaxNode> volume_shader( new SyntaxNode(SHADER_NODE_VOLUME_SHADER, nodes[0].line()) );
         return volume_shader;
     }
 
     shared_ptr<SyntaxNode> displacement_shader( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
         push_displacement_scope();
-        shared_ptr<SyntaxNode> displacement_shader( new SyntaxNode(SHADER_NODE_DISPLACEMENT_SHADER, LINE) );
+        shared_ptr<SyntaxNode> displacement_shader( new SyntaxNode(SHADER_NODE_DISPLACEMENT_SHADER, nodes[0].line()) );
         return displacement_shader;
     }
 
     shared_ptr<SyntaxNode> imager_shader( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
         push_imager_scope();
-        shared_ptr<SyntaxNode> imager_shader( new SyntaxNode(SHADER_NODE_IMAGER_SHADER, LINE) );
+        shared_ptr<SyntaxNode> imager_shader( new SyntaxNode(SHADER_NODE_IMAGER_SHADER, nodes[0].line()) );
         return imager_shader;
     }
     
     static shared_ptr<SyntaxNode> float_type( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> float_type( new SyntaxNode(SHADER_NODE_FLOAT_TYPE, LINE) );
+        shared_ptr<SyntaxNode> float_type( new SyntaxNode(SHADER_NODE_FLOAT_TYPE, nodes[0].line()) );
         return float_type;
     }
 
     static shared_ptr<SyntaxNode> string_type( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> string_type( new SyntaxNode(SHADER_NODE_STRING_TYPE, LINE) );
+        shared_ptr<SyntaxNode> string_type( new SyntaxNode(SHADER_NODE_STRING_TYPE, nodes[0].line()) );
         return string_type;
     }
 
     static shared_ptr<SyntaxNode> color_type( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> color_type( new SyntaxNode(SHADER_NODE_COLOR_TYPE, LINE) );
+        shared_ptr<SyntaxNode> color_type( new SyntaxNode(SHADER_NODE_COLOR_TYPE, nodes[0].line()) );
         return color_type;
     }
 
     static shared_ptr<SyntaxNode> point_type( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> point_type( new SyntaxNode(SHADER_NODE_POINT_TYPE, LINE) );
+        shared_ptr<SyntaxNode> point_type( new SyntaxNode(SHADER_NODE_POINT_TYPE, nodes[0].line()) );
         return point_type;
     }
 
     static shared_ptr<SyntaxNode> vector_type( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> vector_type( new SyntaxNode(SHADER_NODE_VECTOR_TYPE, LINE) );
+        shared_ptr<SyntaxNode> vector_type( new SyntaxNode(SHADER_NODE_VECTOR_TYPE, nodes[0].line()) );
         return vector_type;
     }
 
     static shared_ptr<SyntaxNode> normal_type( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> normal_type( new SyntaxNode(SHADER_NODE_NORMAL_TYPE, LINE) );
+        shared_ptr<SyntaxNode> normal_type( new SyntaxNode(SHADER_NODE_NORMAL_TYPE, nodes[0].line()) );
         return normal_type;
     }
 
     static shared_ptr<SyntaxNode> matrix_type( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> matrix_type( new SyntaxNode(SHADER_NODE_MATRIX_TYPE, LINE) );
+        shared_ptr<SyntaxNode> matrix_type( new SyntaxNode(SHADER_NODE_MATRIX_TYPE, nodes[0].line()) );
         return matrix_type;
     }
 
     static shared_ptr<SyntaxNode> void_type( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> void_type( new SyntaxNode(SHADER_NODE_VOID_TYPE, LINE) );
+        shared_ptr<SyntaxNode> void_type( new SyntaxNode(SHADER_NODE_VOID_TYPE, nodes[0].line()) );
         return void_type;
     }
 
     static shared_ptr<SyntaxNode> varying( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> varying( new SyntaxNode(SHADER_NODE_VARYING, LINE) );
+        shared_ptr<SyntaxNode> varying( new SyntaxNode(SHADER_NODE_VARYING, nodes[0].line()) );
         return varying;
     }
 
     static shared_ptr<SyntaxNode> uniform( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> uniform( new SyntaxNode(SHADER_NODE_UNIFORM, LINE) );
+        shared_ptr<SyntaxNode> uniform( new SyntaxNode(SHADER_NODE_UNIFORM, nodes[0].line()) );
         return uniform;
     }
 
     static shared_ptr<SyntaxNode> output( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> output( new SyntaxNode(SHADER_NODE_OUTPUT, LINE) );
+        shared_ptr<SyntaxNode> output( new SyntaxNode(SHADER_NODE_OUTPUT, nodes[0].line()) );
         return output;
     }
 
     static shared_ptr<SyntaxNode> extern_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> extern_( new SyntaxNode(SHADER_NODE_EXTERN, LINE) );
+        shared_ptr<SyntaxNode> extern_( new SyntaxNode(SHADER_NODE_EXTERN, nodes[0].line()) );
         return extern_;
     }
 
     static shared_ptr<SyntaxNode> null( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> null( new SyntaxNode(SHADER_NODE_NULL, LINE) );
+        shared_ptr<SyntaxNode> null( new SyntaxNode(SHADER_NODE_NULL, 0) );
         return null;
     }
 
@@ -562,7 +562,7 @@ public:
     
     static shared_ptr<SyntaxNode> return_statement( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> return_( new SyntaxNode(SHADER_NODE_RETURN, LINE) );
+        shared_ptr<SyntaxNode> return_( new SyntaxNode(SHADER_NODE_RETURN, nodes[0].line()) );
         const shared_ptr<SyntaxNode>& expression = start[1];
         REYES_ASSERT( expression );
         return_->add_node( expression );
@@ -571,7 +571,7 @@ public:
     
     static shared_ptr<SyntaxNode> break_statement( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> break_( new SyntaxNode(SHADER_NODE_BREAK, LINE) );
+        shared_ptr<SyntaxNode> break_( new SyntaxNode(SHADER_NODE_BREAK, nodes[0].line()) );
         const shared_ptr<SyntaxNode>& level = start[1];
         if ( level )
         {
@@ -582,7 +582,7 @@ public:
     
     static shared_ptr<SyntaxNode> continue_statement( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> continue_( new SyntaxNode(SHADER_NODE_CONTINUE, LINE) );
+        shared_ptr<SyntaxNode> continue_( new SyntaxNode(SHADER_NODE_CONTINUE, nodes[0].line()) );
         const shared_ptr<SyntaxNode>& level = start[1];
         if ( level )
         {
@@ -600,7 +600,7 @@ public:
         REYES_ASSERT( statement );
         REYES_ASSERT( statement->node_type() == SHADER_NODE_STATEMENT || statement->node_type() == SHADER_NODE_LIST );
 
-        shared_ptr<SyntaxNode> if_( new SyntaxNode(SHADER_NODE_IF, LINE) );
+        shared_ptr<SyntaxNode> if_( new SyntaxNode(SHADER_NODE_IF, nodes[0].line()) );
         if_->add_node( expression );
         if_->add_node( statement );
         return if_;
@@ -619,7 +619,7 @@ public:
         REYES_ASSERT( else_statement );
         REYES_ASSERT( else_statement->node_type() == SHADER_NODE_STATEMENT || statement->node_type() == SHADER_NODE_LIST );
 
-        shared_ptr<SyntaxNode> if_else( new SyntaxNode(SHADER_NODE_IF_ELSE, LINE) );
+        shared_ptr<SyntaxNode> if_else( new SyntaxNode(SHADER_NODE_IF_ELSE, nodes[0].line()) );
         if_else->add_node( expression );
         if_else->add_node( statement );
         if_else->add_node( else_statement );
@@ -635,7 +635,7 @@ public:
         REYES_ASSERT( statement );
         REYES_ASSERT( statement->node_type() == SHADER_NODE_STATEMENT || statement->node_type() == SHADER_NODE_LIST );
 
-        shared_ptr<SyntaxNode> while_( new SyntaxNode(SHADER_NODE_WHILE, LINE) );
+        shared_ptr<SyntaxNode> while_( new SyntaxNode(SHADER_NODE_WHILE, nodes[0].line()) );
         while_->add_node( expression );
         while_->add_node( statement );
         return while_;
@@ -656,7 +656,7 @@ public:
         REYES_ASSERT( statement );
         REYES_ASSERT( statement->node_type() == SHADER_NODE_STATEMENT || statement->node_type() == SHADER_NODE_LIST );
 
-        shared_ptr<SyntaxNode> for_( new SyntaxNode(SHADER_NODE_FOR, LINE) );
+        shared_ptr<SyntaxNode> for_( new SyntaxNode(SHADER_NODE_FOR, nodes[0].line()) );
         for_->add_node( initial_expression );
         for_->add_node( condition_expression );
         for_->add_node( increment_expression );
@@ -666,7 +666,7 @@ public:
     
     shared_ptr<SyntaxNode> solar_statement_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> solar( new SyntaxNode(SHADER_NODE_SOLAR, LINE) );
+        shared_ptr<SyntaxNode> solar( new SyntaxNode(SHADER_NODE_SOLAR, nodes[0].line()) );
         
         const shared_ptr<SyntaxNode>& parameters = start[2];
         solar->add_node( parameters );
@@ -675,12 +675,12 @@ public:
         solar->add_node( statement );
 
         const char* LIGHT_COLOR = "Cl";
-        shared_ptr<SyntaxNode> light_color( new SyntaxNode(SHADER_NODE_IDENTIFIER, LINE, LIGHT_COLOR) );
+        shared_ptr<SyntaxNode> light_color( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_COLOR) );
         light_color->set_symbol( find_symbol(LIGHT_COLOR) );
         solar->add_node( light_color );
 
         const char* LIGHT_OPACITY = "Ol";
-        shared_ptr<SyntaxNode> light_opacity( new SyntaxNode(SHADER_NODE_IDENTIFIER, LINE, LIGHT_OPACITY) );
+        shared_ptr<SyntaxNode> light_opacity( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_OPACITY) );
         light_opacity->set_symbol( find_symbol(LIGHT_OPACITY) );
         solar->add_node( light_opacity );
 
@@ -690,7 +690,7 @@ public:
     
     shared_ptr<SyntaxNode> illuminate_statement_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> illuminate( new SyntaxNode(SHADER_NODE_ILLUMINATE, LINE) );
+        shared_ptr<SyntaxNode> illuminate( new SyntaxNode(SHADER_NODE_ILLUMINATE, nodes[0].line()) );
 
         const shared_ptr<SyntaxNode>& parameters = start[2];
         illuminate->add_node( parameters );
@@ -699,22 +699,22 @@ public:
         illuminate->add_node( statement );
 
         const char* SURFACE_POSITION = "Ps";
-        shared_ptr<SyntaxNode> surface_position( new SyntaxNode(SHADER_NODE_IDENTIFIER, LINE, SURFACE_POSITION) );
+        shared_ptr<SyntaxNode> surface_position( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, SURFACE_POSITION) );
         surface_position->set_symbol( find_symbol(SURFACE_POSITION) );
         illuminate->add_node( surface_position );
 
         const char* LIGHT_DIRECTION = "L";
-        shared_ptr<SyntaxNode> light_direction( new SyntaxNode(SHADER_NODE_IDENTIFIER, LINE, LIGHT_DIRECTION) );
+        shared_ptr<SyntaxNode> light_direction( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_DIRECTION) );
         light_direction->set_symbol( find_symbol(LIGHT_DIRECTION) );
         illuminate->add_node( light_direction );
 
         const char* LIGHT_COLOR = "Cl";
-        shared_ptr<SyntaxNode> light_color( new SyntaxNode(SHADER_NODE_IDENTIFIER, LINE, LIGHT_COLOR) );
+        shared_ptr<SyntaxNode> light_color( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_COLOR) );
         light_color->set_symbol( find_symbol(LIGHT_COLOR) );
         illuminate->add_node( light_color );
 
         const char* LIGHT_OPACITY = "Ol";
-        shared_ptr<SyntaxNode> light_opacity( new SyntaxNode(SHADER_NODE_IDENTIFIER, LINE, LIGHT_OPACITY) );
+        shared_ptr<SyntaxNode> light_opacity( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_OPACITY) );
         light_opacity->set_symbol( find_symbol(LIGHT_OPACITY) );
         illuminate->add_node( light_opacity );
 
@@ -724,7 +724,7 @@ public:
     
     shared_ptr<SyntaxNode> illuminance_statement_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> illuminance( new SyntaxNode(SHADER_NODE_ILLUMINANCE, LINE) );
+        shared_ptr<SyntaxNode> illuminance( new SyntaxNode(SHADER_NODE_ILLUMINANCE, nodes[0].line()) );
 
         const shared_ptr<SyntaxNode>& parameters = start[2];
         illuminance->add_node( parameters );
@@ -733,17 +733,17 @@ public:
         illuminance->add_node( statement );
 
         const char* LIGHT_DIRECTION = "L";
-        shared_ptr<SyntaxNode> light_direction( new SyntaxNode(SHADER_NODE_IDENTIFIER, LINE, LIGHT_DIRECTION) );
+        shared_ptr<SyntaxNode> light_direction( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_DIRECTION) );
         light_direction->set_symbol( find_symbol(LIGHT_DIRECTION) );
         illuminance->add_node( light_direction );
 
         const char* LIGHT_COLOR = "Cl";
-        shared_ptr<SyntaxNode> light_color( new SyntaxNode(SHADER_NODE_IDENTIFIER, LINE, LIGHT_COLOR) );
+        shared_ptr<SyntaxNode> light_color( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_COLOR) );
         light_color->set_symbol( find_symbol(LIGHT_COLOR) );
         illuminance->add_node( light_color );
 
         const char* LIGHT_OPACITY = "Ol";
-        shared_ptr<SyntaxNode> light_opacity( new SyntaxNode(SHADER_NODE_IDENTIFIER, LINE, LIGHT_OPACITY) );
+        shared_ptr<SyntaxNode> light_opacity( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_OPACITY) );
         light_opacity->set_symbol( find_symbol(LIGHT_OPACITY) );
         illuminance->add_node( light_opacity );
 
@@ -771,11 +771,10 @@ public:
     
     static shared_ptr<SyntaxNode> statement_error( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        printf( "statement_error\n" );
         return shared_ptr<SyntaxNode>();
     }
     
-    static shared_ptr<SyntaxNode> binary_operator( SyntaxNodeType type, const shared_ptr<SyntaxNode>* start )
+    static shared_ptr<SyntaxNode> binary_operator( SyntaxNodeType type, const shared_ptr<SyntaxNode>* start, int line )
     {
         const shared_ptr<SyntaxNode>& lhs = start[0];
         REYES_ASSERT( lhs );
@@ -783,7 +782,7 @@ public:
         const shared_ptr<SyntaxNode>& rhs = start[2];
         REYES_ASSERT( rhs );
         
-        shared_ptr<SyntaxNode> binary_operator( new SyntaxNode(type, LINE) );
+        shared_ptr<SyntaxNode> binary_operator( new SyntaxNode(type, line) );
         binary_operator->add_node( lhs );
         binary_operator->add_node( rhs );
         return binary_operator;
@@ -791,72 +790,72 @@ public:
 
     static shared_ptr<SyntaxNode> dot_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        return binary_operator( SHADER_NODE_DOT, start );
+        return binary_operator( SHADER_NODE_DOT, start, nodes[1].line() );
     }
     
     static shared_ptr<SyntaxNode> cross_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        return binary_operator( SHADER_NODE_CROSS, start );
+        return binary_operator( SHADER_NODE_CROSS, start, nodes[1].line() );
     }
     
     static shared_ptr<SyntaxNode> multiply_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        return binary_operator( SHADER_NODE_MULTIPLY, start );
+        return binary_operator( SHADER_NODE_MULTIPLY, start, nodes[1].line() );
     }
     
     static shared_ptr<SyntaxNode> divide_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        return binary_operator( SHADER_NODE_DIVIDE, start );
+        return binary_operator( SHADER_NODE_DIVIDE, start, nodes[1].line() );
     }
     
     static shared_ptr<SyntaxNode> add_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        return binary_operator( SHADER_NODE_ADD, start );
+        return binary_operator( SHADER_NODE_ADD, start, nodes[1].line() );
     }
     
     static shared_ptr<SyntaxNode> subtract_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        return binary_operator( SHADER_NODE_SUBTRACT, start );
+        return binary_operator( SHADER_NODE_SUBTRACT, start, nodes[1].line() );
     }
     
     static shared_ptr<SyntaxNode> greater_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        return binary_operator( SHADER_NODE_GREATER, start );
+        return binary_operator( SHADER_NODE_GREATER, start, nodes[1].line() );
     }
     
     static shared_ptr<SyntaxNode> greater_equal_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        return binary_operator( SHADER_NODE_GREATER_EQUAL, start );
+        return binary_operator( SHADER_NODE_GREATER_EQUAL, start, nodes[1].line() );
     }
     
     static shared_ptr<SyntaxNode> less_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        return binary_operator( SHADER_NODE_LESS, start );
+        return binary_operator( SHADER_NODE_LESS, start, nodes[1].line() );
     }
     
     static shared_ptr<SyntaxNode> less_equal_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        return binary_operator( SHADER_NODE_LESS_EQUAL, start );
+        return binary_operator( SHADER_NODE_LESS_EQUAL, start, nodes[1].line() );
     }
     
     static shared_ptr<SyntaxNode> equal_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        return binary_operator( SHADER_NODE_EQUAL, start );
+        return binary_operator( SHADER_NODE_EQUAL, start, nodes[1].line() );
     }
     
     static shared_ptr<SyntaxNode> not_equal_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        return binary_operator( SHADER_NODE_NOT_EQUAL, start );
+        return binary_operator( SHADER_NODE_NOT_EQUAL, start, nodes[1].line() );
     }
     
     static shared_ptr<SyntaxNode> and_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        return binary_operator( SHADER_NODE_AND, start );
+        return binary_operator( SHADER_NODE_AND, start, nodes[1].line() );
     }
     
     static shared_ptr<SyntaxNode> or_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        return binary_operator( SHADER_NODE_OR, start );
+        return binary_operator( SHADER_NODE_OR, start, nodes[1].line() );
     }
     
     static shared_ptr<SyntaxNode> negate_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
@@ -864,7 +863,7 @@ public:
         const shared_ptr<SyntaxNode>& expression = start[1];
         REYES_ASSERT( expression );
         
-        shared_ptr<SyntaxNode> negate( new SyntaxNode(SHADER_NODE_NEGATE, LINE) );
+        shared_ptr<SyntaxNode> negate( new SyntaxNode(SHADER_NODE_NEGATE, nodes[0].line()) );
         negate->add_node( expression );
         return negate;
     }
@@ -880,7 +879,7 @@ public:
         const shared_ptr<SyntaxNode>& else_expression = start[0];
         REYES_ASSERT( else_expression );
 
-        shared_ptr<SyntaxNode> ternary_expression( new SyntaxNode(SHADER_NODE_TERNARY, LINE) );
+        shared_ptr<SyntaxNode> ternary_expression( new SyntaxNode(SHADER_NODE_TERNARY, nodes[1].line()) );
         ternary_expression->add_node( condition_expression );
         ternary_expression->add_node( expression );
         ternary_expression->add_node( else_expression );
@@ -889,7 +888,7 @@ public:
     
     static shared_ptr<SyntaxNode> typecast_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> typecast( new SyntaxNode(SHADER_NODE_TYPECAST, LINE) );
+        shared_ptr<SyntaxNode> typecast( new SyntaxNode(SHADER_NODE_TYPECAST, start[0]->line()) );
         typecast->add_node( start[0] );
         typecast->add_node( start[1] );
         return typecast;
@@ -904,25 +903,25 @@ public:
     
     static shared_ptr<SyntaxNode> integer_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> integer( new SyntaxNode(SHADER_NODE_INTEGER, LINE, nodes[0].lexeme()) );
+        shared_ptr<SyntaxNode> integer( new SyntaxNode(SHADER_NODE_INTEGER, nodes[0].line(), nodes[0].lexeme()) );
         return integer;
     }
     
     static shared_ptr<SyntaxNode> real_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> real( new SyntaxNode(SHADER_NODE_REAL, LINE, nodes[0].lexeme()) );
+        shared_ptr<SyntaxNode> real( new SyntaxNode(SHADER_NODE_REAL, nodes[0].line(), nodes[0].lexeme()) );
         return real;
     }
     
     static shared_ptr<SyntaxNode> string_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> string( new SyntaxNode(SHADER_NODE_STRING, LINE, nodes[0].lexeme()) );
+        shared_ptr<SyntaxNode> string( new SyntaxNode(SHADER_NODE_STRING, nodes[0].line(), nodes[0].lexeme()) );
         return string;
     }
     
     shared_ptr<SyntaxNode> identifier_expression_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> identifier( new SyntaxNode(SHADER_NODE_IDENTIFIER, LINE, nodes[0].lexeme()) );
+        shared_ptr<SyntaxNode> identifier( new SyntaxNode(SHADER_NODE_IDENTIFIER, nodes[0].line(), nodes[0].lexeme()) );
         identifier->set_symbol( find_symbol(nodes[0].lexeme()) );
         return identifier;
     }
@@ -951,7 +950,7 @@ public:
         const shared_ptr<SyntaxNode>& third_expression = start[5];
         REYES_ASSERT( third_expression );
     
-        shared_ptr<SyntaxNode> triple( new SyntaxNode(SHADER_NODE_TRIPLE, LINE) );
+        shared_ptr<SyntaxNode> triple( new SyntaxNode(SHADER_NODE_TRIPLE, nodes[0].line()) );
         triple->add_node( first_expression );
         triple->add_node( second_expression );
         triple->add_node( third_expression );
@@ -960,7 +959,7 @@ public:
     
     static shared_ptr<SyntaxNode> sixteentuple_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> sixteentuple( new SyntaxNode(SHADER_NODE_SIXTEENTUPLE, LINE) );
+        shared_ptr<SyntaxNode> sixteentuple( new SyntaxNode(SHADER_NODE_SIXTEENTUPLE, nodes[0].line()) );
         for ( int i = 0; i < 16; ++i )
         {
             const shared_ptr<SyntaxNode>& expression = start[1 + i * 2];
@@ -972,7 +971,7 @@ public:
     
     static shared_ptr<SyntaxNode> color_typecast( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> color_type( new SyntaxNode(SHADER_NODE_COLOR_TYPE, LINE) );
+        shared_ptr<SyntaxNode> color_type( new SyntaxNode(SHADER_NODE_COLOR_TYPE, nodes[0].line()) );
         const shared_ptr<SyntaxNode>& space = start[1];
         if ( space )
         {
@@ -983,7 +982,7 @@ public:
     
     static shared_ptr<SyntaxNode> point_typecast( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> point_type( new SyntaxNode(SHADER_NODE_POINT_TYPE, LINE) );
+        shared_ptr<SyntaxNode> point_type( new SyntaxNode(SHADER_NODE_POINT_TYPE, nodes[0].line()) );
         const shared_ptr<SyntaxNode>& space = start[1];
         if ( space )
         {
@@ -994,7 +993,7 @@ public:
 
     static shared_ptr<SyntaxNode> vector_typecast( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> vector_type( new SyntaxNode(SHADER_NODE_VECTOR_TYPE, LINE) );
+        shared_ptr<SyntaxNode> vector_type( new SyntaxNode(SHADER_NODE_VECTOR_TYPE, nodes[0].line()) );
         const shared_ptr<SyntaxNode>& space = start[1];
         if ( space )
         {
@@ -1005,7 +1004,7 @@ public:
 
     static shared_ptr<SyntaxNode> normal_typecast( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> normal_type( new SyntaxNode(SHADER_NODE_NORMAL_TYPE, LINE) );
+        shared_ptr<SyntaxNode> normal_type( new SyntaxNode(SHADER_NODE_NORMAL_TYPE, nodes[0].line()) );
         const shared_ptr<SyntaxNode>& space = start[1];
         if ( space )
         {
@@ -1016,7 +1015,7 @@ public:
 
     static shared_ptr<SyntaxNode> matrix_typecast( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> matrix_type( new SyntaxNode(SHADER_NODE_MATRIX_TYPE, LINE) );
+        shared_ptr<SyntaxNode> matrix_type( new SyntaxNode(SHADER_NODE_MATRIX_TYPE, nodes[0].line()) );
         const shared_ptr<SyntaxNode>& space = start[1];
         if ( space )
         {
@@ -1030,7 +1029,7 @@ public:
         const shared_ptr<SyntaxNode>& expression = start[2];
         REYES_ASSERT( expression );
     
-        shared_ptr<SyntaxNode> assign_operator( new SyntaxNode(type, LINE, nodes[0].lexeme()) );
+        shared_ptr<SyntaxNode> assign_operator( new SyntaxNode(type, nodes[0].line(), nodes[0].lexeme()) );
         assign_operator->add_node( expression );
         assign_operator->set_symbol( find_symbol(nodes[0].lexeme()) );
         return assign_operator;
@@ -1097,22 +1096,22 @@ public:
         REYES_ASSERT( expressions );
         REYES_ASSERT( expressions->node_type() == SHADER_NODE_LIST );
     
-        shared_ptr<SyntaxNode> call( new SyntaxNode(SHADER_NODE_CALL, LINE, nodes[0].lexeme()) );
+        shared_ptr<SyntaxNode> call( new SyntaxNode(SHADER_NODE_CALL, nodes[0].line(), nodes[0].lexeme()) );
         call->add_nodes_at_end( expressions->nodes().begin(), expressions->nodes().end() );
         return call;
     }
 
     shared_ptr<SyntaxNode> texture_expression_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> texture( new SyntaxNode(SHADER_NODE_TEXTURE, LINE) );
+        shared_ptr<SyntaxNode> texture( new SyntaxNode(SHADER_NODE_TEXTURE, nodes[0].line()) );
         const vector<shared_ptr<SyntaxNode> >& parameters = start[2]->nodes();
         texture->add_nodes_at_end( parameters.begin(), parameters.end() );
         if ( parameters.size() == 1 )
         {
-            shared_ptr<SyntaxNode> s( new SyntaxNode(SHADER_NODE_IDENTIFIER, LINE, "s") );
+            shared_ptr<SyntaxNode> s( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, "s") );
             s->set_symbol( symbol_table_.find_symbol("s") );
             texture->add_node( s );
-            shared_ptr<SyntaxNode> t( new SyntaxNode(SHADER_NODE_IDENTIFIER, LINE, "t") );
+            shared_ptr<SyntaxNode> t( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, "t") );
             t->set_symbol( symbol_table_.find_symbol("t") );
             texture->add_node( t );
         }
@@ -1121,7 +1120,7 @@ public:
     
     shared_ptr<SyntaxNode> shadow_expression_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> shadow( new SyntaxNode(SHADER_NODE_SHADOW, LINE) );
+        shared_ptr<SyntaxNode> shadow( new SyntaxNode(SHADER_NODE_SHADOW, nodes[0].line()) );
         const vector<shared_ptr<SyntaxNode> >& parameters = start[2]->nodes();
         shadow->add_nodes_at_end( parameters.begin(), parameters.end() );
         return shadow;
@@ -1129,7 +1128,7 @@ public:
     
     shared_ptr<SyntaxNode> environment_expression_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> environment( new SyntaxNode(SHADER_NODE_ENVIRONMENT, LINE) );
+        shared_ptr<SyntaxNode> environment( new SyntaxNode(SHADER_NODE_ENVIRONMENT, nodes[0].line()) );
         const vector<shared_ptr<SyntaxNode> >& parameters = start[2]->nodes();
         environment->add_nodes_at_end( parameters.begin(), parameters.end() );
         return environment;
