@@ -3,6 +3,7 @@ sweet_render.xcodeproj
 debug
 release
 shipping
+.vscode
 local_settings.lua
 /reyes.sublime-project
 /reyes.sublime-workspace
