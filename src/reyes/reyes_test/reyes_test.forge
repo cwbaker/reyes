@@ -16,7 +16,7 @@ for _, forge in forge:builds('cc_.*') do
 
             forge:Cxx '${obj}/%1' {
                 defines = {
-                    ('SHADERS_PATH=\\"%s/\\"'):format( forge:absolute('../shaders') );
+                    ('SHADERS_PATH=\\"%s/\\"'):format( absolute('../shaders') );
                 };
                 'main.cpp',
                 'AssignExpressions.cpp',

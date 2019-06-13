@@ -11,8 +11,8 @@ for _, forge in forge:builds('cc_.*') do
             
             forge:Cxx '${obj}/%1' {
                 defines = {
-                    ('SHADERS_PATH=\\"%s/\\"'):format( forge:absolute('../shaders') );
-                    ('REYES_EXAMPLES_PATH=\\"%s/\\"'):format( forge:absolute('.') );
+                    ('SHADERS_PATH=\\"%s/\\"'):format( absolute('../shaders') );
+                    ('REYES_EXAMPLES_PATH=\\"%s/\\"'):format( absolute('.') );
                 };
                 'main.cpp',
                 'reyes_shaders_example.cpp',

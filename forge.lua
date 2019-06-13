@@ -1,35 +1,35 @@
 
 local paths = {
     package.path;
-    forge:root( 'src/lalr/lalr/?.lua' );
-    forge:root( 'src/lalr/lalr/?/init.lua' );
+    root( 'src/lalr/lalr/?.lua' );
+    root( 'src/lalr/lalr/?/init.lua' );
 };
 package.path = table.concat( paths, ';' );
 
-variant = forge:lower( variant or 'debug' );
+variant = lower( variant or 'debug' );
 version = version or ('%s %s %s'):format( os.date('%Y.%m.%d %H:%M:%S'), platform, variant );
 
 local forge = require 'forge.cc' {
     identifier = 'cc_${platform}_${architecture}';
-    platform = forge:operating_system();
-    bin = forge:root( ('%s/bin'):format(variant) );
-    lib = forge:root( ('%s/lib'):format(variant) );
-    obj = forge:root( ('%s/obj'):format(variant) );
+    platform = operating_system();
+    bin = root( ('%s/bin'):format(variant) );
+    lib = root( ('%s/lib'):format(variant) );
+    obj = root( ('%s/obj'):format(variant) );
     include_directories = {
-        forge:root( 'src' ),
-        forge:root( 'src/zlib' ),
-        forge:root( 'src/libpng' ),
-        forge:root( 'src/unittest-cpp' );
-        forge:root( 'src/lalr/lalr' );
+        root( 'src' ),
+        root( 'src/zlib' ),
+        root( 'src/libpng' ),
+        root( 'src/unittest-cpp' );
+        root( 'src/lalr/lalr' );
     };
     library_directories = {
-        forge:root( ("%s/lib"):format(variant) ),
+        root( ("%s/lib"):format(variant) ),
     };
     visual_studio = {
-        sln = forge:root( "reyes.sln" );
+        sln = root( "reyes.sln" );
     };
     xcode = {
-        xcodeproj = forge:root( "reyes.xcodeproj" );
+        xcodeproj = root( "reyes.xcodeproj" );
     };
 
     architecture = 'x86_64';
