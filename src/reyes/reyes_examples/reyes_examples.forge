@@ -1,7 +1,7 @@
 
-for _, forge in forge:builds('cc_.*') do
-    forge:all {
-        forge:Executable '${bin}/reyes_examples' {
+for _, toolset in toolsets('cc_.*') do
+    toolset:all {
+        toolset:Executable '${bin}/reyes_examples' {
             '${lib}/reyes_${architecture}';
             '${lib}/reyes_virtual_machine_${architecture}';
             '${lib}/jpeg_${architecture}';
@@ -9,7 +9,7 @@ for _, forge in forge:builds('cc_.*') do
             '${lib}/libpng_${platform}_${architecture}';
             '${lib}/zlib_${platform}_${architecture}';
             
-            forge:Cxx '${obj}/%1' {
+            toolset:Cxx '${obj}/%1' {
                 defines = {
                     ('SHADERS_PATH=\\"%s/\\"'):format( absolute('../shaders') );
                     ('REYES_EXAMPLES_PATH=\\"%s/\\"'):format( absolute('.') );
