@@ -63,6 +63,31 @@ Grid::Grid( const Grid& grid )
     }
 }
 
+Grid& Grid::operator=( const Grid& grid )
+{
+    if ( &grid != this )
+    {
+        width_ = grid.width_;
+        height_ = grid.height_;
+        du_ = grid.du_;
+        dv_ = grid.dv_;
+        transform_ = grid.transform_;
+        shader_ = grid.shader_;
+
+        values_.clear();
+        values_by_identifier_.clear();
+        lights_.clear();
+        
+        values_.reserve( grid.values_by_identifier_.size() );
+        const map<string, shared_ptr<Value>>& values_by_identifier = grid.values_by_identifier_;
+        for ( map<string, shared_ptr<Value>>::const_iterator i = values_by_identifier.begin(); i != values_by_identifier.end(); ++i )
+        {
+            copy_value( i->first, i->second );
+        }
+    }
+    return *this;
+}
+
 Grid::~Grid()
 {
 }

@@ -47,6 +47,7 @@ public:
         Grid();
         Grid( Shader* shader );
         Grid( const Grid& grid );
+        Grid& operator=( const Grid& grid );
         ~Grid();
         
         int width() const;
