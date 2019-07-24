@@ -8,7 +8,7 @@ git:
 before_install:
   - git submodule update --init
 install:
-  - wget https://github.com/cwbaker/forge/releases/download/v0.0.2-rc.28/forge-${TRAVIS_OS_NAME}-v0.0.2-rc.28.tar.gz
+  - wget https://github.com/cwbaker/forge/releases/download/v0.0.3-rc.11/forge-${TRAVIS_OS_NAME}-v0.0.3-rc.11.tar.gz
   - tar -xvf forge-*.tar.gz
 script:
   - forge/bin/forge variant=release
