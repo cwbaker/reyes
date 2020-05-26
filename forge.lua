@@ -9,7 +9,7 @@ package.path = table.concat( paths, ';' );
 variant = lower( variant or 'debug' );
 version = version or ('%s %s %s'):format( os.date('%Y.%m.%d %H:%M:%S'), platform, variant );
 
-local forge = require 'forge.cc' {
+local cc = require 'forge.cc' {
     identifier = 'cc_${platform}_${architecture}';
     platform = operating_system();
     bin = root( ('%s/bin'):format(variant) );
@@ -55,13 +55,13 @@ local forge = require 'forge.cc' {
 
 -- Bump the C++ standard to c++14 when building on Windows as that is the 
 -- closest standard supported by Microsoft Visual C++.
-local settings = forge.settings;
+local settings = cc.settings;
 if settings.platform == 'windows' then
     settings.standard = 'c++14';
 end
 
 local lalr = require 'forge.lalr';
-lalr.initialize( forge );
+cc:install( lalr );
 
 buildfile 'src/jpeg/jpeg.forge';
 buildfile 'src/lalr/lalr/lalr.forge';
@@ -71,7 +71,7 @@ buildfile 'src/reyes/reyes.forge';
 buildfile 'src/unittest-cpp/unittest-cpp.forge';
 buildfile 'src/zlib/zlib.forge';
 
-forge:all {
+cc:all {
     'src/lalr/lalr/lalrc/all',
     'src/reyes/all',
     'src/reyes/reyes_examples/all',
