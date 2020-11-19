@@ -1,7 +1,7 @@
 
 # Reyes
 
-[![Build Status](https://travis-ci.com/cwbaker/reyes.svg?branch=master)](https://travis-ci.com/cwbaker/reyes)
+![Build](https://github.com/cwbaker/reyes/workflows/Build/badge.svg)
 
 *Reyes* is a toy micropolygon renderer based on the architecture described in the original REYES paper and The RenderMan Interface v3.2.1 from Pixar.
 
