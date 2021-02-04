@@ -106,31 +106,43 @@ displacement wavy(
 
 - Install GCC
 - Install [Forge](https:/www.github.com/cwbaker/forge#forge)
-- `git clone git@github.com:cwbaker/reyes.git reyes`
-- `cd reyes`
-- `git submodule update --init`
-- `forge variant=release`
-- `./release/bin/reyes_examples`
+- Run the following from a shell:
+
+~~~bash
+git clone git@github.com:cwbaker/reyes.git reyes
+cd reyes
+git submodule update --init
+forge variant=release
+./release/bin/reyes_examples
+~~~
 
 **macOS:**
 
 - Install Xcode
 - Install [Forge](https:/www.github.com/cwbaker/forge#forge)
-- `git clone git@github.com:cwbaker/reyes.git reyes`
-- `cd reyes`
-- `git submodule update --init`
-- `forge variant=release`
-- `./release/bin/reyes_examples`
+- Run the following from a shell:
+
+~~~bash
+git clone git@github.com:cwbaker/reyes.git reyes
+cd reyes
+git submodule update --init
+forge variant=release
+./release/bin/reyes_examples
+~~~
 
 **Windows:**
 
 - Install Visual Studio 2017
 - Install [Forge](https:/www.github.com/cwbaker/forge#forge)
-- `git clone git@github.com:cwbaker/reyes.git reyes`
-- `cd reyes`
-- `git submodule update --init`
-- `forge variant=release`
-- `.\release\bin\reyes_examples.exe`
+- Run the following from a command prompt:
+
+~~~
+git clone git@github.com:cwbaker/reyes.git reyes
+cd reyes
+git submodule update --init
+forge variant=release
+.\release\bin\reyes_examples.exe
+~~~
 
 ## Usage
 
