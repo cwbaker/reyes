@@ -9,7 +9,7 @@ for _, toolset in toolsets('cc_.*') do
     };
 
     toolset:all {
-        toolset:StaticLibrary '${lib}/reyes_${architecture}' {
+        toolset:StaticLibrary '${lib}/reyes_${platform}_${architecture}' {
             toolset:Cxx '${obj}/%1' {
                 'assert.cpp';
                 toolset:Lalrc 'shader_parser.g.cpp' {

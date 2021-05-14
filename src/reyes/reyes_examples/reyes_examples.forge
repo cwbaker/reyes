@@ -2,10 +2,10 @@
 for _, toolset in toolsets('cc_.*') do
     toolset:all {
         toolset:Executable '${bin}/reyes_examples' {
-            '${lib}/reyes_${architecture}';
-            '${lib}/reyes_virtual_machine_${architecture}';
-            '${lib}/jpeg_${architecture}';
-            '${lib}/lalr_${architecture}';
+            '${lib}/reyes_${platform}_${architecture}';
+            '${lib}/reyes_virtual_machine_${platform}_${architecture}';
+            '${lib}/jpeg_${platform}_${architecture}';
+            '${lib}/lalr_${platform}_${architecture}';
             '${lib}/libpng_${platform}_${architecture}';
             '${lib}/zlib_${platform}_${architecture}';
             

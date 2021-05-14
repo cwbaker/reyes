@@ -1,6 +1,6 @@
 
 for _, toolset in toolsets('cc_.*') do
-    toolset:StaticLibrary '${lib}/reyes_virtual_machine_${architecture}' {
+    toolset:StaticLibrary '${lib}/reyes_virtual_machine_${platform}_${architecture}' {
         toolset:Cxx '${obj}/%1' {
             'ConditionMask.cpp';
         };
