@@ -10,7 +10,7 @@ variant = lower( variant or 'debug' );
 version = version or ('%s %s %s'):format( os.date('%Y.%m.%d %H:%M:%S'), platform, variant );
 
 local cc = require 'forge.cc' {
-    identifier = 'cc_${platform}_${architecture}';
+    identifier = 'cc_${platform}';
     platform = operating_system();
     bin = root( ('%s/bin'):format(variant) );
     lib = root( ('%s/lib'):format(variant) );
@@ -32,7 +32,6 @@ local cc = require 'forge.cc' {
         xcodeproj = root( "reyes.xcodeproj" );
     };
 
-    architecture = 'x86_64';
     assertions = variant ~= 'shipping';
     debug = variant ~= 'shipping';
     debuggable = variant ~= 'shipping';
