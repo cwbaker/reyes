@@ -1,8 +1,8 @@
 
 local paths = {
     package.path;
-    root( 'src/lalr/lalr/?.lua' );
-    root( 'src/lalr/lalr/?/init.lua' );
+    root( 'src/lalr/src/lalr/?.lua' );
+    root( 'src/lalr/src/lalr/?/init.lua' );
 };
 package.path = table.concat( paths, ';' );
 
@@ -16,11 +16,11 @@ local cc = require 'forge.cc' {
     lib = root( ('%s/lib'):format(variant) );
     obj = root( ('%s/obj'):format(variant) );
     include_directories = {
-        root( 'src' ),
-        root( 'src/zlib' ),
-        root( 'src/libpng' ),
+        root( 'src' );
+        root( 'src/zlib' );
+        root( 'src/libpng' );
         root( 'src/unittest-cpp' );
-        root( 'src/lalr/lalr' );
+        root( 'src/lalr/src' );
     };
     library_directories = {
         root( ("%s/lib"):format(variant) ),
@@ -64,7 +64,7 @@ local lalr = require 'forge.lalr';
 cc:install( lalr );
 
 buildfile 'src/jpeg/jpeg.forge';
-buildfile 'src/lalr/lalr/lalr.forge';
+buildfile 'src/lalr/lalr.forge';
 buildfile 'src/libpng/libpng.forge';
 buildfile 'src/math/math.forge';
 buildfile 'src/reyes/reyes.forge';
@@ -72,7 +72,7 @@ buildfile 'src/unittest-cpp/unittest-cpp.forge';
 buildfile 'src/zlib/zlib.forge';
 
 cc:all {
-    'src/lalr/lalr/lalrc/all',
+    'src/lalr/all',
     'src/reyes/all',
     'src/reyes/reyes_examples/all',
     'src/reyes/reyes_test/all'
