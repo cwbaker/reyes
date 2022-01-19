@@ -52,13 +52,6 @@ local cc = require 'forge.cc' {
     warnings_as_errors = true;
 };
 
--- Bump the C++ standard to c++14 when building on Windows as that is the 
--- closest standard supported by Microsoft Visual C++.
-local settings = cc.settings;
-if settings.platform == 'windows' then
-    settings.standard = 'c++14';
-end
-
 local lalr = require 'forge.lalr';
 cc:install( lalr );
 
