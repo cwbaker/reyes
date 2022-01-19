@@ -203,11 +203,6 @@ const std::vector<shared_ptr<Value> >& CodeGenerator::values() const
     return values_;
 }
 
-// std::vector<unsigned char>& CodeGenerator::code()
-// {
-//     return encoder_->code();
-// }
-
 const std::vector<unsigned char>& CodeGenerator::code() const
 {
     return encoder_->code();
