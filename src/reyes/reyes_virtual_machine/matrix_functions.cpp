@@ -60,7 +60,7 @@ void scale_matrix( const Renderer& /*render*/, const Grid& /*grid*/, int /*dispa
     mat4x4* result = reinterpret_cast<mat4x4*>( arguments[0] );
     const mat4x4& m = *reinterpret_cast<const mat4x4*>( arguments[1] );
     const vec3& scale = *reinterpret_cast<const vec3*>( arguments[2] );
-    result[0] = m * math::translate( scale );
+    result[0] = m * math::scale( scale );
 }
 
 }
