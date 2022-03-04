@@ -117,7 +117,7 @@ class Renderer
         void linear_patch( const math::vec3* positions, const math::vec3* normals, const math::vec2* texture_coordinates );
         void polygon_mesh( int polygons, const int* vertices, const int* indices, const math::vec3* positions, const math::vec3* normals, const math::vec2* texture_coordinates );
 
-        void split( const Geometry& geometry );        
+        void split( const Geometry& geometry );
         void displacement_shade( Grid& grid );
         void surface_shade( Grid& grid );
         void light_shade( Grid& grid );
