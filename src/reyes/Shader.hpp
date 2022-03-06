@@ -30,6 +30,7 @@ class Shader
     int shade_address_; ///< The index of the start of the shade code fragment.
     int parameters_; ///< The number of parameters to the shader.
     int variables_; ///< The number of variables in the shader.
+    int maximum_vertices_; ///< The maximum number of values in a varying variable.
     int constant_memory_size_;
     int grid_memory_size_;
     int temporary_memory_size_;
@@ -51,6 +52,7 @@ public:
     int end_address() const;
     int parameters() const;
     int variables() const;
+    int maximum_vertices() const;
     int constant_memory_size() const;
     int grid_memory_size() const;
     int temporary_memory_size() const;

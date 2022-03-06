@@ -60,7 +60,6 @@ using namespace math;
 using namespace reyes;
 
 static const int ATTRIBUTES_RESERVE = 32;
-static const int MAXIMUM_VERTICES_PER_GRID = 64 * 64;
 static const char* NULL_SURFACE_SHADER = "surface null() { Ci = Cs; Oi = Os; }";
 
 /**
@@ -336,7 +335,7 @@ void Renderer::begin()
     
     sample_buffer_ = new SampleBuffer( options_->horizontal_resolution(), options_->vertical_resolution(), options_->horizontal_sampling_rate(), options_->vertical_sampling_rate(), options_->filter_width(), options_->filter_height() );
     image_buffer_ = new ImageBuffer( options_->horizontal_resolution(), options_->vertical_resolution(), 4, FORMAT_U8 );
-    sampler_ = new Sampler( float(sample_buffer_->width() - 1), float(sample_buffer_->height() - 1), MAXIMUM_VERTICES_PER_GRID, options_->crop_window() );
+    sampler_ = new Sampler( float(sample_buffer_->width() - 1), float(sample_buffer_->height() - 1), options_->crop_window() );
 
     screen_transform_ = math::identity();
     camera_transform_ = math::identity();
@@ -1331,9 +1330,9 @@ void Renderer::split( const Geometry& geometry )
             }
         }
         
-        if ( !primitive_spans_epsilon_plane && width * height <= MAXIMUM_VERTICES_PER_GRID && geometry->diceable() )
+        Grid& grid = attributes().surface_parameters();
+        if ( !primitive_spans_epsilon_plane && width * height <= grid.maximum_vertices() && geometry->diceable() )
         {
-            Grid& grid = attributes().surface_parameters();
             geometry->dice( transform, width, height, &grid );
             displacement_shade( grid );
             surface_shade( grid );

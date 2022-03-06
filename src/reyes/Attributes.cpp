@@ -214,7 +214,7 @@ void Attributes::set_displacement_shader( Shader* displacement_shader, const mat
     displacement_shader_ = displacement_shader;
     if ( displacement_shader_ )
     {
-        displacement_grid_->set_symbols( displacement_shader_->symbols() );
+        displacement_grid_->set_shader( displacement_shader_ );
         displacement_grid_->set_transform( camera_transform * transforms_.back() );
         add_coordinate_system( "current", math::identity() );
         add_coordinate_system( "shader", displacement_grid_->get_transform() );
@@ -279,7 +279,7 @@ void Attributes::set_surface_shader( Shader* surface_shader, const math::mat4x4&
     surface_shader_ = surface_shader;
     if ( surface_shader_ )
     {
-        surface_grid_->set_symbols( surface_shader->symbols() );
+        surface_grid_->set_shader( surface_shader );
         surface_grid_->set_transform( camera_transform * transforms_.back() );
         add_coordinate_system( "current", math::identity() );
         add_coordinate_system( "shader", surface_grid_->get_transform() );

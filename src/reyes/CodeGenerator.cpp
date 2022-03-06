@@ -34,9 +34,6 @@ using std::back_inserter;
 using namespace math;
 using namespace reyes;
 
-// The maximum number of values in a varying variable.
-static const int MAXIMUM_LENGTH = 512;
-
 CodeGenerator::Jump::Jump( int address, int distance_address )
 : address_( address ),
   distance_address_( distance_address )
@@ -63,7 +60,7 @@ CodeGenerator::Loop::Loop( int begin )
 
 CodeGenerator::CodeGenerator( ErrorPolicy* error_policy )
 : error_policy_( error_policy )
-, maximum_length_( MAXIMUM_LENGTH )
+, maximum_vertices_( 16 * 16 )
 , initialize_address_( 0 )
 , shade_address_( 0 )
 , parameters_( 0 )
@@ -175,6 +172,11 @@ int CodeGenerator::parameters() const
 int CodeGenerator::variables() const
 {
     return variables_;
+}
+
+int CodeGenerator::maximum_vertices() const
+{
+    return maximum_vertices_;
 }
 
 int CodeGenerator::constant_memory_size() const
@@ -304,17 +306,17 @@ void CodeGenerator::generate_symbols( const SyntaxNode* node )
 
     Scope* grid_scope = node->node( 0 )->scope();
     REYES_ASSERT( grid_scope );
-    int offset = grid_scope->enter( SEGMENT_GRID, 0, maximum_length_ );
+    int offset = grid_scope->enter( SEGMENT_GRID, 0, maximum_vertices_ );
     int string_offset = grid_scope->enter_strings( 0 );
 
     Scope* parameters_scope = node->node( 0 )->node( 0 )->scope();
     REYES_ASSERT( parameters_scope );
-    offset = parameters_scope->enter( SEGMENT_GRID, offset, maximum_length_ );
+    offset = parameters_scope->enter( SEGMENT_GRID, offset, maximum_vertices_ );
     string_offset = parameters_scope->enter_strings( string_offset );
 
     Scope* global_scope = node->scope();
     REYES_ASSERT( global_scope );
-    offset = global_scope->enter( SEGMENT_GRID, offset, maximum_length_ );
+    offset = global_scope->enter( SEGMENT_GRID, offset, maximum_vertices_ );
     string_offset = global_scope->enter_strings( string_offset );
 
     auto include_symbol = []( const shared_ptr<Symbol>& symbol )
@@ -503,7 +505,7 @@ void CodeGenerator::generate_code_for_list( const SyntaxNode& node )
     Scope* scope = node.scope();
     if ( scope )
     {
-        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_length_ );
+        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_vertices_ );
         temporary_memory_size_ = max( offset_, temporary_memory_size_ );
     }
     
@@ -648,7 +650,7 @@ void CodeGenerator::generate_if_statement( const SyntaxNode& node )
     Scope* scope = node.scope();
     if ( scope )
     {
-        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_length_ );
+        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_vertices_ );
     }
 
     const SyntaxNode* expression = node.node( 0 );
@@ -676,7 +678,7 @@ void CodeGenerator::generate_if_else_statement( const SyntaxNode& node )
     Scope* scope = node.scope();
     if ( scope )
     {
-        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_length_ );
+        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_vertices_ );
     }
 
     const SyntaxNode* expression = node.node( 0 );
@@ -708,7 +710,7 @@ void CodeGenerator::generate_while_statement( const SyntaxNode& while_node )
     Scope* scope = while_node.scope();
     if ( scope )
     {
-        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_length_ );
+        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_vertices_ );
     }
 
     push_loop();
@@ -745,7 +747,7 @@ void CodeGenerator::generate_for_statement( const SyntaxNode& for_node )
     Scope* scope = for_node.scope();
     if ( scope )
     {
-        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_length_ );
+        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_vertices_ );
     }
 
     push_address();
@@ -790,7 +792,7 @@ void CodeGenerator::generate_ambient_statement( const SyntaxNode& node )
     Scope* scope = node.scope();
     if ( scope )
     {
-        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_length_ );
+        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_vertices_ );
     }
 
     Address light_color = generate_expression( *node.node(0) );
@@ -813,7 +815,7 @@ void CodeGenerator::generate_solar_statement( const SyntaxNode& node )
     Scope* scope = node.scope();
     if ( scope )
     {
-        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_length_ );
+        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_vertices_ );
     }
 
     const SyntaxNode* expressions = node.node(0);
@@ -850,7 +852,7 @@ void CodeGenerator::generate_illuminate_statement( const SyntaxNode& node )
     Scope* scope = node.scope();
     if ( scope )
     {
-        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_length_ );
+        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_vertices_ );
     }
 
     const SyntaxNode* expressions = node.node(0);
@@ -903,7 +905,7 @@ void CodeGenerator::generate_illuminance_statement( const SyntaxNode& node )
     Scope* scope = node.scope();
     if ( scope )
     {
-        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_length_ );
+        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_vertices_ );
     }
 
     const SyntaxNode* expressions = node.node(0);
@@ -1649,6 +1651,6 @@ int CodeGenerator::size_by_type_and_storage( ValueType type, ValueStorage storag
             break;
     }
 
-    int size_by_storage = storage == STORAGE_VARYING ? maximum_length_ : 1;
+    int size_by_storage = storage == STORAGE_VARYING ? maximum_vertices_ : 1;
     return size_by_type * size_by_storage;
 }

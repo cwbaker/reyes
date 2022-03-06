@@ -43,7 +43,7 @@ class CodeGenerator
     };
 
     ErrorPolicy* error_policy_; ///< ErrorPolicy to report errors detected during code generation to.
-    int maximum_length_; ///< The maximum number of values in a varying variable.
+    int maximum_vertices_; ///< The maximum number of values in a varying variable.
     int initialize_address_; ///< The index in the code at which initialize code begins (always 0).
     int shade_address_; ///< The index in the code at which the shade code begins.
     int parameters_; ///< The number of parameters to the shader.
@@ -71,6 +71,7 @@ public:
     int shade_address() const;
     int parameters() const;
     int variables() const;
+    int maximum_vertices() const;
     int constant_memory_size() const;
     int grid_memory_size() const;
     int temporary_memory_size() const;

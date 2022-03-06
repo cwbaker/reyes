@@ -49,11 +49,10 @@ Grid::Grid( Shader* shader )
 , memory_( nullptr )
 , lights_()
 , transform_( math::identity() )
-, shader_( shader )
+, shader_( nullptr )
 , normals_generated_( false )
 {
-    REYES_ASSERT( shader_ );
-    set_symbols( shader_->symbols() );
+    set_shader( shader );
 }
 
 Grid::Grid( const Grid& grid )
@@ -114,6 +113,12 @@ int Grid::height() const
 int Grid::size() const
 {
     return width_ * height_;
+}
+
+int Grid::maximum_vertices() const
+{
+    REYES_ASSERT( shader_ );
+    return shader_ ? shader_->maximum_vertices() : 0;
 }
 
 float Grid::du() const
@@ -344,6 +349,13 @@ SetValueHelper Grid::operator[]( const std::string& identifier )
         return SetValueHelper( this, symbol->offset() );
     }
     return SetValueHelper();
+}
+
+void Grid::set_shader( Shader* shader )
+{
+    REYES_ASSERT( shader );
+    shader_ = shader;
+    set_symbols( shader->symbols() );
 }
 
 void Grid::set_symbols( const std::vector<std::shared_ptr<Symbol>>& symbols )

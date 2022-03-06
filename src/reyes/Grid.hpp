@@ -57,6 +57,7 @@ public:
     
     int width() const;
     int height() const;
+    int maximum_vertices() const;
     int size() const;
     float du() const;
     float dv() const;
@@ -85,6 +86,7 @@ public:
     void generate_normals( bool left_handed, bool force = false );
     void set_string( int index, const std::string& value );
     SetValueHelper operator[]( const std::string& identifier );
+    void set_shader( Shader* shader );
     void set_symbols( const std::vector<std::shared_ptr<Symbol>>& symbols );
 
     void clear_lights();
