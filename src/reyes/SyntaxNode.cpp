@@ -208,6 +208,16 @@ ValueStorage SyntaxNode::original_storage() const
     return original_storage_;
 }
 
+bool SyntaxNode::is_uniform() const
+{
+    return storage() == STORAGE_UNIFORM;
+}
+
+bool SyntaxNode::is_varying() const
+{
+    return storage() == STORAGE_VARYING;
+}
+
 Instruction SyntaxNode::instruction() const
 {
     return instruction_;

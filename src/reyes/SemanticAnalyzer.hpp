@@ -87,7 +87,7 @@ private:
     void analyze_type_conversion( SyntaxNode* node, ValueType to_type ) const;
     void analyze_binary_operator( const struct OperationMetadata* metadatas, const char* name, SyntaxNode* operator_node ) const;
     const struct OperationMetadata* find_metadata( const struct OperationMetadata* metadata, ValueType lhs, ValueType rhs ) const;
-    ValueStorage storage_from_syntax_node( const SyntaxNode* node, ValueStorage default_storage ) const;
+    ValueStorage storage_from_syntax_node( const SyntaxNode* node ) const;
     ValueType type_from_syntax_node( const SyntaxNode* node ) const;
     ValueType type_from_literal( const SyntaxNode* literal_node ) const;
 

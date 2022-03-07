@@ -352,9 +352,9 @@ void SemanticAnalyzer::analyze_variable_expectations( SyntaxNode* variable ) con
     const string& identifier = variable->lexeme();
     const SyntaxNode* storage_node = variable->node( 1 );
     const SyntaxNode* type_node = variable->node( 2 );
-    ValueStorage storage = storage_from_syntax_node( storage_node, STORAGE_UNIFORM );
+
+    ValueStorage storage = storage_from_syntax_node( storage_node );
     ValueType type = type_from_syntax_node( type_node );
-    error( storage == STORAGE_NULL, variable->line(), "variable '%s' has no storage", identifier.c_str() );
     error( type == TYPE_NULL, variable->line(), "variable '%s' has no type", identifier.c_str() );
 
     shared_ptr<Symbol> symbol = add_symbol( identifier );
@@ -649,6 +649,15 @@ void SemanticAnalyzer::analyze_function( SyntaxNode* function ) const
 void SemanticAnalyzer::analyze_variable( SyntaxNode* variable ) const
 {
     analyze_assign( variable );
+    const string& identifier = variable->lexeme();
+    const SyntaxNode* expression = variable->node( 0 );
+    const shared_ptr<Symbol>& symbol = variable->symbol();
+    if ( symbol->storage() == STORAGE_NULL )
+    {
+        symbol->set_storage( max(expression->storage(), STORAGE_UNIFORM) );
+    }
+    bool assigning_varying_to_uniform = variable->is_uniform() && expression->is_varying();
+    error( assigning_varying_to_uniform, variable->line(), "Varying assignment to uniform '%s'", identifier.c_str() );
 }
 
 void SemanticAnalyzer::analyze_assign( SyntaxNode* node ) const
@@ -1001,7 +1010,7 @@ const OperationMetadata* SemanticAnalyzer::find_metadata( const OperationMetadat
     return metadata->lhs != 0 ? metadata : NULL;
 }
 
-ValueStorage SemanticAnalyzer::storage_from_syntax_node( const SyntaxNode* node, ValueStorage default_storage ) const
+ValueStorage SemanticAnalyzer::storage_from_syntax_node( const SyntaxNode* node ) const
 {
     REYES_ASSERT( node );
 
@@ -1009,7 +1018,7 @@ ValueStorage SemanticAnalyzer::storage_from_syntax_node( const SyntaxNode* node,
     switch( node->node_type() )
     {    
         case SHADER_NODE_NULL:
-            storage = default_storage;
+            storage = STORAGE_NULL;
             break;
             
         case SHADER_NODE_UNIFORM:

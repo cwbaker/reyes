@@ -63,6 +63,8 @@ public:
     ValueStorage expected_storage() const;
     ValueStorage storage() const;
     ValueStorage original_storage() const;
+    bool is_uniform() const;
+    bool is_varying() const;
     Instruction instruction() const;
     bool operator==( const SyntaxNode& node ) const;
     int count_by_type( SyntaxNodeType type ) const;
