@@ -461,16 +461,21 @@ Address CodeGenerator::generate_convert( Address address, const SyntaxNode& node
     {
         REYES_ASSERT( node.original_type() == TYPE_FLOAT );
         REYES_ASSERT( node.type() != TYPE_FLOAT );
-        
-        ValueType to_type = node.type();
-        if ( node.type() != node.original_type() )
+
+        // The node's original storage is used because promotion to varying
+        // happens after conversion.  If storage was used then conversion
+        // incorrectly tries to convert varying values.
+        ValueStorage storage = node.original_storage();
+        if ( storage == STORAGE_NULL )
         {
-            Address result = allocate_address( node.type(), node.storage() );
-            instruction( INSTRUCTION_CONVERT, node.type(), node.storage(), node.original_type(), node.storage() );
-            argument( result );
-            argument( address );
-            return result;
+            storage = node.storage();
         }
+        
+        Address result = allocate_address( node.type(), storage );
+        instruction( INSTRUCTION_CONVERT, node.type(), storage, node.original_type(), storage );
+        argument( result );
+        argument( address );
+        return result;
     }
     return address;
 }
