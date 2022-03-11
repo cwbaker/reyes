@@ -148,7 +148,7 @@ void render_shaders_example()
         renderer.color( rgb_from_hsv(vec3(360.0f * float(i) / 8.0f, 0.95f, 0.75f)) );
         renderer.sphere( 1.0f );
     }
-    renderer.pop_attributes();    
+    renderer.pop_attributes();
 
     renderer.end_world();
     renderer.end();
