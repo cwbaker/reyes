@@ -88,6 +88,7 @@ public:
     SetValueHelper operator[]( const std::string& identifier );
     void set_shader( Shader* shader );
     void set_symbols( const std::vector<std::shared_ptr<Symbol>>& symbols );
+    void zero();
 
     void clear_lights();
     void reserve_lights( unsigned int lights );

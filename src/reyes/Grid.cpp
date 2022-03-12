@@ -375,6 +375,15 @@ void Grid::set_symbols( const std::vector<std::shared_ptr<Symbol>>& symbols )
     }
 }
 
+void Grid::zero()
+{
+    vec3* positions = vec3_value( "P" );
+    if ( memory_ && positions )
+    {
+        memset( positions, 0, sizeof(vec3) * size() );
+    }
+}
+
 void Grid::clear_lights()
 {
     lights_.clear();
