@@ -52,18 +52,18 @@ bool LinearPatch::boundable() const
     return true;
 }
 
-void LinearPatch::bound( const math::mat4x4& transform, math::vec3* minimum, math::vec3* maximum ) const
+void LinearPatch::bound( const math::mat4x4& transform, math::vec3* minimum, math::vec3* maximum, Grid* grid ) const
 {
     REYES_ASSERT( minimum );
     REYES_ASSERT( maximum );
+    REYES_ASSERT( grid );
     
     *minimum = vec3( FLT_MAX, FLT_MAX, FLT_MAX );
     *maximum = vec3( -FLT_MAX, -FLT_MAX, -FLT_MAX );
     
-    Grid grid;
-    dice( transform, 8, 8, &grid );
-    const vec3* positions = grid["P"].vec3_values();
-    const vec3* positions_end = positions + grid["P"].size();
+    dice( transform, 8, 8, grid );
+    const vec3* positions = grid->vec3_value( "P" );
+    const vec3* positions_end = positions + grid->size();
     for ( const vec3* i = positions; i != positions_end; ++i )
     {
         minimum->x = min( minimum->x, i->x );
@@ -122,13 +122,14 @@ void LinearPatch::dice( const math::mat4x4& transform, int width, int height, Gr
     const vec2& v_range = Geometry::v_range();
 
     grid->resize( width, height );
-    grid->du_ = (u_range.y - u_range.x) / float(width - 1);
-    grid->dv_ = (v_range.y - v_range.x) / float(height - 1);
+    grid->set_du( (u_range.y - u_range.x) / float(width - 1) );
+    grid->set_dv( (v_range.y - v_range.x) / float(height - 1) );
+    grid->set_normals_generated( true );
     
-    vec3* positions = grid->value( "P", TYPE_POINT ).vec3_values();
-    vec3* normals = grid->value( "N", TYPE_NORMAL ).vec3_values();
-    float* s = grid->value( "s", TYPE_FLOAT ).float_values();
-    float* t = grid->value( "t", TYPE_FLOAT ).float_values();
+    vec3* positions = grid->vec3_value( "P" );
+    vec3* normals = grid->vec3_value( "N" );
+    float* s = grid->float_value( "s" );
+    float* t = grid->float_value( "t" );
     
     int vertex = 0;
     float v = v_range.x;

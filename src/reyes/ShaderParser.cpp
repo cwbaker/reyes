@@ -32,20 +32,20 @@ using namespace reyes;
 template <class Iterator>
 class ShaderParserContext : public lalr::ErrorPolicy
 {
-    SymbolTable& symbol_table_;
+    SymbolTable* symbol_table_;
     reyes::ErrorPolicy* error_policy_;
     const lalr::Parser<lalr::PositionIterator<Iterator>, shared_ptr<SyntaxNode>, char>* parser_;
     int solar_and_illuminate_statements_;
     int errors_;
 
 public:
-    ShaderParserContext( SymbolTable& symbol_table, reyes::ErrorPolicy* error_policy )
-    : lalr::ErrorPolicy(),
-      symbol_table_( symbol_table ),
-      error_policy_( error_policy ),
-      parser_( NULL ),
-      solar_and_illuminate_statements_( 0 ),
-      errors_( 0 )
+    ShaderParserContext( SymbolTable* symbol_table, reyes::ErrorPolicy* error_policy )
+    : lalr::ErrorPolicy()
+    , symbol_table_( symbol_table )
+    , error_policy_( error_policy )
+    , parser_( nullptr )
+    , solar_and_illuminate_statements_( 0 )
+    , errors_( 0 )
     {    
     }
 
@@ -79,197 +79,7 @@ public:
     {
         vprintf( format, args );
     }
-    
-    void push_surface_scope()
-    {
-        // @todo
-        //  Add remaining surface shader symbols to the symbol table when
-        //  entering a surface shader scope in 
-        //  ShaderParser::push_surface_scope().
-        symbol_table_.push_scope();
-        symbol_table_.add_symbols()
-            ( "Cs", TYPE_COLOR )
-            ( "Os", TYPE_COLOR )
-            ( "P", TYPE_POINT )
-            ( "N", TYPE_NORMAL )
-            ( "I", TYPE_VECTOR )
-            ( "s", TYPE_FLOAT )
-            ( "t", TYPE_FLOAT )
-            ( "Ci", TYPE_COLOR )
-            ( "Oi", TYPE_COLOR )
-        ;
-    }
-    
-    void push_light_scope()
-    {
-        // @todo
-        //  Add remaining light shader symbols to the symbol table when
-        //  entering a light shader scope in 
-        //  ShaderParser::push_light_scope().
-        symbol_table_.push_scope();
-        symbol_table_.add_symbols()
-            ( "Ps", TYPE_POINT )
-            ( "N", TYPE_NORMAL )
-            ( "Cl", TYPE_COLOR )
-            ( "Ol", TYPE_COLOR )
-        ;
-    }
-    
-    void push_volume_scope()
-    {
-        // @todo
-        //  Add remaining volume shader symbols to the symbol table when
-        //  entering a volume shader scope in 
-        //  ShaderParser::push_volume_scope().
-        symbol_table_.push_scope();
-        symbol_table_.add_symbols()
-            ( "P", TYPE_POINT )
-            ( "I", TYPE_VECTOR )
-            ( "Ci", TYPE_COLOR )
-            ( "Oi", TYPE_COLOR )
-        ;
-    }
-    
-    void push_displacement_scope()
-    {
-        // @todo
-        //  Add remaining displacement shader symbols to the symbol table when
-        //  entering a displacement shader scope in 
-        //  ShaderParser::push_displacement_scope().
-        symbol_table_.push_scope();
-        symbol_table_.add_symbols()
-            ( "P", TYPE_POINT )
-            ( "N", TYPE_NORMAL)
-            ( "I", TYPE_VECTOR )
-            ( "s", TYPE_FLOAT )
-            ( "t", TYPE_FLOAT )
-        ;        
-    }
-    
-    void push_imager_scope()
-    {
-        // @todo
-        //  Add remaining imager shader symbols to the symbol table when
-        //  entering an imager shader scope in 
-        //  ShaderParser::push_imager_scope().
-        symbol_table_.push_scope();
-        symbol_table_.add_symbols()
-            ( "P", TYPE_POINT )
-            ( "Ci", TYPE_COLOR )
-            ( "Oi", TYPE_COLOR )
-            ( "alpha", TYPE_FLOAT )
-        ;        
-    }
-    
-    void push_illuminance_scope()
-    {
-        symbol_table_.push_scope();
-        symbol_table_.add_symbols()
-            ( "L", TYPE_VECTOR )
-            ( "Cl", TYPE_COLOR )
-            ( "Ol", TYPE_COLOR )
-        ;        
-    }
 
-    void push_illuminate_or_solar_scope()
-    {
-        ++solar_and_illuminate_statements_;
-        
-        symbol_table_.push_scope();
-        symbol_table_.add_symbols()
-            ( "L", TYPE_VECTOR )
-        ;        
-    }
-
-    void pop_scope()
-    {
-        symbol_table_.pop_scope();
-    }
-
-    shared_ptr<Symbol> find_symbol( const std::string& identifier, int line = 0 )
-    {
-        REYES_ASSERT( parser_ );
-        REYES_ASSERT( !identifier.empty() );
-
-        shared_ptr<Symbol> symbol = symbol_table_.find_symbol( identifier );
-        if ( !symbol )
-        {
-            error( line, "Unknown identifier '%s'", identifier.c_str() );
-        }
-        return symbol;
-    }
-
-
-    ValueStorage storage_from_syntax_node( shared_ptr<SyntaxNode> syntax_node, ValueStorage default_storage ) const
-    {
-        REYES_ASSERT( syntax_node );
-
-        ValueStorage storage = STORAGE_NULL;
-        switch( syntax_node->node_type() )
-        {    
-            case SHADER_NODE_NULL:
-                storage = default_storage;
-                break;
-                
-            case SHADER_NODE_UNIFORM:
-                storage = STORAGE_UNIFORM;
-                break;
-                
-            case SHADER_NODE_VARYING:
-                storage = STORAGE_VARYING;
-                break;
-                
-            default:
-                REYES_ASSERT( false );
-                storage = STORAGE_NULL;
-                break;
-        }
-        return storage;
-    }
-
-    ValueType type_from_syntax_node( shared_ptr<SyntaxNode> syntax_node ) const
-    {
-        REYES_ASSERT( syntax_node );
-
-        ValueType type = TYPE_NULL;
-        switch ( syntax_node->node_type() )
-        {
-            case SHADER_NODE_FLOAT_TYPE:
-                type = TYPE_FLOAT;
-                break;
-                
-            case SHADER_NODE_STRING_TYPE:
-                type = TYPE_STRING;
-                break;
-                
-            case SHADER_NODE_COLOR_TYPE:
-                type = TYPE_COLOR;
-                break;
-                
-            case SHADER_NODE_POINT_TYPE:
-                type = TYPE_POINT;
-                break;
-                
-            case SHADER_NODE_VECTOR_TYPE:
-                type = TYPE_VECTOR;
-                break;
-                
-            case SHADER_NODE_NORMAL_TYPE:
-                type = TYPE_NORMAL;
-                break;
-                
-            case SHADER_NODE_MATRIX_TYPE:
-                type = TYPE_MATRIX;
-                break;
-
-            default:
-                REYES_ASSERT( false );
-                type = TYPE_NULL;
-                break;            
-        }    
-        return type;
-    }
-    
     static void string_( lalr::PositionIterator<Iterator> begin, lalr::PositionIterator<Iterator> end, std::string* lexeme, const void** /*symbol*/, lalr::PositionIterator<Iterator>* position, int* lines )
     {
         REYES_ASSERT( lexeme );
@@ -299,30 +109,13 @@ public:
 
     shared_ptr<SyntaxNode> shader_definition_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
+        const string& identifier = nodes[1].lexeme();
         const shared_ptr<SyntaxNode>& shader = start[0];
         const shared_ptr<SyntaxNode>& formals = start[3];
-        shader->add_node( formals );
         const shared_ptr<SyntaxNode>& statements = start[6];
+        shader->set_lexeme( identifier );
+        shader->add_node( formals );
         shader->add_node( statements );
-
-        if ( shader->node_type() == SHADER_NODE_LIGHT_SHADER && solar_and_illuminate_statements_ == 0 )
-        {
-            shared_ptr<SyntaxNode> ambient( new SyntaxNode(SHADER_NODE_AMBIENT, shader->line()) );
-            
-            const char* LIGHT_COLOR = "Cl";
-            shared_ptr<SyntaxNode> light_color( new SyntaxNode(SHADER_NODE_IDENTIFIER, shader->line(), LIGHT_COLOR) );
-            light_color->set_symbol( find_symbol(LIGHT_COLOR) );
-            ambient->add_node( light_color );
-
-            const char* LIGHT_OPACITY = "Ol";
-            shared_ptr<SyntaxNode> light_opacity( new SyntaxNode(SHADER_NODE_IDENTIFIER, shader->line(), LIGHT_OPACITY) );
-            light_opacity->set_symbol( find_symbol(LIGHT_OPACITY) );
-            ambient->add_node( light_opacity );
-            
-            statements->add_node_at_front( ambient );
-        }
-    
-        pop_scope();
         return shader;
     }
 
@@ -334,14 +127,14 @@ public:
     
     shared_ptr<SyntaxNode> function_definition_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> function( new SyntaxNode(SHADER_NODE_FUNCTION, nodes[1].line(), nodes[1].lexeme()) );
-        shared_ptr<Symbol> symbol = symbol_table_.add_symbol( nodes[1].lexeme() );
-        symbol->set_type( type_from_syntax_node(start[0]) );
-        function->set_symbol( symbol );
+        const string& identifier = nodes[1].lexeme();
+        const shared_ptr<SyntaxNode>& type_node = start[0];
         const shared_ptr<SyntaxNode>& formals = start[3];
-        function->add_node( formals );
         const shared_ptr<SyntaxNode>& statements = start[6];
+        shared_ptr<SyntaxNode> function( new SyntaxNode(SHADER_NODE_FUNCTION, nodes[1].line(), identifier) );
+        function->add_node( formals );
         function->add_node( statements );
+        function->add_node( type_node );
         return function;
     }
     
@@ -382,20 +175,20 @@ public:
     }
     
     shared_ptr<SyntaxNode> formal_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
-    {       
-        ValueStorage storage = storage_from_syntax_node( start[1], STORAGE_UNIFORM );
-        ValueType type = type_from_syntax_node( start[2] );
+    {
+        const shared_ptr<SyntaxNode>& storage_node = start[1];
+        const shared_ptr<SyntaxNode>& type_node = start[2];
         
         const vector<shared_ptr<SyntaxNode>>& syntax_nodes = start[3]->nodes();
-        for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = syntax_nodes.begin(); i != syntax_nodes.end(); ++i )
+        for ( vector<shared_ptr<SyntaxNode>>::const_iterator i = syntax_nodes.begin(); i != syntax_nodes.end(); ++i )
         {
             SyntaxNode* variable_node = i->get();
             REYES_ASSERT( variable_node );
             REYES_ASSERT( variable_node->node_type() == SHADER_NODE_VARIABLE );
-            shared_ptr<Symbol> symbol = symbol_table_.add_symbol( variable_node->lexeme() );
-            symbol->set_type( type );
-            symbol->set_storage( storage );
-            variable_node->set_symbol( symbol );
+            const string& identifier = variable_node->lexeme();
+            variable_node->set_lexeme( identifier );
+            variable_node->add_node( storage_node );
+            variable_node->add_node( type_node );
         }
         
         shared_ptr<SyntaxNode> variable( new SyntaxNode(SHADER_NODE_LIST, start[2]->line()) );
@@ -405,19 +198,19 @@ public:
 
     shared_ptr<SyntaxNode> variable_definition_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* /*nodes*/, size_t length )
     {
-        ValueStorage storage = storage_from_syntax_node( start[1], STORAGE_VARYING );
-        ValueType type = type_from_syntax_node( start[2] );
+        const shared_ptr<SyntaxNode>& storage_node = start[1];
+        const shared_ptr<SyntaxNode>& type_node = start[2];
         
-        const vector<shared_ptr<SyntaxNode> >& nodes = start[3]->nodes();
-        for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+        const vector<shared_ptr<SyntaxNode>>& nodes = start[3]->nodes();
+        for ( vector<shared_ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
         {
             SyntaxNode* variable_node = i->get();
             REYES_ASSERT( variable_node );
             REYES_ASSERT( variable_node->node_type() == SHADER_NODE_VARIABLE );
-            shared_ptr<Symbol> symbol = symbol_table_.add_symbol( variable_node->lexeme() );
-            symbol->set_type( type );
-            symbol->set_storage( storage );
-            variable_node->set_symbol( symbol );
+            const string& identifier = variable_node->lexeme();
+            variable_node->set_lexeme( identifier );
+            variable_node->add_node( storage_node );
+            variable_node->add_node( type_node );
         }
         
         shared_ptr<SyntaxNode> variable( new SyntaxNode(SHADER_NODE_LIST, start[2]->line()) );
@@ -443,35 +236,30 @@ public:
     
     shared_ptr<SyntaxNode> light_shader( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        push_light_scope();       
         shared_ptr<SyntaxNode> light_shader( new SyntaxNode(SHADER_NODE_LIGHT_SHADER, nodes[0].line()) );
         return light_shader;
     }
 
     shared_ptr<SyntaxNode> surface_shader( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        push_surface_scope();
         shared_ptr<SyntaxNode> surface_shader( new SyntaxNode(SHADER_NODE_SURFACE_SHADER, nodes[0].line()) );
         return surface_shader;
     }
 
     shared_ptr<SyntaxNode> volume_shader( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        push_volume_scope();
         shared_ptr<SyntaxNode> volume_shader( new SyntaxNode(SHADER_NODE_VOLUME_SHADER, nodes[0].line()) );
         return volume_shader;
     }
 
     shared_ptr<SyntaxNode> displacement_shader( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        push_displacement_scope();
         shared_ptr<SyntaxNode> displacement_shader( new SyntaxNode(SHADER_NODE_DISPLACEMENT_SHADER, nodes[0].line()) );
         return displacement_shader;
     }
 
     shared_ptr<SyntaxNode> imager_shader( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        push_imager_scope();
         shared_ptr<SyntaxNode> imager_shader( new SyntaxNode(SHADER_NODE_IMAGER_SHADER, nodes[0].line()) );
         return imager_shader;
     }
@@ -666,107 +454,66 @@ public:
     
     shared_ptr<SyntaxNode> solar_statement_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> solar( new SyntaxNode(SHADER_NODE_SOLAR, nodes[0].line()) );
-        
-        const shared_ptr<SyntaxNode>& parameters = start[2];
-        solar->add_node( parameters );
-        
-        const shared_ptr<SyntaxNode>& statement = start[4];
-        solar->add_node( statement );
-
         const char* LIGHT_COLOR = "Cl";
-        shared_ptr<SyntaxNode> light_color( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_COLOR) );
-        light_color->set_symbol( find_symbol(LIGHT_COLOR) );
-        solar->add_node( light_color );
-
         const char* LIGHT_OPACITY = "Ol";
-        shared_ptr<SyntaxNode> light_opacity( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_OPACITY) );
-        light_opacity->set_symbol( find_symbol(LIGHT_OPACITY) );
-        solar->add_node( light_opacity );
 
-        pop_scope();
+        const shared_ptr<SyntaxNode>& expressions = start[2];    
+        const shared_ptr<SyntaxNode>& statement = start[4];
+        shared_ptr<SyntaxNode> light_color( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_COLOR) );
+        shared_ptr<SyntaxNode> light_opacity( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_OPACITY) );
+
+        shared_ptr<SyntaxNode> solar( new SyntaxNode(SHADER_NODE_SOLAR, nodes[0].line()) );        
+        solar->add_node( expressions );
+        solar->add_node( statement );
+        solar->add_node( light_color );
+        solar->add_node( light_opacity );
         return solar;
     }    
     
     shared_ptr<SyntaxNode> illuminate_statement_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> illuminate( new SyntaxNode(SHADER_NODE_ILLUMINATE, nodes[0].line()) );
-
-        const shared_ptr<SyntaxNode>& parameters = start[2];
-        illuminate->add_node( parameters );
-
-        const shared_ptr<SyntaxNode>& statement = start[4];
-        illuminate->add_node( statement );
-
         const char* SURFACE_POSITION = "Ps";
-        shared_ptr<SyntaxNode> surface_position( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, SURFACE_POSITION) );
-        surface_position->set_symbol( find_symbol(SURFACE_POSITION) );
-        illuminate->add_node( surface_position );
-
         const char* LIGHT_DIRECTION = "L";
-        shared_ptr<SyntaxNode> light_direction( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_DIRECTION) );
-        light_direction->set_symbol( find_symbol(LIGHT_DIRECTION) );
-        illuminate->add_node( light_direction );
-
         const char* LIGHT_COLOR = "Cl";
-        shared_ptr<SyntaxNode> light_color( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_COLOR) );
-        light_color->set_symbol( find_symbol(LIGHT_COLOR) );
-        illuminate->add_node( light_color );
-
         const char* LIGHT_OPACITY = "Ol";
-        shared_ptr<SyntaxNode> light_opacity( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_OPACITY) );
-        light_opacity->set_symbol( find_symbol(LIGHT_OPACITY) );
-        illuminate->add_node( light_opacity );
 
-        pop_scope();
+        const shared_ptr<SyntaxNode>& expressions = start[2];
+        const shared_ptr<SyntaxNode>& statement = start[4];
+        shared_ptr<SyntaxNode> surface_position( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, SURFACE_POSITION) );
+        shared_ptr<SyntaxNode> light_direction( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_DIRECTION) );
+        shared_ptr<SyntaxNode> light_color( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_COLOR) );
+        shared_ptr<SyntaxNode> light_opacity( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_OPACITY) );
+
+        shared_ptr<SyntaxNode> illuminate( new SyntaxNode(SHADER_NODE_ILLUMINATE, nodes[0].line()) );
+        illuminate->add_node( expressions );
+        illuminate->add_node( statement );
+        illuminate->add_node( surface_position );
+        illuminate->add_node( light_direction );
+        illuminate->add_node( light_color );
+        illuminate->add_node( light_opacity );
         return illuminate;
     }
     
     shared_ptr<SyntaxNode> illuminance_statement_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> illuminance( new SyntaxNode(SHADER_NODE_ILLUMINANCE, nodes[0].line()) );
-
-        const shared_ptr<SyntaxNode>& parameters = start[2];
-        illuminance->add_node( parameters );
-        
-        const shared_ptr<SyntaxNode>& statement = start[4];
-        illuminance->add_node( statement );
-
         const char* LIGHT_DIRECTION = "L";
-        shared_ptr<SyntaxNode> light_direction( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_DIRECTION) );
-        light_direction->set_symbol( find_symbol(LIGHT_DIRECTION) );
-        illuminance->add_node( light_direction );
-
         const char* LIGHT_COLOR = "Cl";
-        shared_ptr<SyntaxNode> light_color( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_COLOR) );
-        light_color->set_symbol( find_symbol(LIGHT_COLOR) );
-        illuminance->add_node( light_color );
-
         const char* LIGHT_OPACITY = "Ol";
+
+        const shared_ptr<SyntaxNode>& parameters = start[2];        
+        const shared_ptr<SyntaxNode>& statement = start[4];
+        shared_ptr<SyntaxNode> light_direction( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_DIRECTION) );
+        shared_ptr<SyntaxNode> light_color( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_COLOR) );
         shared_ptr<SyntaxNode> light_opacity( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, LIGHT_OPACITY) );
-        light_opacity->set_symbol( find_symbol(LIGHT_OPACITY) );
+
+        shared_ptr<SyntaxNode> illuminance( new SyntaxNode(SHADER_NODE_ILLUMINANCE, nodes[0].line()) );
+        illuminance->add_node( parameters );
+        illuminance->add_node( statement );
+        illuminance->add_node( light_direction );
+        illuminance->add_node( light_color );
         illuminance->add_node( light_opacity );
 
-        pop_scope();
         return illuminance;
-    }
-    
-    shared_ptr<SyntaxNode> solar_keyword( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
-    {
-        push_illuminate_or_solar_scope();
-        return shared_ptr<SyntaxNode>();
-    }
-    
-    shared_ptr<SyntaxNode> illuminate_keyword( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
-    {
-        push_illuminate_or_solar_scope();
-        return shared_ptr<SyntaxNode>();
-    }
-    
-    shared_ptr<SyntaxNode> illuminance_keyword( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
-    {
-        push_illuminance_scope();
-        return shared_ptr<SyntaxNode>();
     }
     
     static shared_ptr<SyntaxNode> statement_error( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
@@ -921,9 +668,9 @@ public:
     
     shared_ptr<SyntaxNode> identifier_expression_( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
     {
-        shared_ptr<SyntaxNode> identifier( new SyntaxNode(SHADER_NODE_IDENTIFIER, nodes[0].line(), nodes[0].lexeme()) );
-        identifier->set_symbol( find_symbol(nodes[0].lexeme()) );
-        return identifier;
+        const string& identifier = nodes[0].lexeme();
+        shared_ptr<SyntaxNode> expression( new SyntaxNode(SHADER_NODE_IDENTIFIER, nodes[0].line(), identifier) );
+        return expression;
     }
 
     static shared_ptr<SyntaxNode> index_expression( const shared_ptr<SyntaxNode>* start, const lalr::ParserNode<>* nodes, size_t length )
@@ -1029,9 +776,10 @@ public:
         const shared_ptr<SyntaxNode>& expression = start[2];
         REYES_ASSERT( expression );
     
-        shared_ptr<SyntaxNode> assign_operator( new SyntaxNode(type, nodes[0].line(), nodes[0].lexeme()) );
+        const string& identifier = nodes[0].lexeme();
+        shared_ptr<SyntaxNode> assign_operator( new SyntaxNode(type, nodes[0].line(), identifier) );
         assign_operator->add_node( expression );
-        assign_operator->set_symbol( find_symbol(nodes[0].lexeme()) );
+        assign_operator->set_lexeme( identifier );
         return assign_operator;
     }
     
@@ -1109,10 +857,10 @@ public:
         if ( parameters.size() == 1 )
         {
             shared_ptr<SyntaxNode> s( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, "s") );
-            s->set_symbol( symbol_table_.find_symbol("s") );
+            s->set_symbol( symbol_table_->find_symbol("s") );
             texture->add_node( s );
             shared_ptr<SyntaxNode> t( new SyntaxNode(SHADER_NODE_IDENTIFIER, 0, "t") );
-            t->set_symbol( symbol_table_.find_symbol("t") );
+            t->set_symbol( symbol_table_->find_symbol("t") );
             texture->add_node( t );
         }
         return texture;
@@ -1183,9 +931,6 @@ public:
             ( "solar_statement", bind(&ShaderParserContext::solar_statement_, this, _1, _2, _3) )
             ( "illuminate_statement", bind(&ShaderParserContext::illuminate_statement_, this, _1, _2, _3) )
             ( "illuminance_statement", bind(&ShaderParserContext::illuminance_statement_, this, _1, _2, _3) )
-            ( "solar_keyword", bind(&ShaderParserContext::solar_keyword, this, _1, _2, _3) )
-            ( "illuminate_keyword", bind(&ShaderParserContext::illuminate_keyword, this, _1, _2, _3) )
-            ( "illuminance_keyword", bind(&ShaderParserContext::illuminance_keyword, this, _1, _2, _3) )
             ( "dot_expression", &dot_expression )
             ( "cross_expression", &cross_expression )
             ( "multiply_expression", &multiply_expression )
@@ -1240,6 +985,7 @@ public:
         if ( parser.accepted() && parser.full() && errors_ == 0 )
         {
             syntax_node = parser.user_data();
+            syntax_node->set_scope( symbol_table_->global_scope() );
         }
         else if ( error_policy_ )
         {
@@ -1249,10 +995,11 @@ public:
     }
 };
 
-ShaderParser::ShaderParser( SymbolTable& symbol_table, ErrorPolicy* error_policy )
+ShaderParser::ShaderParser( SymbolTable* symbol_table, ErrorPolicy* error_policy )
 : symbol_table_( symbol_table ),
   error_policy_( error_policy )
 {
+    REYES_ASSERT( symbol_table_ );
 }
 
 shared_ptr<SyntaxNode> ShaderParser::parse( const char* filename )

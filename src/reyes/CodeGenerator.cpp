@@ -9,15 +9,19 @@
 #include "SyntaxNode.hpp"
 #include "Symbol.hpp"
 #include "Value.hpp"
-#include <reyes/reyes_virtual_machine/Instruction.hpp>
+#include "Scope.hpp"
 #include "SymbolTable.hpp"
 #include "ErrorCode.hpp"
 #include "ErrorPolicy.hpp"
+#include "Segment.hpp"
+#include "assert.hpp"
+#include <reyes/reyes_virtual_machine/Instruction.hpp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
-#include "assert.hpp"
 #include <algorithm>
+#include <iterator>
 #include <stdio.h>
+#include <string.h>
 
 using std::min;
 using std::max;
@@ -25,8 +29,13 @@ using std::find;
 using std::vector;
 using std::string;
 using std::shared_ptr;
+using std::copy_if;
+using std::back_inserter;
 using namespace math;
 using namespace reyes;
+
+// The maximum number of values in a varying variable.
+static const int MAXIMUM_LENGTH = 512;
 
 CodeGenerator::Jump::Jump( int address, int distance_address )
 : address_( address ),
@@ -52,30 +61,28 @@ CodeGenerator::Loop::Loop( int begin )
     jumps_to_end_.reserve( JUMPS_TO_END_RESERVE );
 }
 
-CodeGenerator::CodeGenerator( const SymbolTable& symbol_table, ErrorPolicy* error_policy )
-: symbol_table_( symbol_table ),
-  error_policy_( error_policy ),
-  initialize_address_( 0 ),
-  shade_address_( 0 ),
-  permanent_registers_( 0 ),
-  parameters_( 0 ),
-  variables_( 0 ),
-  constants_( 0 ),
-  errors_( 0 ),
-  symbols_(),
-  values_(),
-  temporary_registers_(),
-  loops_(),
-  index_( 0 ),
-  registers_( 0 ),
-  encoder_( nullptr )
+CodeGenerator::CodeGenerator( ErrorPolicy* error_policy )
+: error_policy_( error_policy )
+, maximum_length_( MAXIMUM_LENGTH )
+, initialize_address_( 0 )
+, shade_address_( 0 )
+, parameters_( 0 )
+, variables_( 0 )
+, grid_memory_size_( 0 )
+, temporary_memory_size_( 0 )
+, errors_( 0 )
+, symbols_()
+, values_()
+, loops_()
+, encoder_( nullptr )
+, constant_data_()
+, temporary_addresses_()
+, offset_( 0 )
 {
-    encoder_ = new Encoder;
-    (void) symbol_table_;
-    
-    const unsigned int TEMPORARY_REGISTERS_RESERVE = 32;
-    temporary_registers_.reserve( TEMPORARY_REGISTERS_RESERVE );
+    REYES_ASSERT( symbol_table_ );
 
+    encoder_ = new Encoder;
+    
     const unsigned int LOOPS_RESERVE = 8;
     loops_.reserve( LOOPS_RESERVE );
 }
@@ -89,30 +96,27 @@ void CodeGenerator::generate( SyntaxNode* node, const char* name )
 {
     REYES_ASSERT( name );
     
-    permanent_registers_ = 0;
     parameters_ = 0;
     variables_ = 0;
-    constants_ = 0;
+    grid_memory_size_ = 0;
+    temporary_memory_size_ = 0;
     symbols_.clear();
     values_.clear();
-    temporary_registers_.clear();
     loops_.clear();
-    index_ = 0;
-    registers_ = 0;
     encoder_->clear();
+    constant_data_.clear();
+    temporary_addresses_.clear();
+    offset_ = 0;
 
     if ( node && error_policy_->total_errors() == 0 )
     {
-        generate_symbols_for_parameters( node->node(0)->node(0) );
-        parameters_ = int(symbols_.size());
+        generate_constants( node );
+        generate_symbols( node );
 
-        generate_symbols( *node->node(0) );
+        const SyntaxNode* list_node = node;
+        const vector<shared_ptr<SyntaxNode>>& parameters = list_node->nodes();
+        parameters_ = int(parameters.size());
         variables_ = int(symbols_.size()) - parameters_;
-
-        generate_constants( node->node(0) );
-        constants_ = int(values_.size());
-
-        generate_indexes_for_symbols();
 
         initialize_address_ = encoder_->size();
         generate_code_for_list( *node->node(0)->node(0) );
@@ -163,11 +167,6 @@ int CodeGenerator::shade_address() const
     return shade_address_;
 }
 
-int CodeGenerator::permanent_registers() const
-{
-    return permanent_registers_;
-}
-
 int CodeGenerator::parameters() const
 {
     return parameters_;
@@ -178,39 +177,54 @@ int CodeGenerator::variables() const
     return variables_;
 }
 
-int CodeGenerator::constants() const
+int CodeGenerator::constant_memory_size() const
 {
-    return constants_;
+    return int(constant_data_.size());
 }
 
-std::vector<shared_ptr<Symbol> >& CodeGenerator::symbols()
+int CodeGenerator::grid_memory_size() const
+{
+    return grid_memory_size_;
+}
+
+int CodeGenerator::temporary_memory_size() const
+{
+    return temporary_memory_size_;
+}
+
+std::vector<shared_ptr<Symbol>>& CodeGenerator::symbols()
 {
     return symbols_;
 }
 
-const std::vector<shared_ptr<Symbol> >& CodeGenerator::symbols() const
+const std::vector<shared_ptr<Symbol>>& CodeGenerator::symbols() const
 {
     return symbols_;
 }
 
-std::vector<shared_ptr<Value> >& CodeGenerator::values()
+std::vector<shared_ptr<Value>>& CodeGenerator::values()
 {
     return values_;
 }
 
-const std::vector<shared_ptr<Value> >& CodeGenerator::values() const
+const std::vector<shared_ptr<Value>>& CodeGenerator::values() const
 {
     return values_;
+}
+
+std::vector<unsigned char>& CodeGenerator::constant_data()
+{
+    return constant_data_;
+}
+
+const std::vector<unsigned char>& CodeGenerator::constant_data() const
+{
+    return constant_data_;
 }
 
 const std::vector<unsigned char>& CodeGenerator::code() const
 {
     return encoder_->code();
-}
-
-int CodeGenerator::registers() const
-{
-    return registers_;
 }
 
 void CodeGenerator::error( bool condition, int /*line*/, const char* format, ... )
@@ -234,16 +248,11 @@ void CodeGenerator::error( bool condition, int /*line*/, const char* format, ...
 
 void CodeGenerator::generate_code_in_case_of_errors()
 {
-    permanent_registers_ = 0;
     parameters_ = 0;
     variables_ = 0;
-    constants_ = 0;
     symbols_.clear();
     values_.clear();
-    temporary_registers_.clear();
     loops_.clear();
-    index_ = 0;
-    registers_ = 0;
     encoder_->clear();
 
     initialize_address_ = encoder_->size();
@@ -253,46 +262,9 @@ void CodeGenerator::generate_code_in_case_of_errors()
     instruction( INSTRUCTION_HALT );        
 }
 
-void CodeGenerator::generate_symbols( const SyntaxNode& node )
-{
-    shared_ptr<Symbol> symbol = node.symbol();
-    if ( symbol && symbol->storage() != STORAGE_CONSTANT && find(symbols_.begin(), symbols_.end(), symbol) == symbols_.end() )
-    {
-        symbols_.push_back( symbol );
-    }
-    
-    const vector<shared_ptr<SyntaxNode> >& nodes = node.nodes();
-    for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
-    {
-        const SyntaxNode& node = *(*i);
-        generate_symbols( node );
-    }
-}
-
-void CodeGenerator::generate_symbols_for_parameters( SyntaxNode* list_node )
-{
-    REYES_ASSERT( list_node );
-    REYES_ASSERT( list_node->node_type() == SHADER_NODE_LIST );
-    
-    const vector<shared_ptr<SyntaxNode> >& parameters = list_node->nodes();
-    for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = parameters.begin(); i != parameters.end(); ++i )
-    {
-        const SyntaxNode* parameter_node = i->get();
-        REYES_ASSERT( parameter_node );
-        REYES_ASSERT( parameter_node->node_type() == SHADER_NODE_VARIABLE );
-        
-        shared_ptr<Symbol> symbol = parameter_node->symbol();
-        REYES_ASSERT( symbol );
-        REYES_ASSERT( find(symbols_.begin(), symbols_.end(), symbol) == symbols_.end() );
-        symbols_.push_back( symbol );
-    }
-}
-
-shared_ptr<Value> CodeGenerator::generate_constants( SyntaxNode* node )
+void CodeGenerator::generate_constants( SyntaxNode* node )
 {
     REYES_ASSERT( node );
-    
-    shared_ptr<Value> value;
     
     switch ( node->node_type() )
     {
@@ -301,29 +273,21 @@ shared_ptr<Value> CodeGenerator::generate_constants( SyntaxNode* node )
         case SHADER_NODE_STRING:
         case SHADER_NODE_TRIPLE:
         case SHADER_NODE_SIXTEENTUPLE:
-            if ( node->constant_index() == SyntaxNode::REGISTER_NULL )
-            {
-                node->set_constant_index( int(values_.size()) );
-                value.reset( new Value(node->original_type(), STORAGE_UNIFORM, 1) );
-                values_.push_back( value );
-                evaluate_expression( value, node );
-            }
+            evaluate_constant_expression( node );
             break;
             
         case SHADER_NODE_IDENTIFIER:
-            if ( node->symbol()->storage() == STORAGE_CONSTANT && node->constant_index() == SyntaxNode::REGISTER_NULL )
+            if ( node->symbol()->storage() == STORAGE_CONSTANT )
             {
-                node->set_constant_index( int(values_.size()) );
-                value.reset( new Value(TYPE_FLOAT, STORAGE_CONSTANT, 1) );
-                values_.push_back( value );
-                *value = node->symbol()->value();
+                Address address = write_constant_float( node->symbol()->value() );
+                node->set_address( address );
             }
             break;
         
         default:
         {
-            const vector<shared_ptr<SyntaxNode> >& nodes = node->nodes();
-            for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+            const vector<shared_ptr<SyntaxNode>>& nodes = node->nodes();
+            for ( vector<shared_ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
             {
                 SyntaxNode* syntax_node = i->get();
                 REYES_ASSERT( syntax_node );
@@ -332,112 +296,87 @@ shared_ptr<Value> CodeGenerator::generate_constants( SyntaxNode* node )
             break;
         }
     }
-    
-    return value;
 }
 
-void CodeGenerator::generate_indexes_for_symbols()
+void CodeGenerator::generate_symbols( const SyntaxNode* node )
 {
-    int index = 0;
-    for ( vector<shared_ptr<Symbol> >::const_iterator i = symbols_.begin(); i != symbols_.end(); ++i )
-    {
-        Symbol* symbol = i->get();
-        REYES_ASSERT( symbol );
-        symbol->set_index( index );
-        ++index;
-    }
-
-    int register_index = constants_;
-    vector<shared_ptr<Symbol> >::const_iterator i = symbols_.begin(); 
-    
-    while ( i != symbols_.end() && register_index < constants_ + parameters_ )
-    {
-        Symbol* symbol = i->get();
-        REYES_ASSERT( symbol );
-        symbol->set_register_index( register_index  );
-        ++register_index ;
-        ++i;
-    }
-    REYES_ASSERT( register_index == constants_ + parameters_ );
-    
-    while ( i != symbols_.end() )
-    {
-        Symbol* symbol = i->get();
-        REYES_ASSERT( symbol );
-        symbol->set_register_index( register_index );
-        ++register_index;
-        ++i;
-    }
-    REYES_ASSERT( register_index == parameters_ + constants_ + variables_ );
-    
-    index_ = register_index;
-    registers_ = register_index;
-    permanent_registers_ = register_index;
-}
-
-void CodeGenerator::evaluate_expression( shared_ptr<Value> value, const SyntaxNode* node ) const
-{
-    REYES_ASSERT( value );
     REYES_ASSERT( node );
 
+    Scope* grid_scope = node->node( 0 )->scope();
+    REYES_ASSERT( grid_scope );
+    int offset = grid_scope->enter( SEGMENT_GRID, 0, maximum_length_ );
+    int string_offset = grid_scope->enter_strings( 0 );
+
+    Scope* parameters_scope = node->node( 0 )->node( 0 )->scope();
+    REYES_ASSERT( parameters_scope );
+    offset = parameters_scope->enter( SEGMENT_GRID, offset, maximum_length_ );
+    string_offset = parameters_scope->enter_strings( string_offset );
+
+    Scope* global_scope = node->scope();
+    REYES_ASSERT( global_scope );
+    offset = global_scope->enter( SEGMENT_GRID, offset, maximum_length_ );
+    string_offset = global_scope->enter_strings( string_offset );
+
+    auto include_symbol = []( const shared_ptr<Symbol>& symbol )
+    {
+        return
+            symbol->segment() == SEGMENT_GRID ||
+            symbol->segment() == SEGMENT_STRING
+        ;
+    };
+
+    symbols_.clear();
+    const vector<shared_ptr<Symbol>>& grid_symbols = grid_scope->symbols();
+    copy_if( grid_symbols.begin(), grid_symbols.end(), back_inserter(symbols_), include_symbol ); 
+    const vector<shared_ptr<Symbol>>& parameter_symbols = parameters_scope->symbols();
+    copy_if( parameter_symbols.begin(), parameter_symbols.end(), back_inserter(symbols_), include_symbol ); 
+    const vector<shared_ptr<Symbol>>& global_symbols = global_scope->symbols();
+    copy_if( global_symbols.begin(), global_symbols.end(), back_inserter(symbols_), include_symbol );
+
+    grid_memory_size_ = offset;
+}
+
+void CodeGenerator::evaluate_constant_expression( SyntaxNode* node )
+{
+    REYES_ASSERT( node );
+
+    Address address;
     switch ( node->node_type() )
     {
         case SHADER_NODE_INTEGER:
         case SHADER_NODE_REAL:
         {
-            float* values = value->float_values();
-            values[0] = node->real();
+            address = write_constant_float( node->real() );
             break;
         }
         
         case SHADER_NODE_STRING:
-            value->set_string( node->string() );
+            address = write_constant_string( node->string() );
             break;
             
         case SHADER_NODE_TRIPLE:
         {
-            vec3* values = value->vec3_values();
-            values[0] = node->vec3();
+            address = write_constant_vec3( node->vec3() );
             break;
         }
         
         case SHADER_NODE_SIXTEENTUPLE:
         {
-            mat4x4* values = value->mat4x4_values();
-            values[0] = node->mat4x4();
+            address = write_constant_mat4x4( node->mat4x4() );
             break;
         }
 
         case SHADER_NODE_TYPECAST:
-            evaluate_expression( value, node->node(1) );
+            evaluate_constant_expression( node->node(1) );
             break; 
            
         default:
-        {
             REYES_ASSERT( false );
-            float* values = value->float_values();
-            values[0] = 1.0f;
+            address = write_constant_float( 1.0f );
             break;
-        }
     }
-}
 
-int CodeGenerator::assign_instruction_from_type( int instruction, ValueType type ) const
-{
-    REYES_ASSERT( type > TYPE_NULL && type < TYPE_COUNT );
-    const int INSTRUCTION_OFFSET_BY_TYPE[] =
-    {
-        0, // NULL
-        0, // INTEGER
-        0, // FLOAT
-        0, // COLOR
-        0, // POINT
-        0, // VECTOR
-        0, // NORMAL
-        0, // MATRIX
-        1 // STRING
-    };
-    return instruction + INSTRUCTION_OFFSET_BY_TYPE[type];
+    node->set_address( address );
 }
 
 int CodeGenerator::arithmetic_instruction_from_type( int instruction, ValueType type ) const
@@ -476,47 +415,47 @@ int CodeGenerator::promote_instruction_from_type( int instruction, ValueType typ
     return instruction + INSTRUCTION_OFFSET_BY_TYPE[type];
 }
 
-int CodeGenerator::generate_binary_expression( const SyntaxNode* expression_node )
+Address CodeGenerator::generate_binary_expression( const SyntaxNode* expression )
 {
-    REYES_ASSERT( expression_node );
-    REYES_ASSERT( expression_node->instruction() != INSTRUCTION_NULL );
-    REYES_ASSERT( expression_node->node(0) );
-    REYES_ASSERT( expression_node->node(1) );
-    
-    const SyntaxNode* node = expression_node->node(0);
-    const SyntaxNode* other_node = expression_node->node(1);
-    int arg0 = generate_expression( *node );
-    int arg1 = generate_expression( *other_node );
-    CodeGenerator::instruction( 
-        expression_node->instruction(),
-        node->type(), node->storage(),
-        other_node->type(), other_node->storage()
-    );
+    REYES_ASSERT( expression );
+    REYES_ASSERT( expression->instruction() != INSTRUCTION_NULL );
+    REYES_ASSERT( expression->node(0) );
+    REYES_ASSERT( expression->node(1) );    
+    const SyntaxNode* node = expression->node(0);
+    const SyntaxNode* other_node = expression->node(1);
+    Address result = allocate_address( expression->type(), expression->storage() );
+    Address arg0 = generate_expression( *node );
+    Address arg1 = generate_expression( *other_node );
+    instruction( expression->instruction(), node->type(), node->storage(), other_node->type(), other_node->storage() );
+    argument( result );
     argument( arg0 );
     argument( arg1 );
-    return allocate_register();
+    return result;
 }
 
-int CodeGenerator::generate_code_for_assign_expression( int instruction, const SyntaxNode& node )
+Address CodeGenerator::generate_assign( int instruction, const SyntaxNode& node )
 {
     REYES_ASSERT( node.symbol() );
 
-    const SyntaxNode* expression_node = node.node( 0 );
-    int arg1 = generate_expression( *expression_node );
     const Symbol* symbol = node.symbol().get();
-    CodeGenerator::instruction( 
-        assign_instruction_from_type(instruction, node.symbol()->type()),
-        symbol->type(), symbol->storage(),
-        expression_node->type(), expression_node->storage()
-    );
-    argument( symbol->register_index() );
+    const SyntaxNode* expression = node.node( 0 );
+    Address arg0 = symbol->address();
+    Address arg1 = generate_expression( *expression );
+
+    if ( symbol->type() == TYPE_STRING )
+    {
+        instruction = INSTRUCTION_STRING_ASSIGN;
+    }
+
+    CodeGenerator::instruction( instruction, symbol->type(), symbol->storage(), expression->type(), expression->storage() );
+    argument( arg0 );
     argument( arg1 );
     return arg1;
 }
 
-int CodeGenerator::generate_type_conversion( int register_index, const SyntaxNode& node )
+Address CodeGenerator::generate_convert( Address address, const SyntaxNode& node )
 {
-    REYES_ASSERT( register_index >= 0 );
+    REYES_ASSERT( address >= 0 );
     
     if ( node.original_type() != TYPE_NULL && node.original_type() != node.type() )
     {
@@ -526,65 +465,64 @@ int CodeGenerator::generate_type_conversion( int register_index, const SyntaxNod
         ValueType to_type = node.type();
         if ( node.type() != node.original_type() )
         {
-            instruction(
-                INSTRUCTION_CONVERT,
-                node.type(), node.storage(),
-                node.original_type(), node.storage()
-            );
-            argument( register_index );
-            register_index = allocate_register();
+            Address result = allocate_address( node.type(), node.storage() );
+            instruction( INSTRUCTION_CONVERT, node.type(), node.storage(), node.original_type(), node.storage() );
+            argument( result );
+            argument( address );
+            return result;
         }
     }
-    return register_index;
+    return address;
 }
 
-int CodeGenerator::generate_storage_promotion( int register_index, const SyntaxNode& node )
+Address CodeGenerator::generate_promote( Address address, const SyntaxNode& node )
 {
+    REYES_ASSERT( address >= 0 );
     if ( node.original_storage() != STORAGE_NULL )
     {
         REYES_ASSERT( node.storage() == STORAGE_VARYING );
-        instruction( 
-            INSTRUCTION_PROMOTE,
-            node.type(), node.storage(),
-            node.type(), node.original_storage()
-        );
-        argument( register_index );
-        register_index = allocate_register();
+        Address result = allocate_address( node.type(), node.storage() );
+        instruction( INSTRUCTION_PROMOTE, node.type(), node.storage(), node.type(), node.original_storage() );
+        argument( result );
+        argument( address );
+        return result;
     }
-    return register_index;
+    return address;
 }
 
 void CodeGenerator::generate_code_for_list( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_LIST );
+
+    int default_base_address = offset_;
+    Scope* scope = node.scope();
+    if ( scope )
+    {
+        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_length_ );
+        temporary_memory_size_ = max( offset_, temporary_memory_size_ );
+    }
     
     const vector<shared_ptr<SyntaxNode> >& nodes = node.nodes();
     for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
     {
         const SyntaxNode& node = *(*i);
-        push_register();
+        push_address();
         generate_statement( node );
-        pop_register();
+        pop_address();
+    }
+
+    if ( scope )
+    {
+        offset_ = scope->leave( default_base_address );
     }
 }
 
 void CodeGenerator::generate_code_for_variable( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_VARIABLE );
-
     if ( node.node(0)->node_type() != SHADER_NODE_NULL )
     {
-        const shared_ptr<Symbol>& symbol = node.symbol();
-        const SyntaxNode* expression_node = node.node( 0 );
-        int arg0 = symbol->register_index();
-        int arg1 = generate_expression( *expression_node );
-        instruction( 
-            assign_instruction_from_type(INSTRUCTION_ASSIGN, symbol->type()),
-            symbol->type(), symbol->storage(),
-            expression_node->type(), expression_node->storage()
-        );
-        argument( arg0 );
-        argument( arg1 );
+        generate_assign( INSTRUCTION_ASSIGN, node );
     }
 }
 
@@ -592,17 +530,21 @@ void CodeGenerator::generate_code_for_parameters( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_LIST );
     
-    const vector<shared_ptr<SyntaxNode> >& parameters = node.nodes();
-    for ( vector<shared_ptr<SyntaxNode> >::const_iterator i = parameters.begin(); i != parameters.end(); ++i )
+    const vector<shared_ptr<SyntaxNode>>& parameters = node.nodes();
+    for ( vector<shared_ptr<SyntaxNode>>::const_iterator i = parameters.begin(); i != parameters.end(); ++i )
     {
         const SyntaxNode* variable_node = i->get();
         REYES_ASSERT( variable_node );
         REYES_ASSERT( variable_node->node_type() == SHADER_NODE_VARIABLE );
         if ( variable_node->node(0)->node_type() == SHADER_NODE_TYPECAST )
         {
-            int register_index = generate_typecast_expression( *variable_node->node(0) );
-            variable_node->symbol()->set_register_index( register_index );
-            permanent_registers_ = max( permanent_registers_, register_index );
+            REYES_ASSERT( false );
+            // What do I do here wrt. allocating memory for typecast parameters?
+            // int register_index = generate_typecast_expression( *variable_node->node(0) );
+            // variable_node->symbol()->set_register_index( register_index );
+            // permanent_registers_ = max( permanent_registers_, register_index );
+            Address address = generate_typecast_expression( *variable_node->node(0) );
+            (void) address;            
         }
     }
 }
@@ -668,23 +610,23 @@ void CodeGenerator::generate_statement( const SyntaxNode& node )
             break;
             
         case SHADER_NODE_ASSIGN:    
-            generate_code_for_assign_expression( INSTRUCTION_ASSIGN, node );
+            generate_assign( INSTRUCTION_ASSIGN, node );
             break;
             
         case SHADER_NODE_ADD_ASSIGN:
-            generate_code_for_assign_expression( INSTRUCTION_ADD_ASSIGN, node );
+            generate_assign( INSTRUCTION_ADD_ASSIGN, node );
             break;
             
         case SHADER_NODE_SUBTRACT_ASSIGN:
-            generate_code_for_assign_expression( INSTRUCTION_SUBTRACT_ASSIGN, node );
+            generate_assign( INSTRUCTION_SUBTRACT_ASSIGN, node );
             break;
             
         case SHADER_NODE_MULTIPLY_ASSIGN:
-            generate_code_for_assign_expression( INSTRUCTION_MULTIPLY_ASSIGN, node );
+            generate_assign( INSTRUCTION_MULTIPLY_ASSIGN, node );
             break;
             
         case SHADER_NODE_DIVIDE_ASSIGN:
-            generate_code_for_assign_expression( INSTRUCTION_DIVIDE_ASSIGN, node );
+            generate_assign( INSTRUCTION_DIVIDE_ASSIGN, node );
             break;
             
         default:
@@ -697,26 +639,45 @@ void CodeGenerator::generate_if_statement( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_IF );
     
-    const SyntaxNode* expression_node = node.node( 0 );
-    int mask = generate_expression( *expression_node );
-    push_register();
-    instruction( INSTRUCTION_GENERATE_MASK, TYPE_INTEGER, expression_node->storage() );
+    int default_base_address = offset_;
+    Scope* scope = node.scope();
+    if ( scope )
+    {
+        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_length_ );
+    }
+
+    const SyntaxNode* expression = node.node( 0 );
+    Address mask = generate_expression( *expression );
+    push_address();
+    instruction( INSTRUCTION_GENERATE_MASK, TYPE_INTEGER, expression->storage() );
     argument( mask );
 
     const SyntaxNode* statement_node = node.node( 1 );
     generate_statement( *statement_node );
     instruction( INSTRUCTION_CLEAR_MASK );
-    pop_register();
+    pop_address();
+
+    if ( scope )
+    {
+        offset_ = scope->leave( default_base_address );
+    }
 }
 
 void CodeGenerator::generate_if_else_statement( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_IF_ELSE );
     
-    const SyntaxNode* expression_node = node.node( 0 );
-    int mask = generate_expression( *expression_node );
-    push_register();
-    instruction( INSTRUCTION_GENERATE_MASK, TYPE_INTEGER, expression_node->storage() );
+    int default_base_address = offset_;
+    Scope* scope = node.scope();
+    if ( scope )
+    {
+        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_length_ );
+    }
+
+    const SyntaxNode* expression = node.node( 0 );
+    Address mask = generate_expression( *expression );
+    push_address();
+    instruction( INSTRUCTION_GENERATE_MASK, TYPE_INTEGER, expression->storage() );
     argument( mask );
 
     const SyntaxNode* statement_node = node.node( 1 );
@@ -726,91 +687,141 @@ void CodeGenerator::generate_if_else_statement( const SyntaxNode& node )
     const SyntaxNode* else_statement_node = node.node( 2 );
     generate_statement( *else_statement_node );
     instruction( INSTRUCTION_CLEAR_MASK );
-    pop_register();
+    pop_address();
+
+    if ( scope )
+    {
+        offset_ = scope->leave( default_base_address );
+    }
 }
 
 void CodeGenerator::generate_while_statement( const SyntaxNode& while_node )
 {
     REYES_ASSERT( while_node.node_type() == SHADER_NODE_WHILE );
 
+    int default_base_address = offset_;
+    Scope* scope = while_node.scope();
+    if ( scope )
+    {
+        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_length_ );
+    }
+
     push_loop();
     mark_loop_continue();
-    push_register();
 
-    const SyntaxNode* expression_node = while_node.node( 0 );
-    int mask = generate_expression( *expression_node );
-    instruction( INSTRUCTION_GENERATE_MASK, TYPE_INTEGER, expression_node->storage() );
+    push_address();
+    const SyntaxNode* expression = while_node.node( 0 );
+    Address mask = generate_expression( *expression );
+    instruction( INSTRUCTION_GENERATE_MASK, TYPE_INTEGER, expression->storage() );
     argument( mask );
-    pop_register();
+    pop_address();
     jump_to_end( INSTRUCTION_JUMP_EMPTY, 1 );
-    push_register();
+
+    push_address();
     const SyntaxNode* statement_node = while_node.node( 1 );
     generate_statement( *statement_node );
-    pop_register();
+    pop_address();
+
     instruction( INSTRUCTION_CLEAR_MASK );
     jump_to_begin( INSTRUCTION_JUMP, 1 );
     pop_loop();
+
+    if ( scope )
+    {
+        offset_ = scope->leave( default_base_address );
+    }
 }
 
 void CodeGenerator::generate_for_statement( const SyntaxNode& for_node )
 {
     REYES_ASSERT( for_node.node_type() == SHADER_NODE_FOR );
 
-    push_register();
-    const SyntaxNode* initialize_statement_node = for_node.node( 0 );
-    generate_statement( *initialize_statement_node );
-    pop_register();
+    int default_base_address = offset_;
+    Scope* scope = for_node.scope();
+    if ( scope )
+    {
+        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_length_ );
+    }
+
+    push_address();
+    const SyntaxNode* initialize_statement = for_node.node( 0 );
+    generate_statement( *initialize_statement );
+    pop_address();
     push_loop();
     
-    push_register();
-    const SyntaxNode* expression_node = for_node.node( 1 );
-    int mask = generate_expression( *expression_node );
-    instruction( INSTRUCTION_GENERATE_MASK, TYPE_INTEGER, expression_node->storage() );
+    push_address();
+    const SyntaxNode* expression = for_node.node( 1 );
+    Address mask = generate_expression( *expression );
+    instruction( INSTRUCTION_GENERATE_MASK, TYPE_INTEGER, expression->storage() );
     argument( mask );
-    pop_register();
+    pop_address();
     jump_to_end( INSTRUCTION_JUMP_EMPTY, 1 );
-    push_register();
+    push_address();
 
-    const SyntaxNode* statement_node = for_node.node( 3 );
-    generate_statement( *statement_node );
-    pop_register();
+    const SyntaxNode* statement = for_node.node( 3 );
+    generate_statement( *statement );
+    pop_address();
     mark_loop_continue();
-    push_register();
+    push_address();
 
-    const SyntaxNode* increment_statement_node = for_node.node( 2 );
-    generate_statement( *increment_statement_node );
-    pop_register();
+    const SyntaxNode* increment_statement = for_node.node( 2 );
+    generate_statement( *increment_statement );
+    pop_address();
     instruction( INSTRUCTION_CLEAR_MASK );
     jump_to_begin( INSTRUCTION_JUMP, 1 );
     pop_loop();
+
+    if ( scope )
+    {
+        offset_ = scope->leave( default_base_address );
+    }
 }
 
 void CodeGenerator::generate_ambient_statement( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_AMBIENT );
 
-    int light_color = generate_expression( *node.node(0) );
-    int light_opacity = generate_expression( *node.node(1) );
+    int default_base_address = offset_;
+    Scope* scope = node.scope();
+    if ( scope )
+    {
+        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_length_ );
+    }
+
+    Address light_color = generate_expression( *node.node(0) );
+    Address light_opacity = generate_expression( *node.node(1) );
     instruction( INSTRUCTION_AMBIENT );
     argument( light_color );
     argument( light_opacity );
+
+    if ( scope )
+    {
+        offset_ = scope->leave( default_base_address );
+    }
 }
 
 void CodeGenerator::generate_solar_statement( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_SOLAR );
 
-    const SyntaxNode* expressions_node = node.node(0);
-    if ( expressions_node->nodes().size() == 0 )
+    int default_base_address = offset_;
+    Scope* scope = node.scope();
+    if ( scope )
+    {
+        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_length_ );
+    }
+
+    const SyntaxNode* expressions = node.node(0);
+    if ( expressions->nodes().size() == 0 )
     {
         instruction( INSTRUCTION_SOLAR );
     }
     else
     {
-        int axis = generate_expression( *expressions_node->node(0) );
-        int angle = generate_expression( *expressions_node->node(1) );
-        int light_color = generate_expression( *node.node(2) );
-        int light_opacity = generate_expression( *node.node(3) );
+        Address axis = generate_expression( *expressions->node(0) );
+        Address angle = generate_expression( *expressions->node(1) );
+        Address light_color = generate_expression( *node.node(2) );
+        Address light_opacity = generate_expression( *node.node(3) );
         instruction( INSTRUCTION_SOLAR_AXIS_ANGLE );
         argument( axis );
         argument( angle );
@@ -819,20 +830,32 @@ void CodeGenerator::generate_solar_statement( const SyntaxNode& node )
     }
     
     generate_statement( *node.node(1) );
+
+    if ( scope )
+    {
+        offset_ = scope->leave( default_base_address );
+    }
 }
 
 void CodeGenerator::generate_illuminate_statement( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_ILLUMINATE );
 
-    const SyntaxNode* expressions_node = node.node(0);
-    if ( expressions_node->nodes().size() == 1 )
+    int default_base_address = offset_;
+    Scope* scope = node.scope();
+    if ( scope )
     {
-        int position = generate_expression( *expressions_node->node(0) );
-        int surface_position = generate_expression( *node.node(2) );
-        int light_direction = generate_expression( *node.node(3) );
-        int light_color = generate_expression( *node.node(4) );
-        int light_opacity = generate_expression( *node.node(5) );
+        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_length_ );
+    }
+
+    const SyntaxNode* expressions = node.node(0);
+    if ( expressions->nodes().size() == 1 )
+    {
+        Address position = generate_expression( *expressions->node(0) );
+        Address surface_position = generate_expression( *node.node(2) );
+        Address light_direction = generate_expression( *node.node(3) );
+        Address light_color = generate_expression( *node.node(4) );
+        Address light_opacity = generate_expression( *node.node(5) );
         instruction( INSTRUCTION_ILLUMINATE );
         argument( position );
         argument( surface_position );
@@ -843,13 +866,13 @@ void CodeGenerator::generate_illuminate_statement( const SyntaxNode& node )
     }
     else
     {
-        int position = generate_expression( *expressions_node->node(0) );
-        int axis = generate_expression( *expressions_node->node(1) );
-        int angle = generate_expression( *expressions_node->node(2) );
-        int surface_position = generate_expression( *node.node(2) );
-        int light_direction = generate_expression( *node.node(3) );
-        int light_color = generate_expression( *node.node(4) );
-        int light_opacity = generate_expression( *node.node(5) );
+        Address position = generate_expression( *expressions->node(0) );
+        Address axis = generate_expression( *expressions->node(1) );
+        Address angle = generate_expression( *expressions->node(2) );
+        Address surface_position = generate_expression( *node.node(2) );
+        Address light_direction = generate_expression( *node.node(3) );
+        Address light_color = generate_expression( *node.node(4) );
+        Address light_opacity = generate_expression( *node.node(5) );
         instruction( INSTRUCTION_ILLUMINATE_AXIS_ANGLE );
         argument( position );
         argument( axis );
@@ -860,17 +883,29 @@ void CodeGenerator::generate_illuminate_statement( const SyntaxNode& node )
         argument( light_opacity );
         generate_statement( *node.node(1) );
     }
+
+    if ( scope )
+    {
+        offset_ = scope->leave( default_base_address );
+    }
 }
 
 void CodeGenerator::generate_illuminance_statement( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_ILLUMINANCE );
 
-    const SyntaxNode* expressions_node = node.node(0);
-    if ( expressions_node->nodes().size() == 1 )
+    int default_base_address = offset_;
+    Scope* scope = node.scope();
+    if ( scope )
+    {
+        offset_ = scope->enter( SEGMENT_TEMPORARY, offset_, maximum_length_ );
+    }
+
+    const SyntaxNode* expressions = node.node(0);
+    if ( expressions->nodes().size() == 1 )
     {
         /*
-        int arg0 = generate_expression( *expressions_node->node(0) );
+        int arg0 = generate_expression( *expressions->node(0) );
         instruction( INSTRUCTION_ILLUMINANCE );
         argument( arg0 );
         generate_statement( *node.node(1) );
@@ -881,33 +916,47 @@ void CodeGenerator::generate_illuminance_statement( const SyntaxNode& node )
     {
         push_loop();
         jump_to_end( INSTRUCTION_JUMP_ILLUMINANCE, 1 );
-    
-        push_register();
-        int position = generate_expression( *expressions_node->node(0) );
-        int axis = generate_expression( *expressions_node->node(1) );
-        int angle = generate_expression( *expressions_node->node(2) );
-        int light_direction = generate_expression( *node.node(2) );
-        int light_color = generate_expression( *node.node(3) );
-        int light_opacity = generate_expression( *node.node(4) );
 
-        instruction( INSTRUCTION_ILLUMINANCE_AXIS_ANGLE );
+        const SyntaxNode& position_node = *expressions->node(0);
+        const SyntaxNode& axis_node = *expressions->node(1);
+        const SyntaxNode& angle_node = *expressions->node(2);
+        const SyntaxNode& light_direction_node = *node.node(2);
+        const SyntaxNode& light_color_node = *node.node(3);
+        const SyntaxNode& light_opacity_node = *node.node(4);
+
+        Address position = generate_expression( position_node );
+        Address axis = generate_expression( axis_node );
+        Address angle = generate_expression( angle_node );
+        Address light_direction = generate_expression( light_direction_node );
+        Address light_color = generate_expression( light_color_node );
+        Address light_opacity = generate_expression( light_opacity_node );
+
+        push_address();
+        Address mask = allocate_address( TYPE_INTEGER, STORAGE_VARYING );
+        instruction( INSTRUCTION_ILLUMINANCE_AXIS_ANGLE, position_node.type(), position_node.storage(), axis_node.type(), axis_node.storage(), angle_node.type(), angle_node.storage() );
         argument( position );
         argument( axis );
         argument( angle );
         argument( light_direction );
         argument( light_color );
         argument( light_opacity );
+        argument( mask );
         instruction( INSTRUCTION_GENERATE_MASK );
-        argument( allocate_register() );
-        pop_register();
+        argument( mask );
+        pop_address();
         
-        push_register();
+        push_address();
         generate_statement( *node.node(1) );
-        pop_register();
+        pop_address();
 
         instruction( INSTRUCTION_CLEAR_MASK );        
         jump_to_begin( INSTRUCTION_JUMP, 1 );
         pop_loop();
+    }
+
+    if ( scope )
+    {
+        offset_ = scope->leave( default_base_address );
     }
 }
 
@@ -958,19 +1007,19 @@ void CodeGenerator::generate_return_statement( const SyntaxNode& node )
     REYES_ASSERT( node.node_type() == SHADER_NODE_RETURN );
 }
 
-int CodeGenerator::generate_expression( const SyntaxNode& node )
+Address CodeGenerator::generate_expression( const SyntaxNode& node )
 {
-    int index = 0;    
+    Address address;
     switch ( node.node_type() )
     {
         case SHADER_NODE_CALL:
-            index = generate_call_expression( node );
+            address = generate_call_expression( node );
             break;
             
         case SHADER_NODE_CROSS:
             REYES_ASSERT( false );
             break;
-            
+
         case SHADER_NODE_DOT:
         case SHADER_NODE_MULTIPLY:
         case SHADER_NODE_ADD:
@@ -983,43 +1032,43 @@ int CodeGenerator::generate_expression( const SyntaxNode& node )
         case SHADER_NODE_NOT_EQUAL:
         case SHADER_NODE_AND:
         case SHADER_NODE_OR:
-            index = generate_binary_expression( &node );
+            address = generate_binary_expression( &node );
             break;
                         
         case SHADER_NODE_DIVIDE:
-            index = generate_divide_expression( node );
+            address = generate_divide_expression( node );
             break;
 
         case SHADER_NODE_NEGATE:
-            index = generate_negate_expression( node );
+            address = generate_negate_expression( node );
             break;
             
         case SHADER_NODE_TERNARY:
-            index = generate_ternary_expression( node );
+            address = generate_ternary_expression( node );
             break;
             
         case SHADER_NODE_TYPECAST:
-            index = generate_typecast_expression( node );
+            address = generate_typecast_expression( node );
             break;
             
         case SHADER_NODE_ASSIGN:    
-            index = generate_code_for_assign_expression( INSTRUCTION_ASSIGN, node );
+            address = generate_assign( INSTRUCTION_ASSIGN, node );
             break;
             
         case SHADER_NODE_ADD_ASSIGN:
-            index = generate_code_for_assign_expression( INSTRUCTION_ADD_ASSIGN, node );
+            address = generate_assign( INSTRUCTION_ADD_ASSIGN, node );
             break;
             
         case SHADER_NODE_SUBTRACT_ASSIGN:
-            index = generate_code_for_assign_expression( INSTRUCTION_SUBTRACT_ASSIGN, node );
+            address = generate_assign( INSTRUCTION_SUBTRACT_ASSIGN, node );
             break;
             
         case SHADER_NODE_MULTIPLY_ASSIGN:
-            index = generate_code_for_assign_expression( INSTRUCTION_MULTIPLY_ASSIGN, node );
+            address = generate_assign( INSTRUCTION_MULTIPLY_ASSIGN, node );
             break;
             
         case SHADER_NODE_DIVIDE_ASSIGN:
-            index = generate_code_for_assign_expression( INSTRUCTION_DIVIDE_ASSIGN, node );
+            address = generate_assign( INSTRUCTION_DIVIDE_ASSIGN, node );
             break;
             
         case SHADER_NODE_INTEGER:
@@ -1027,55 +1076,60 @@ int CodeGenerator::generate_expression( const SyntaxNode& node )
         case SHADER_NODE_STRING:
         case SHADER_NODE_TRIPLE:
         case SHADER_NODE_SIXTEENTUPLE:
-            index = generate_constant_expression( node );
+            address = generate_constant_expression( node );
             break;
 
         case SHADER_NODE_TEXTURE:
-            index = generate_vec3_texture_expression( node );
+            address = generate_vec3_texture_expression( node );
             break;
             
         case SHADER_NODE_SHADOW:
-            index = generate_shadow_expression( node );
+            address = generate_shadow_expression( node );
             break;
             
         case SHADER_NODE_IDENTIFIER:
-            index = generate_identifier_expression( node );
+            address = generate_identifier_expression( node );
             break;
             
         default:
             REYES_ASSERT( false );
             break;
     }    
-    index = generate_type_conversion( index, node );
-    index = generate_storage_promotion( index, node );
-    return index;
+    address = generate_convert( address, node );
+    address = generate_promote( address, node );
+    return address;
 }
 
-int CodeGenerator::generate_call_expression( const SyntaxNode& call_node )
+Address CodeGenerator::generate_call_expression( const SyntaxNode& call_node )
 {
     REYES_ASSERT( call_node.node_type() == SHADER_NODE_CALL );
-       
-    const int MAXIMUM_ARGUMENTS = 256;
-    int arguments [MAXIMUM_ARGUMENTS] = { 0 };
+
+    Address result = allocate_address( call_node.type(), call_node.storage() );
+
+    const int MAXIMUM_ARGUMENTS = 16;
+    Address arguments [MAXIMUM_ARGUMENTS] = { 0 };
     REYES_ASSERT( int(call_node.nodes().size()) < MAXIMUM_ARGUMENTS );
     for ( int i = 0; i < int(call_node.nodes().size()); ++i )
     {
         const SyntaxNode* node = call_node.node( i );
-        int argument = generate_expression( *node );
+        Address argument = generate_expression( *node );
         arguments[i] = argument;
     }
     
-    instruction( INSTRUCTION_CALL_0 + call_node.nodes().size() );
+    const shared_ptr<Symbol>& symbol = call_node.symbol();
+    instruction( INSTRUCTION_CALL, symbol->type(), symbol->storage() );
     argument( call_node.symbol()->index() );
+    argument( call_node.nodes().size() );
+    argument( result );
     for ( int i = 0; i < int(call_node.nodes().size()); ++i )
     {
         argument( arguments[i] );
     }    
 
-    return allocate_register();
+    return result;
 }
 
-int CodeGenerator::generate_divide_expression( const SyntaxNode& divide_node )
+Address CodeGenerator::generate_divide_expression( const SyntaxNode& divide_node )
 {
     REYES_ASSERT( divide_node.node(0) );
     REYES_ASSERT( divide_node.node(1) );
@@ -1083,73 +1137,74 @@ int CodeGenerator::generate_divide_expression( const SyntaxNode& divide_node )
     const SyntaxNode& node = *divide_node.node(0);
     const SyntaxNode& other_node = *divide_node.node(1);
     
-    int arg0 = generate_expression( node );
-    int arg1 = generate_expression( other_node );
-    instruction( 
-        INSTRUCTION_DIVIDE,
-        node.type(), node.storage(),
-        other_node.type(), other_node.storage()
-    );
+    Address result = allocate_address( divide_node.type(), divide_node.storage() );
+    Address arg0 = generate_expression( node );
+    Address arg1 = generate_expression( other_node );
+    instruction( INSTRUCTION_DIVIDE, node.type(), node.storage(), other_node.type(), other_node.storage() );
+    argument( result );
     argument( arg0 );
     argument( arg1 );
-    return allocate_register();
+    return result;
 }
 
-int CodeGenerator::generate_negate_expression( const SyntaxNode& node )
+Address CodeGenerator::generate_negate_expression( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_NEGATE );
-    int arg0 = generate_expression( *node.node(0) ); 
+    Address result = allocate_address( node.type(), node.storage() );
+    Address arg0 = generate_expression( *node.node(0) ); 
     instruction( INSTRUCTION_NEGATE, node.type(), node.storage() );
+    argument( result );
     argument( arg0 );
-    return allocate_register();
+    return result;
 }
 
-int CodeGenerator::generate_ternary_expression( const SyntaxNode& node )
+Address CodeGenerator::generate_ternary_expression( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_TERNARY );
-    return index_;
+    REYES_ASSERT( false );
+    return Address();
 }
 
-int CodeGenerator::generate_typecast_expression( const SyntaxNode& node )
+Address CodeGenerator::generate_typecast_expression( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_TYPECAST );
     
-    int index = index_;
     if ( node.node(1)->node_type() == SHADER_NODE_TEXTURE )
     {
-        index = generate_texture_typecast_expression( node );
+        return generate_texture_typecast_expression( node );
     }
     else if ( node.node(1)->node_type() == SHADER_NODE_ENVIRONMENT )
     {
-        index = generate_environment_typecast_expression( node );
+        return generate_environment_typecast_expression( node );
     }
     else if ( node.node(1)->type() == TYPE_COLOR || node.node(1)->type() == TYPE_POINT || node.node(1)->type() == TYPE_VECTOR || node.node(1)->type() == TYPE_NORMAL )
     {
-        index = generate_vec3_typecast_expression( node );
+        return generate_vec3_typecast_expression( node );
     }
     else if ( node.node(1)->type() == TYPE_MATRIX )
     {
-        index = generate_mat4x4_typecast_expression( node );
+        return generate_mat4x4_typecast_expression( node );
     }
     else
     {
-        index = generate_expression( *node.node(1) );
+        return generate_expression( *node.node(1) );
     }
-    return index;
+
+    REYES_ASSERT( false );
+    return Address();
 }
 
-int CodeGenerator::generate_vec3_typecast_expression( const SyntaxNode& node )
+Address CodeGenerator::generate_vec3_typecast_expression( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_TYPECAST );
     
-    int index = SyntaxNode::REGISTER_NULL;
     if ( !node.node(0)->nodes().empty() )
     {
         const SyntaxNode* space_expression = node.node( 0 )->node( 0 );
-        int arg0 = generate_expression( *space_expression );
+        Address arg0 = generate_expression( *space_expression );
 
         const SyntaxNode* value_expression = node.node( 1 );
-        int arg1 = generate_expression( *value_expression );
+        Address arg1 = generate_expression( *value_expression );
 
         switch ( node.node(0)->node_type() )
         {
@@ -1175,178 +1230,211 @@ int CodeGenerator::generate_vec3_typecast_expression( const SyntaxNode& node )
                 break;            
         }
 
+        Address result = allocate_address( value_expression->type(), value_expression->storage() );
+        argument( result );
         argument( arg0 );
         argument( arg1 );
-        index = allocate_register();
+        return result;
     }
-    else
-    {
-        index = generate_expression( *node.node(1) );
-    }
-    return index;
+
+    return generate_expression( *node.node(1) );
 }
 
-int CodeGenerator::generate_mat4x4_typecast_expression( const SyntaxNode& node )
+Address CodeGenerator::generate_mat4x4_typecast_expression( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_TYPECAST );
     
-    int index = SyntaxNode::REGISTER_NULL;
     if ( !node.node(0)->nodes().empty() )
     {
         REYES_ASSERT( node.node(0)->node_type() == SHADER_NODE_MATRIX_TYPE );
         const SyntaxNode* tospace_node = node.node( 0 )->node( 0 );
-        int arg0 = generate_expression( *tospace_node );
+        Address arg0 = generate_expression( *tospace_node );
         const SyntaxNode* value_node = node.node( 1 );
-        int arg1 = generate_expression( *value_node );
+        Address arg1 = generate_expression( *value_node );
         instruction( INSTRUCTION_TRANSFORM_MATRIX, value_node->type(), value_node->storage() );
+        Address result = allocate_address( value_node->type(), value_node->storage() );
+        argument( result );
         argument( arg0 );
         argument( arg1 );
-        index = allocate_register();
+        return result;
     }
     else
     {
-        index = generate_expression( *node.node(1) );
+        return generate_expression( *node.node(1) );
     }
-    return index;
+
+    REYES_ASSERT( false );
+    return Address();
 }
 
-int CodeGenerator::generate_texture_typecast_expression( const SyntaxNode& node )
+Address CodeGenerator::generate_texture_typecast_expression( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_TYPECAST );
     REYES_ASSERT( node.node(1)->node_type() == SHADER_NODE_TEXTURE );
     
-    int index = index_;
     if ( node.node(1)->node_type() == SHADER_NODE_TEXTURE )
     {        
         switch ( node.node(0)->node_type() )
         {
             case SHADER_NODE_FLOAT_TYPE:
-                index = generate_float_texture_expression( *node.node(1) );
+                return generate_float_texture_expression( *node.node(1) );
                 break;
 
             case SHADER_NODE_COLOR_TYPE:
             case SHADER_NODE_POINT_TYPE:
             case SHADER_NODE_VECTOR_TYPE:
             case SHADER_NODE_NORMAL_TYPE:
-                index = generate_vec3_texture_expression( *node.node(1) );
+                return generate_vec3_texture_expression( *node.node(1) );
                 break;
                 
             default:
                 REYES_ASSERT( false );
-                index = index_;
+                return 0;
                 break;
         }
     }    
-    return index;
+
+    REYES_ASSERT( false );
+    return Address();
 }
 
-int CodeGenerator::generate_environment_typecast_expression( const SyntaxNode& node )
+Address CodeGenerator::generate_environment_typecast_expression( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_TYPECAST );
     REYES_ASSERT( node.node(1)->node_type() == SHADER_NODE_ENVIRONMENT );
     
-    int index = index_;
     if ( node.node(1)->node_type() == SHADER_NODE_ENVIRONMENT )
     {        
         switch ( node.node(0)->node_type() )
         {
             case SHADER_NODE_FLOAT_TYPE:
-                index = generate_float_environment_expression( *node.node(1) );
+                return generate_float_environment_expression( *node.node(1) );
                 break;
 
             case SHADER_NODE_COLOR_TYPE:
             case SHADER_NODE_POINT_TYPE:
             case SHADER_NODE_VECTOR_TYPE:
             case SHADER_NODE_NORMAL_TYPE:
-                index = generate_vec3_environment_expression( *node.node(1) );
+                return generate_vec3_environment_expression( *node.node(1) );
                 break;
                 
             default:
                 REYES_ASSERT( false );
-                index = index_;
                 break;
         }
     }    
-    return index;
+
+    REYES_ASSERT( false );
+    return Address();
 }
 
-int CodeGenerator::generate_shadow_expression( const SyntaxNode& node )
+Address CodeGenerator::generate_shadow_expression( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_SHADOW );
 
-    int arg0 = generate_expression( *node.node(0) );
-    int arg1 = generate_expression( *node.node(1) );
-    int arg2 = generate_expression( *node.node(2) );
+    const SyntaxNode* texture_name = node.node( 0 );
+    const SyntaxNode* position = node.node( 1 );
+    const SyntaxNode* bias = node.node( 2 );
+    Address result = allocate_address( TYPE_FLOAT, position->storage() );
+    Address arg0 = generate_expression( *texture_name );
+    Address arg1 = generate_expression( *position );
+    Address arg2 = generate_expression( *bias );
     instruction( INSTRUCTION_SHADOW );
+    argument( result );
     argument( arg0 );
     argument( arg1 );
     argument( arg2 );
-    return allocate_register();    
+    return result;
 }
 
-int CodeGenerator::generate_float_texture_expression( const SyntaxNode& node )
+Address CodeGenerator::generate_float_texture_expression( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_TEXTURE );
 
-    int arg0 = generate_expression( *node.node(0) );
-    int arg1 = generate_expression( *node.node(1) );
-    int arg2 = generate_expression( *node.node(2) );
+    const SyntaxNode* texture_name = node.node( 0 );
+    const SyntaxNode* s = node.node( 1 );
+    const SyntaxNode* t = node.node( 2 );
+    ValueStorage storage = s->storage() == STORAGE_VARYING || t->storage() == STORAGE_VARYING ? STORAGE_VARYING : STORAGE_UNIFORM;
+    Address result = allocate_address( TYPE_FLOAT, storage );
+    Address arg0 = generate_expression( *texture_name );
+    Address arg1 = generate_expression( *s );
+    Address arg2 = generate_expression( *t );
     instruction( INSTRUCTION_FLOAT_TEXTURE );
+    argument( result );
     argument( arg0 );
     argument( arg1 );
     argument( arg2 );
-    return allocate_register();
+    return result;
 }
 
-int CodeGenerator::generate_vec3_texture_expression( const SyntaxNode& node )
+Address CodeGenerator::generate_vec3_texture_expression( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_TEXTURE );
 
-    int arg0 = generate_expression( *node.node(0) );
-    int arg1 = generate_expression( *node.node(1) );
-    int arg2 = generate_expression( *node.node(2) );
+    const SyntaxNode* texture_name = node.node( 0 );
+    const SyntaxNode* s = node.node( 1 );
+    const SyntaxNode* t = node.node( 2 );
+    ValueStorage storage = s->storage() == STORAGE_VARYING || t->storage() == STORAGE_VARYING ? STORAGE_VARYING : STORAGE_UNIFORM;
+    Address result = allocate_address( TYPE_VECTOR, storage );
+    Address arg0 = generate_expression( *texture_name );
+    Address arg1 = generate_expression( *s );
+    Address arg2 = generate_expression( *t );
     instruction( INSTRUCTION_VEC3_TEXTURE );
+    argument( result );
     argument( arg0 );
     argument( arg1 );
     argument( arg2 );
-    return allocate_register();
+    return result;
 }
 
-int CodeGenerator::generate_float_environment_expression( const SyntaxNode& node )
+Address CodeGenerator::generate_float_environment_expression( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_ENVIRONMENT );
-
-    int arg0 = generate_expression( *node.node(0) );
-    int arg1 = generate_expression( *node.node(1) );
+    const SyntaxNode* texture_name = node.node( 0 );
+    const SyntaxNode* direction = node.node( 1 );
+    Address result = allocate_address( TYPE_FLOAT, direction->storage() );
+    Address arg0 = generate_expression( *texture_name );
+    Address arg1 = generate_expression( *direction );
     instruction( INSTRUCTION_FLOAT_ENVIRONMENT );
+    argument( result );
     argument( arg0 );
     argument( arg1 );
-    return allocate_register();
+    return result;
 }
 
-int CodeGenerator::generate_vec3_environment_expression( const SyntaxNode& node )
+Address CodeGenerator::generate_vec3_environment_expression( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_ENVIRONMENT );
 
-    int arg0 = generate_expression( *node.node(0) );
-    int arg1 = generate_expression( *node.node(1) );
+    const SyntaxNode* texture_name = node.node( 0 );
+    const SyntaxNode* direction = node.node( 1 );
+    Address result = allocate_address( TYPE_FLOAT, direction->storage() );
+    Address arg0 = generate_expression( *texture_name );
+    Address arg1 = generate_expression( *direction );
     instruction( INSTRUCTION_VEC3_ENVIRONMENT );
+    argument( result );
     argument( arg0 );
     argument( arg1 );
-    return allocate_register();
+    return result;
 }
 
-int CodeGenerator::generate_constant_expression( const SyntaxNode& node )
+Address CodeGenerator::generate_constant_expression( const SyntaxNode& node )
 {
-    REYES_ASSERT( node.constant_index() >= 0 && node.constant_index() < int(values_.size()) );
-    return node.constant_index();
+    REYES_ASSERT( node.constant_address() >= 0 && node.constant_address() < int(constant_data_.size()) );
+    return node.address();
 }
 
-int CodeGenerator::generate_identifier_expression( const SyntaxNode& node )
+Address CodeGenerator::generate_identifier_expression( const SyntaxNode& node )
 {
     REYES_ASSERT( node.node_type() == SHADER_NODE_IDENTIFIER );
-    REYES_ASSERT( node.symbol() );    
-    return node.constant_index() == SyntaxNode::REGISTER_NULL ? node.symbol()->register_index() : node.constant_index();
+    const shared_ptr<Symbol>& symbol = node.symbol();
+    REYES_ASSERT( symbol );
+    if ( symbol->storage() == STORAGE_CONSTANT )
+    {
+        REYES_ASSERT( node.constant_address() >= 0 );
+        return node.address();
+    }
+    return symbol->address();
 }
 
 void CodeGenerator::instruction( int instruction )
@@ -1354,19 +1442,29 @@ void CodeGenerator::instruction( int instruction )
     encoder_->instruction( instruction );
 }
 
-void CodeGenerator::instruction( int instruction, int type, int storage )
+void CodeGenerator::instruction( int instruction, ValueType type, ValueStorage storage )
 {
     encoder_->instruction( instruction, type, storage );
 }
 
-void CodeGenerator::instruction( int instruction, int type, int storage, int other_type, int other_storage )
+void CodeGenerator::instruction( int instruction, ValueType type0, ValueStorage storage0, ValueType type1, ValueStorage storage1 )
 {
-    encoder_->instruction( instruction, type, storage, other_type, other_storage );
+    encoder_->instruction( instruction, type0, storage0, type1, storage1 );
+}
+
+void CodeGenerator::instruction( int instruction, ValueType type0, ValueStorage storage0, ValueType type1, ValueStorage storage1, ValueType type2, ValueStorage storage2 )
+{
+    encoder_->instruction( instruction, type0, storage0, type1, storage1, type2, storage2 );
 }
 
 void CodeGenerator::argument( int argument )
 {
     encoder_->argument( argument );
+}
+
+void CodeGenerator::argument( Address address )
+{
+    argument( address.value() );
 }
 
 void CodeGenerator::patch_argument( int address, int distance )
@@ -1460,27 +1558,92 @@ void CodeGenerator::jump_to_end( int jump_instruction, int level )
     loop.jumps_to_end_.push_back( Jump(jump_address, jump_distance_address) );
 }
 
-int CodeGenerator::allocate_register()
+Address CodeGenerator::write_constant( const void* value, int size )
 {
-    int index = index_;
-    ++index_;
-    registers_ = max( registers_, index_ );
-    return index;
+    REYES_ASSERT( size >= 0 );
+    int offset = int(constant_data_.size());
+    constant_data_.insert( constant_data_.end(), size, 0 );
+    memcpy( &constant_data_[offset], value, size );
+    return Address( SEGMENT_CONSTANT, offset );    
 }
 
-void CodeGenerator::push_register()
+Address CodeGenerator::write_constant_float( float value )
 {
-    temporary_registers_.push_back( index_ );
+    return write_constant( &value, sizeof(value) );
 }
 
-void CodeGenerator::pop_register()
+Address CodeGenerator::write_constant_vec3( const math::vec3& value )
 {
-    REYES_ASSERT( !temporary_registers_.empty() );
-    if ( index_ != temporary_registers_.back() )
+    return write_constant( &value, sizeof(value) );
+}
+
+Address CodeGenerator::write_constant_mat4x4( const math::mat4x4& value )
+{
+    return write_constant( &value, sizeof(value) );
+}
+
+Address CodeGenerator::write_constant_string( const std::string& value )
+{
+    return write_constant( value.data(), value.size() + 1 );
+}
+
+Address CodeGenerator::allocate_address( ValueType type, ValueStorage storage )
+{
+    int offset = offset_;
+    offset_ += size_by_type_and_storage( type, storage );
+    temporary_memory_size_ = max( temporary_memory_size_, offset_ );
+    return Address( SEGMENT_TEMPORARY, offset );
+}
+
+void CodeGenerator::push_address()
+{
+    temporary_addresses_.push_back( offset_ );
+}
+
+void CodeGenerator::pop_address()
+{
+    REYES_ASSERT( !temporary_addresses_.empty() );
+    offset_ = temporary_addresses_.back();
+    temporary_addresses_.pop_back();
+}
+
+int CodeGenerator::size_by_type_and_storage( ValueType type, ValueStorage storage ) const
+{
+    int size_by_type = 0;
+    switch ( type )
     {
-        index_ = temporary_registers_.back();
-        instruction( INSTRUCTION_RESET );
-        argument( index_ );
+        case TYPE_NULL: 
+            size_by_type = 0;
+            break;
+
+        case TYPE_INTEGER:
+            size_by_type = sizeof(int);
+            break;
+
+        case TYPE_FLOAT:
+            size_by_type = sizeof(float);
+            break;
+
+        case TYPE_POINT:
+        case TYPE_VECTOR:
+        case TYPE_NORMAL:
+            size_by_type = 3 * sizeof(float);
+            break;
+
+        case TYPE_COLOR:
+            size_by_type = 4 * sizeof(float);
+            break;
+
+        case TYPE_MATRIX:
+            size_by_type = 16 * sizeof(float);
+            break;
+
+        default:
+            REYES_ASSERT( false );
+            size_by_type = 0;
+            break;
     }
-    temporary_registers_.pop_back();
+
+    int size_by_storage = storage == STORAGE_VARYING ? maximum_length_ : 1;
+    return size_by_type * size_by_storage;
 }

@@ -16,11 +16,11 @@ class ErrorPolicy;
 */
 class ShaderParser
 {
-    SymbolTable& symbol_table_; ///< The symbol table to use when parsing (preloaded with functions and variables).
+    SymbolTable* symbol_table_; ///< The symbol table to use when parsing (preloaded with functions and variables).
     ErrorPolicy* error_policy_; ///< The error policy to report errors to.
 
 public:
-    ShaderParser( SymbolTable& symbol_table, ErrorPolicy* error_policy = 0 );
+    ShaderParser( SymbolTable* symbol_table, ErrorPolicy* error_policy = 0 );
     std::shared_ptr<SyntaxNode> parse( const char* filename );
     std::shared_ptr<SyntaxNode> parse( const char* begin, const char* end );
 };

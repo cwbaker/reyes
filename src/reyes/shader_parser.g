@@ -95,16 +95,10 @@ shader {
              | 'if' '(' expression ')' statement 'else' statement [if_else_statement]
              | 'while' '(' expression ')' statement [while_statement]
              | 'for' '(' expression ';' expression ';' expression ')' statement [for_statement]
-             | solar '(' parameters ')' statement [solar_statement]
-             | illuminate '(' parameters ')' statement [illuminate_statement]
-             | illuminance '(' parameters ')' statement [illuminance_statement]
+             | 'solar' '(' parameters ')' statement [solar_statement]
+             | 'illuminate' '(' parameters ')' statement [illuminate_statement]
+             | 'illuminance' '(' parameters ')' statement [illuminance_statement]
              ;
-
-    solar: 'solar' [solar_keyword];
-    
-    illuminate: 'illuminate' [illuminate_keyword];
-    
-    illuminance: 'illuminance' [illuminance_keyword];
 
     expression: '(' expression ')' [compound_expression]
               | integer [integer_expression]

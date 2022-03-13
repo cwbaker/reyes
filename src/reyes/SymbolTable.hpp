@@ -10,6 +10,7 @@
 namespace reyes
 {
 
+class Scope;
 class Symbol;
 class SyntaxNode;
 
@@ -20,17 +21,19 @@ class SyntaxNode;
 */
 class SymbolTable
 {
-    std::list<std::multimap<std::string, std::shared_ptr<Symbol>>> symbols_; ///< The stack of symbols used to represent the symbol hierarchy.
+    std::vector<std::unique_ptr<Scope>> scopes_;
+    std::vector<Scope*> scopes_stack_;
 
 public:
     SymbolTable();
-    AddSymbolHelper add_symbols();
-    void push_scope();
-    void pop_scope();    
-    std::shared_ptr<Symbol> add_symbol( const std::string& identifier );
+    ~SymbolTable();
     std::shared_ptr<Symbol> find_symbol( const std::string& identifier ) const;
     std::shared_ptr<Symbol> find_symbol( const SyntaxNode* node ) const;
-    static bool matches( const std::shared_ptr<Symbol>& symbol, const SyntaxNode* node, const std::vector<std::shared_ptr<SyntaxNode>>& node_parameters );
+    Scope* global_scope() const;
+    Scope* push_scope();
+    Scope* pop_scope();
+    std::shared_ptr<Symbol> add_symbol( const std::string& identifier );
+    AddSymbolHelper add_symbols( Segment segment = SEGMENT_GRID );
 };
 
 }

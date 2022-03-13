@@ -25,12 +25,6 @@ local cc = require 'forge.cc' {
     library_directories = {
         root( ("%s/lib"):format(variant) ),
     };
-    visual_studio = {
-        sln = root( "reyes.sln" );
-    };
-    xcode = {
-        xcodeproj = root( "reyes.xcodeproj" );
-    };
 
     assertions = variant ~= 'shipping';
     debug = variant ~= 'shipping';

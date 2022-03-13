@@ -47,12 +47,13 @@ struct OperationMetadata
 
 }
 
-SemanticAnalyzer::SemanticAnalyzer( const SymbolTable& symbol_table, ErrorPolicy* error_policy )
+SemanticAnalyzer::SemanticAnalyzer( SymbolTable* symbol_table, ErrorPolicy* error_policy )
 : symbol_table_( symbol_table ),
   error_policy_( error_policy ),
   ambient_light_( false ),
   errors_( 0 )
 {
+    REYES_ASSERT( symbol_table_ );
 }
 
 void SemanticAnalyzer::analyze( SyntaxNode* node, const char* name )
@@ -121,6 +122,18 @@ void SemanticAnalyzer::analyze_ambient_lighting( SyntaxNode* node )
     }
 }
 
+void SemanticAnalyzer::analyze_nodes( SyntaxNode* node ) const
+{
+    REYES_ASSERT( node );    
+    const vector<shared_ptr<SyntaxNode>>& nodes = node->nodes();
+    for ( vector<shared_ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
+    {
+        SyntaxNode* syntax_node = i->get();
+        REYES_ASSERT( syntax_node );
+        analyze_node( syntax_node );
+    }
+}
+
 void SemanticAnalyzer::analyze_node( SyntaxNode* node ) const
 {
     REYES_ASSERT( node );
@@ -128,6 +141,9 @@ void SemanticAnalyzer::analyze_node( SyntaxNode* node ) const
     switch ( node->node_type() )
     {
         case SHADER_NODE_VARIABLE:
+            analyze_variable_expectations( node );
+            break;
+
         case SHADER_NODE_ASSIGN:
         case SHADER_NODE_ADD_ASSIGN:
         case SHADER_NODE_SUBTRACT_ASSIGN:
@@ -162,17 +178,37 @@ void SemanticAnalyzer::analyze_node( SyntaxNode* node ) const
         default:
             break;
     }
-    
-    const vector<shared_ptr<SyntaxNode>>& nodes = node->nodes();
-    for ( vector<shared_ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
-    {
-        SyntaxNode* syntax_node = i->get();
-        REYES_ASSERT( syntax_node );
-        analyze_node( syntax_node );
-    }
-    
+
     switch ( node->node_type() )
     {
+        case SHADER_NODE_LIGHT_SHADER:
+            analyze_light_shader( node );
+            break;
+
+        case SHADER_NODE_SURFACE_SHADER:
+            analyze_surface_shader( node );
+            break;
+
+        case SHADER_NODE_VOLUME_SHADER:
+            analyze_volume_shader( node );
+            break;
+
+        case SHADER_NODE_DISPLACEMENT_SHADER:
+            analyze_displacement_shader( node );
+            break;
+
+        case SHADER_NODE_IMAGER_SHADER:
+            analyze_imager_shader( node );
+            break;
+
+        case SHADER_NODE_FUNCTION:
+            analyze_function( node );
+            break;
+
+        case SHADER_NODE_VARIABLE:
+            analyze_variable( node );
+            break;
+
         case SHADER_NODE_CALL:
             analyze_call( node );
             break;
@@ -202,7 +238,6 @@ void SemanticAnalyzer::analyze_node( SyntaxNode* node ) const
             analyze_illuminance_statement( node );
             break;
 
-        case SHADER_NODE_VARIABLE:
         case SHADER_NODE_ASSIGN:
         case SHADER_NODE_ADD_ASSIGN:
         case SHADER_NODE_SUBTRACT_ASSIGN:
@@ -304,6 +339,7 @@ void SemanticAnalyzer::analyze_node( SyntaxNode* node ) const
             break;
 
         default:
+            analyze_nodes( node );
             node->set_type( TYPE_NULL );
             node->set_storage( STORAGE_NULL );
             node->set_instruction( INSTRUCTION_NULL );            
@@ -311,16 +347,46 @@ void SemanticAnalyzer::analyze_node( SyntaxNode* node ) const
     }
 }
 
-void SemanticAnalyzer::analyze_assign_expectations( SyntaxNode* node ) const
+void SemanticAnalyzer::analyze_variable_expectations( SyntaxNode* variable ) const
 {
-    REYES_ASSERT( node );
+    const string& identifier = variable->lexeme();
+    const SyntaxNode* storage_node = variable->node( 1 );
+    const SyntaxNode* type_node = variable->node( 2 );
+    ValueStorage storage = storage_from_syntax_node( storage_node, STORAGE_UNIFORM );
+    ValueType type = type_from_syntax_node( type_node );
+    error( storage == STORAGE_NULL, variable->line(), "variable '%s' has no storage", identifier.c_str() );
+    error( type == TYPE_NULL, variable->line(), "variable '%s' has no type", identifier.c_str() );
 
-    shared_ptr<Symbol> symbol = node->symbol();
+    shared_ptr<Symbol> symbol = add_symbol( identifier );
+    symbol->set_storage( storage );
+    symbol->set_type( type );
+
+    variable->set_symbol( symbol );
+    variable->set_type( type );
+    variable->set_storage( storage );
+
+    analyze_assign_expectations( variable );
+}
+
+void SemanticAnalyzer::analyze_assign_expectations( SyntaxNode* assign ) const
+{
+    REYES_ASSERT( assign );
+
+    shared_ptr<Symbol> symbol = assign->symbol();
+    if ( !symbol )
+    {
+        symbol = find_symbol( assign->lexeme() );
+        error( !symbol, assign->line(), "Unrecognized symbol '%s' in assignment", assign->lexeme().c_str() );
+        if ( symbol )
+        {
+            assign->set_symbol( symbol );
+        }
+    }
+
     if ( symbol )
     {
-        ValueStorage expected_storage = symbol->storage();
-        
-        const vector<shared_ptr<SyntaxNode>>& nodes = node->nodes();
+        ValueStorage expected_storage = symbol->storage();        
+        const vector<shared_ptr<SyntaxNode>>& nodes = assign->nodes();
         for ( vector<shared_ptr<SyntaxNode>>::const_iterator i = nodes.begin(); i != nodes.end(); ++i )
         {
             SyntaxNode* syntax_node = i->get();
@@ -335,7 +401,7 @@ void SemanticAnalyzer::analyze_typecast_expectations( SyntaxNode* node ) const
     REYES_ASSERT( node );
     REYES_ASSERT( node->node_type() == SHADER_NODE_TYPECAST );
 
-    ValueType expected_type = type_from_type_node( node->node(0) );
+    ValueType expected_type = type_from_syntax_node( node->node(0) );
     ValueStorage expected_storage = node->expected_storage();
     
     const vector<shared_ptr<SyntaxNode>>& nodes = node->nodes();
@@ -367,64 +433,99 @@ void SemanticAnalyzer::analyze_expectations( SyntaxNode* node ) const
 
 void SemanticAnalyzer::analyze_if_statement( SyntaxNode* node ) const
 {
+    Scope* scope = push_scope();
+    node->set_scope( scope );
+    analyze_nodes( node );
+    pop_scope();
+
     analyze_storage_promotion( node->node(0), STORAGE_VARYING );
 }
 
 void SemanticAnalyzer::analyze_while_statement( SyntaxNode* node ) const
 {
+    Scope* scope = push_scope();
+    node->set_scope( scope );
+    analyze_nodes( node );
+    pop_scope();
+
     analyze_storage_promotion( node->node(0), STORAGE_VARYING );
 }
 
 void SemanticAnalyzer::analyze_for_statement( SyntaxNode* node ) const
 {    
+    Scope* scope = push_scope();
+    node->set_scope( scope );
+    analyze_nodes( node );
+    pop_scope();
+
     analyze_storage_promotion( node->node(1), STORAGE_VARYING );
 }
 
-void SemanticAnalyzer::analyze_solar_statement( SyntaxNode* node ) const
+void SemanticAnalyzer::analyze_solar_statement( SyntaxNode* solar ) const
 {
-    const SyntaxNode* expressions_node = node->node( 0 );
-    if ( !expressions_node->nodes().empty() )
+    Scope* scope = push_scope();
+    solar->set_scope( scope );
+    symbol_table_->add_symbols().add_lighting_symbols();
+    analyze_nodes( solar );
+    pop_scope();
+
+    const SyntaxNode* expressions = solar->node( 0 );
+    if ( !expressions->nodes().empty() )
     {
-        error( expressions_node->node(0)->storage() == STORAGE_VARYING, node->line(), "The 'solar' statement axis must be constant or uniform" );
-        error( expressions_node->node(1)->storage() == STORAGE_VARYING, node->line(), "The 'solar' statement angle must be constant or uniform" );
-        error( expressions_node->node(1)->type() != TYPE_FLOAT, node->line(), "The 'solar' statement angle must be a float" );
+        error( expressions->node(0)->storage() == STORAGE_VARYING, solar->line(), "The 'solar' statement axis must be constant or uniform" );
+        error( expressions->node(1)->storage() == STORAGE_VARYING, solar->line(), "The 'solar' statement angle must be constant or uniform" );
+        error( expressions->node(1)->type() != TYPE_FLOAT, solar->line(), "The 'solar' statement angle must be a float" );
     }
 }
 
-void SemanticAnalyzer::analyze_illuminate_statement( SyntaxNode* node ) const
+void SemanticAnalyzer::analyze_illuminate_statement( SyntaxNode* illuminate ) const
 {
-    const SyntaxNode* expressions_node = node->node( 0 );
-    error( expressions_node->node(0)->storage() == STORAGE_VARYING, node->line(), "The 'illuminate' statement position must be constant or uniform" );
-    if ( expressions_node->nodes().size() > 1 )
+    Scope* scope = push_scope();
+    illuminate->set_scope( scope );
+    symbol_table_->add_symbols().add_lighting_symbols();
+    analyze_nodes( illuminate );
+    pop_scope();
+
+    const SyntaxNode* expressions = illuminate->node( 0 );
+    error( expressions->node(0)->storage() == STORAGE_VARYING, illuminate->line(), "The 'illuminate' statement position must be constant or uniform" );
+    if ( expressions->nodes().size() > 1 )
     {
-        error( expressions_node->node(1)->storage() == STORAGE_VARYING, node->line(), "The 'illuminate' statement axis must be constant or uniform" );
-        error( expressions_node->node(2)->storage() == STORAGE_VARYING, node->line(), "The 'illuminate' statement angle must be constant or uniform" );
-        error( expressions_node->node(2)->type() != TYPE_FLOAT, node->line(), "The 'illuminate' statement axis must be a float" );
+        error( expressions->node(1)->storage() == STORAGE_VARYING, illuminate->line(), "The 'illuminate' statement axis must be constant or uniform" );
+        error( expressions->node(2)->storage() == STORAGE_VARYING, illuminate->line(), "The 'illuminate' statement angle must be constant or uniform" );
+        error( expressions->node(2)->type() != TYPE_FLOAT, illuminate->line(), "The 'illuminate' statement axis must be a float" );
     }
 }
 
-void SemanticAnalyzer::analyze_illuminance_statement( SyntaxNode* node ) const
+void SemanticAnalyzer::analyze_illuminance_statement( SyntaxNode* illuminance ) const
 {
-    REYES_ASSERT( node );
-    
-    const SyntaxNode* expressions_node = node->node( 0 );
-    if ( expressions_node->nodes().size() == 1 )
+    REYES_ASSERT( illuminance );
+
+    Scope* scope = push_scope();
+    illuminance->set_scope( scope );
+    symbol_table_->add_symbols().add_illuminance_symbols();
+    analyze_nodes( illuminance );
+    pop_scope();
+
+    const SyntaxNode* expressions = illuminance->node( 0 );
+    if ( expressions->nodes().size() == 1 )
     {
-        analyze_storage_promotion( expressions_node->node(0), STORAGE_VARYING );
-        error( true, node->line(), "The unconditional 'illuminance' statement is not supported" );
+        analyze_storage_promotion( expressions->node(0), STORAGE_VARYING );
+        error( true, illuminance->line(), "The unconditional 'illuminance' statement is not supported" );
     }
     else
     {
-        analyze_storage_promotion( expressions_node->node(0), STORAGE_VARYING );
-        analyze_storage_promotion( expressions_node->node(1), STORAGE_VARYING );
-        error( expressions_node->node(2)->storage() == STORAGE_VARYING, node->line(), "The 'illuminance' statement angle must be constant or uniform" );
-        error( expressions_node->node(2)->type() != TYPE_FLOAT, node->line(), "The 'illuminance' statement angle must be a float" );
+        analyze_storage_promotion( expressions->node(0), STORAGE_VARYING );
+        analyze_storage_promotion( expressions->node(1), STORAGE_VARYING );
+        error( expressions->node(2)->storage() == STORAGE_VARYING, illuminance->line(), "The 'illuminance' statement angle must be constant or uniform" );
+        error( expressions->node(2)->type() != TYPE_FLOAT, illuminance->line(), "The 'illuminance' statement angle must be a float" );
     }    
 }
 
 void SemanticAnalyzer::analyze_call( SyntaxNode* node ) const
 {
-    shared_ptr<Symbol> symbol = symbol_table_.find_symbol( node );
+    analyze_nodes( node );
+
+    shared_ptr<Symbol> symbol = symbol_table_->find_symbol( node );
     error( !symbol, node->line(), "Unrecognized function '%s'", node->lexeme().c_str() );
     if ( symbol )
     {
@@ -445,10 +546,115 @@ void SemanticAnalyzer::analyze_call( SyntaxNode* node ) const
     }
 }
 
+void SemanticAnalyzer::analyze_shader( SyntaxNode* shader ) const
+{
+    const string& identifier = shader->lexeme();
+    SyntaxNode* parameters = shader->node( 0 );
+    SyntaxNode* statements = shader->node( 1 );
+
+    shared_ptr<Symbol> symbol = add_symbol( identifier );
+    shader->set_symbol( symbol );
+
+    parameters->set_scope( push_scope() );
+    analyze_nodes( parameters );
+    statements->set_scope( push_scope() );
+    analyze_nodes( statements );
+    pop_scope();
+    pop_scope();
+}
+
+void SemanticAnalyzer::analyze_light_shader( SyntaxNode* light_shader ) const
+{
+    Scope* scope = push_scope();
+    light_shader->set_scope( scope );
+    symbol_table_->add_symbols().add_light_symbols();
+    analyze_shader( light_shader );
+
+    int solar_statements = light_shader->count_by_type( SHADER_NODE_SOLAR );
+    int illuminate_statements = light_shader->count_by_type( SHADER_NODE_ILLUMINATE );
+    if ( solar_statements == 0 && illuminate_statements == 0 )
+    {
+        const char* LIGHT_COLOR = "Cl";
+        shared_ptr<SyntaxNode> light_color( new SyntaxNode(SHADER_NODE_IDENTIFIER, light_shader->line(), LIGHT_COLOR) );
+        light_color->set_symbol( symbol_table_->find_symbol(LIGHT_COLOR) );
+
+        const char* LIGHT_OPACITY = "Ol";
+        shared_ptr<SyntaxNode> light_opacity( new SyntaxNode(SHADER_NODE_IDENTIFIER, light_shader->line(), LIGHT_OPACITY) );
+        light_opacity->set_symbol( symbol_table_->find_symbol(LIGHT_OPACITY) );
+
+        shared_ptr<SyntaxNode> ambient( new SyntaxNode(SHADER_NODE_AMBIENT, light_shader->line()) );
+        ambient->add_node( light_color );
+        ambient->add_node( light_opacity );
+
+        SyntaxNode* statements = light_shader->node( 1 );
+        statements->add_node_at_front( ambient );
+    }
+
+    pop_scope();
+}
+
+void SemanticAnalyzer::analyze_surface_shader( SyntaxNode* surface_shader ) const
+{
+    Scope* scope = push_scope();
+    surface_shader->set_scope( scope );
+    symbol_table_->add_symbols().add_surface_symbols();
+    analyze_shader( surface_shader );
+    pop_scope();
+}
+
+void SemanticAnalyzer::analyze_volume_shader( SyntaxNode* volume_shader ) const
+{
+    Scope* scope = push_scope();
+    volume_shader->set_scope( scope );
+    symbol_table_->add_symbols().add_volume_symbols();
+    analyze_shader( volume_shader );
+    pop_scope();
+}
+
+void SemanticAnalyzer::analyze_displacement_shader( SyntaxNode* displacement_shader ) const
+{
+    Scope* scope = push_scope();
+    displacement_shader->set_scope( scope );
+    symbol_table_->add_symbols().add_displacement_symbols();
+    analyze_shader( displacement_shader );
+    pop_scope();
+}
+
+void SemanticAnalyzer::analyze_imager_shader( SyntaxNode* imager_shader ) const
+{
+    Scope* scope = push_scope();
+    imager_shader->set_scope( scope );
+    symbol_table_->add_symbols().add_imager_symbols();
+    analyze_shader( imager_shader );
+    pop_scope();
+}
+
+void SemanticAnalyzer::analyze_function( SyntaxNode* function ) const
+{
+    Scope* scope = push_scope();
+    analyze_nodes( function );
+    pop_scope();
+
+    const string& identifier = function->lexeme();
+    const SyntaxNode* type_node = function->node( 2 );
+    ValueType type = type_from_syntax_node( type_node );
+
+    shared_ptr<Symbol> symbol = add_symbol( identifier );
+    symbol->set_type( type );
+
+    function->set_type( type );
+    function->set_symbol( symbol );
+}
+
+void SemanticAnalyzer::analyze_variable( SyntaxNode* variable ) const
+{
+    analyze_assign( variable );
+}
+
 void SemanticAnalyzer::analyze_assign( SyntaxNode* node ) const
 {
+    analyze_nodes( node );
     shared_ptr<Symbol> symbol = node->symbol();
-    error( !symbol, node->line(), "Unrecognized symbol '%s' in assignment", node->lexeme().c_str() );
     if ( symbol )
     {
         static const OperationMetadata ASSIGNMENT_METADATA[] =
@@ -480,6 +686,7 @@ void SemanticAnalyzer::analyze_dot( SyntaxNode* node ) const
         { POINT | VECTOR | NORMAL, POINT | VECTOR | NORMAL, TYPE_FLOAT, INSTRUCTION_DOT },
         { 0, 0, TYPE_NULL, INSTRUCTION_NULL }
     };
+    analyze_nodes( node );
     analyze_binary_operator( DOT_METADATA, ".", node );
 }
 
@@ -490,6 +697,7 @@ void SemanticAnalyzer::analyze_cross( SyntaxNode* node ) const
         { POINT | VECTOR | NORMAL, POINT | VECTOR | NORMAL, TYPE_VECTOR, INSTRUCTION_NULL },
         { 0, 0, TYPE_NULL }
     };
+    analyze_nodes( node );
     analyze_binary_operator( CROSS_METADATA, "%", node );
 }
 
@@ -504,6 +712,7 @@ void SemanticAnalyzer::analyze_multiply( SyntaxNode* node ) const
         { MATRIX, MATRIX, TYPE_MATRIX, INSTRUCTION_NULL },
         { 0, 0, TYPE_NULL }
     };            
+    analyze_nodes( node );
     analyze_binary_operator( MULTIPLY_METADATA, "*", node );
 }
 
@@ -521,6 +730,7 @@ void SemanticAnalyzer::analyze_divide( SyntaxNode* node ) const
         { 0, 0, TYPE_NULL }
     };            
 
+    analyze_nodes( node );
     analyze_storage_promotion( node->node(0), node->node(1)->storage() );
     analyze_storage_promotion( node->node(1), node->node(0)->storage() );
 
@@ -544,6 +754,7 @@ void SemanticAnalyzer::analyze_add( SyntaxNode* node ) const
         { MATRIX, MATRIX, TYPE_MATRIX, INSTRUCTION_NULL },
         { 0, 0, TYPE_NULL }
     };
+    analyze_nodes( node );
     analyze_binary_operator( ADD_METADATA, "+", node );
 }
 
@@ -556,6 +767,7 @@ void SemanticAnalyzer::analyze_subtract( SyntaxNode* node ) const
         { POINT | NORMAL | VECTOR, POINT | NORMAL | VECTOR, TYPE_VECTOR, INSTRUCTION_SUBTRACT },
         { MATRIX, MATRIX, TYPE_MATRIX, INSTRUCTION_SUBTRACT }
     };
+    analyze_nodes( node );
     analyze_binary_operator( SUBTRACT_METADATA, "-", node );
 }
 
@@ -566,6 +778,7 @@ void SemanticAnalyzer::analyze_less( SyntaxNode* node ) const
         { FLOAT, FLOAT, TYPE_INTEGER, INSTRUCTION_LESS },
         { 0, 0, TYPE_NULL }
     };
+    analyze_nodes( node );
     analyze_binary_operator( LESS_METADATA, "<", node );
 }
 
@@ -576,6 +789,7 @@ void SemanticAnalyzer::analyze_less_equal( SyntaxNode* node ) const
         { FLOAT, FLOAT, TYPE_INTEGER, INSTRUCTION_LESS_EQUAL },
         { 0, 0, TYPE_NULL }
     };
+    analyze_nodes( node );
     analyze_binary_operator( LESS_EQUAL_METADATA, "<=", node );
 }
 
@@ -586,6 +800,7 @@ void SemanticAnalyzer::analyze_greater( SyntaxNode* node ) const
         { FLOAT, FLOAT, TYPE_INTEGER, INSTRUCTION_GREATER },
         { 0, 0, TYPE_NULL }
     };
+    analyze_nodes( node );
     analyze_binary_operator( GREATER_METADATA, ">", node );
 }
 
@@ -596,6 +811,7 @@ void SemanticAnalyzer::analyze_greater_equal( SyntaxNode* node ) const
         { FLOAT, FLOAT, TYPE_INTEGER, INSTRUCTION_GREATER_EQUAL },
         { 0, 0, TYPE_NULL }
     };
+    analyze_nodes( node );
     analyze_binary_operator( GREATER_EQUAL_METADATA, ">=", node );
 }
 
@@ -610,6 +826,7 @@ void SemanticAnalyzer::analyze_equal( SyntaxNode* node ) const
         { STRING, STRING, TYPE_INTEGER, INSTRUCTION_NULL },
         { 0, 0, TYPE_NULL }
     };
+    analyze_nodes( node );
     analyze_binary_operator( EQUAL_METADATA, "==", node );
 }
 
@@ -624,6 +841,7 @@ void SemanticAnalyzer::analyze_not_equal( SyntaxNode* node ) const
         { STRING, STRING, TYPE_INTEGER, INSTRUCTION_NULL },
         { 0, 0, TYPE_NULL }
     };
+    analyze_nodes( node );
     analyze_binary_operator( NOT_EQUAL_METADATA, "!=", node );
 }
 
@@ -634,6 +852,7 @@ void SemanticAnalyzer::analyze_and( SyntaxNode* node ) const
         { INTEGER, INTEGER, TYPE_INTEGER, INSTRUCTION_AND },
         { 0, 0, TYPE_NULL }
     };
+    analyze_nodes( node );
     analyze_binary_operator( AND_METADATA, "&&", node );
 }
 
@@ -644,18 +863,21 @@ void SemanticAnalyzer::analyze_or( SyntaxNode* node ) const
         { INTEGER, INTEGER, TYPE_INTEGER, INSTRUCTION_OR },
         { 0, 0, TYPE_NULL }
     };
+    analyze_nodes( node );
     analyze_binary_operator( OR_METADATA, "||", node );
 }
 
 void SemanticAnalyzer::analyze_negate( SyntaxNode* node ) const
 {    
+    analyze_nodes( node );
     node->set_type( node->node(0)->type() );
     node->set_storage( node->node(0)->storage() );    
 }
 
 void SemanticAnalyzer::analyze_typecast( SyntaxNode* node ) const
 {
-    node->set_type( type_from_type_node(node->node(0)) );
+    analyze_nodes( node );
+    node->set_type( type_from_syntax_node(node->node(0)) );
     node->set_storage( node->node(1)->storage() );
     analyze_type_conversion( node->node(1), node->type() );
 }
@@ -677,6 +899,7 @@ void SemanticAnalyzer::analyze_ternary( SyntaxNode* node ) const
     REYES_ASSERT( node->node(1) );
     REYES_ASSERT( node->node(2) );    
     
+    analyze_nodes( node );
     const OperationMetadata* metadata = find_metadata( TERNARY_METADATA, node->node(1)->type(), node->node(2)->type() );
     error( metadata == NULL, node->line(), "Invalid arguments to ternary operator" );
     if ( metadata )
@@ -688,10 +911,12 @@ void SemanticAnalyzer::analyze_ternary( SyntaxNode* node ) const
 
 void SemanticAnalyzer::analyze_identifier( SyntaxNode* node ) const
 {
-    shared_ptr<Symbol> symbol = node->symbol();
+    analyze_nodes( node );
+    shared_ptr<Symbol> symbol = find_symbol( node->lexeme() );
     error( !symbol, node->line(), "Unrecognized symbol '%s'", node->lexeme().c_str() );
     if ( symbol )
     {
+        node->set_symbol( symbol );
         node->set_type( symbol->type() );
         node->set_storage( symbol->storage() );
     }
@@ -699,24 +924,28 @@ void SemanticAnalyzer::analyze_identifier( SyntaxNode* node ) const
 
 void SemanticAnalyzer::analyze_literal( SyntaxNode* node ) const
 {
+    analyze_nodes( node );
     node->set_type( type_from_literal(node) );
     node->set_storage( STORAGE_CONSTANT );
 }
 
 void SemanticAnalyzer::analyze_texture( SyntaxNode* node ) const
 {
+    analyze_nodes( node );
     node->set_type( TYPE_COLOR );
     node->set_storage( STORAGE_VARYING );
 }
 
 void SemanticAnalyzer::analyze_shadow( SyntaxNode* node ) const
 {
+    analyze_nodes( node );
     node->set_type( TYPE_FLOAT );
     node->set_storage( STORAGE_VARYING );
 }
 
 void SemanticAnalyzer::analyze_environment( SyntaxNode* node ) const
 {
+    analyze_nodes( node );
     node->set_type( TYPE_COLOR );
     node->set_storage( STORAGE_VARYING );
 }
@@ -772,12 +1001,39 @@ const OperationMetadata* SemanticAnalyzer::find_metadata( const OperationMetadat
     return metadata->lhs != 0 ? metadata : NULL;
 }
 
-ValueType SemanticAnalyzer::type_from_type_node( const SyntaxNode* type_node ) const
+ValueStorage SemanticAnalyzer::storage_from_syntax_node( const SyntaxNode* node, ValueStorage default_storage ) const
 {
-    REYES_ASSERT( type_node );
+    REYES_ASSERT( node );
+
+    ValueStorage storage = STORAGE_NULL;
+    switch( node->node_type() )
+    {    
+        case SHADER_NODE_NULL:
+            storage = default_storage;
+            break;
+            
+        case SHADER_NODE_UNIFORM:
+            storage = STORAGE_UNIFORM;
+            break;
+            
+        case SHADER_NODE_VARYING:
+            storage = STORAGE_VARYING;
+            break;
+            
+        default:
+            REYES_ASSERT( false );
+            storage = STORAGE_NULL;
+            break;
+    }
+    return storage;
+}
+
+ValueType SemanticAnalyzer::type_from_syntax_node( const SyntaxNode* node ) const
+{
+    REYES_ASSERT( node );
     
     ValueType type = TYPE_NULL;
-    switch ( type_node->node_type() )
+    switch ( node->node_type() )
     {
         case SHADER_NODE_FLOAT_TYPE:
             type = TYPE_FLOAT;
@@ -850,4 +1106,28 @@ ValueType SemanticAnalyzer::type_from_literal( const SyntaxNode* expression_node
             break;
     }
     return type;
+}
+
+shared_ptr<Symbol> SemanticAnalyzer::add_symbol( const std::string& identifier ) const
+{
+    REYES_ASSERT( symbol_table_ );
+    return symbol_table_->add_symbol( identifier );
+}
+
+shared_ptr<Symbol> SemanticAnalyzer::find_symbol( const std::string& identifier ) const
+{
+    REYES_ASSERT( symbol_table_ );
+    return symbol_table_->find_symbol( identifier );
+}
+
+Scope* SemanticAnalyzer::push_scope() const
+{
+    REYES_ASSERT( symbol_table_ );
+    return symbol_table_->push_scope();
+}
+
+Scope* SemanticAnalyzer::pop_scope() const
+{
+    REYES_ASSERT( symbol_table_ );
+    return symbol_table_->pop_scope();
 }

@@ -71,9 +71,9 @@ void Sampler::sample( const math::mat4x4& screen_transform, const Grid& grid, bo
 
     polygons_ = 0;
 
-    const vec3* colors = !matte ? grid["Ci"].vec3_values() : NULL;
-    const vec3* opacities = !matte ? grid["Oi"].vec3_values() : NULL;
-    const vec3* positions = grid["P"].vec3_values();
+    const vec3* colors = !matte ? grid.vec3_value( "Ci" ) : nullptr;
+    const vec3* opacities = !matte ? grid.vec3_value( "Oi" ) : nullptr;
+    const vec3* positions = grid.vec3_value( "P" );
     const int vertices = grid.size();
     
     calculate_raster_positions( screen_transform, positions, vertices );

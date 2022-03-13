@@ -45,7 +45,7 @@ bool Geometry::boundable() const
     return false;
 }
 
-void Geometry::bound( const math::mat4x4& /*transform*/, vec3* /*minimum*/, vec3* /*maximum*/ ) const
+void Geometry::bound( const math::mat4x4& /*transform*/, vec3* /*minimum*/, vec3* /*maximum*/, Grid* /*grid*/ ) const
 {
 }
 

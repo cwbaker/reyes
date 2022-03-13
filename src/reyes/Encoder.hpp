@@ -1,6 +1,8 @@
 #ifndef _REYES_ENCODER_HPP_
 #define _REYES_ENCODER_HPP_
 
+#include "ValueType.hpp"
+#include "ValueStorage.hpp"
 #include <vector>
 #include <stddef.h>
 
@@ -17,8 +19,9 @@ public:
 	const std::vector<unsigned char>& code() const;
     void clear();
     void instruction( int instruction );
-    void instruction( int instruction, int type, int storage );
-    void instruction( int instruction, int type, int storage, int other_type, int other_storage );
+    void instruction( int instruction, ValueType type, ValueStorage storage );
+    void instruction( int instruction, ValueType type0, ValueStorage storage0, ValueType type1, ValueStorage storage1 );
+    void instruction( int instruction, ValueType type0, ValueStorage storage0, ValueType type1, ValueStorage storage1, ValueType type2, ValueStorage storage2 );
     void argument( int argument );
     void byte( int value );
     void word( int value );
@@ -28,7 +31,9 @@ public:
     int address();
 
 private:
-    unsigned int dispatch_by_type_and_storage( int type, int storage ) const;
+    unsigned int dispatch( ValueType type, ValueStorage storage, int shift = 0 ) const;
+    unsigned int dispatch( ValueType type0, ValueStorage storage0, ValueType type1, ValueStorage storage1 ) const;
+    unsigned int dispatch( ValueType type0, ValueStorage storage0, ValueType type1, ValueStorage storage1, ValueType type2, ValueStorage storage2 ) const;
 };
 
 }

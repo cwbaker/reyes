@@ -7,8 +7,8 @@
 #include "SampleBuffer.hpp"
 #include "SyntaxNode.hpp"
 #include "Shader.hpp"
-#include <reyes/reyes_virtual_machine/Instruction.hpp>
 #include "ValueStorage.hpp"
+#include <reyes/reyes_virtual_machine/Instruction.hpp>
 #include <math/vec3.ipp>
 #include <math/mat4x4.ipp>
 #include "assert.hpp"
@@ -98,6 +98,7 @@ void Debugger::dump_syntax_tree( const SyntaxNode* node, int level ) const
             "STRING",
             "TEXTURE",
             "SHADOW",
+            "ENVIRONMENT",
             "TRIPLE",
             "SIXTEENTUPLE",
             "IDENTIFIER",
@@ -125,7 +126,11 @@ void Debugger::dump_syntax_tree( const SyntaxNode* node, int level ) const
             "string "
         };
         
-        printf( "%s %s'%s' ", NODE_TYPES[node->node_type()], STORAGES[node->storage()], node->lexeme().c_str() );
+        printf( "%s %s ", NODE_TYPES[node->node_type()], STORAGES[node->storage()] );
+        if ( !node->lexeme().empty() )
+        {
+            printf( "'%s' ", node->lexeme().c_str() );            
+        }
         shared_ptr<Symbol> symbol = node->symbol();
         if ( symbol )
         {
@@ -149,14 +154,14 @@ void Debugger::dump_syntax_tree( const SyntaxNode* node, int level ) const
 
 void Debugger::dump_shader( Shader& shader ) const
 {
-    printf( "initialize=%d, shade=%d, parameters=%d, variables=%d, constants=%d, permanent_registers=%d, registers=%d\n", 
+    printf( "initialize=%d, shade=%d, parameters=%d, variables=%d, constant_memory_size=%d, grid_memory_size=%d, temporary_memory_size=%d\n", 
         shader.initialize_address(),
         shader.shade_address(),
         shader.parameters(),
         shader.variables(),
-        shader.constants(),
-        shader.permanent_registers(),
-        shader.registers()
+        shader.constant_memory_size(),
+        shader.grid_memory_size(),
+        shader.temporary_memory_size()
     );    
     dump_registers( shader.parameters(), shader.symbols(), shader.values() );
     dump_symbols( shader.symbols() );
@@ -174,7 +179,7 @@ void Debugger::dump_registers( int parameters, const std::vector<shared_ptr<Symb
         const Symbol* symbol = i->get();
         REYES_ASSERT( symbol );
         
-        printf( "%d, %d, %s\n", register_index, symbol->register_index(), symbol->identifier().c_str() );
+        printf( "%d, %d, %s\n", register_index, symbol->index(), symbol->identifier().c_str() );
         ++i;
         ++j;
         ++register_index;
@@ -191,7 +196,7 @@ void Debugger::dump_registers( int parameters, const std::vector<shared_ptr<Symb
     {
         const Symbol* symbol = i->get();
         REYES_ASSERT( symbol );
-        printf( "%d, %d, %s\n", register_index, symbol->register_index(), symbol->identifier().c_str() );
+        printf( "%d, %d, %s\n", register_index, symbol->index(), symbol->identifier().c_str() );
         ++i;
         ++register_index;
     }
@@ -201,11 +206,23 @@ void Debugger::dump_registers( int parameters, const std::vector<shared_ptr<Symb
 
 void Debugger::dump_symbols( const std::vector<std::shared_ptr<Symbol> >& symbols ) const
 {
+    static const char* SEGMENT[] = 
+    {
+        "CONSTANT", // SEGMENT_CONSTANT,
+        "TEMPORARY", // SEGMENT_TEMPORARY,
+        "LIGHT", // SEGMENT_LIGHT,
+        "GRID", // SEGMENT_GRID,
+        "STRING", // SEGMENT_STRING,
+        "NULL", // SEGMENT_NULL
+        "??"
+    };
+
     for ( vector<shared_ptr<Symbol> >::const_iterator i = symbols.begin(); i != symbols.end(); ++i )
     {
         const Symbol* symbol = i->get();
         REYES_ASSERT( symbol );
-        printf( "%d, %s\n", symbol->index(), symbol->identifier().c_str() );
+        const Address& address = symbol->address();
+        printf( "%d, %s, %s, %+d\n", symbol->index(), symbol->identifier().c_str(), SEGMENT[address.segment()], address.offset() );
     }
 
     printf( "\n\n" );
@@ -252,7 +269,6 @@ void Debugger::dump_values( const std::vector<std::shared_ptr<Value> >& values )
 
 void Debugger::dump_code( const std::vector<unsigned char>& code ) const
 {
-    /*
     struct InstructionMetadata
     {
         const char* name;
@@ -267,102 +283,89 @@ void Debugger::dump_code( const std::vector<unsigned char>& code ) const
         { "clear_mask", 0 },
         { "generate_mask", 1 },
         { "invert_mask", 0 },
-        { "jump_empty", 1 },
-        { "jump_not_empty", 1 },
-        { "jump_illuminance", 1 },
-        { "jump", 1 },
-        { "transform", 2 },
-        { "transform_vector", 2 },
-        { "transform_normal", 2 },
-        { "transform_color", 2 },
-        { "transform_matrix", 2 },
-        { "dot", 2 },
-        { "multiply_float", 2 },
-        { "multiply_vec3", 2 },
-        { "divide_float", 2 },
-        { "divide_vec3", 2 },
-        { "add_float", 2 },
-        { "add_vec3", 2 },
-        { "subtract_float", 2 },
-        { "subtract_vec3", 2 },
-        { "greater", 2 },
-        { "greater_equal", 2 },
-        { "less", 2 },
-        { "less_equal", 2 },
-        { "and", 2 },
-        { "or", 2 },
-        { "equal_float", 2 },
-        { "equal_vec3", 2 },
-        { "not_equal_float", 2 },
-        { "not_equal_vec3", 2 },
-        { "negate", 1 },
-        { "promote_integer", 1 },
-        { "promote_float", 1 },
-        { "promote_vec3", 1 },
-        { "float_to_color", 1 },
-        { "float_to_point", 1 },
-        { "float_to_vector", 1 },
-        { "float_to_normal", 1 },
-        { "float_to_matrix", 1 },
-        { "assign_float", 2 },
-        { "assign_vec3", 2 },
-        { "assign_mat4x4", 2 },
-        { "assign_integer", 2 },
+        { "jump_empty", 0 },
+        { "jump_not_empty", 0 },
+        { "jump_illuminance", 0 },
+        { "jump", 0 },
+        { "transform_point", 3 },
+        { "transform_vector", 3 },
+        { "transform_normal", 3 },
+        { "transform_color", 3 },
+        { "transform_matrix", 3 },
+        { "dot", 3 },
+        { "multiply", 3 },
+        { "divide", 3 },
+        { "add", 3 },
+        { "subtract", 3 },
+        { "greater", 3 },
+        { "greater_equal", 3 },
+        { "less", 3 },
+        { "less_equal", 3 },
+        { "and", 3 },
+        { "or", 3 },
+        { "equal", 3 },
+        { "not_equal", 3 },
+        { "negate", 2 },
+        { "convert", 2 },
+        { "promote", 2 },
+        { "assign", 2 },
+        { "add_assign", 2 },
+        { "subtract_assign", 2 },
+        { "multiply_assign", 2 },
+        { "divide_assign", 2 },
         { "assign_string", 2 },
-        { "add_assign_float", 2 },
-        { "add_assign_vec3", 2 },
-        { "multiply_assign_float", 2 },
-        { "multiply_assign_vec3", 2 },
-        { "float_texture", 3 },
-        { "vec3_texture", 3 },
-        { "float_environment", 2 },
-        { "vec3_environment", 2 },
-        { "shadow", 3 },
-        { "call", 1 },
-        { "call", 2 },
-        { "call", 3 },
-        { "call", 4 },
-        { "call", 5 },
-        { "call", 6 },
+        { "float_texture", 4 },
+        { "vec3_texture", 4 },
+        { "float_environment", 3 },
+        { "vec3_environment", 3 },
+        { "shadow", 4 },
+        { "call", 0 },
         { "ambient", 2 },
         { "solar", 0 },
         { "solar_axis_angle", 4 },
         { "illuminate", 5 },
         { "illuminate_axis_angle", 7 },
-        { "illuminance_axis_angle", 6 }
+        { "illuminance_axis_angle", 7 }
     };
-    
-    const short* i = &code[0];
-    const short* instructions_end = i + code.size();
-    while ( i < instructions_end )
+
+    const unsigned char* begin = code.data();
+    const unsigned char* end = begin + code.size();
+    const unsigned char* i = begin;
+    while ( i < end )
     {        
-        int instruction = *i;
+        int instruction = *reinterpret_cast<const char*>( i );
         REYES_ASSERT( instruction >= INSTRUCTION_NULL && instruction <= INSTRUCTION_COUNT );
         const char* name = INSTRUCTIONS[instruction].name;
-        int size = INSTRUCTIONS[instruction].size;        
-        printf( "%ld: %s", i - &code[0], name );
-        ++i;
-        if ( instruction == INSTRUCTION_JUMP || instruction == INSTRUCTION_JUMP_EMPTY || instruction == INSTRUCTION_JUMP_NOT_EMPTY || instruction == INSTRUCTION_JUMP_ILLUMINANCE )
+        int size = INSTRUCTIONS[instruction].size;
+        printf( "%ld: %s", i - begin, name );
+        i += sizeof(int);
+        if ( instruction == INSTRUCTION_CALL )
         {
-            REYES_ASSERT( size == 1 );
-            int jump_distance = *i;
-            ++i;
-            printf( ", %d (%ld)", jump_distance, i + jump_distance - &code[0] );
+            REYES_ASSERT( size == 0 );
+            int index = *reinterpret_cast<const int*>( i );
+            printf( " %d", index );
+            i += sizeof(int);
+            size = *reinterpret_cast<const int*>( i ) + 1;
+            i += sizeof(int);
         }
-        else
+        else if ( instruction == INSTRUCTION_JUMP || instruction == INSTRUCTION_JUMP_EMPTY || instruction == INSTRUCTION_JUMP_NOT_EMPTY || instruction == INSTRUCTION_JUMP_ILLUMINANCE )
         {
-            for ( int j = 0; j < size; ++j )
-            {
-                int register_index = *i;
-                printf( ", %d", register_index );
-                ++i;
-            }
+            REYES_ASSERT( size == 0 );
+            int jump_distance = *reinterpret_cast<const int*>( i );
+            i += sizeof(int);
+            printf( ", %d (%ld)", jump_distance, i + jump_distance - begin );
+        }
+
+        for ( int j = 0; j < size; ++j )
+        {
+            Address address = Address( *reinterpret_cast<const int*>(i) );
+            printf( " %d:%d", address.segment(), address.offset() );
+            i += sizeof(int);
         }
         printf( "\n" );
     }
     
     printf( "\n\n" );
-    */
 }
 
 void Debugger::dump_grid( const Grid& grid, const math::vec4& color, const char* format, ... ) const
@@ -391,7 +394,7 @@ void Debugger::dump_grid( const Grid& grid, const math::vec4& color, const char*
     fprintf( stream, "\n" );
     fprintf( stream, "   vertices {\n" );
 
-    const vec3* positions = grid["P"].vec3_values();
+    const vec3* positions = grid.vec3_value( "P" );
     const int width = grid.width();
     const int height = grid.height();
     int i = 0;

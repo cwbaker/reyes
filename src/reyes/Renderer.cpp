@@ -68,7 +68,6 @@ static const char* NULL_SURFACE_SHADER = "surface null() { Ci = Cs; Oi = Os; }";
 */
 Renderer::Renderer()
 : error_policy_( NULL ),
-  symbol_table_( NULL ),
   virtual_machine_( NULL ),
   null_surface_shader_( NULL ),
   sample_buffer_( NULL ),
@@ -82,9 +81,8 @@ Renderer::Renderer()
   attributes_()
 {
     error_policy_ = new ErrorPolicy;
-    symbol_table_ = new SymbolTable();
     virtual_machine_ = new VirtualMachine( *this );
-    null_surface_shader_ = new Shader( NULL_SURFACE_SHADER, NULL_SURFACE_SHADER + strlen(NULL_SURFACE_SHADER), symbol_table(), error_policy() );
+    null_surface_shader_ = new Shader( NULL_SURFACE_SHADER, NULL_SURFACE_SHADER + strlen(NULL_SURFACE_SHADER), error_policy() );
     options_ = new Options();
     attributes_.reserve( ATTRIBUTES_RESERVE );
 }
@@ -127,9 +125,6 @@ Renderer::~Renderer()
     delete virtual_machine_;
     virtual_machine_ = NULL;
 
-    delete symbol_table_;
-    symbol_table_ = NULL;
-
     delete options_;
     options_ = NULL;
     
@@ -146,17 +141,6 @@ Renderer::~Renderer()
 ErrorPolicy& Renderer::error_policy() const
 {
     return *error_policy_;
-}
-
-/**
-// Get the symbol table used lookup symbols when parsing shaders.
-//
-// @return
-//  The SymbolTable used to lookup symbols.
-*/
-SymbolTable& Renderer::symbol_table() const
-{
-    return *symbol_table_;
 }
 
 /**
@@ -831,7 +815,7 @@ Grid& Renderer::light_shader( const char* filename )
 //  The grid returned by the call to Renderer::light_shader() that was 
 //  initially used to add the light.
 */
-void Renderer::activate_light_shader( const Grid& grid )
+void Renderer::activate_light_shader( Grid& grid )
 {
     attributes().activate_light_shader( grid );
 }
@@ -843,7 +827,7 @@ void Renderer::activate_light_shader( const Grid& grid )
 //  The grid returned by the call to Renderer::light_shader() that was 
 //  initially used to add the light.
 */
-void Renderer::deactivate_light_shader( const Grid& grid )
+void Renderer::deactivate_light_shader( Grid& grid )
 {
     attributes().deactivate_light_shader( grid );
 }
@@ -1296,7 +1280,8 @@ void Renderer::split( const Geometry& geometry )
         
         if ( geometry->boundable() )
         {
-            geometry->bound( transform, &minimum, &maximum );        
+            Grid& grid = attributes().surface_parameters();
+            geometry->bound( transform, &minimum, &maximum, &grid );
             if ( minimum.z > options_->far_clip_distance() || maximum.z < options_->near_clip_distance() )
             {
                 geometries.pop_front();   
@@ -1348,7 +1333,7 @@ void Renderer::split( const Geometry& geometry )
         
         if ( !primitive_spans_epsilon_plane && width * height <= MAXIMUM_VERTICES_PER_GRID && geometry->diceable() )
         {
-            Grid grid;
+            Grid& grid = attributes().surface_parameters();
             geometry->dice( transform, width, height, &grid );
             displacement_shade( grid );
             surface_shade( grid );
@@ -1677,7 +1662,7 @@ Shader* Renderer::shader( const char* filename )
     Shader* shader = find_shader( filename );
     if ( !shader )
     {
-        shader = new Shader( filename, symbol_table(), error_policy() );
+        shader = new Shader( filename, error_policy() );
         shaders_.insert( make_pair(filename, shader) );
     }
     return shader;

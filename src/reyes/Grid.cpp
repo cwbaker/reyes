@@ -1,66 +1,76 @@
 //
 // Grid.cpp
-// Copyright (c) 2010 - 2012 Charles Baker.  All rights reserved.
+// Copyright (c) Charles Baker.  All rights reserved.
 //
 
 #include "stdafx.hpp"
 #include "Grid.hpp"
 #include "Value.hpp"
-#include <math/mat4x4.ipp>
+#include "Shader.hpp"
+#include "Symbol.hpp"
 #include "assert.hpp"
+#include <math/mat4x4.ipp>
 #include <vector>
+#include <algorithm>
+#include <iterator>
+#include <string.h>
 
+using std::max;
 using std::map;
 using std::string;
 using std::vector;
 using std::shared_ptr;
+using std::back_inserter;
 using namespace math;
 using namespace reyes;
 
 Grid::Grid()
-: width_( 1 ),
-  height_( 1 ),
-  du_( 0.0f ),
-  dv_( 0.0f ),
-  values_(),
-  values_by_identifier_(),
-  lights_(),
-  transform_( math::identity() ),
-  shader_( NULL )
+: width_( 1 )
+, height_( 1 )
+, du_( 0.0f )
+, dv_( 0.0f )
+, symbols_()
+, memory_size_( 0 )
+, memory_( nullptr )
+, lights_()
+, transform_( math::identity() )
+, shader_( nullptr )
+, normals_generated_( false )
 {
 }
 
 Grid::Grid( Shader* shader )
-: width_( 1 ),
-  height_( 1 ),
-  du_( 0.0f ),
-  dv_( 0.0f ),
-  values_(),
-  values_by_identifier_(),
-  lights_(),
-  transform_( math::identity() ),
-  shader_( shader )
+: width_( 1 )
+, height_( 1 )
+, du_( 0.0f )
+, dv_( 0.0f )
+, symbols_()
+, memory_size_( 0 )
+, memory_( nullptr )
+, lights_()
+, transform_( math::identity() )
+, shader_( shader )
+, normals_generated_( false )
 {
     REYES_ASSERT( shader_ );
+    set_symbols( shader_->symbols() );
 }
 
 Grid::Grid( const Grid& grid )
-: width_( grid.width_ ),
-  height_( grid.height_ ),
-  du_( grid.du_ ),
-  dv_( grid.dv_ ),
-  values_(),
-  values_by_identifier_(),
-  lights_(),
-  transform_( grid.transform_ ),
-  shader_( grid.shader_ )
+: width_( grid.width_ )
+, height_( grid.height_ )
+, du_( grid.du_ )
+, dv_( grid.dv_ )
+, symbols_( grid.symbols_ )
+, memory_size_( 0 )
+, memory_( nullptr )
+, lights_()
+, transform_( grid.transform_ )
+, shader_( grid.shader_ )
+, normals_generated_( grid.normals_generated_ )
 {
-    values_.reserve( grid.values_by_identifier_.size() );
-    const map<string, shared_ptr<Value>>& values_by_identifier = grid.values_by_identifier_;
-    for ( map<string, shared_ptr<Value>>::const_iterator i = values_by_identifier.begin(); i != values_by_identifier.end(); ++i )
-    {
-        copy_value( i->first, i->second );
-    }
+    reserve();
+    memcpy( memory_, grid.memory_, memory_size_ );
 }
 
 Grid& Grid::operator=( const Grid& grid )
@@ -71,25 +81,24 @@ Grid& Grid::operator=( const Grid& grid )
         height_ = grid.height_;
         du_ = grid.du_;
         dv_ = grid.dv_;
+        symbols_ = grid.symbols_;
         transform_ = grid.transform_;
         shader_ = grid.shader_;
-
-        values_.clear();
-        values_by_identifier_.clear();
-        lights_.clear();
-        
-        values_.reserve( grid.values_by_identifier_.size() );
-        const map<string, shared_ptr<Value>>& values_by_identifier = grid.values_by_identifier_;
-        for ( map<string, shared_ptr<Value>>::const_iterator i = values_by_identifier.begin(); i != values_by_identifier.end(); ++i )
-        {
-            copy_value( i->first, i->second );
-        }
+        normals_generated_ = grid.normals_generated_;
+        lights_.clear();        
+        reserve();
+        memcpy( memory_, grid.memory_, memory_size_ );
     }
     return *this;
 }
 
 Grid::~Grid()
 {
+    if ( memory_ )
+    {
+        free( memory_ );
+        memory_ = nullptr;
+    }
 }
 
 int Grid::width() const
@@ -107,9 +116,141 @@ int Grid::size() const
     return width_ * height_;
 }
 
+float Grid::du() const
+{
+    return du_;
+}
+
+float Grid::dv() const
+{
+    return dv_;
+}
+
 Shader* Grid::shader() const
 {
     return shader_;
+}
+
+const Symbol* Grid::find_symbol( const char* identifier ) const
+{
+    vector<shared_ptr<Symbol>>::const_iterator i = symbols_.begin();
+    while ( i != symbols_.end() && (*i)->identifier() != identifier )
+    {
+        ++i;
+    }
+    return i != symbols_.end() ? i->get() : nullptr;
+}
+
+unsigned char* Grid::memory() const
+{
+    return memory_;
+}
+
+float* Grid::float_value( int address ) const
+{
+    return lookup_float( address );
+}
+
+float* Grid::float_value( const Symbol* symbol ) const
+{
+    if ( symbol && symbol->type() == TYPE_FLOAT )
+    {
+        return float_value( symbol->offset() );        
+    }
+    return nullptr;
+}
+
+float* Grid::float_value( const char* identifier ) const
+{
+    REYES_ASSERT( identifier );
+    return float_value( find_symbol(identifier) );
+}
+
+int* Grid::int_value( int address ) const
+{
+    return lookup_int( address );
+}
+
+int* Grid::int_value( const Symbol* symbol ) const
+{
+    if ( symbol && symbol->type() == TYPE_INTEGER )
+    {
+        return int_value( symbol->offset() );
+    }
+    return nullptr;
+}
+
+int* Grid::int_value( const char* identifier ) const
+{
+    REYES_ASSERT( identifier );
+    return int_value( find_symbol(identifier) );
+}
+
+math::vec3* Grid::vec3_value( int address ) const
+{
+    return lookup_vec3( address );
+}
+
+math::vec3* Grid::vec3_value( const Symbol* symbol ) const
+{
+    if ( symbol )
+    {
+        ValueType type = symbol->type();
+        if ( type == TYPE_COLOR || type == TYPE_POINT || type == TYPE_VECTOR || type == TYPE_NORMAL )
+        {
+            return vec3_value( symbol->offset() );
+        }
+    }
+    return nullptr;
+}
+
+math::vec3* Grid::vec3_value( const char* identifier ) const
+{
+    return vec3_value( find_symbol(identifier) );
+}
+
+math::mat4x4* Grid::mat4x4_value( int address ) const
+{
+    return lookup_mat4x4( address );
+}
+
+math::mat4x4* Grid::mat4x4_value( const Symbol* symbol ) const
+{
+    if ( symbol && symbol->type() == TYPE_MATRIX )
+    {
+        return mat4x4_value( symbol->offset() );
+    }
+    return nullptr;
+}
+
+math::mat4x4* Grid::mat4x4_value( const char* identifier ) const
+{
+    return mat4x4_value( find_symbol(identifier) );
+}
+
+char* Grid::string_value( int index ) const
+{
+    if ( index >= int(strings_.size()) )
+    {
+        strings_.insert( strings_.end(), index - strings_.size() + 1, string() );
+    }
+    assert( index >= 0 && index < int(strings_.size()) );
+    return strings_[index].data();
+}
+
+char* Grid::string_value( const char* identifier ) const
+{
+    return string_value( find_symbol(identifier) );
+}
+
+char* Grid::string_value( const Symbol* symbol ) const
+{
+    if ( symbol && symbol->type() == TYPE_STRING )
+    {
+        assert( symbol->segment() == SEGMENT_STRING );
+        return string_value( symbol->offset() );
+    }
+    return nullptr;
 }
 
 void Grid::clear()
@@ -118,26 +259,30 @@ void Grid::clear()
     height_ = 1;
     du_ = 0.0f;
     dv_ = 0.0f;
+    symbols_.clear();
+    strings_.clear();
     lights_.clear();
-    values_by_identifier_.clear();
-    values_.clear();
 }
 
 void Grid::resize( int width, int height )
 {
     REYES_ASSERT( width > 0 );
     REYES_ASSERT( height > 0 );
-    
     width_ = width;
     height_ = height;
+    normals_generated_ = false;
+}
+
+void Grid::set_normals_generated( bool normals_generated )
+{
+    normals_generated_ = normals_generated;
 }
 
 void Grid::generate_normals( bool left_handed, bool force )
 {
-    if ( force || !find_value("N") )
+    if ( force || !normals_generated_ )
     {
-        Value& normals = value( "N", TYPE_NORMAL );    
-        const vec3* positions = value("P").vec3_values();
+        const vec3* positions = vec3_value( "P" );
         REYES_ASSERT( positions );
         
         vector<vec4> generated_normals;
@@ -169,92 +314,58 @@ void Grid::generate_normals( bool left_handed, bool force )
             i += width_;
         }
         
-        normals.clear();
-        normals.reserve( generated_normals.size() );
-        vec3* values = normals.vec3_values();
-        int j = 0;
-        for ( vector<vec4>::const_iterator normal = generated_normals.begin(); normal != generated_normals.end(); ++normal )
+        vec3* normals = vec3_value( "N" );
+        REYES_ASSERT( normals );
+        for ( size_t j = 0; j < generated_normals.size(); ++j )
         {
-            values[j] = vec3(*normal) / normal->w;
-            ++j;
-        }  
+            const vec4& generated_normal = generated_normals[j];
+            normals[j] = vec3(generated_normal) / generated_normal.w;
+        }
+
+        normals_generated_ = true;
     }
 }
 
-Value& Grid::value( const std::string& identifier, ValueType type )
+void Grid::set_string( int index, const std::string& value )
 {
-    shared_ptr<Value> value = find_value( identifier );
-    if ( !value )
+    if ( index >= int(strings_.size()) )
     {
-        value = add_value( identifier, type );
+        strings_.insert( strings_.end(), index - int(strings_.size()) + 1, string() );
     }
-    return *value;
+    assert( index >= 0 && index < int(strings_.size()) );
+    strings_[index] = value;
 }
 
-const Value& Grid::value( const std::string& identifier ) const
+SetValueHelper Grid::operator[]( const std::string& identifier )
 {
-    shared_ptr<Value> value = find_value( identifier );
-    REYES_ASSERT( value );
-    return *value;
+    const Symbol* symbol = find_symbol( identifier.c_str() );
+    if ( symbol )
+    {
+        return SetValueHelper( this, symbol->offset() );
+    }
+    return SetValueHelper();
 }
 
-Value& Grid::operator[]( const std::string& identifier )
+void Grid::set_symbols( const std::vector<std::shared_ptr<Symbol>>& symbols )
 {
-    return value( identifier, TYPE_NULL );
+    auto include_symbol = [](const shared_ptr<Symbol>& symbol)
+    {
+        return 
+            symbol->segment() == SEGMENT_GRID ||
+            symbol->segment() == SEGMENT_STRING
+        ;
+    };
+    symbols_.clear();
+    copy_if( symbols.begin(), symbols.end(), back_inserter(symbols_), include_symbol );
+    if ( !symbols_.empty() )
+    {
+        reserve();
+    }
 }
 
-const Value& Grid::operator[]( const std::string& identifier ) const
+void Grid::clear_lights()
 {
-    return value( identifier );
-}
-
-void Grid::copy_value( const std::string& identifier, std::shared_ptr<Value> value )
-{
-    REYES_ASSERT( !identifier.empty() );
-    REYES_ASSERT( !find_value(identifier) );
-    REYES_ASSERT( value );
-    REYES_ASSERT( int(value->size()) <= width_ * height_ );
-
-    shared_ptr<Value> copied_value( new Value(*value) );
-    values_.push_back( copied_value );
-    values_by_identifier_.insert( make_pair(identifier, copied_value) );
-}
-
-void Grid::insert_value( const std::string& identifier, std::shared_ptr<Value> value )
-{
-    REYES_ASSERT( !identifier.empty() );
-    REYES_ASSERT( !find_value(identifier) );
-    REYES_ASSERT( value );
-    REYES_ASSERT( int(value->size()) <= width_ * height_ );
-    
-    values_by_identifier_.insert( make_pair(identifier, value) );
-}
-
-std::shared_ptr<Value> Grid::add_value( const std::string& identifier, ValueType type, ValueStorage storage )
-{
-    REYES_ASSERT( !identifier.empty() );
-    REYES_ASSERT( !find_value(identifier) );
-    
-    shared_ptr<Value> value( new Value(type, storage, size()) );
-    values_.push_back( value );
-    values_by_identifier_.insert( make_pair(identifier, value) );
-    return value;
-}
-
-std::shared_ptr<Value> Grid::find_value( const std::string& identifier ) const
-{
-    map<string, shared_ptr<Value> >::const_iterator i = values_by_identifier_.find( identifier );
-    return i != values_by_identifier_.end() ? i->second : std::shared_ptr<Value>();
-}
-
-const std::vector<std::shared_ptr<Value>>& Grid::values() const
-{
-    return values_;
-}
-
-const std::map<std::string, std::shared_ptr<Value>>& Grid::values_by_identifier() const
-{
-    return values_by_identifier_;
+    lights_.clear();
 }
 
 void Grid::reserve_lights( unsigned int lights )
@@ -286,4 +397,74 @@ void Grid::set_transform( const math::mat4x4& transform )
 const math::mat4x4& Grid::get_transform() const
 {
     return transform_;
+}
+
+void Grid::set_du( float du )
+{
+    du_ = du;
+}
+
+void Grid::set_dv( float dv )
+{
+    dv_ = dv;
+}
+
+void Grid::reserve()
+{
+    int memory_size = 0;
+    for ( const shared_ptr<Symbol>& symbol : symbols_ )
+    {
+        if ( symbol->segment() == SEGMENT_GRID )
+        {
+            // Maximum values in a varying variable.
+            const int MAXIMUM_LENGTH = 512;
+            memory_size = max( memory_size, symbol->offset() + symbol->size_by_type_and_storage(MAXIMUM_LENGTH) );
+        }
+    }
+
+    if ( memory_size_ < memory_size )
+    {
+        free( memory_ );
+        memory_ = nullptr;
+        memory_size_ = 0;
+    }
+
+    if ( !memory_ )
+    {
+        memory_ = reinterpret_cast<unsigned char*>( malloc(memory_size) );
+        memory_size_ = memory_size;
+    }
+}
+
+void* Grid::lookup( int offset ) const
+{
+    REYES_ASSERT( !symbols_.empty() && symbols_.front() );
+    offset -= symbols_.front()->offset();
+    REYES_ASSERT( offset >= 0 && offset < memory_size_ );
+    return memory_ + offset;
+}
+
+float* Grid::lookup_float( int offset ) const
+{
+    return reinterpret_cast<float*>( lookup(offset) );
+}
+
+int* Grid::lookup_int( int offset ) const
+{
+    return reinterpret_cast<int*>( lookup(offset) );
+}
+
+math::vec3* Grid::lookup_vec3( int offset ) const
+{
+    return reinterpret_cast<vec3*>( lookup(offset) );
+}
+
+math::vec4* Grid::lookup_vec4( int offset ) const
+{
+    return reinterpret_cast<vec4*>( lookup(offset) );
+}
+
+math::mat4x4* Grid::lookup_mat4x4( int offset ) const
+{
+    return reinterpret_cast<mat4x4*>( lookup(offset) );
 }

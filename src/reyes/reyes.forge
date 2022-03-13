@@ -18,6 +18,7 @@ for _, toolset in toolsets('cc_.*') do
             };
 
             toolset:Cxx '${obj}/%1' {
+                'Address.cpp',
                 'AddSymbolHelper.cpp',
                 'Attributes.cpp',
                 'CodeGenerator.cpp',
@@ -39,9 +40,11 @@ for _, toolset in toolsets('cc_.*') do
                 'Renderer.cpp',
                 'Sampler.cpp',
                 'SampleBuffer.cpp',
+                'Scope.cpp';
+                'SemanticAnalyzer.cpp',
+                'SetValueHelper.cpp',
                 'Shader.cpp',
                 'ShaderParser.cpp',
-                'SemanticAnalyzer.cpp',
                 'Sphere.cpp',
                 'Symbol.cpp',
                 'SymbolParameter.cpp',

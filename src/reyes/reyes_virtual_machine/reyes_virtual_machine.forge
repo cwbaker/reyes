@@ -17,6 +17,8 @@ for _, toolset in toolsets('cc_.*') do
             'equal.cpp';
             'greater.cpp';
             'greater_equal.cpp';
+            'illuminance_illuminate.cpp';
+            'illuminance_solar.cpp';
             'less.cpp';
             'less_equal.cpp';
             'logical_and.cpp';
