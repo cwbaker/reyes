@@ -25,54 +25,54 @@ SUITE( GeometricFunctions )
     struct GeometricFunctionTest
     {
         Renderer renderer;
-        Grid grid;
-        float* x;
-        float* y;
-        vec3* z;
-        vec3* P;
+        float x [4];
+        float y [4];
+        vec3 z [4];
+        vec3 P [4];
      
         GeometricFunctionTest()
-        : grid(),
-          x( NULL ),
-          y( NULL ),
-          z( NULL ),
-          P( NULL )
+        : x{}
+        , y{}
+        , z{}
+        , P{}
         {
             renderer.begin();
             renderer.perspective( float(M_PI) / 2.0f );
             renderer.projection();
             renderer.begin_world();
-
-            grid.resize( 2, 2 );
-            shared_ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
-            x_value->zero();
-            x = x_value->float_values();
-            
-            shared_ptr<Value> y_value = grid.add_value( "y", TYPE_FLOAT );
-            y_value->zero();
-            y = y_value->float_values();
-            
-            shared_ptr<Value> z_value = grid.add_value( "z", TYPE_VECTOR );
-            z_value->zero();
-            z = z_value->vec3_values();
-
-            shared_ptr<Value> P_value = grid.add_value( "P", TYPE_POINT );
-            P_value->zero();
-            P = P_value->vec3_values();
         }
         
         void test( const char* source )
         {
-            ErrorPolicy error_policy;
             SymbolTable symbol_table;
             symbol_table.add_symbols()
                 ( "x", TYPE_FLOAT )
                 ( "y", TYPE_FLOAT )
                 ( "z", TYPE_VECTOR )
             ;            
-            Shader shader( source, source + strlen(source), symbol_table, error_policy );
-            renderer.surface_shader( &shader );
-            renderer.surface_shade( grid );
+
+            Shader shader;
+            shader.load_memory( source, source + strlen(source), symbol_table, renderer.error_policy() );
+
+            Grid& grid = renderer.surface_shader( &shader );
+            grid.resize( 2, 2 );
+
+            float* xx = grid.float_value( "x" );
+            float* yy = grid.float_value( "y" );
+            vec3* zz = grid.vec3_value( "z" );
+            vec3* positions = grid.vec3_value( "P" );
+            if ( xx && yy && zz && positions )
+            {
+                memcpy( xx, x, sizeof(float) * grid.size() );
+                memcpy( yy, y, sizeof(float) * grid.size() );
+                memcpy( zz, z, sizeof(vec3) * grid.size() );
+                memcpy( positions, P, sizeof(vec3) * grid.size() );
+                renderer.surface_shade( grid );
+                memcpy( x, xx, sizeof(float) * grid.size() );
+                memcpy( y, yy, sizeof(float) * grid.size() );
+                memcpy( z, zz, sizeof(vec3) * grid.size() );
+                memcpy( P, positions, sizeof(vec3) * grid.size() );
+            }
         }
     };
 
@@ -101,21 +101,21 @@ SUITE( GeometricFunctions )
         P[3] = vec3( 1.0f, 1.0f, 0.0f );
         test(
             "surface refract_test() { \n"
-            "   z = refract( I, N, 1 ); \n"
+            "   z = refract( I, N, 0.5 ); \n"
             "}"
         );
         CHECK_CLOSE( 0.0f, z[0].x, TOLERANCE );
         CHECK_CLOSE( 0.0f, z[0].y, TOLERANCE );
-        CHECK_CLOSE( 0.0f, z[0].z, TOLERANCE );
-        CHECK_CLOSE( 1.0f, z[1].x, TOLERANCE );
+        CHECK_CLOSE( -0.866025388f, z[0].z, TOLERANCE );
+        CHECK_CLOSE( 0.5f, z[1].x, TOLERANCE );
         CHECK_CLOSE( 0.0f, z[1].y, TOLERANCE );
-        CHECK_CLOSE( 0.0f, z[1].z, TOLERANCE );
+        CHECK_CLOSE( -0.866025388f, z[1].z, TOLERANCE );
         CHECK_CLOSE( 0.0f, z[2].x, TOLERANCE );
-        CHECK_CLOSE( 1.0f, z[2].y, TOLERANCE );
-        CHECK_CLOSE( 0.0f, z[2].z, TOLERANCE );
-        CHECK_CLOSE( 1.0f, z[3].x, TOLERANCE );
-        CHECK_CLOSE( 1.0f, z[3].y, TOLERANCE );
-        CHECK_CLOSE( 0.0f, z[3].z, TOLERANCE );
+        CHECK_CLOSE( 0.5f, z[2].y, TOLERANCE );
+        CHECK_CLOSE( -0.866025388f, z[2].z, TOLERANCE );
+        CHECK_CLOSE( 0.5f, z[3].x, TOLERANCE );
+        CHECK_CLOSE( 0.5f, z[3].y, TOLERANCE );
+        CHECK_CLOSE( -0.866025388f, z[3].z, TOLERANCE );
     }
 
     TEST_FIXTURE( GeometricFunctionTest, fresnel )

@@ -4,6 +4,8 @@
 #include <reyes/SyntaxNode.hpp>
 #include <reyes/Symbol.hpp>
 #include <reyes/SymbolTable.hpp>
+#include <reyes/Shader.hpp>
+#include <reyes/ErrorPolicy.hpp>
 #include <reyes/assert.hpp>
 #include <vector>
 #include <string.h>
@@ -25,7 +27,7 @@ SUITE( ShaderParser )
             nodes_.push_back( node );
         }
         
-        BuildSyntaxTree& begin( SyntaxNodeType type, const char* lexeme = NULL )
+        BuildSyntaxTree& begin( SyntaxNodeType type, const char* lexeme = nullptr )
         {
             REYES_ASSERT( !nodes_.empty() );
             shared_ptr<SyntaxNode> node( new SyntaxNode(type, 0, lexeme) );
@@ -42,7 +44,7 @@ SUITE( ShaderParser )
             return *this;
         }
         
-        BuildSyntaxTree& node( SyntaxNodeType type, const char* lexeme = NULL )
+        BuildSyntaxTree& node( SyntaxNodeType type, const char* lexeme = nullptr )
         {
             shared_ptr<SyntaxNode> node( new SyntaxNode(type, 0, lexeme) );
             nodes_.back()->add_node( node );
@@ -54,6 +56,16 @@ SUITE( ShaderParser )
             return node( SHADER_NODE_NULL );
         }
         
+        BuildSyntaxTree& uniform_storage()
+        {
+            return node( SHADER_NODE_UNIFORM );
+        }
+
+        BuildSyntaxTree& varying_storage()
+        {
+            return node( SHADER_NODE_VARYING );
+        }
+
         BuildSyntaxTree& float_type()
         {
             return node( SHADER_NODE_FLOAT_TYPE );
@@ -69,19 +81,19 @@ SUITE( ShaderParser )
             return node( SHADER_NODE_COLOR_TYPE );
         }
 
-        BuildSyntaxTree& normal_type( const char* space = NULL )
+        BuildSyntaxTree& normal_type( const char* space = nullptr )
         {
-            return space ? begin( SHADER_NODE_NORMAL_TYPE ).string(space).end() : node( SHADER_NODE_NORMAL_TYPE );
+            return space ? begin( SHADER_NODE_NORMAL_TYPE ).string( space ).end() : node( SHADER_NODE_NORMAL_TYPE );
         }
         
-        BuildSyntaxTree& point_type( const char* space = NULL )
+        BuildSyntaxTree& point_type( const char* space = nullptr )
         {
-            return space ? begin( SHADER_NODE_POINT_TYPE ).string(space).end() : node( SHADER_NODE_POINT_TYPE );
+            return space ? begin( SHADER_NODE_POINT_TYPE ).string( space ).end() : node( SHADER_NODE_POINT_TYPE );
         }
         
-        BuildSyntaxTree& vector_type( const char* space = NULL )
+        BuildSyntaxTree& vector_type( const char* space = nullptr )
         {
-            return space ? begin( SHADER_NODE_VECTOR_TYPE ).string(space).end() : node( SHADER_NODE_VECTOR_TYPE );
+            return space ? begin( SHADER_NODE_VECTOR_TYPE ).string( space ).end() : node( SHADER_NODE_VECTOR_TYPE );
         }
         
         BuildSyntaxTree& uniform()
@@ -114,29 +126,29 @@ SUITE( ShaderParser )
             return begin( SHADER_NODE_TRIPLE );
         }
         
-        BuildSyntaxTree& surface_shader()
+        BuildSyntaxTree& surface_shader( const char* lexeme )
         {
-            return begin( SHADER_NODE_SURFACE_SHADER );
+            return begin( SHADER_NODE_SURFACE_SHADER, lexeme );
         }
         
-        BuildSyntaxTree& light_shader()
+        BuildSyntaxTree& light_shader( const char* lexeme )
         {
-            return begin( SHADER_NODE_LIGHT_SHADER );
+            return begin( SHADER_NODE_LIGHT_SHADER, lexeme );
         }
         
-        BuildSyntaxTree& volume_shader()
+        BuildSyntaxTree& volume_shader( const char* lexeme )
         {
-            return begin( SHADER_NODE_VOLUME_SHADER );
+            return begin( SHADER_NODE_VOLUME_SHADER, lexeme );
         }
         
-        BuildSyntaxTree& displacement_shader()
+        BuildSyntaxTree& displacement_shader( const char* lexeme )
         {
-            return begin( SHADER_NODE_DISPLACEMENT_SHADER );
+            return begin( SHADER_NODE_DISPLACEMENT_SHADER, lexeme );
         }
         
-        BuildSyntaxTree& imager_shader()
+        BuildSyntaxTree& imager_shader( const char* lexeme )
         {
-            return begin( SHADER_NODE_IMAGER_SHADER );
+            return begin( SHADER_NODE_IMAGER_SHADER, lexeme );
         }
         
         BuildSyntaxTree& list()
@@ -232,15 +244,33 @@ SUITE( ShaderParser )
         }
     };
 
+    struct QuietErrorPolicy : public reyes::ErrorPolicy
+    {
+        void render_error( int /*eerror*/, const char* /*format*/, va_list /*args*/ ) override
+        {
+        }
+    };
+
+    struct SymbolScope
+    {
+        QuietErrorPolicy error_policy;
+
+        void test( const char* source )
+        {
+            SymbolTable symbol_table;
+            Shader shader( source, source + strlen(source), symbol_table, error_policy );
+        }
+    };
+
     TEST( TestConstant )
     {       
         SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );
+        ShaderParser shader_parser( &symbol_table );
         shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "constant.sl" );
 
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
-            .surface_shader()
+            .surface_shader( "constant" )
                 .list()
                 .end()
                 .list()
@@ -264,18 +294,22 @@ SUITE( ShaderParser )
     TEST( TestMatte )
     {
         SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );
+        ShaderParser shader_parser( &symbol_table );
         shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "matte.sl" );
 
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
-            .surface_shader()
+            .surface_shader( "matte" )
                 .list()
                     .variable( "Ka" )
                         .integer( "1" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "Kd" )
                         .integer( "1" )
+                        .null()
+                        .float_type()
                     .end()
                 .end()
                 .list()
@@ -286,6 +320,8 @@ SUITE( ShaderParser )
                             .end()
                             .identifier( "I" )
                         .end()
+                        .null()
+                        .normal_type()
                     .end()
                     .assign( "Oi" )
                         .identifier( "Os" )
@@ -322,21 +358,27 @@ SUITE( ShaderParser )
     TEST( TestMetal )
     {
         SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );
+        ShaderParser shader_parser( &symbol_table );
         shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "metal.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
-            .begin( SHADER_NODE_SURFACE_SHADER )
+            .surface_shader( "metal" )
                 .list()
                     .variable( "Ka" )
                         .integer( "1" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "Ks" )
                         .integer( "1" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "roughness" )
                         .real( ".1" )
+                        .null()
+                        .float_type()
                     .end()
                 .end()
                 .list()
@@ -347,6 +389,8 @@ SUITE( ShaderParser )
                             .end()
                             .identifier( "I" )
                         .end()
+                        .null()
+                        .normal_type()
                     .end()
                     .variable( "V" )
                         .negate()
@@ -354,6 +398,8 @@ SUITE( ShaderParser )
                                 .identifier( "I" )
                             .end()
                         .end()
+                        .null()
+                        .vector_type()
                     .end()
                     .assign( "Oi" )
                         .identifier( "Os" )
@@ -400,19 +446,29 @@ SUITE( ShaderParser )
             .surface_shader()
                 .list()
                     .variable( "Ka" )
-                            .integer( "1" )
+                        .integer( "1" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "Ks" )
                         .integer( "1" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "Kr" )
                         .integer( "1" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "roughness" )
                         .real( ".1" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "texturename" )
                         .string( "" )
+                        .null()
+                        .string_type()
                     .end()
                 .end()
                 .list()
@@ -423,6 +479,8 @@ SUITE( ShaderParser )
                             .end()
                             .identifier( "I" )
                         .end()
+                        .null()
+                        .normal_type()
                     .end()
                     .variable( "V" )
                         .negate()
@@ -430,6 +488,8 @@ SUITE( ShaderParser )
                                 .identifier( "I" )
                             .end()
                         .end()
+                        .null()
+                        .normal_type()
                     .end()
                     .variable( "D" )
                         .call( "reflect" )
@@ -438,6 +498,8 @@ SUITE( ShaderParser )
                                 .identifier( "Nf" )
                             .end()
                         .end()
+                        .null()
+                        .normal_type()
                     .end()
                     .assign( "D" )
                         .call( "vtransform" )
@@ -496,27 +558,37 @@ SUITE( ShaderParser )
     TEST( TestPlastic )
     {
         SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );
+        ShaderParser shader_parser( &symbol_table );
         shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "plastic.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
-            .surface_shader()
+            .surface_shader( "plastic" )
                 .list()
                     .variable( "Ka" )
                         .integer( "1" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "Kd" )
                         .real( ".5" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "Ks" )
                         .real( ".5" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "roughness" )
                         .real( ".1" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "specularcolor" )
                         .integer( "1" )
+                        .null()
+                        .color_type()
                     .end()
                 .end()
                 .list()
@@ -527,6 +599,8 @@ SUITE( ShaderParser )
                             .end()
                             .identifier( "I" )
                         .end()
+                        .null()
+                        .normal_type()
                     .end()
                     .variable( "V" )
                         .negate()
@@ -534,6 +608,8 @@ SUITE( ShaderParser )
                                 .identifier( "I" )
                             .end()
                         .end()
+                        .null()
+                        .vector_type()
                     .end()
                     .assign( "Oi" )
                         .identifier( "Os" )
@@ -583,30 +659,42 @@ SUITE( ShaderParser )
     TEST( TestPaintedPlastic )
     {
         SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );
+        ShaderParser shader_parser( &symbol_table );
         shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "paintedplastic.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
-            .surface_shader()
+            .surface_shader( "paintedplastic" )
                 .list()
                     .variable( "Ka" )
                         .integer( "1" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "Kd" )
                         .real( ".5" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "Ks" )
                         .real( ".5" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "roughness" )
                         .real( ".1" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "specularcolor" )
                         .integer( "1" )
+                        .null()
+                        .color_type()
                     .end()
                     .variable( "texturename" )
                         .string( "" )
+                        .null()
+                        .string_type()
                     .end()
                 .end()
                 .list()
@@ -617,6 +705,8 @@ SUITE( ShaderParser )
                             .end()
                             .identifier( "I" )
                         .end()
+                        .null()
+                        .normal_type()
                     .end()
                     .variable( "V" )
                         .negate()
@@ -624,6 +714,8 @@ SUITE( ShaderParser )
                                 .identifier( "I" )
                             .end()
                         .end()
+                        .null()
+                        .vector_type()
                     .end()
                     .assign( "Oi" )
                         .identifier( "Os" )
@@ -683,25 +775,25 @@ SUITE( ShaderParser )
     TEST( TestAmbientLight )
     {
         SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );
+        ShaderParser shader_parser( &symbol_table );
         shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "ambientlight.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
-            .light_shader()
+            .light_shader( "ambientlight" )
                 .list()
                     .variable( "intensity" )
                         .integer( "1" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "lightcolor" )
                         .integer( "1" )
+                        .null()
+                        .color_type()
                     .end()
                 .end()
                 .list()
-                    .ambient()
-                        .identifier( "Cl" )
-                        .identifier( "Ol" )
-                    .end()
                     .assign( "Cl" )
                         .multiply()
                             .identifier( "intensity" )
@@ -719,18 +811,22 @@ SUITE( ShaderParser )
     TEST( TestDistantLight )
     {
         SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );
+        ShaderParser shader_parser( &symbol_table );
         shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "distantlight.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
-            .light_shader()
+            .light_shader( "distantlight" )
                 .list()
                     .variable( "intensity" )
                         .integer( "1" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "lightcolor" )
                         .integer( "1" )
+                        .null()
+                        .color_type()
                     .end()
                     .variable( "from" )
                         .typecast()
@@ -741,6 +837,8 @@ SUITE( ShaderParser )
                                 .integer( "0" )
                             .end()
                         .end()
+                        .null()
+                        .point_type()
                     .end()
                     .variable( "to" )
                         .typecast()
@@ -751,6 +849,8 @@ SUITE( ShaderParser )
                                 .integer( "1" )
                             .end()
                         .end()
+                        .null()
+                        .point_type()
                     .end()
                 .end()
                 .list()
@@ -782,18 +882,22 @@ SUITE( ShaderParser )
     TEST( TestPointLight )
     {
         SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );
+        ShaderParser shader_parser( &symbol_table );
         shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "pointlight.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
-            .light_shader()
+            .light_shader( "pointlight" )
                 .list()
                     .variable( "intensity" )
                         .integer( "1" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "lightcolor" )
                         .integer( "1" )
+                        .null()
+                        .color_type()
                     .end()
                     .variable( "from" )
                         .typecast()
@@ -804,6 +908,8 @@ SUITE( ShaderParser )
                                 .integer( "0" )
                             .end()
                         .end()
+                        .null()
+                        .point_type()
                     .end()
                 .end()
                 .list()
@@ -839,18 +945,22 @@ SUITE( ShaderParser )
     TEST( TestSpotLight )
     {
         SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );
+        ShaderParser shader_parser( &symbol_table );
         shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "spotlight.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
-            .light_shader()
+            .light_shader( "spotlight" )
                 .list()
                     .variable( "intensity" )
                         .integer( "1" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "lightcolor" )
                         .integer( "1" )
+                        .null()
+                        .color_type()
                     .end()
                     .variable( "from" )
                         .typecast()
@@ -861,6 +971,8 @@ SUITE( ShaderParser )
                                 .integer( "0" )
                             .end()
                         .end()
+                        .null()
+                        .point_type()
                     .end()
                     .variable( "to" )
                         .typecast()
@@ -871,27 +983,39 @@ SUITE( ShaderParser )
                                 .integer( "1" )
                             .end()
                         .end()
+                        .null()
+                        .point_type()
                     .end()
                     .variable( "coneangle" )
                         .call( "radians" )
                             .integer( "30" )
                         .end()
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "conedeltaangle" )
                         .call( "radians" )
                             .integer( "5" )
                         .end()
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "beamdistribution" )
                         .integer( "2" )
+                        .null()
+                        .float_type()
                     .end()
                 .end()
                 .list()
                     .variable( "atten" )
                         .null()
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "cosangle" )
                         .null()
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "A" )
                         .divide()
@@ -906,6 +1030,8 @@ SUITE( ShaderParser )
                                 .end()
                             .end()
                         .end()
+                        .uniform_storage()
+                        .vector_type()
                     .end()
                     .illuminate()
                         .list()
@@ -977,26 +1103,34 @@ SUITE( ShaderParser )
     TEST( TestDepthCue )
     {
         SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );
+        ShaderParser shader_parser( &symbol_table );
         shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "depthcue.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
-            .volume_shader()
+            .volume_shader( "depthcue" )
                 .list()
                     .variable( "mindistance" )
                         .integer( "0" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "maxdistance" )
                         .integer( "1" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "background" )
                         .integer( "0" )
+                        .null()
+                        .color_type()
                     .end()
                 .end()
                 .list()
                     .variable( "d" )
                         .null()
+                        .null()
+                        .float_type()
                     .end()
                     .assign( "d" )
                         .call( "clamp" )
@@ -1048,23 +1182,29 @@ SUITE( ShaderParser )
     TEST( TestFog )
     {
         SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );
+        ShaderParser shader_parser( &symbol_table );
         shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "fog.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
-            .volume_shader()
+            .volume_shader( "fog" )
                 .list()
                     .variable( "distance" )
                         .integer( "1" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "background" )
                         .integer( "0" )
+                        .null()
+                        .color_type()
                     .end()
                 .end()
                 .list()
                     .variable( "d" )
                         .null()
+                        .null()
+                        .float_type()
                     .end()
                     .assign( "d" )
                         .subtract()
@@ -1113,18 +1253,22 @@ SUITE( ShaderParser )
     TEST( TestBumpy )
     {
         SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );
+        ShaderParser shader_parser( &symbol_table );
         shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "bumpy.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
-            .displacement_shader()
+            .displacement_shader( "bumpy" )
                 .list()
                     .variable( "Km" )
                         .integer( "1" )
+                        .null()
+                        .float_type()
                     .end()
                     .variable( "texturename" )
                         .string( "" )
+                        .null()
+                        .string_type()
                     .end()
                 .end()
                 .list()
@@ -1140,6 +1284,8 @@ SUITE( ShaderParser )
                                 .end()
                             .end()
                         .end()
+                        .null()
+                        .float_type()
                     .end()
                     .add_assign( "P" )
                         .multiply()
@@ -1165,15 +1311,17 @@ SUITE( ShaderParser )
     TEST( TestBackground )
     {
         SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );
+        ShaderParser shader_parser( &symbol_table );
         shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "background.sl" );
         
         BuildSyntaxTree build_syntax_tree;
         build_syntax_tree.begin( SHADER_NODE_LIST )
-            .imager_shader()
+            .imager_shader( "background" )
                 .list()
                     .variable( "background" )
                         .integer( "1" )
+                        .null()
+                        .color_type()
                     .end()
                 .end()
                 .list()
@@ -1203,7 +1351,7 @@ SUITE( ShaderParser )
     TEST( TestShadowPointLight )
     {           
         SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );
+        ShaderParser shader_parser( &symbol_table );
         shared_ptr<SyntaxNode> shader = shader_parser.parse( SHADERS_PATH "shadowpointlight.sl" );
         
         /*
@@ -1215,107 +1363,86 @@ SUITE( ShaderParser )
         CHECK( *shader == *expected_shader );  
         */
     }
-    
-    TEST( L_is_known_inside_illuminance )
+
+    TEST_FIXTURE( SymbolScope, L_is_known_inside_illuminance )
     {
-        const char* source =
+        test(
             "surface L_is_known_inside_illuminance() { \n"
-            "   illuminance( P ) { \n"
+            "   vector axis = (0, 0, 1); \n"
+            "   float angle = PI; \n"
+            "   illuminance( P, axis, angle ) { \n"
             "       vector Ln = normalize( L ); \n"
             "   } \n"
             "}"
-        ;
-
-        SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );        
-        shared_ptr<SyntaxNode> shader = shader_parser.parse( source, source + strlen(source) );
-        CHECK( shader );
+        );
+        CHECK( error_policy.errors() == 0 );
     }
     
-    TEST( L_is_unknown_outside_illuminance )
+    TEST_FIXTURE( SymbolScope, L_is_unknown_outside_illuminance )
     {
-        const char* source =
+        test(
             "surface L_is_unknown_outside_illuminance() { \n"
             "   vector Ln = normalize( L ); \n"
             "}"
-        ;
-
-        SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );
-        CHECK( !shader_parser.parse(source, source + strlen(source)) );
+        );
+        CHECK( error_policy.errors() > 0 );
     }
     
-    TEST( Cl_is_known_inside_illuminance )
+    TEST_FIXTURE( SymbolScope, Cl_is_known_inside_illuminance )
     {
-        const char* source =
+        test(
             "surface Cl_is_known_inside_illuminance() { \n"
-            "   illuminance( P ) { \n"
+            "   vector axis = (0, 0, 1); \n"
+            "   float angle = PI; \n"
+            "   illuminance( P, axis, angle ) { \n"
             "       Ci += Cl; \n"
             "   } \n"
             "}"
-        ;
-
-        SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );        
-        shared_ptr<SyntaxNode> shader = shader_parser.parse( source, source + strlen(source) );
-        CHECK( shader );
+        );
+        CHECK( error_policy.errors() == 0 );
     }
     
-    TEST( Cl_is_unknown_outside_illuminance )
+    TEST_FIXTURE( SymbolScope, Cl_is_unknown_outside_illuminance )
     {
-        const char* source =
+        test(
             "surface Cl_is_unknown_outside_illuminance() { \n"
             "   Ci += Cl; \n"
             "}"
-        ;
-
-        SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );
-        CHECK( !shader_parser.parse(source, source + strlen(source)) );
+        );
+        CHECK( error_policy.errors() > 0 );
     }
     
-    TEST( L_is_known_inside_solar )
+    TEST_FIXTURE( SymbolScope, L_is_known_inside_solar )
     {
-        const char* source =
+        test(
             "light L_is_known_inside_solar( point from = point \"shader\" (0, 0, 0); point to = point \"shader\" (0, 0, 0); ) { \n"
             "   solar( from - to, 0 ) { \n"
-            "       Cl = L; \n"
+            "       Cl = 1 / L.L; \n"
             "   } \n"
             "}"
-        ;
-
-        SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );
-        shared_ptr<SyntaxNode> shader = shader_parser.parse( source, source + strlen(source) );
-        CHECK( shader );
+        );
+        CHECK( error_policy.errors() == 0 );
     }
 
-    TEST( L_is_known_inside_illuminate )
+    TEST_FIXTURE( SymbolScope, L_is_known_inside_illuminate )
     {
-        const char* source =
+        test(
             "light L_is_known_inside_illuminate( point from = point \"shader\" (0, 0, 0); ) { \n"
             "   illuminate( from ) { \n"
             "       Cl = 1 / L.L; \n"
             "   } \n"
             "}"
-        ;
-
-        SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );
-        shared_ptr<SyntaxNode> shader = shader_parser.parse( source, source + strlen(source) );
-        CHECK( shader );
+        );
+        CHECK( error_policy.errors() == 0 );
     }
 
-    TEST( L_is_unknown_outside_solar_and_illuminate )
+    TEST_FIXTURE( SymbolScope, L_is_unknown_outside_solar_and_illuminate )
     {
-        const char* source =
+        test(
             "light L_is_unknown_outside_solar_and_illuminate() { \n"
             "   Cl = 1 / L.L; \n"
             "}"
-        ;
-
-        SymbolTable symbol_table;
-        ShaderParser shader_parser( symbol_table );
-        CHECK( !shader_parser.parse(source, source + strlen(source)) );
+        );
+        CHECK( error_policy.errors() > 0 );
     }
 }

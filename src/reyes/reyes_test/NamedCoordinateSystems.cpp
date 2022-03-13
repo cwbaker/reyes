@@ -5,6 +5,7 @@
 #include <reyes/Grid.hpp>
 #include <reyes/Value.hpp>
 #include <reyes/SymbolTable.hpp>
+#include <reyes/Scope.hpp>
 #include <reyes/assert.hpp>
 #include <math/vec3.ipp>
 #include <math/mat4x4.ipp>
@@ -33,16 +34,15 @@ SUITE( NamedCoordinateSystems )
             renderer.projection();
         }
 
-        shared_ptr<Value> execute_shader( Shader& shader )
+        const vec3* execute_shader( Shader& shader )
         {
-            renderer.surface_shader( &shader );
-
-            Grid grid;
-            grid.resize( 1, 1 );  
-            grid.value( "P", TYPE_POINT ).zero();
-            grid.value( "N", TYPE_NORMAL ).zero();
+            SymbolTable symbol_table;
+            Grid& grid = renderer.surface_shader( &shader );
+            grid.resize( 1, 1 );
+            vec3* positions = grid.vec3_value( "P" );
+            memset( positions, 0, sizeof(vec3) * grid.size() );
             renderer.surface_shade( grid );
-            return grid.find_value( "P" );
+            return positions;
         }
         
         enum TransformType
@@ -53,7 +53,7 @@ SUITE( NamedCoordinateSystems )
             
         void check_transform_between_coordinate_systems( const char* source, const vec4& value_to_transform, TransformType transform_type )
         {
-            Shader shader( source, source + strlen(source), renderer.symbol_table(), renderer.error_policy() );
+            Shader shader( source, source + strlen(source), renderer.error_policy() );
         
             const float MINIMUM_ROTATION = -float(M_PI);
             const float MAXIMUM_ROTATION = float(M_PI);
@@ -76,11 +76,11 @@ SUITE( NamedCoordinateSystems )
                     mat4x4 camera_to_world = inverse( world_to_camera );             
                     const mat4x4& transform = transform_type == TRANSFORM_WORLD_TO_CAMERA ? world_to_camera : camera_to_world;
                     
-                    shared_ptr<Value> positions = execute_shader( shader );
+                    const vec3* positions = execute_shader( shader );
                     CHECK( positions );
                     if ( positions )
                     {
-                        vec3 origin = positions->vec3_values()[0];
+                        vec3 origin = positions[0];
                         vec3 expected_origin = vec3( transform * value_to_transform );
                         CHECK_CLOSE( 1.0f, dot(origin, expected_origin), TOLERANCE );
                         CHECK_CLOSE( 0.0f, length(origin - expected_origin), TOLERANCE );

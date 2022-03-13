@@ -2,12 +2,19 @@
 #include <UnitTest++/UnitTest++.h>
 #include <reyes/Value.hpp>
 #include <reyes/Grid.hpp>
+#include <reyes/Scope.hpp>
+#include <reyes/Segment.hpp>
 #include <reyes/Shader.hpp>
 #include <reyes/SymbolTable.hpp>
+#include <reyes/Scope.hpp>
 #include <reyes/ErrorPolicy.hpp>
 #include <reyes/Renderer.hpp>
 #include <reyes/assert.hpp>
+#include <string.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
+using math::vec3;
 using std::vector;
 using namespace reyes;
 
@@ -15,9 +22,9 @@ SUITE( TestLightShaders )
 {
     TEST( AmbientLight )
     {
-        SymbolTable symbol_table;
+        //SymbolTable symbol_table;
         ErrorPolicy error_policy;
-        Shader shader( SHADERS_PATH "ambientlight.sl", symbol_table, error_policy );
+        Shader shader( SHADERS_PATH "ambientlight.sl", /*symbol_table,*/ error_policy );
     }
 
     TEST( DistantLight )
@@ -51,29 +58,34 @@ SUITE( TestLightShaders )
     TEST( active_light_list )
     {
         Renderer renderer;
-
-        Shader shader( SHADERS_PATH "ambientlight.sl", renderer.symbol_table(), renderer.error_policy() );
-
         renderer.begin();
-        Grid& light = renderer.light_shader( &shader );
-        Grid grid;
-        grid.resize( 2, 2 );
-        grid.value("P", TYPE_POINT).zero();
-        renderer.light_shade( grid );
-        CHECK( grid.lights().size() == 1 );
+        renderer.perspective( float(float(M_PI)) / 2.0f );
+        renderer.projection();
+        renderer.begin_world();
+        Grid& light = renderer.light_shader( SHADERS_PATH "ambientlight.sl" );
+        Shader constant_shader( SHADERS_PATH "constant.sl", renderer.error_policy() );
+
+        {
+            Grid& grid = renderer.surface_shader( &constant_shader );
+            grid.resize( 2, 2 );
+            renderer.light_shade( grid );
+            CHECK( grid.lights().size() == 1 );
+        }
         
-        renderer.deactivate_light_shader( light );
-        grid = Grid();
-        grid.resize( 2, 2 );
-        grid.value("P", TYPE_POINT).zero();
-        renderer.light_shade( grid );
-        CHECK( grid.lights().size() == 0 );
+        {
+            renderer.deactivate_light_shader( light );
+            Grid& grid = renderer.surface_shader( &constant_shader );
+            grid.resize( 2, 2 );
+            renderer.light_shade( grid );
+            CHECK( grid.lights().size() == 0 );
+        }
         
-        renderer.activate_light_shader( light );
-        grid = Grid();
-        grid.resize( 2, 2 );
-        grid.value("P", TYPE_POINT).zero();
-        renderer.light_shade( grid );
-        CHECK( grid.lights().size() == 1 );
+        {
+            renderer.activate_light_shader( light );
+            Grid& grid = renderer.surface_shader( &constant_shader );
+            grid.resize( 2, 2 );
+            renderer.light_shade( grid );
+            CHECK( grid.lights().size() == 1 );
+        }
     }
 }

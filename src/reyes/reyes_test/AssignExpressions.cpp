@@ -3,6 +3,7 @@
 #include <reyes/VirtualMachine.hpp>
 #include <reyes/ErrorPolicy.hpp>
 #include <reyes/SymbolTable.hpp>
+#include <reyes/Scope.hpp>
 #include <reyes/Shader.hpp>
 #include <reyes/Grid.hpp>
 #include <reyes/Value.hpp>
@@ -33,38 +34,43 @@ SUITE( AssignExpressions )
 
     struct AssignExpressionTest
     {
-        Grid grid;
-        float* x;
-        float* y;
+        float x [4];
+        float y [4];
      
         AssignExpressionTest()
-        : grid(),
-          x( NULL ),
-          y( NULL )
+        : x{}
+        , y{}
         {
-            grid.resize( 2, 2 );
-            
-            shared_ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
-            x_value->zero();
-            x = x_value->float_values();
-            
-            shared_ptr<Value> y_value = grid.add_value( "y", TYPE_FLOAT );
-            y_value->zero();
-            y = y_value->float_values();
         }
         
         int test( const char* source )
         {
-            CheckErrorPolicy error_policy;      
             SymbolTable symbol_table;
             symbol_table.add_symbols()
                 ( "x", TYPE_FLOAT )
                 ( "y", TYPE_FLOAT )
-            ;            
+            ;
+
+            CheckErrorPolicy error_policy;
             Shader shader( source, source + strlen(source), symbol_table, error_policy );
-            VirtualMachine virtual_machine;
-            virtual_machine.initialize( grid, shader );
-            virtual_machine.shade( grid, grid, shader );
+
+            Grid grid;
+            grid.set_symbols( shader.symbols() );
+            grid.resize( 2, 2 );
+            grid.zero();
+
+            float* xx = grid.float_value( "x" );
+            float* yy = grid.float_value( "y" );
+            if ( xx && yy )
+            {
+                memcpy( xx, x, sizeof(float) * grid.size() );
+                memcpy( yy, y, sizeof(float) * grid.size() );
+                VirtualMachine virtual_machine;
+                virtual_machine.initialize( grid, shader );
+                virtual_machine.shade( grid, shader );
+                memcpy( x, xx, sizeof(float) * grid.size() );
+                memcpy( y, yy, sizeof(float) * grid.size() );
+            }
             return error_policy.error;
         }
     };
@@ -143,7 +149,7 @@ SUITE( AssignExpressions )
     TEST_FIXTURE( AssignExpressionTest, assign_uniform_from_identified_constant )
     {
         test(
-            "surface assign_to_constant_fails(float z = 0;) { \n"
+            "surface assign_uniform_from_identified_constant(float z = 0;) { \n"
             "   z = PI; \n"
             "   x = z; \n"
             "}"
@@ -157,7 +163,7 @@ SUITE( AssignExpressions )
     TEST_FIXTURE( AssignExpressionTest, assign_varying_from_identified_constant )
     {
         test(
-            "surface assign_to_constant_fails() { \n"
+            "surface assign_varying_from_identified_constant() { \n"
             "   x = PI; \n"
             "}"
         );
