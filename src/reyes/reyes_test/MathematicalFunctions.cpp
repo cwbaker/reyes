@@ -94,7 +94,7 @@ SUITE( MathematicalFunctions )
     TEST_FIXTURE( MathematicalFunctionTest, radians_constant )
     {
         test(
-            "surface radians_uniform() { \n"
+            "surface radians_constant() { \n"
             "   y = radians( 3.14159 ); \n"
             "}"
         );
