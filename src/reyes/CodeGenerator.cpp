@@ -58,7 +58,7 @@ CodeGenerator::Loop::Loop( int begin )
 
 CodeGenerator::CodeGenerator( ErrorPolicy* error_policy )
 : error_policy_( error_policy )
-, maximum_vertices_( 16 * 16 )
+, maximum_vertices_( 64 * 64 )
 , initialize_address_( 0 )
 , shade_address_( 0 )
 , grid_memory_size_( 0 )
