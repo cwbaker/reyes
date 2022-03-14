@@ -19,7 +19,6 @@ class Options;
 class Attributes;
 class VirtualMachine;
 class Sampler;
-class Value;
 class Grid;
 class Geometry;
 class Texture;

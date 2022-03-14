@@ -20,7 +20,6 @@ using namespace reyes;
 
 Shader::Shader()
 : symbols_()
-, values_()
 , constants_()
 , code_()
 , initialize_address_( 0 )
@@ -36,7 +35,6 @@ Shader::Shader()
 
 Shader::Shader( const char* filename, ErrorPolicy& error_policy )
 : symbols_()
-, values_()
 , constants_()
 , code_()
 , initialize_address_( 0 )
@@ -53,7 +51,6 @@ Shader::Shader( const char* filename, ErrorPolicy& error_policy )
 
 Shader::Shader( const char* filename, SymbolTable& symbol_table, ErrorPolicy& error_policy )
 : symbols_()
-, values_()
 , constants_()
 , code_()
 , initialize_address_( 0 )
@@ -70,7 +67,6 @@ Shader::Shader( const char* filename, SymbolTable& symbol_table, ErrorPolicy& er
 
 Shader::Shader( const char* start, const char* finish, ErrorPolicy& error_policy )
 : symbols_()
-, values_()
 , code_()
 , initialize_address_( 0 )
 , shade_address_( 0 )
@@ -86,7 +82,6 @@ Shader::Shader( const char* start, const char* finish, ErrorPolicy& error_policy
 
 Shader::Shader( const char* start, const char* finish, SymbolTable& symbol_table, ErrorPolicy& error_policy )
 : symbols_()
-, values_()
 , code_()
 , initialize_address_( 0 )
 , shade_address_( 0 )
@@ -109,11 +104,6 @@ const Symbol* Shader::symbol( int index ) const
 const std::vector<std::shared_ptr<Symbol>>& Shader::symbols() const
 {
     return symbols_;
-}
-
-const std::vector<std::shared_ptr<Value>>& Shader::values() const
-{
-    return values_;
 }
 
 const unsigned char* Shader::constant( int offset ) const
@@ -205,7 +195,6 @@ void Shader::load_file( const char* filename, SymbolTable& symbol_table, ErrorPo
     
     constants_ = code_generator.constant_data();
     symbols_.swap( code_generator.symbols() );
-    values_.swap( code_generator.values() );
     constants_ = code_generator.constant_data();
     code_ = code_generator.code();
 
@@ -242,7 +231,6 @@ void Shader::load_memory( const char* start, const char* finish, SymbolTable& sy
     
     constants_ = code_generator.constant_data();
     symbols_.swap( code_generator.symbols() );
-    values_.swap( code_generator.values() );
     code_ = code_generator.code();
 
     initialize_address_ = code_generator.initialize_address();

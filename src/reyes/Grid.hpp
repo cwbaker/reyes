@@ -22,7 +22,6 @@ struct mat4x4;
 namespace reyes
 {
 
-class Value;
 class Symbol;
 class Light;
 class Shader;

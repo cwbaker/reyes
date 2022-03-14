@@ -13,7 +13,6 @@ namespace reyes
 {
 
 class Grid;
-class Value;
 class Shader;
 class SymbolTable;
 class Renderer;

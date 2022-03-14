@@ -3,14 +3,12 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <map>
 
 namespace reyes
 {
 
 class SyntaxNode;
 class Symbol;
-class Value;
 class Grid;
 class SymbolTable;
 class Renderer;
@@ -22,7 +20,6 @@ class ErrorPolicy;
 class Shader
 {
     std::vector<std::shared_ptr<Symbol>> symbols_; ///< The symbols that are used in the shader.
-    std::vector<std::shared_ptr<Value>> values_; ///< The values of any constants used in the shader (including default parameter values).
     std::vector<unsigned char> constants_; ///< Shader constant data.
     std::vector<unsigned char> code_; ///< The byte code generated for the shader.
     int initialize_address_; ///< The index of the start of the initialize code fragment.
@@ -43,7 +40,6 @@ public:
 
     const Symbol* symbol( int index ) const;
     const std::vector<std::shared_ptr<Symbol>>& symbols() const;
-    const std::vector<std::shared_ptr<Value>>& values() const;
     const unsigned char* constant( int offset ) const;
     const std::vector<unsigned char>& code() const;
     int initialize_address() const;

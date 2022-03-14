@@ -67,7 +67,6 @@ CodeGenerator::CodeGenerator( ErrorPolicy* error_policy )
 , temporary_memory_size_( 0 )
 , errors_( 0 )
 , symbols_()
-, values_()
 , loops_()
 , encoder_( nullptr )
 , constant_data_()
@@ -96,7 +95,6 @@ void CodeGenerator::generate( SyntaxNode* node, const char* name )
     grid_memory_size_ = 0;
     temporary_memory_size_ = 0;
     symbols_.clear();
-    values_.clear();
     loops_.clear();
     encoder_->clear();
     constant_data_.clear();
@@ -202,16 +200,6 @@ const std::vector<shared_ptr<Symbol>>& CodeGenerator::symbols() const
     return symbols_;
 }
 
-std::vector<shared_ptr<Value>>& CodeGenerator::values()
-{
-    return values_;
-}
-
-const std::vector<shared_ptr<Value>>& CodeGenerator::values() const
-{
-    return values_;
-}
-
 std::vector<unsigned char>& CodeGenerator::constant_data()
 {
     return constant_data_;
@@ -251,7 +239,6 @@ void CodeGenerator::generate_code_in_case_of_errors()
     parameters_ = 0;
     variables_ = 0;
     symbols_.clear();
-    values_.clear();
     loops_.clear();
     encoder_->clear();
 

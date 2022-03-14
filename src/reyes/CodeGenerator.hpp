@@ -13,7 +13,6 @@ namespace reyes
 {
 
 class Symbol;
-class Value;
 class SyntaxNode;
 class SymbolTable;
 class Encoder;
@@ -51,7 +50,6 @@ class CodeGenerator
     int temporary_memory_size_; ///< The amount of memory used by temporary variables.
     int errors_; ///< The number of errors detected during code generation.
     std::vector<std::shared_ptr<Symbol>> symbols_; ///< The symbols that are used in the shader.
-    std::vector<std::shared_ptr<Value>> values_; ///< The values of any constants used in the shader (including default parameter values).
     std::vector<Loop> loops_; ///< The Loops used to patch jumps to the beginning or the end of an enclosing loop.
     Encoder* encoder_; ///< Write byte code instructions and arguments.
     std::vector<unsigned char> constant_data_; ///< Constants.
@@ -76,8 +74,6 @@ public:
     int temporary_memory_size() const;
     std::vector<std::shared_ptr<Symbol>>& symbols();
     const std::vector<std::shared_ptr<Symbol>>& symbols() const;
-    std::vector<std::shared_ptr<Value>>& values();
-    const std::vector<std::shared_ptr<Value>>& values() const;
     std::vector<unsigned char>& constant_data();
     const std::vector<unsigned char>& constant_data() const;
     const std::vector<unsigned char>& code() const;

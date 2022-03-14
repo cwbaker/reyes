@@ -11,7 +11,6 @@ namespace reyes
 
 class Grid;
 class Symbol;
-class Value;
 class Renderer;
 class SymbolTable;
 
