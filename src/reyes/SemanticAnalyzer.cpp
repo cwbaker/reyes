@@ -3,7 +3,6 @@
 // Copyright (c) Charles Baker.  All rights reserved.
 //
 
-#include "stdafx.hpp"
 #include "SemanticAnalyzer.hpp"
 #include "SyntaxNode.hpp"
 #include "Symbol.hpp"

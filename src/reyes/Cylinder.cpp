@@ -3,7 +3,6 @@
 // Copyright (c) Charles Baker. All rights reserved.
 //
 
-#include "stdafx.hpp"
 #include "Cylinder.hpp"
 #include "Grid.hpp"
 #include <math/vec2.ipp>

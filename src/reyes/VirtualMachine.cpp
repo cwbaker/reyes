@@ -3,7 +3,6 @@
 // Copyright (c) Charles Baker. All rights reserved.
 //
 
-#include "stdafx.hpp"
 #include "VirtualMachine.hpp"
 #include "Renderer.hpp"
 #include "SymbolTable.hpp"

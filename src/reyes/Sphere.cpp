@@ -1,9 +1,8 @@
 //
 // Sphere.cpp
-// Copyright (c) 2011 Charles Baker.  All rights reserved.
+// Copyright (c) Charles Baker. All rights reserved.
 //
 
-#include "stdafx.hpp"
 #include "Sphere.hpp"
 #include "Grid.hpp"
 #include <math/vec2.ipp>

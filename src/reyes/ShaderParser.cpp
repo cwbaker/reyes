@@ -3,7 +3,6 @@
 // Copyright (c) Charles Baker. All rights reserved.
 //
 
-#include "stdafx.hpp"
 #include "ShaderParser.hpp"
 #include "ErrorCode.hpp"
 #include "SyntaxNode.hpp"

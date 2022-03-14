@@ -3,7 +3,6 @@
 // Copyright (c) Charles Baker. All rights reserved.
 //
 
-#include "stdafx.hpp"
 #include "AddSymbolHelper.hpp"
 #include "SymbolTable.hpp"
 #include "Symbol.hpp"

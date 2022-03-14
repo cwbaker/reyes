@@ -3,7 +3,6 @@
 // Copyright (c) Charles Baker.  All rights reserved.
 //
 
-#include "stdafx.hpp"
 #include "assert.hpp"
 #include <stdlib.h>
 #include <stdio.h>

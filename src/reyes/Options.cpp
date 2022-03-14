@@ -3,7 +3,6 @@
 // Copyright (c) Charles Baker. All rights reserved
 //
 
-#include "stdafx.hpp"
 #include "Options.hpp"
 #include <math/vec3.ipp>
 #include <math/vec4.ipp>

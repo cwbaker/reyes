@@ -25,6 +25,12 @@ local cc = require 'forge.cc' {
     library_directories = {
         root( ("%s/lib"):format(variant) ),
     };
+    defines = {
+        'WIN32_LEAN_AND_MEAN';
+        '_CRT_SECURE_NO_DEPRECATE';
+        '_SCL_SECURE_NO_DEPRECATE';
+        'NOMINMAX';
+    };
 
     assertions = variant ~= 'shipping';
     debug = variant ~= 'shipping';

@@ -3,7 +3,6 @@
 // Copyright (c) Charles Baker. All rights reserved.
 //
 
-#include "stdafx.hpp"
 #include "Texture.hpp"
 #include "ImageBuffer.hpp"
 #include "ImageBufferFormat.hpp"

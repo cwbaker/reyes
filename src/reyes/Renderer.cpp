@@ -3,7 +3,6 @@
 // Copyright (c) Charles Baker. All rights reserved.
 //
 
-#include "stdafx.hpp"
 #include "Renderer.hpp"
 #include "Options.hpp"
 #include "SampleBuffer.hpp"
