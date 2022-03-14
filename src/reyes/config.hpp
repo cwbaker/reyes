@@ -1,5 +1,4 @@
-#ifndef REYES_CONFIG_HPP_INCLUDED
-#define REYES_CONFIG_HPP_INCLUDED
+#pragma once
 
 #if defined(BUILD_VARIANT_DEBUG)
 #define REYES_ASSERT_ENABLED
@@ -8,7 +7,5 @@
 #define REYES_ASSERT_ENABLED
 
 #elif defined(BUILD_VARIANT_SHIPPING)
-
-#endif
 
 #endif

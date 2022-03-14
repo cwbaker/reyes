@@ -22,10 +22,10 @@ using namespace math;
 using namespace reyes;
 
 CubicPatch::CubicPatch( const math::vec3* p, const math::vec4* u_basis, const math::vec4* v_basis )
-: Geometry(vec2(0.0f, 1.0f), vec2(0.0f, 1.0f)),
-  p_( p ),
-  u_basis_( u_basis ),
-  v_basis_( v_basis )
+: Geometry(vec2(0.0f, 1.0f), vec2(0.0f, 1.0f))
+, p_( p )
+, u_basis_( u_basis )
+, v_basis_( v_basis )
 {
     REYES_ASSERT( p_ );
     REYES_ASSERT( u_basis_ );
@@ -33,10 +33,10 @@ CubicPatch::CubicPatch( const math::vec3* p, const math::vec4* u_basis, const ma
 }
 
 CubicPatch::CubicPatch( const CubicPatch& patch, const math::vec2& u_range, const math::vec2& v_range )
-: Geometry(u_range, v_range),
-  p_( patch.p_ ),
-  u_basis_( patch.u_basis_ ),  
-  v_basis_( patch.v_basis_ )
+: Geometry(u_range, v_range)
+, p_( patch.p_ )
+, u_basis_( patch.u_basis_ )
+, v_basis_( patch.v_basis_ )
 {
 }
 

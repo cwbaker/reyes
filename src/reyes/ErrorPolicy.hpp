@@ -1,5 +1,4 @@
-#ifndef REYES_ERRORPOLICY_HPP_INCLUDED
-#define REYES_ERRORPOLICY_HPP_INCLUDED
+#pragma once
 
 #include <stdarg.h>
 
@@ -29,5 +28,3 @@ private:
 };
 
 }
-
-#endif

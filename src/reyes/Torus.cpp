@@ -24,22 +24,22 @@ using namespace math;
 using namespace reyes;
 
 Torus::Torus( float rmajor, float rminor, float phimin, float phimax, float thetamax )
-: Geometry(vec2(0.0f, 1.0f), vec2(0.0f, 1.0f)),
-  rmajor_( rmajor ),
-  rminor_( rminor ),
-  phimin_( phimin ),
-  phimax_( phimax ),
-  thetamax_( thetamax )
+: Geometry( vec2(0.0f, 1.0f), vec2(0.0f, 1.0f) )
+, rmajor_( rmajor )
+, rminor_( rminor )
+, phimin_( phimin )
+, phimax_( phimax )
+, thetamax_( thetamax )
 {   
 }
 
 Torus::Torus( const Torus& torus, const math::vec2& u_range, const math::vec2& v_range )
-: Geometry(u_range, v_range),
-  rmajor_( torus.rmajor_ ),
-  rminor_( torus.rminor_ ),
-  phimin_( torus.phimin_ ),
-  phimax_( torus.phimax_ ),
-  thetamax_( torus.thetamax_ )
+: Geometry( u_range, v_range )
+, rmajor_( torus.rmajor_ )
+, rminor_( torus.rminor_ )
+, phimin_( torus.phimin_ )
+, phimax_( torus.phimax_ )
+, thetamax_( torus.thetamax_ )
 {   
 }
 

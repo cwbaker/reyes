@@ -1,5 +1,4 @@
-#ifndef REYES_INSTRUCTION_HPP_INCLUDED
-#define REYES_INSTRUCTION_HPP_INCLUDED
+#pragma once
 
 namespace reyes
 {
@@ -62,5 +61,3 @@ enum Instruction
 };
 
 }
-
-#endif

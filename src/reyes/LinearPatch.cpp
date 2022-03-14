@@ -24,10 +24,10 @@ using namespace math;
 using namespace reyes;
 
 LinearPatch::LinearPatch( const math::vec3* positions, const math::vec3* normals, const math::vec2* texture_coordinates )
-: Geometry(vec2(0.0f, 1.0f), vec2(0.0f, 1.0f))
-  //positions_(),
-  //normals_(),
-  //texture_coordinates_()
+: Geometry( vec2(0.0f, 1.0f), vec2(0.0f, 1.0f) )
+//, positions_()
+//, normals_()
+//, texture_coordinates_()
 {
     REYES_ASSERT( positions );
     memcpy( positions_, positions, sizeof(positions_) );
@@ -36,10 +36,10 @@ LinearPatch::LinearPatch( const math::vec3* positions, const math::vec3* normals
 }
 
 LinearPatch::LinearPatch( const LinearPatch& patch, const math::vec2& u_range, const math::vec2& v_range )
-: Geometry(u_range, v_range)
-  //positions_(),
-  //normals_(),
-  //texture_coordinates_()
+: Geometry( u_range, v_range )
+//, positions_(),
+//, normals_(),
+//, texture_coordinates_()
 {
     memcpy( positions_, patch.positions_, sizeof(positions_) );
     memcpy( normals_, patch.normals_, sizeof(normals_) );

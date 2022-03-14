@@ -996,8 +996,8 @@ public:
 };
 
 ShaderParser::ShaderParser( SymbolTable* symbol_table, ErrorPolicy* error_policy )
-: symbol_table_( symbol_table ),
-  error_policy_( error_policy )
+: symbol_table_( symbol_table )
+, error_policy_( error_policy )
 {
     REYES_ASSERT( symbol_table_ );
 }

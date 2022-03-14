@@ -1,5 +1,4 @@
-#ifndef REYES_GEOMETRIC_FUNCTIONS_HPP_INCLUDED
-#define REYES_GEOMETRIC_FUNCTIONS_HPP_INCLUDED
+#pragma once
 
 namespace reyes
 {
@@ -40,5 +39,3 @@ void depth( const Renderer& renderer, const Grid& grid, int /*dispatch*/, void**
 void calculatenormal( const Renderer& renderer, const Grid& grid, int /*dispatch*/, void** arguments );
 
 }
-
-#endif

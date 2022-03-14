@@ -24,29 +24,29 @@ using namespace math;
 using namespace reyes;
 
 Sphere::Sphere( float radius )
-: Geometry(vec2(0.0f, 1.0f), vec2(0.0f, 1.0f)),
-  radius_( radius ),
-  zmin_( -FLT_MAX ),
-  zmax_( FLT_MAX ),
-  thetamax_( 2.0f * float(M_PI) )
+: Geometry( vec2(0.0f, 1.0f), vec2(0.0f, 1.0f) )
+, radius_( radius )
+, zmin_( -FLT_MAX )
+, zmax_( FLT_MAX )
+, thetamax_( 2.0f * float(M_PI) )
 {   
 }
 
 Sphere::Sphere( float radius, float zmin, float zmax, float thetamax )
-: Geometry(vec2(0.0f, 1.0f), vec2(0.0f, 1.0f)),
-  radius_( radius ),
-  zmin_( zmin ),
-  zmax_( zmax ),
-  thetamax_( thetamax )
+: Geometry( vec2(0.0f, 1.0f), vec2(0.0f, 1.0f) )
+, radius_( radius )
+, zmin_( zmin )
+, zmax_( zmax )
+, thetamax_( thetamax )
 {   
 }
 
 Sphere::Sphere( const Sphere& sphere, const math::vec2& u_range, const math::vec2& v_range )
-: Geometry(u_range, v_range),
-  radius_( sphere.radius_ ),
-  zmin_( sphere.zmin_ ),
-  zmax_( sphere.zmax_ ),
-  thetamax_( sphere.thetamax_ )
+: Geometry( u_range, v_range )
+, radius_( sphere.radius_ )
+, zmin_( sphere.zmin_ )
+, zmax_( sphere.zmax_ )
+, thetamax_( sphere.thetamax_ )
 {   
 }
 

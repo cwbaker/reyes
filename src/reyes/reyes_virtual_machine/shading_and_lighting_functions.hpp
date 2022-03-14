@@ -1,5 +1,4 @@
-#ifndef REYES_SHADING_AND_LIGHTING_FUNCTIONS_HPP_INCLUDED
-#define REYES_SHADING_AND_LIGHTING_FUNCTIONS_HPP_INCLUDED
+#pragma once
 
 namespace reyes
 {
@@ -15,5 +14,3 @@ void phong( const Renderer& renderer, const Grid& grid, int /*dispatch*/, void**
 void trace( const Renderer& renderer, const Grid& grid, int /*dispatch*/, void** arguments );
 
 }
-
-#endif

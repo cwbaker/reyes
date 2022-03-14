@@ -1,5 +1,4 @@
-#ifndef REYES_SAMPLEBUFFER_HPP_INCLUDED
-#define REYES_SAMPLEBUFFER_HPP_INCLUDED
+#pragma once
 
 #include <math/vec4.hpp>
 #include <math/mat4x4.hpp>
@@ -44,5 +43,3 @@ class SampleBuffer
 };
 
 }
-
-#endif

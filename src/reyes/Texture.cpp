@@ -43,28 +43,28 @@ enum CubeMapFaceIndex
 }
 
 Texture::Texture()
-: type_( TEXTURE_NULL ),
-  camera_transform_( identity() ),
-  screen_transform_( identity() ),
-  image_buffers_( NULL )
+: type_( TEXTURE_NULL )
+, camera_transform_( identity() )
+, screen_transform_( identity() )
+, image_buffers_( nullptr )
 {
 }
 
 Texture::Texture( TextureType type, const math::mat4x4& camera_transform, const math::mat4x4& screen_transform )
-: type_( type ),
-  camera_transform_( camera_transform ),
-  screen_transform_( screen_transform ),
-  image_buffers_( NULL )
+: type_( type )
+, camera_transform_( camera_transform )
+, screen_transform_( screen_transform )
+, image_buffers_( nullptr )
 {
     REYES_ASSERT( type_ >= TEXTURE_NULL && type_ < TEXTURE_COUNT );
     image_buffers_ = new ImageBuffer [1];
 }
 
 Texture::Texture( const std::string& filename, TextureType type, ErrorPolicy* error_policy )
-: type_( TEXTURE_NULL ),
-  camera_transform_( identity() ),
-  screen_transform_( identity() ),
-  image_buffers_( NULL )
+: type_( TEXTURE_NULL )
+, camera_transform_( identity() )
+, screen_transform_( identity() )
+, image_buffers_( nullptr )
 {
     load( filename, type, error_policy );
 }
@@ -72,7 +72,7 @@ Texture::Texture( const std::string& filename, TextureType type, ErrorPolicy* er
 Texture::~Texture()
 {
     delete[] image_buffers_;
-    image_buffers_ = NULL;
+    image_buffers_ = nullptr;
 }
 
 TextureType Texture::type() const

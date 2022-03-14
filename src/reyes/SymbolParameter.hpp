@@ -1,5 +1,4 @@
-#ifndef REYES_SYMBOLPARAMETER_HPP_INCLUDED
-#define REYES_SYMBOLPARAMETER_HPP_INCLUDED
+#pragma once
 
 #include "ValueType.hpp"
 #include "ValueStorage.hpp"
@@ -25,5 +24,3 @@ public:
 };
 
 }
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef REYES_SHADERNODETYPE_HPP_INCLUDED
-#define REYES_SHADERNODETYPE_HPP_INCLUDED
+#pragma once
 
 namespace reyes
 {
@@ -76,5 +75,3 @@ enum SyntaxNodeType
 };
 
 }
-
-#endif

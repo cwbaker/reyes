@@ -1,5 +1,4 @@
-#ifndef REYES_OPTIONS_HPP_INCLUDED
-#define REYES_OPTIONS_HPP_INCLUDED
+#pragma once
 
 #include <math/vec4.hpp>
 #include <math/mat4x4.hpp>
@@ -88,5 +87,3 @@ public:
 };
 
 }
-
-#endif

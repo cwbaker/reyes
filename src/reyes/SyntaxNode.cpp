@@ -18,56 +18,56 @@ using std::shared_ptr;
 using namespace reyes;
 
 SyntaxNode::SyntaxNode()
-: node_type_( SHADER_NODE_NULL ),
-  lexeme_(),
-  nodes_(),
-  scope_( nullptr ),
-  symbol_(),
-  address_(),
-  expected_type_( TYPE_NULL ),
-  original_type_( TYPE_NULL ),
-  type_( TYPE_NULL ),
-  expected_storage_( STORAGE_NULL ),
-  original_storage_( STORAGE_NULL ),
-  storage_( STORAGE_NULL ),
-  instruction_( INSTRUCTION_NULL ),
-  line_( 0 )
+: node_type_( SHADER_NODE_NULL )
+, lexeme_()
+, nodes_()
+, scope_( nullptr )
+, symbol_()
+, address_()
+, expected_type_( TYPE_NULL )
+, original_type_( TYPE_NULL )
+, type_( TYPE_NULL )
+, expected_storage_( STORAGE_NULL )
+, original_storage_( STORAGE_NULL )
+, storage_( STORAGE_NULL )
+, instruction_( INSTRUCTION_NULL )
+, line_( 0 )
 {
 }
 
 SyntaxNode::SyntaxNode( SyntaxNodeType node_type, int line )
-: node_type_( node_type ),
-  lexeme_(),
-  nodes_(),
-  scope_( nullptr ),
-  symbol_(),
-  address_(),
-  expected_type_( TYPE_NULL ),
-  original_type_( TYPE_NULL ),
-  type_( TYPE_NULL ),
-  expected_storage_( STORAGE_NULL ),
-  original_storage_( STORAGE_NULL ),
-  storage_( STORAGE_NULL ),
-  instruction_( INSTRUCTION_NULL ),
-  line_( line )
+: node_type_( node_type )
+, lexeme_()
+, nodes_()
+, scope_( nullptr )
+, symbol_()
+, address_()
+, expected_type_( TYPE_NULL )
+, original_type_( TYPE_NULL )
+, type_( TYPE_NULL )
+, expected_storage_( STORAGE_NULL )
+, original_storage_( STORAGE_NULL )
+, storage_( STORAGE_NULL )
+, instruction_( INSTRUCTION_NULL )
+, line_( line )
 {
 }
 
 SyntaxNode::SyntaxNode( SyntaxNodeType node_type, int line, const char* lexeme )
-: node_type_( node_type ),
-  lexeme_(),
-  nodes_(),
-  scope_( nullptr ),
-  symbol_(),
-  address_(),
-  expected_type_( TYPE_NULL ),
-  original_type_( TYPE_NULL ),
-  type_( TYPE_NULL ),
-  expected_storage_( STORAGE_NULL ),
-  original_storage_( STORAGE_NULL ),
-  storage_( STORAGE_NULL ),
-  instruction_( INSTRUCTION_NULL ),
-  line_( line )
+: node_type_( node_type )
+, lexeme_()
+, nodes_()
+, scope_( nullptr )
+, symbol_()
+, address_()
+, expected_type_( TYPE_NULL )
+, original_type_( TYPE_NULL )
+, type_( TYPE_NULL )
+, expected_storage_( STORAGE_NULL )
+, original_storage_( STORAGE_NULL )
+, storage_( STORAGE_NULL )
+, instruction_( INSTRUCTION_NULL )
+, line_( line )
 {
     if ( lexeme )
     {
@@ -76,20 +76,20 @@ SyntaxNode::SyntaxNode( SyntaxNodeType node_type, int line, const char* lexeme )
 }
 
 SyntaxNode::SyntaxNode( SyntaxNodeType node_type, int line, const std::string& lexeme )
-: node_type_( node_type ),
-  lexeme_( lexeme ),
-  nodes_(),
-  scope_( nullptr ),
-  symbol_(),
-  address_(),
-  expected_type_( TYPE_NULL ),
-  original_type_( TYPE_NULL ),
-  type_( TYPE_NULL ),
-  expected_storage_( STORAGE_NULL ),
-  original_storage_( STORAGE_NULL ),
-  storage_( STORAGE_NULL ),
-  instruction_( INSTRUCTION_NULL ),
-  line_( line )
+: node_type_( node_type )
+, lexeme_( lexeme )
+, nodes_()
+, scope_( nullptr )
+, symbol_()
+, address_()
+, expected_type_( TYPE_NULL )
+, original_type_( TYPE_NULL )
+, type_( TYPE_NULL )
+, expected_storage_( STORAGE_NULL )
+, original_storage_( STORAGE_NULL )
+, storage_( STORAGE_NULL )
+, instruction_( INSTRUCTION_NULL )
+, line_( line )
 {
 }
 

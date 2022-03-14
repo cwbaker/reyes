@@ -1,5 +1,4 @@
-#ifndef REYES_GEOMETRY_HPP_INCLUDED
-#define REYES_GEOMETRY_HPP_INCLUDED
+#pragma once
 
 #include <math/vec2.hpp>
 #include <math/vec3.hpp>
@@ -36,5 +35,3 @@ public:
 };
 
 }
-
-#endif

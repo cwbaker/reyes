@@ -1,5 +1,4 @@
-#ifndef REYES_COLOR_FUNCTIONS_HPP_INCLUDED
-#define REYES_COLOR_FUNCTIONS_HPP_INCLUDED
+#pragma once
 
 namespace reyes
 {
@@ -12,5 +11,3 @@ void setcomp( const Renderer& renderer, const Grid& grid, int /*dispatch*/, void
 void ctransform_function( const Renderer& renderer, const Grid& grid, int /*dispatch*/, void** arguments );
 
 }
-
-#endif

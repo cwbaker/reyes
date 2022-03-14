@@ -22,17 +22,17 @@ using namespace math;
 using namespace reyes;
 
 SampleBuffer::SampleBuffer( int horizontal_resolution, int vertical_resolution, int horizontal_sampling_rate, int vertical_sampling_rate, float filter_width, float filter_height )
-: horizontal_resolution_( horizontal_resolution ),
-  vertical_resolution_( vertical_resolution ),
-  horizontal_sampling_rate_( horizontal_sampling_rate ),
-  vertical_sampling_rate_( vertical_sampling_rate ),
-  filter_width_( filter_width ),
-  filter_height_( filter_height ),
-  width_( (horizontal_resolution + int(ceilf(filter_width - 0.5f))) * horizontal_sampling_rate ),
-  height_( (vertical_resolution + int(ceilf(filter_height - 0.5f))) * vertical_sampling_rate ),
-  colors_( NULL ),
-  depths_( NULL ),
-  positions_( NULL )
+: horizontal_resolution_( horizontal_resolution )
+, vertical_resolution_( vertical_resolution )
+, horizontal_sampling_rate_( horizontal_sampling_rate )
+, vertical_sampling_rate_( vertical_sampling_rate )
+, filter_width_( filter_width )
+, filter_height_( filter_height )
+, width_( (horizontal_resolution + int(ceilf(filter_width - 0.5f))) * horizontal_sampling_rate )
+, height_( (vertical_resolution + int(ceilf(filter_height - 0.5f))) * vertical_sampling_rate )
+, colors_( nullptr )
+, depths_( nullptr )
+, positions_( nullptr )
 {
     REYES_ASSERT( width_ > 0 );
     REYES_ASSERT( height_ > 0 );
@@ -63,13 +63,13 @@ SampleBuffer::SampleBuffer( int horizontal_resolution, int vertical_resolution, 
 SampleBuffer::~SampleBuffer()
 {
     delete positions_;
-    positions_ = NULL;
+    positions_ = nullptr;
 
     delete depths_;
-    depths_ = NULL;
+    depths_ = nullptr;
     
     delete colors_;
-    colors_ = NULL;    
+    colors_ = nullptr;    
 }
 
 int SampleBuffer::width() const

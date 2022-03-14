@@ -1,5 +1,4 @@
-#ifndef REYES_CONDITIONMASK_HPP_INCLUDED
-#define REYES_CONDITIONMASK_HPP_INCLUDED
+#pragma once
 
 #include <vector>
 
@@ -22,5 +21,3 @@ public:
 };
 
 }
-
-#endif

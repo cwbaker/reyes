@@ -9,8 +9,8 @@
 using namespace reyes;
 
 ConditionMask::ConditionMask()
-: mask_(),
-  processed_( 0 )
+: mask_()
+, processed_( 0 )
 {
 }
 

@@ -1,5 +1,4 @@
-#ifndef _REYES_ENCODER_HPP_
-#define _REYES_ENCODER_HPP_
+#pragma once
 
 #include "ValueType.hpp"
 #include "ValueStorage.hpp"
@@ -37,5 +36,3 @@ private:
 };
 
 }
-
-#endif

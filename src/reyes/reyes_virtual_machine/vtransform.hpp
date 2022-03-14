@@ -1,5 +1,4 @@
-#ifndef REYES_VTRANSFORM_HPP_INCLUDED
-#define REYES_VTRANSFORM_HPP_INCLUDED
+#pragma once
 
 namespace math
 {
@@ -15,5 +14,3 @@ namespace reyes
 void vtransform( int dispatch, math::vec3* results, const math::mat4x4& m, const math::vec3* points, unsigned int length );
 
 }
-
-#endif

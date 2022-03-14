@@ -17,26 +17,26 @@ using namespace math;
 using namespace reyes;
 
 Options::Options()
-: horizontal_resolution_( 640 ),
-  vertical_resolution_( 480 ),
-  pixel_aspect_ratio_( 1.0f ),
-  crop_window_( 0.0f, 1.0f, 0.0f, 1.0f ),
-  frame_aspect_ratio_( 4.0f / 3.0f ),
-  screen_window_( -4.0f / 3.0f, 4.0f / 3.0f, -1.0f, 1.0f ),
-  view_transform_(),
-  near_clip_distance_( 1.0f ),
-  far_clip_distance_( 100.0f ),
-  horizontal_sampling_rate_( 2.0f ),
-  vertical_sampling_rate_( 2.0f ),
-  gain_( 1.0f ),
-  gamma_( 1.0f ),
-  one_( 255.0f ),
-  dither_( 0.5f ),
-  minimum_( 0 ),
-  maximum_( 255 ),
-  filter_function_( &Options::box_filter ),
-  filter_width_( 1.0f ),
-  filter_height_( 1.0f )
+: horizontal_resolution_( 640 )
+, vertical_resolution_( 480 )
+, pixel_aspect_ratio_( 1.0f )
+, crop_window_( 0.0f, 1.0f, 0.0f, 1.0f )
+, frame_aspect_ratio_( 4.0f / 3.0f )
+, screen_window_( -4.0f / 3.0f, 4.0f / 3.0f, -1.0f, 1.0f )
+, view_transform_()
+, near_clip_distance_( 1.0f )
+, far_clip_distance_( 100.0f )
+, horizontal_sampling_rate_( 2.0f )
+, vertical_sampling_rate_( 2.0f )
+, gain_( 1.0f )
+, gamma_( 1.0f )
+, one_( 255.0f )
+, dither_( 0.5f )
+, minimum_( 0 )
+, maximum_( 255 )
+, filter_function_( &Options::box_filter )
+, filter_width_( 1.0f )
+, filter_height_( 1.0f )
 {
 #ifdef BUILD_VARIANT_DEBUG
     horizontal_resolution_ = 32;

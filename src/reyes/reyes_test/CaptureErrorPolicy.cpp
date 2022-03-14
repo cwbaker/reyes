@@ -10,9 +10,9 @@
 using namespace reyes;
 
 CaptureErrorPolicy::CaptureErrorPolicy()
-: reyes::ErrorPolicy(),
-  errors(),
-  messages()
+: reyes::ErrorPolicy()
+, errors()
+, messages()
 {
 }
     

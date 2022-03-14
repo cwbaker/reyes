@@ -1,5 +1,4 @@
-#ifndef REYES_PARABOLOID_HPP_INCLUDED
-#define REYES_PARABOLOID_HPP_INCLUDED
+#pragma once
 
 #include "Geometry.hpp"
 #include <math/vec2.hpp>
@@ -35,5 +34,3 @@ private:
 };
 
 }
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef REYES_LIGHTTYPE_HPP_INCLUDED
-#define REYES_LIGHTTYPE_HPP_INCLUDED
+#pragma once
 
 namespace reyes
 {
@@ -20,5 +19,3 @@ enum LightType
 };
 
 }
-
-#endif

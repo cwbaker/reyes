@@ -1,5 +1,4 @@
-#ifndef REYES_VALUETYPE_HPP_INCLUDED
-#define REYES_VALUETYPE_HPP_INCLUDED
+#pragma once
 
 namespace reyes
 {
@@ -22,5 +21,3 @@ enum ValueType
 };
 
 }
-
-#endif

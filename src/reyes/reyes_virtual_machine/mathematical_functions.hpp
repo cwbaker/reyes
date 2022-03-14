@@ -1,5 +1,4 @@
-#ifndef REYES_MATHEMATICAL_FUNCTIONS_HPP_INCLUDED
-#define REYES_MATHEMATICAL_FUNCTIONS_HPP_INCLUDED
+#pragma once
 
 namespace reyes
 {
@@ -44,5 +43,3 @@ void float_random( const Renderer& renderer, const Grid& grid, int dispatch, voi
 void vec3_random( const Renderer& renderer, const Grid& grid, int dispatch, void** arguments );
 
 }
-
-#endif

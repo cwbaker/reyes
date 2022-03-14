@@ -1,5 +1,4 @@
-#ifndef REYES_ATTRIBUTES_HPP_INCLUDED
-#define REYES_ATTRIBUTES_HPP_INCLUDED
+#pragma once
 
 #include <math/vec3.hpp>
 #include <math/vec4.hpp>
@@ -98,5 +97,3 @@ public:
 };
 
 }
-
-#endif

@@ -23,20 +23,20 @@ using namespace math;
 using namespace reyes;
 
 ImageBuffer::ImageBuffer()
-: width_( 0 ),
-  height_( 0 ),
-  elements_( 0 ),
-  format_( FORMAT_U8 ),
-  data_( NULL )
+: width_( 0 )
+, height_( 0 )
+, elements_( 0 )
+, format_( FORMAT_U8 )
+, data_( nullptr )
 {
 }
 
 ImageBuffer::ImageBuffer( int width, int height, int elements, int format )
-: width_( 0 ),
-  height_( 0 ),
-  elements_( 0 ),
-  format_( 0 ),
-  data_( NULL )
+: width_( 0 )
+, height_( 0 )
+, elements_( 0 )
+, format_( 0 )
+, data_( nullptr )
 {
     reset( width, height, elements, format );
 }
@@ -46,7 +46,7 @@ ImageBuffer::~ImageBuffer()
     if ( data_ )
     {
         free( data_ );
-        data_ = NULL;
+        data_ = nullptr;
     }
 }
 
@@ -156,7 +156,7 @@ void ImageBuffer::reset( int width, int height, int elements, int format, const 
         if ( data_ )
         {
             free( data_ );
-            data_ = NULL;
+            data_ = nullptr;
         }
                 
         width_ = width;
@@ -217,7 +217,7 @@ void ImageBuffer::load( const char* filename, ErrorPolicy* error_policy )
         FILE* file;
         
         LoadNativeGuard()
-        : file( NULL )
+        : file( nullptr )
         {
         }
         
@@ -226,7 +226,7 @@ void ImageBuffer::load( const char* filename, ErrorPolicy* error_policy )
             if ( file )
             {
                 fclose( file );
-                file = NULL;
+                file = nullptr;
             }
         }        
     };
@@ -265,7 +265,7 @@ void ImageBuffer::save( const char* filename, ErrorPolicy* error_policy ) const
         FILE* file;
         
         SaveNativeGuard()
-        : file( NULL )
+        : file( nullptr )
         {
         }
         
@@ -274,7 +274,7 @@ void ImageBuffer::save( const char* filename, ErrorPolicy* error_policy ) const
             if ( file )            
             {
                 fclose( file );
-                file = NULL;
+                file = nullptr;
             }
         }
     };
@@ -309,22 +309,22 @@ void ImageBuffer::load_png( const char* filename, ErrorPolicy* error_policy )
         png_infop png_info;
         
         LoadPngGuard()
-        : file( NULL ),
-          png_read( NULL ),
-          png_info( NULL )
+        : file( nullptr )
+        , png_read( nullptr )
+        , png_info( nullptr )
         {
         }
         
         ~LoadPngGuard()
         {
-            png_destroy_read_struct( &png_read, &png_info, NULL );
-            png_info = NULL;
-            png_read = NULL;
+            png_destroy_read_struct( &png_read, &png_info, nullptr );
+            png_info = nullptr;
+            png_read = nullptr;
 
             if ( file )
             {
                 fclose( file );
-                file = NULL;
+                file = nullptr;
             }        
         }
 
@@ -349,7 +349,7 @@ void ImageBuffer::load_png( const char* filename, ErrorPolicy* error_policy )
             return;
         }
         
-        guard.png_read = png_create_read_struct( PNG_LIBPNG_VER_STRING, NULL, NULL, NULL );
+        guard.png_read = png_create_read_struct( PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr );
         if ( !guard.png_read )
         {
             if ( error_policy )
@@ -371,7 +371,7 @@ void ImageBuffer::load_png( const char* filename, ErrorPolicy* error_policy )
         
         png_init_io( guard.png_read, guard.file );
         png_set_sig_bytes( guard.png_read, sizeof(signature) );
-        png_set_keep_unknown_chunks( guard.png_read, PNG_HANDLE_CHUNK_NEVER, NULL, 0 );
+        png_set_keep_unknown_chunks( guard.png_read, PNG_HANDLE_CHUNK_NEVER, nullptr, 0 );
         png_read_info( guard.png_read, guard.png_info );
         
         int interlace_type = png_get_interlace_type( guard.png_read, guard.png_info );
@@ -429,9 +429,9 @@ void ImageBuffer::load_png( const char* filename, ErrorPolicy* error_policy )
         unsigned char* data = u8_data();
         for ( int y = 0; y < height; ++y )
         {
-            png_read_row( guard.png_read, &data[y * width_ * pixel_size_], NULL );
+            png_read_row( guard.png_read, &data[y * width_ * pixel_size_], nullptr );
         }
-        png_read_end( guard.png_read, NULL );    
+        png_read_end( guard.png_read, nullptr );    
     }
     else
     {
@@ -453,22 +453,22 @@ void ImageBuffer::save_png( const char* filename, ErrorPolicy* error_policy ) co
         png_infop png_info;
         
         SavePngGuard()
-        : file( NULL ),
-          png_write( NULL ),
-          png_info( NULL )
+        : file( nullptr )
+        , png_write( nullptr )
+        , png_info( nullptr )
         {
         }
         
         ~SavePngGuard()
         {
             png_destroy_write_struct( &png_write, &png_info );
-            png_info = NULL;
-            png_write = NULL;
+            png_info = nullptr;
+            png_write = nullptr;
 
             if ( file )
             {
                 fclose( file );
-                file = NULL;
+                file = nullptr;
             }        
         }
 
@@ -483,7 +483,7 @@ void ImageBuffer::save_png( const char* filename, ErrorPolicy* error_policy ) co
     guard.file = fopen( filename, "wb" );
     if ( guard.file )
     {
-        guard.png_write = png_create_write_struct( PNG_LIBPNG_VER_STRING, NULL, NULL, NULL );
+        guard.png_write = png_create_write_struct( PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr );
         if ( !guard.png_write )
         {
             if ( error_policy )
@@ -535,10 +535,10 @@ void ImageBuffer::load_jpeg( const char* filename, ErrorPolicy* error_policy )
         FILE* file_;
         
         JpegDecoder( struct jpeg_decompress_struct* decompress, const char* filename, ErrorPolicy* error_policy )
-        : error_mgr_(),
-          decompress_( decompress ),
-          error_policy_( error_policy ),
-          file_( NULL )
+        : error_mgr_()
+        , decompress_( decompress )
+        , error_policy_( error_policy )
+        , file_( nullptr )
         {
             REYES_ASSERT( decompress );
             REYES_ASSERT( filename );
@@ -552,7 +552,7 @@ void ImageBuffer::load_jpeg( const char* filename, ErrorPolicy* error_policy )
             }
             else
             {
-                decompress_ = NULL;
+                decompress_ = nullptr;
                 if ( error_policy_ )
                 {
                     error_policy->error( RENDER_ERROR_OPENING_FILE_FAILED, "Opening '%s' to read a JPEG failed", filename );
@@ -565,13 +565,13 @@ void ImageBuffer::load_jpeg( const char* filename, ErrorPolicy* error_policy )
             if ( file_ )
             {
                 fclose( file_ );
-                file_ = NULL;
+                file_ = nullptr;
             }
 
             if ( decompress_ )
             {
                 jpeg_destroy_decompress( decompress_ );
-                decompress_ = NULL;
+                decompress_ = nullptr;
             }
         }
 

@@ -1,5 +1,4 @@
-#ifndef REYES_RENDER_ASSERT_HPP_INCLUDED
-#define REYES_RENDER_ASSERT_HPP_INCLUDED
+#pragma once
 
 #include "config.hpp"
 
@@ -42,7 +41,5 @@ do { \
 #endif
 
 #define REYES_ASSERT( x )
-
-#endif
 
 #endif

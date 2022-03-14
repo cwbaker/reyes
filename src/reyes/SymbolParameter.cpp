@@ -9,8 +9,8 @@
 using namespace reyes;
 
 SymbolParameter::SymbolParameter( ValueType type, ValueStorage storage )
-: type_( type ),
-  storage_( storage )
+: type_( type )
+, storage_( storage )
 {
 }
 

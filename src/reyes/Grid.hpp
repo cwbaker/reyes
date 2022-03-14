@@ -1,5 +1,4 @@
-#ifndef REYES_GRID_HPP_INCLUDED
-#define REYES_GRID_HPP_INCLUDED
+#pragma once
 
 #include "SetValueHelper.hpp"
 #include "ValueType.hpp"
@@ -113,5 +112,3 @@ private:
 };
 
 }
-
-#endif

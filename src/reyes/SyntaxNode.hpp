@@ -1,5 +1,4 @@
-#ifndef REYES_SYNTAXNODE_HPP_INCLUDED
-#define REYES_SYNTAXNODE_HPP_INCLUDED
+#pragma once
 
 #include "SyntaxNodeType.hpp"
 #include "ValueType.hpp"
@@ -87,5 +86,3 @@ public:
 };
 
 }
-
-#endif

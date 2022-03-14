@@ -1,5 +1,4 @@
-#ifndef REYES_IMAGEBUFFERFORMAT_HPP_INCLUDED
-#define REYES_IMAGEBUFFERFORMAT_HPP_INCLUDED
+#pragma once
 
 namespace reyes
 {
@@ -15,5 +14,3 @@ enum ImageBufferFormat
 };
 
 }
-
-#endif

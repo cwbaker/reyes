@@ -1,5 +1,4 @@
-#ifndef REYES_SHADER_HPP_INCLUDED
-#define REYES_SHADER_HPP_INCLUDED
+#pragma once
 
 #include <memory>
 #include <string>
@@ -65,5 +64,3 @@ public:
 };
 
 }
-
-#endif

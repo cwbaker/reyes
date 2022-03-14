@@ -1,3 +1,7 @@
+//
+// Debugger.cpp
+// Copyright (c) Charles Baker.  All rights reserved.
+//
 
 #include "stdafx.hpp"
 #include "Debugger.hpp"

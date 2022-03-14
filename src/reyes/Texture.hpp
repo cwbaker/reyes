@@ -1,5 +1,4 @@
-#ifndef REYES_TEXTURE_HPP_INCLUDED
-#define REYES_TEXTURE_HPP_INCLUDED
+#pragma once
 
 #include "TextureType.hpp"
 #include <math/vec4.hpp>
@@ -41,5 +40,3 @@ private:
 };
 
 }
-
-#endif

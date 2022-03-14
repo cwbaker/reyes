@@ -24,18 +24,18 @@ using namespace math;
 using namespace reyes;
 
 Disk::Disk( float height, float radius, float thetamax )
-: Geometry(vec2(0.0f, 1.0f), vec2(0.0f, 1.0f)),
-  height_( height ),
-  radius_( radius ),
-  thetamax_( thetamax )
+: Geometry(vec2(0.0f, 1.0f), vec2(0.0f, 1.0f))
+, height_( height )
+, radius_( radius )
+, thetamax_( thetamax )
 {   
 }
 
 Disk::Disk( const Disk& disk, const math::vec2& u_range, const math::vec2& v_range )
-: Geometry(u_range, v_range),
-  height_( disk.height_ ),
-  radius_( disk.radius_ ),
-  thetamax_( disk.thetamax_ )
+: Geometry(u_range, v_range)
+, height_( disk.height_ )
+, radius_( disk.radius_ )
+, thetamax_( disk.thetamax_ )
 {   
 }
 

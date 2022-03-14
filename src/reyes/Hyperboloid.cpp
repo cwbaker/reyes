@@ -24,18 +24,18 @@ using namespace math;
 using namespace reyes;
 
 Hyperboloid::Hyperboloid( const math::vec3& point1, const math::vec3& point2, float thetamax )
-: Geometry(vec2(0.0f, 1.0f), vec2(0.0f, 1.0f)),
-  point1_( point1 ),
-  point2_( point2 ),
-  thetamax_( thetamax )
+: Geometry(vec2(0.0f, 1.0f), vec2(0.0f, 1.0f))
+, point1_( point1 )
+, point2_( point2 )
+, thetamax_( thetamax )
 {   
 }
 
 Hyperboloid::Hyperboloid( const Hyperboloid& hyperboloid, const math::vec2& u_range, const math::vec2& v_range )
-: Geometry(u_range, v_range),
-  point1_( hyperboloid.point1_ ),
-  point2_( hyperboloid.point2_ ),
-  thetamax_( hyperboloid.thetamax_ )
+: Geometry(u_range, v_range)
+, point1_( hyperboloid.point1_ )
+, point2_( hyperboloid.point2_ )
+, thetamax_( hyperboloid.thetamax_ )
 {   
 }
 

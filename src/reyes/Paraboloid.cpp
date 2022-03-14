@@ -24,20 +24,20 @@ using namespace math;
 using namespace reyes;
 
 Paraboloid::Paraboloid( float rmax, float zmin, float zmax, float thetamax )
-: Geometry(vec2(0.0f, 1.0f), vec2(0.0f, 1.0f)),
-  rmax_( rmax ),
-  zmin_( zmin ),
-  zmax_( zmax ),
-  thetamax_( thetamax )
+: Geometry(vec2(0.0f, 1.0f), vec2(0.0f, 1.0f))
+, rmax_( rmax )
+, zmin_( zmin )
+, zmax_( zmax )
+, thetamax_( thetamax )
 {   
 }
 
 Paraboloid::Paraboloid( const Paraboloid& paraboloid, const math::vec2& u_range, const math::vec2& v_range )
-: Geometry(u_range, v_range),
-  rmax_( paraboloid.rmax_ ),
-  zmin_( paraboloid.zmin_ ),
-  zmax_( paraboloid.zmax_ ),
-  thetamax_( paraboloid.thetamax_ )
+: Geometry(u_range, v_range)
+, rmax_( paraboloid.rmax_ )
+, zmin_( paraboloid.zmin_ )
+, zmax_( paraboloid.zmax_ )
+, thetamax_( paraboloid.thetamax_ )
 {   
 }
 

@@ -65,18 +65,18 @@ static const char* NULL_SURFACE_SHADER = "surface null() { Ci = Cs; Oi = Os; }";
 // Constructor.
 */
 Renderer::Renderer()
-: error_policy_( NULL ),
-  virtual_machine_( NULL ),
-  null_surface_shader_( NULL ),
-  sample_buffer_( NULL ),
-  image_buffer_( NULL ),
-  sampler_( NULL ),
-  screen_transform_( math::identity() ),
-  camera_transform_( math::identity() ),
-  textures_(),
-  shaders_(),
-  options_( NULL ),
-  attributes_()
+: error_policy_( nullptr )
+, virtual_machine_( nullptr )
+, null_surface_shader_( nullptr )
+, sample_buffer_( nullptr )
+, image_buffer_( nullptr )
+, sampler_( nullptr )
+, screen_transform_( math::identity() )
+, camera_transform_( math::identity() )
+, textures_()
+, shaders_()
+, options_( nullptr )
+, attributes_()
 {
     error_policy_ = new ErrorPolicy;
     virtual_machine_ = new VirtualMachine( *this );
@@ -109,25 +109,25 @@ Renderer::~Renderer()
     textures_.clear();
 
     delete sampler_;
-    sampler_ = NULL;
+    sampler_ = nullptr;
 
     delete image_buffer_;
-    image_buffer_ = NULL;
+    image_buffer_ = nullptr;
 
     delete sample_buffer_;
-    sample_buffer_ = NULL;
+    sample_buffer_ = nullptr;
     
     delete null_surface_shader_;
-    null_surface_shader_ = NULL;
+    null_surface_shader_ = nullptr;
 
     delete virtual_machine_;
-    virtual_machine_ = NULL;
+    virtual_machine_ = nullptr;
 
     delete options_;
-    options_ = NULL;
+    options_ = nullptr;
     
     delete error_policy_;
-    error_policy_ = NULL;
+    error_policy_ = nullptr;
 }
 
 /**
@@ -317,19 +317,19 @@ void Renderer::begin()
     if ( sample_buffer_ )
     {
         delete sample_buffer_;
-        sample_buffer_ = NULL;
+        sample_buffer_ = nullptr;
     }
        
     if ( image_buffer_ )
     {
         delete image_buffer_;
-        image_buffer_ = NULL;
+        image_buffer_ = nullptr;
     }
     
     if ( sampler_ )
     {
         delete sampler_;
-        sampler_ = NULL;
+        sampler_ = nullptr;
     }
     
     sample_buffer_ = new SampleBuffer( options_->horizontal_resolution(), options_->vertical_resolution(), options_->horizontal_sampling_rate(), options_->vertical_sampling_rate(), options_->filter_width(), options_->filter_height() );
@@ -1637,7 +1637,7 @@ Texture* Renderer::find_texture( const char* filename ) const
     REYES_ASSERT( filename );
     
     map<string, Texture*>::const_iterator i = textures_.find( filename );
-    return i != textures_.end() ? i->second : NULL;
+    return i != textures_.end() ? i->second : nullptr;
 }
 
 /**
@@ -1680,7 +1680,7 @@ Shader* Renderer::find_shader( const char* filename ) const
     REYES_ASSERT( filename );
     
     map<string, Shader*>::const_iterator i = shaders_.find( filename );
-    return i != shaders_.end() ? i->second : NULL;
+    return i != shaders_.end() ? i->second : nullptr;
 }
 
 /**

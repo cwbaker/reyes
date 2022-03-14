@@ -1,5 +1,4 @@
-#ifndef REYES_VIRTUALMACHINE_HPP_INCLUDED
-#define REYES_VIRTUALMACHINE_HPP_INCLUDED
+#pragma once
 
 #include "Address.hpp"
 #include <reyes/reyes_virtual_machine/ConditionMask.hpp>
@@ -136,5 +135,3 @@ private:
 };
 
 }
-
-#endif

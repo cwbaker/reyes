@@ -24,18 +24,18 @@ using namespace math;
 using namespace reyes;
 
 Cone::Cone( float height, float radius, float thetamax )
-: Geometry(vec2(0.0f, 1.0f), vec2(0.0f, 1.0f)),
-  height_( height ),
-  radius_( radius ),
-  thetamax_( thetamax )
+: Geometry(vec2(0.0f, 1.0f), vec2(0.0f, 1.0f))
+, height_( height )
+, radius_( radius )
+, thetamax_( thetamax )
 {   
 }
 
 Cone::Cone( const Cone& cone, const math::vec2& u_range, const math::vec2& v_range )
-: Geometry(u_range, v_range),
-  height_( cone.height_ ),
-  radius_( cone.radius_ ),
-  thetamax_( cone.thetamax_ )
+: Geometry(u_range, v_range)
+, height_( cone.height_ )
+, radius_( cone.radius_ )
+, thetamax_( cone.thetamax_ )
 {   
 }
 

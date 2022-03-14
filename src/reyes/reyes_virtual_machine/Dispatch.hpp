@@ -1,4 +1,4 @@
-#ifndef REYES_DISPATCH_HPP_INCLUDED
+#pragma once
 
 namespace reyes
 {
@@ -68,5 +68,3 @@ enum Dispatch
 };
 
 }
-
-#endif

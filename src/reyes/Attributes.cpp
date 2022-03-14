@@ -25,24 +25,24 @@ using namespace math;
 using namespace reyes;
 
 Attributes::Attributes( VirtualMachine* virtual_machine )
-: virtual_machine_( virtual_machine ),
-  shading_rate_( 0.25f ),
-  matte_( false ),
-  two_sided_( false ),
-  transform_left_handed_( true ),
-  geometry_left_handed_( true ),
-  color_( 0.0f, 0.0f, 0.0f ),
-  opacity_( 1.0f, 1.0f, 1.0f ),
-  u_basis_( nullptr ),
-  v_basis_( nullptr ),
-  displacement_grid_( nullptr ),
-  displacement_shader_( nullptr ),
-  surface_grid_( nullptr ),
-  surface_shader_( nullptr ),
-  light_shaders_(),
-  active_light_shaders_(),
-  transforms_(),
-  named_transforms_()
+: virtual_machine_( virtual_machine )
+, shading_rate_( 0.25f )
+, matte_( false )
+, two_sided_( false )
+, transform_left_handed_( true )
+, geometry_left_handed_( true )
+, color_( 0.0f, 0.0f, 0.0f )
+, opacity_( 1.0f, 1.0f, 1.0f )
+, u_basis_( nullptr )
+, v_basis_( nullptr )
+, displacement_grid_( nullptr )
+, displacement_shader_( nullptr )
+, surface_grid_( nullptr )
+, surface_shader_( nullptr )
+, light_shaders_()
+, active_light_shaders_()
+, transforms_()
+, named_transforms_()
 {
     REYES_ASSERT( virtual_machine_ );
     displacement_grid_ = new Grid();
@@ -57,24 +57,24 @@ Attributes::Attributes( VirtualMachine* virtual_machine )
 }
 
 Attributes::Attributes( const Attributes& attributes )
-: virtual_machine_( attributes.virtual_machine_ ),
-  shading_rate_( attributes.shading_rate_ ),
-  matte_( attributes.matte_ ),
-  two_sided_( attributes.two_sided_ ),
-  transform_left_handed_( attributes.transform_left_handed_ ),
-  geometry_left_handed_( attributes.geometry_left_handed_ ),
-  color_( attributes.color_ ),
-  opacity_( attributes.opacity_ ),
-  u_basis_( attributes.u_basis_ ),
-  v_basis_( attributes.v_basis_ ),
-  displacement_grid_( nullptr ),
-  displacement_shader_( attributes.displacement_shader_ ),
-  surface_grid_( nullptr ),
-  surface_shader_( attributes.surface_shader_ ),
-  light_shaders_( attributes.light_shaders_ ),
-  active_light_shaders_( attributes.active_light_shaders_ ),
-  transforms_( attributes.transforms_ ),
-  named_transforms_( attributes.named_transforms_ )
+: virtual_machine_( attributes.virtual_machine_ )
+, shading_rate_( attributes.shading_rate_ )
+, matte_( attributes.matte_ )
+, two_sided_( attributes.two_sided_ )
+, transform_left_handed_( attributes.transform_left_handed_ )
+, geometry_left_handed_( attributes.geometry_left_handed_ )
+, color_( attributes.color_ )
+, opacity_( attributes.opacity_ )
+, u_basis_( attributes.u_basis_ )
+, v_basis_( attributes.v_basis_ )
+, displacement_grid_( nullptr )
+, displacement_shader_( attributes.displacement_shader_ )
+, surface_grid_( nullptr )
+, surface_shader_( attributes.surface_shader_ )
+, light_shaders_( attributes.light_shaders_ )
+, active_light_shaders_( attributes.active_light_shaders_ )
+, transforms_( attributes.transforms_ )
+, named_transforms_( attributes.named_transforms_ )
 {
     REYES_ASSERT( virtual_machine_ );
     displacement_grid_ = new Grid( *attributes.displacement_grid_ );

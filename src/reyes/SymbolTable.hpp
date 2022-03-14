@@ -1,5 +1,4 @@
-#ifndef REYES_SYMBOLTABLE_HPP_INCLUDED
-#define REYES_SYMBOLTABLE_HPP_INCLUDED
+#pragma once
 
 #include "AddSymbolHelper.hpp"
 #include <list>
@@ -37,5 +36,3 @@ public:
 };
 
 }
-
-#endif

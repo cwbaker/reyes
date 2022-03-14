@@ -1,5 +1,4 @@
-#ifndef REYES_DISPLAYMODE_HPP_INCLUDED
-#define REYES_DISPLAYMODE_HPP_INCLUDED
+#pragma once
 
 namespace reyes
 {
@@ -17,5 +16,3 @@ enum DisplayMode
 };
 
 }
-
-#endif

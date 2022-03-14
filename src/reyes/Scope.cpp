@@ -39,8 +39,6 @@ std::shared_ptr<Symbol> Scope::find_symbol( const std::string& identifier ) cons
 std::shared_ptr<Symbol> Scope::find_symbol( const SyntaxNode* node ) const
 {
     assert( node );
-    // assert( node->node_type() == SYNTAX_CALL );
-
     auto range = symbol_by_identifier_.equal_range( node->lexeme() );
     for ( auto i = range.first; i != range.second; ++i )
     {

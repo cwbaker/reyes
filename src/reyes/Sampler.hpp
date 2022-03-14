@@ -1,5 +1,4 @@
-#ifndef REYES_SAMPLER_HPP_INCLUDED
-#define REYES_SAMPLER_HPP_INCLUDED
+#pragma once
 
 #include <math/vec3.hpp>
 #include <math/mat4x4.hpp>
@@ -60,5 +59,3 @@ private:
 };
 
 }
-
-#endif

@@ -48,10 +48,10 @@ struct OperationMetadata
 }
 
 SemanticAnalyzer::SemanticAnalyzer( SymbolTable* symbol_table, ErrorPolicy* error_policy )
-: symbol_table_( symbol_table ),
-  error_policy_( error_policy ),
-  ambient_light_( false ),
-  errors_( 0 )
+: symbol_table_( symbol_table )
+, error_policy_( error_policy )
+, ambient_light_( false )
+, errors_( 0 )
 {
     REYES_ASSERT( symbol_table_ );
 }

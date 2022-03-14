@@ -11,8 +11,8 @@
 using namespace reyes;
 
 ErrorPolicy::ErrorPolicy()
-: total_errors_( 0 ),
-  errors_( 0 )
+: total_errors_( 0 )
+, errors_( 0 )
 {
 }
 

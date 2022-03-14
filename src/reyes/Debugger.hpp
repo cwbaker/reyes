@@ -1,5 +1,4 @@
-#ifndef REYES_DEBUGGER_HPP_INCLUDED
-#define REYES_DEBUGGER_HPP_INCLUDED
+#pragma once
 
 #include <math/vec4.hpp>
 #include <math/mat4x4.hpp>
@@ -32,5 +31,3 @@ private:
 };
 
 }
-
-#endif

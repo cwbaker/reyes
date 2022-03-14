@@ -1,5 +1,4 @@
-#ifndef REYES_IMAGEBUFFER_HPP_INCLUDED
-#define REYES_IMAGEBUFFER_HPP_INCLUDED
+#pragma once
 
 #include <math/vec4.hpp>
 
@@ -57,5 +56,3 @@ class ImageBuffer
 };
 
 }
-
-#endif

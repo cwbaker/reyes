@@ -34,18 +34,18 @@ using namespace math;
 using namespace reyes;
 
 CodeGenerator::Jump::Jump( int address, int distance_address )
-: address_( address ),
-  distance_address_( distance_address )
+: address_( address )
+, distance_address_( distance_address )
 {
     REYES_ASSERT( address_ >= 0 );
     REYES_ASSERT( distance_address_ >= 0 );
 }
 
 CodeGenerator::Loop::Loop( int begin )
-: begin_( begin ),
-  jumps_to_begin_(),
-  jumps_to_continue_(),
-  jumps_to_end_()
+: begin_( begin )
+, jumps_to_begin_()
+, jumps_to_continue_()
+, jumps_to_end_()
 {
     const unsigned int JUMPS_TO_BEGIN_RESERVE = 4;
     jumps_to_begin_.reserve( JUMPS_TO_BEGIN_RESERVE );

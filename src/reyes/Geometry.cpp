@@ -21,8 +21,8 @@ using namespace math;
 using namespace reyes;
 
 Geometry::Geometry( const math::vec2& u_range, const math::vec2& v_range )
-: u_range_( u_range ),
-  v_range_( v_range )
+: u_range_( u_range )
+, v_range_( v_range )
 {   
 }
 

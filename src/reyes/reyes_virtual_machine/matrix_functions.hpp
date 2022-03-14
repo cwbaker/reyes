@@ -1,5 +1,4 @@
-#ifndef REYES_MATRIX_FUNCTIONS_HPP_INCLUDED
-#define REYES_MATRIX_FUNCTIONS_HPP_INCLUDED
+#pragma once
 
 namespace reyes
 {
@@ -15,5 +14,3 @@ void rotate_matrix( const Renderer& render, const Grid& grid, int /*dispatch*/, 
 void scale_matrix( const Renderer& render, const Grid& grid, int /*dispatch*/, void** arguments );
 
 }
-
-#endif

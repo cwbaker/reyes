@@ -1,5 +1,4 @@
-#ifndef REYES_TEXTURETYPE_HPP_INCLUDED
-#define REYES_TEXTURETYPE_HPP_INCLUDED
+#pragma once
 
 namespace reyes
 {
@@ -18,5 +17,3 @@ enum TextureType
 };
 
 }
-
-#endif
