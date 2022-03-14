@@ -55,7 +55,7 @@ SUITE( BreakStatements )
             Shader shader( source, source + strlen(source), symbol_table, error_policy );
 
             Grid grid;
-            grid.set_symbols( shader.symbols() );
+            grid.set_shader( &shader );
             grid.resize( 2, 2 );            
             grid.zero();
 

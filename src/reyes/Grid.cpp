@@ -353,11 +353,6 @@ void Grid::set_shader( Shader* shader )
 {
     REYES_ASSERT( shader );
     shader_ = shader;
-    set_symbols( shader->symbols() );
-}
-
-void Grid::set_symbols( const std::vector<std::shared_ptr<Symbol>>& symbols )
-{
     auto include_symbol = [](const shared_ptr<Symbol>& symbol)
     {
         return 
@@ -365,7 +360,9 @@ void Grid::set_symbols( const std::vector<std::shared_ptr<Symbol>>& symbols )
             symbol->segment() == SEGMENT_STRING
         ;
     };
+
     symbols_.clear();
+    const vector<shared_ptr<Symbol>>& symbols = shader->symbols();
     copy_if( symbols.begin(), symbols.end(), back_inserter(symbols_), include_symbol );
     if ( !symbols_.empty() )
     {
@@ -435,9 +432,7 @@ void Grid::reserve()
     {
         if ( symbol->segment() == SEGMENT_GRID )
         {
-            // Maximum values in a varying variable.
-            const int MAXIMUM_LENGTH = 512;
-            memory_size = max( memory_size, symbol->offset() + symbol->size_by_type_and_storage(MAXIMUM_LENGTH) );
+            memory_size = max( memory_size, symbol->offset() + symbol->size_by_type_and_storage(maximum_vertices()) );
         }
     }
 
