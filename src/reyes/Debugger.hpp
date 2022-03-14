@@ -12,7 +12,6 @@ namespace reyes
 class SyntaxNode;
 class Symbol;
 class Shader;
-class Value;
 class Grid;
 class SampleBuffer;
 
@@ -21,9 +20,7 @@ class Debugger
 public:
     void dump_syntax_tree( const SyntaxNode* node, int level = 0 ) const;
     void dump_shader( Shader& shader ) const;
-    void dump_registers( int parameters, const std::vector<std::shared_ptr<Symbol> >& symbols, const std::vector<std::shared_ptr<Value> >& values ) const;
     void dump_symbols( const std::vector<std::shared_ptr<Symbol>>& symbols ) const;
-    void dump_values( const std::vector<std::shared_ptr<Value>>& values ) const;
     void dump_code( const std::vector<unsigned char>& code ) const;
     void dump_grid( const Grid& grid, const math::vec4& color, const char* format = NULL, ... ) const;
     void dump_sample_buffer( const SampleBuffer& sample_buffer, const math::vec4& color, const math::mat4x4& screen_transform, const math::vec4& crop_window, const char* format = NULL, ... ) const;

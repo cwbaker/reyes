@@ -2,7 +2,6 @@
 #include <UnitTest++/UnitTest++.h>
 #include <reyes/Shader.hpp>
 #include <reyes/Grid.hpp>
-#include <reyes/Value.hpp>
 #include <reyes/Scope.hpp>
 #include <reyes/SymbolTable.hpp>
 #include <reyes/ErrorPolicy.hpp>

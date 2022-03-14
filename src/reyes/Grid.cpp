@@ -5,7 +5,6 @@
 
 #include "stdafx.hpp"
 #include "Grid.hpp"
-#include "Value.hpp"
 #include "Shader.hpp"
 #include "Symbol.hpp"
 #include "assert.hpp"

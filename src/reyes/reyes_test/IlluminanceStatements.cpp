@@ -5,7 +5,6 @@
 #include <reyes/Scope.hpp>
 #include <reyes/Shader.hpp>
 #include <reyes/Grid.hpp>
-#include <reyes/Value.hpp>
 #include <math/vec3.ipp>
 #include <reyes/assert.hpp>
 #define _USE_MATH_DEFINES

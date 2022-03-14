@@ -6,7 +6,6 @@
 #include <reyes/Scope.hpp>
 #include <reyes/Shader.hpp>
 #include <reyes/Grid.hpp>
-#include <reyes/Value.hpp>
 #include <reyes/ErrorCode.hpp>
 #include <reyes/assert.hpp>
 #define _USE_MATH_DEFINES

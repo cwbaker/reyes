@@ -8,7 +8,6 @@
 #include <reyes/Scope.hpp>
 #include <reyes/Shader.hpp>
 #include <reyes/Grid.hpp>
-#include <reyes/Value.hpp>
 #include <reyes/assert.hpp>
 #include <math/vec3.ipp>
 #include <math/mat4x4.ipp>

@@ -8,7 +8,6 @@
 #include <reyes/ShaderParser.hpp>
 #include <reyes/SemanticAnalyzer.hpp>
 #include <reyes/CodeGenerator.hpp>
-#include <reyes/Value.hpp>
 #include <reyes/reyes_virtual_machine/Instruction.hpp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>

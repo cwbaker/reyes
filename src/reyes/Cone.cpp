@@ -6,7 +6,6 @@
 #include "stdafx.hpp"
 #include "Cone.hpp"
 #include "Grid.hpp"
-#include "Value.hpp"
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
 #include <math/mat4x4.ipp>

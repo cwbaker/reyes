@@ -23,7 +23,6 @@
 #include "Shader.hpp"
 #include "Light.hpp"
 #include "Texture.hpp"
-#include "Value.hpp"
 #include "SymbolTable.hpp"
 #include "VirtualMachine.hpp"
 #include "SymbolTable.hpp"

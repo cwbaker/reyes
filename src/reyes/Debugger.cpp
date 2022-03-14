@@ -2,7 +2,6 @@
 #include "stdafx.hpp"
 #include "Debugger.hpp"
 #include "Symbol.hpp"
-#include "Value.hpp"
 #include "Grid.hpp"
 #include "SampleBuffer.hpp"
 #include "SyntaxNode.hpp"
@@ -163,45 +162,8 @@ void Debugger::dump_shader( Shader& shader ) const
         shader.grid_memory_size(),
         shader.temporary_memory_size()
     );    
-    dump_registers( shader.parameters(), shader.symbols(), shader.values() );
     dump_symbols( shader.symbols() );
     dump_code( shader.code() );
-}
-
-void Debugger::dump_registers( int parameters, const std::vector<shared_ptr<Symbol> >& symbols, const std::vector<shared_ptr<Value> >& values ) const
-{
-    vector<shared_ptr<Symbol> >::const_iterator i = symbols.begin();
-    vector<shared_ptr<Value> >::const_iterator j = values.begin();
-
-    int register_index = 0;                
-    while ( i != symbols.end() && j != values.end() && register_index < parameters )
-    {
-        const Symbol* symbol = i->get();
-        REYES_ASSERT( symbol );
-        
-        printf( "%d, %d, %s\n", register_index, symbol->index(), symbol->identifier().c_str() );
-        ++i;
-        ++j;
-        ++register_index;
-    }
-    
-    while ( j != values.end() )
-    {
-        printf( "%d, CONSTANT\n", register_index );
-        ++j;
-        ++register_index;
-    }
-    
-    while ( i != symbols.end() )
-    {
-        const Symbol* symbol = i->get();
-        REYES_ASSERT( symbol );
-        printf( "%d, %d, %s\n", register_index, symbol->index(), symbol->identifier().c_str() );
-        ++i;
-        ++register_index;
-    }
-
-    printf( "\n\n" );
 }
 
 void Debugger::dump_symbols( const std::vector<std::shared_ptr<Symbol> >& symbols ) const
@@ -223,45 +185,6 @@ void Debugger::dump_symbols( const std::vector<std::shared_ptr<Symbol> >& symbol
         REYES_ASSERT( symbol );
         const Address& address = symbol->address();
         printf( "%d, %s, %s, %+d\n", symbol->index(), symbol->identifier().c_str(), SEGMENT[address.segment()], address.offset() );
-    }
-
-    printf( "\n\n" );
-}
-
-void Debugger::dump_values( const std::vector<std::shared_ptr<Value> >& values ) const
-{
-    int index = 0;
-    for ( vector<shared_ptr<Value> >::const_iterator i = values.begin(); i != values.end(); ++i )
-    {
-        const Value* value = i->get();
-        REYES_ASSERT( value );
-        switch ( value->type() )
-        {
-            case TYPE_FLOAT:
-                printf( "%d, float, %d, %.02f\n", index, value->size(), *value->float_values() );
-                break;
-                
-            case TYPE_COLOR:
-            case TYPE_POINT:
-            case TYPE_VECTOR:
-            case TYPE_NORMAL:
-            {
-                const vec3& vec3_value = *value->vec3_values();
-                printf( "%d, vec3, %d, (%.02f, %.02f, %.02f)\n", index, value->size(), vec3_value.x, vec3_value.y, vec3_value.z );
-                break;
-            }
-                
-            case TYPE_STRING:
-            {
-                const string& string_value = value->string_value();
-                printf( "%d, string, '%s'\n", index, string_value.c_str() );
-                break;
-            }
-                
-            default:
-                printf( "%d, unknown\n", index );
-        }
-        ++index;
     }
 
     printf( "\n\n" );

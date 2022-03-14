@@ -52,7 +52,6 @@ for _, toolset in toolsets('cc_.*') do
                 'SyntaxNode.cpp',
                 'Texture.cpp',
                 'Torus.cpp',
-                'Value.cpp',
                 'VirtualMachine.cpp',
             };    
         }

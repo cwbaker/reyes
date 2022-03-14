@@ -8,7 +8,6 @@
 #include "Renderer.hpp"
 #include "SymbolTable.hpp"
 #include "Scope.hpp"
-#include "Value.hpp"
 #include "Shader.hpp"
 #include "Symbol.hpp"
 #include "Texture.hpp"

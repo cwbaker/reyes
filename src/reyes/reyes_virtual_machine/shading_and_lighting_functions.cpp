@@ -5,7 +5,6 @@
 
 #include <reyes/Grid.hpp>
 #include <reyes/Texture.hpp>
-#include <reyes/Value.hpp>
 #include <reyes/VirtualMachine.hpp>
 #include <reyes/Light.hpp>
 #include <reyes/Renderer.hpp>

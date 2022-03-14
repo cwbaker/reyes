@@ -5,7 +5,6 @@
 
 #include "Dispatch.hpp"
 #include <reyes/Grid.hpp>
-#include <reyes/Value.hpp>
 #include <reyes/Renderer.hpp>
 #include <reyes/assert.hpp>
 #include <math/scalar.ipp>

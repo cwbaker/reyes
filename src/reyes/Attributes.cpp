@@ -5,7 +5,6 @@
 
 #include "stdafx.hpp"
 #include "Attributes.hpp"
-#include "Value.hpp"
 #include "Grid.hpp"
 #include "Shader.hpp"
 #include "VirtualMachine.hpp"

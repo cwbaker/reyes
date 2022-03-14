@@ -3,7 +3,6 @@
 #include <reyes/Renderer.hpp>
 #include <reyes/Shader.hpp>
 #include <reyes/Grid.hpp>
-#include <reyes/Value.hpp>
 #include <reyes/SymbolTable.hpp>
 #include <reyes/Scope.hpp>
 #include <reyes/assert.hpp>

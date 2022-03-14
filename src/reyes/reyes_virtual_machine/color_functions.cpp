@@ -7,7 +7,6 @@
 #include "ctransform.hpp"
 #include "Dispatch.hpp"
 #include <reyes/Grid.hpp>
-#include <reyes/Value.hpp>
 #include <reyes/Renderer.hpp>
 #include <reyes/ErrorCode.hpp>
 #include <reyes/ErrorPolicy.hpp>

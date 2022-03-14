@@ -10,7 +10,6 @@
 #include "ntransform.hpp"
 #include "Dispatch.hpp"
 #include <reyes/Grid.hpp>
-#include <reyes/Value.hpp>
 #include <reyes/Renderer.hpp>
 #include <reyes/Attributes.hpp>
 #include <reyes/assert.hpp>

@@ -8,7 +8,6 @@
 #include "Encoder.hpp"
 #include "SyntaxNode.hpp"
 #include "Symbol.hpp"
-#include "Value.hpp"
 #include "Scope.hpp"
 #include "SymbolTable.hpp"
 #include "ErrorCode.hpp"

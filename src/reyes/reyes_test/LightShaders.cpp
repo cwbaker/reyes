@@ -1,6 +1,5 @@
 
 #include <UnitTest++/UnitTest++.h>
-#include <reyes/Value.hpp>
 #include <reyes/Grid.hpp>
 #include <reyes/Scope.hpp>
 #include <reyes/Segment.hpp>
