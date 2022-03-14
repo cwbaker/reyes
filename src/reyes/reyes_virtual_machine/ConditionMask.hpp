@@ -2,12 +2,9 @@
 #define REYES_CONDITIONMASK_HPP_INCLUDED
 
 #include <vector>
-#include <memory>
 
 namespace reyes
 {
-
-class Value;
 
 class ConditionMask
 {
@@ -19,8 +16,8 @@ public:
     const std::vector<unsigned char>& mask() const;
     int processed() const;
     bool empty() const;
-    void generate( std::shared_ptr<Value> value );
-    void generate( const ConditionMask& condition_mask, std::shared_ptr<Value> value );
+    void generate( const float* values, int length );
+    void generate( const ConditionMask& condition_mask, const float* values, int length );
     void invert();
 };
 

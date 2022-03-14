@@ -18,27 +18,26 @@ for _, toolset in toolsets('cc_.*') do
                 defines = {
                     ('SHADERS_PATH=\\"%s/\\"'):format( absolute('../shaders') );
                 };
-                'main.cpp',
-                'AssignExpressions.cpp',
-                'BreakStatements.cpp',
-                'CodeGeneration.cpp',
+                'main.cpp';
+                'AssignExpressions.cpp';
+                'BreakStatements.cpp';
+                'CodeGeneration.cpp';
                 'ColorFunctions.cpp',
-                'ContinueStatements.cpp',
-                'ForLoops.cpp',
+                'ContinueStatements.cpp';
+                'ForLoops.cpp';
                 'FunctionCalls.cpp',
                 'GeometricFunctions.cpp',
-                'IfStatements.cpp',
-                'LightShaders.cpp',
-                'LogicalExpressions.cpp',
-                'IfStatements.cpp',
+                'IfStatements.cpp';
                 'IlluminanceStatements.cpp',
+                'LightShaders.cpp',
+                'LogicalExpressions.cpp';
                 'MathematicalFunctions.cpp',
                 'MatrixFunctions.cpp',
                 'NamedCoordinateSystems.cpp',
                 'Projection.cpp',
                 'ShaderParser.cpp',
                 'TypeConversion.cpp',
-                'WhileLoops.cpp'
+                'WhileLoops.cpp';
             };
         };    
     };

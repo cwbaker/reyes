@@ -28,7 +28,7 @@ public:
     const math::vec2& v_range() const;
     
     virtual bool boundable() const;
-    virtual void bound( const math::mat4x4& transform, math::vec3* minimum, math::vec3* maximum ) const;
+    virtual void bound( const math::mat4x4& transform, math::vec3* minimum, math::vec3* maximum, Grid* grid ) const;
     virtual bool splittable() const;
     virtual void split( std::list<std::shared_ptr<Geometry>>* primitives ) const;
     virtual bool diceable() const;

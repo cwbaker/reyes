@@ -2,8 +2,9 @@
 #include <UnitTest++/UnitTest++.h>
 #include <reyes/Shader.hpp>
 #include <reyes/Grid.hpp>
-#include <reyes/Value.hpp>
 #include <reyes/SymbolTable.hpp>
+#include <reyes/Scope.hpp>
+#include <reyes/Scope.hpp>
 #include <reyes/ErrorPolicy.hpp>
 #include <reyes/VirtualMachine.hpp>
 #include <reyes/assert.hpp>
@@ -20,46 +21,23 @@ SUITE( LogicalExpressions )
 {
     struct LogicalExpressionTest
     {
-        Grid grid;
-        float* x;
-        float* y;
-        int* a;
-        int* b;
-        int* c;
+        float x [4];
+        float y [4];
+        int a [4];
+        int b [4];
+        int c [4];
      
         LogicalExpressionTest()
-        : grid(),
-          x( NULL ),
-          y( NULL ),
-          a( NULL ),
-          b( NULL ),
-          c( NULL )
+        : x{}
+        , y{}
+        , a{}
+        , b{}
+        , c{}
         {
-            grid.resize( 2, 2 );
-            shared_ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
-            x_value->zero();
-            x = x_value->float_values();
-            
-            shared_ptr<Value> y_value = grid.add_value( "y", TYPE_FLOAT );
-            y_value->zero();
-            y = y_value->float_values();
-            
-            shared_ptr<Value> a_value = grid.add_value( "a", TYPE_INTEGER );
-            a_value->zero();
-            a = a_value->int_values();
-      
-            shared_ptr<Value> b_value = grid.add_value( "b", TYPE_INTEGER );
-            b_value->zero();
-            b = b_value->int_values();
-            
-            shared_ptr<Value> c_value = grid.add_value( "c", TYPE_INTEGER );
-            c_value->zero();
-            c = c_value->int_values();
         }
         
         void test( const char* source )
         {
-            ErrorPolicy error_policy;
             SymbolTable symbol_table;
             symbol_table.add_symbols()
                 ( "x", TYPE_FLOAT )
@@ -68,11 +46,36 @@ SUITE( LogicalExpressions )
                 ( "b", TYPE_INTEGER )
                 ( "c", TYPE_INTEGER )
             ;
-            
+
+            ErrorPolicy error_policy;
             Shader shader( source, source + strlen(source), symbol_table, error_policy );
-            VirtualMachine virtual_machine;
-            virtual_machine.initialize( grid, shader );
-            virtual_machine.shade( grid, grid, shader );
+
+            Grid grid;
+            grid.set_symbols( shader.symbols() );
+            grid.resize( 2, 2 );
+            grid.zero();
+
+            float* xx = grid.float_value( "x" );
+            float* yy = grid.float_value( "y" );
+            int* aa = grid.int_value( "a" );
+            int* bb = grid.int_value( "b" );
+            int* cc = grid.int_value( "c" );
+            if ( xx && yy && aa && bb && cc )
+            {
+                memcpy( xx, x, sizeof(float) * grid.size() );
+                memcpy( yy, y, sizeof(float) * grid.size() );
+                memcpy( aa, a, sizeof(int) * grid.size() );
+                memcpy( bb, b, sizeof(int) * grid.size() );
+                memcpy( cc, c, sizeof(int) * grid.size() );
+                VirtualMachine virtual_machine;
+                virtual_machine.initialize( grid, shader );
+                virtual_machine.shade( grid, shader );
+                memcpy( x, xx, sizeof(float) * grid.size() );
+                memcpy( y, yy, sizeof(float) * grid.size() );
+                memcpy( a, aa, sizeof(int) * grid.size() );
+                memcpy( b, bb, sizeof(int) * grid.size() );
+                memcpy( c, cc, sizeof(int) * grid.size() );
+            }
         }
     };
 

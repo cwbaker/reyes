@@ -18,7 +18,6 @@ class SampleBuffer;
 class ImageBuffer;
 class Options;
 class Attributes;
-class SymbolTable;
 class VirtualMachine;
 class Sampler;
 class Value;
@@ -33,7 +32,6 @@ class Shader;
 class Renderer
 {
     ErrorPolicy* error_policy_; ///< The error policy that errors are reported to.
-    SymbolTable* symbol_table_; ///< The symbol table used to store symbols when compiling shaders.
     VirtualMachine* virtual_machine_; ///< The virtual machine used to execute shaders.
     Shader* null_surface_shader_; ///< The null surface shader used when no surface shader is set.
     SampleBuffer* sample_buffer_; ///< The sample buffer that grids are sampled into.
@@ -51,7 +49,6 @@ class Renderer
         ~Renderer();
                         
         ErrorPolicy& error_policy() const;
-        SymbolTable& symbol_table() const;
         
         void set_options( const Options& options );
         const Options& options() const;
@@ -104,8 +101,8 @@ class Renderer
         Grid& displacement_shader( const char* filename );
         Grid& surface_shader( const char* filename );
         Grid& light_shader( const char* filename );
-        void activate_light_shader( const Grid& grid );
-        void deactivate_light_shader( const Grid& grid );
+        void activate_light_shader( Grid& grid );
+        void deactivate_light_shader( Grid& grid );
 
         void cone( float height, float radius, float thetamax );
         void sphere( float radius );
@@ -120,7 +117,7 @@ class Renderer
         void linear_patch( const math::vec3* positions, const math::vec3* normals, const math::vec2* texture_coordinates );
         void polygon_mesh( int polygons, const int* vertices, const int* indices, const math::vec3* positions, const math::vec3* normals, const math::vec2* texture_coordinates );
 
-        void split( const Geometry& geometry );        
+        void split( const Geometry& geometry );
         void displacement_shade( Grid& grid );
         void surface_shade( Grid& grid );
         void light_shade( Grid& grid );

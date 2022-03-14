@@ -6,7 +6,6 @@
 #include "stdafx.hpp"
 #include "Paraboloid.hpp"
 #include "Grid.hpp"
-#include "Value.hpp"
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
 #include <math/mat4x4.ipp>
@@ -47,18 +46,18 @@ bool Paraboloid::boundable() const
     return true;
 }
 
-void Paraboloid::bound( const math::mat4x4& transform, vec3* minimum, vec3* maximum ) const
+void Paraboloid::bound( const math::mat4x4& transform, vec3* minimum, vec3* maximum, Grid* grid ) const
 {
     REYES_ASSERT( minimum );
     REYES_ASSERT( maximum );
+    REYES_ASSERT( grid );
     
     *minimum = vec3( FLT_MAX, FLT_MAX, FLT_MAX );
     *maximum = vec3( -FLT_MAX, -FLT_MAX, -FLT_MAX );
     
-    Grid grid;
-    dice( transform, 8, 8, &grid );
-    const vec3* positions = grid["P"].vec3_values();
-    const vec3* positions_end = positions + grid["P"].size();
+    dice( transform, 8, 8, grid );
+    const vec3* positions = grid->vec3_value( "P" );
+    const vec3* positions_end = positions + grid->size();
     for ( const vec3* i = positions; i != positions_end; ++i )
     {
         minimum->x = min( minimum->x, i->x );
@@ -117,12 +116,12 @@ void Paraboloid::dice( const math::mat4x4& transform, int width, int height, Gri
     const vec2& v_range = Geometry::v_range();
 
     grid->resize( width, height );
-    grid->du_ = (u_range.y - u_range.x) / float(width - 1);
-    grid->dv_ = (v_range.y - v_range.x) / float(height - 1);
+    grid->set_du( (u_range.y - u_range.x) / float(width - 1) );
+    grid->set_dv( (v_range.y - v_range.x) / float(height - 1) );
     
-    vec3* positions = grid->value( "P", TYPE_POINT ).vec3_values();
-    float* s = grid->value( "s", TYPE_FLOAT ).float_values();
-    float* t = grid->value( "t", TYPE_FLOAT ).float_values();
+    vec3* positions = grid->vec3_value( "P" );
+    float* s = grid->float_value( "s" );
+    float* t = grid->float_value( "t" );
     
     int vertex = 0;
     float v = v_range.x;

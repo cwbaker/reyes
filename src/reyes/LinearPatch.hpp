@@ -23,12 +23,12 @@ public:
     LinearPatch( const math::vec3* positions, const math::vec3* normals, const math::vec2* texture_coordinates );
     LinearPatch( const LinearPatch& patch, const math::vec2& u_range, const math::vec2& v_range );        
 
-    bool boundable() const;
-    void bound( const math::mat4x4& transform, math::vec3* minimum, math::vec3* maximum ) const;
-    bool splittable() const;
-    void split( std::list<std::shared_ptr<Geometry>>* primitives ) const;
-    bool diceable() const;
-    void dice( const math::mat4x4& transform, int width, int height, Grid* grid ) const;        
+    bool boundable() const override;
+    void bound( const math::mat4x4& transform, math::vec3* minimum, math::vec3* maximum, Grid* grid ) const override;
+    bool splittable() const override;
+    void split( std::list<std::shared_ptr<Geometry>>* primitives ) const override;
+    bool diceable() const override;
+    void dice( const math::mat4x4& transform, int width, int height, Grid* grid ) const override;        
 
 private:    
     math::vec3 bilerp( const math::vec3* x, float u, float v ) const;

@@ -3,7 +3,7 @@
 #include <UnitTest++/UnitTest++.h>
 #include <reyes/Shader.hpp>
 #include <reyes/Grid.hpp>
-#include <reyes/Value.hpp>
+#include <reyes/Scope.hpp>
 #include <reyes/SymbolTable.hpp>
 #include <reyes/VirtualMachine.hpp>
 #include <reyes/ErrorPolicy.hpp>
@@ -24,23 +24,13 @@ SUITE( ContinueStatements )
 {
     struct ContinueStatementTest
     {
-        Grid grid;
-        float* x;
-        float* y;
+        float x [4];
+        float y [4];
      
         ContinueStatementTest()
-        : grid(),
-          x( NULL ),
-          y( NULL )
+        : x{}
+        , y{}
         {
-            grid.resize( 2, 2 );
-            shared_ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
-            x_value->zero();
-            x = x_value->float_values();
-            
-            shared_ptr<Value> y_value = grid.add_value( "y", TYPE_FLOAT );
-            y_value->zero();
-            y = y_value->float_values();
         }
 
         void test( const char* source )
@@ -55,12 +45,31 @@ SUITE( ContinueStatements )
             symbol_table.add_symbols()
                 ( "x", TYPE_FLOAT )
                 ( "y", TYPE_FLOAT )
-            ;
-            
+            ;            
+
             Shader shader( source, source + strlen(source), symbol_table, error_policy );
+
+            Grid grid;
+            grid.set_symbols( shader.symbols() );
+            grid.resize( 2, 2 );
+            grid.zero();
+
             VirtualMachine virtual_machine;
             virtual_machine.initialize( grid, shader );
-            virtual_machine.shade( grid, grid, shader );
+            virtual_machine.shade( grid, shader );
+
+            float* xx = grid.float_value( "x" );
+            float* yy = grid.float_value( "y" );
+            if ( xx && yy )
+            {
+                memcpy( xx, x, sizeof(float) * grid.size() );
+                memcpy( yy, y, sizeof(float) * grid.size() );
+                VirtualMachine virtual_machine;
+                virtual_machine.initialize( grid, shader );
+                virtual_machine.shade( grid, shader );
+                memcpy( x, xx, sizeof(float) * grid.size() );
+                memcpy( y, yy, sizeof(float) * grid.size() );
+            }
         }
     };
 

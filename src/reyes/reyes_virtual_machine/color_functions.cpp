@@ -7,7 +7,6 @@
 #include "ctransform.hpp"
 #include "Dispatch.hpp"
 #include <reyes/Grid.hpp>
-#include <reyes/Value.hpp>
 #include <reyes/Renderer.hpp>
 #include <reyes/ErrorCode.hpp>
 #include <reyes/ErrorPolicy.hpp>
@@ -16,38 +15,31 @@
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
 
-using std::shared_ptr;
+using std::string;
 using namespace math;
 
 namespace reyes
 {
 
-void comp( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> color, std::shared_ptr<Value> index_value )
+void comp( const Renderer& /*renderer*/, const Grid& grid, int /*dispatch*/, void** arguments )
 {
-    REYES_ASSERT( result );
-    REYES_ASSERT( color );
-    REYES_ASSERT( index_value );
-    REYES_ASSERT( index_value->storage() == STORAGE_UNIFORM );
-    
-    result->reset( TYPE_FLOAT, color->storage(), color->size() );
-    
-    const int size = color->size();
-    float* values = result->float_values();
-    const vec3* colors = color->vec3_values();
-    int index = int(index_value->float_value());
+    float* result = reinterpret_cast<float*>( arguments[0] );
+    const vec3* color = reinterpret_cast<const vec3*>( arguments[1] );
+    const int index = int(*reinterpret_cast<const float*>( arguments[2] ));
+    const int size = grid.size();
     switch ( index )
     {
         case 0:
             for ( int i = 0; i < size; ++i )
             {
-                values[i] = colors[i].x;
+                result[i] = color[i].x;
             }
             break;
                     
         case 1:
             for ( int i = 0; i < size; ++i )
             {
-                values[i] = colors[i].y;
+                result[i] = color[i].y;
             }
             break;
                     
@@ -55,37 +47,31 @@ void comp( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<V
         default:
             for ( int i = 0; i < size; ++i )
             {
-                values[i] = colors[i].z;
+                result[i] = color[i].z;
             }
             break;                    
     }
 }
 
-void setcomp( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> /*result*/, std::shared_ptr<Value> color, std::shared_ptr<Value> index_value, std::shared_ptr<Value> value )
+void setcomp( const Renderer& /*renderer*/, const Grid& grid, int /*dispatch*/, void** arguments )
 {
-    REYES_ASSERT( color );
-    REYES_ASSERT( index_value );
-    REYES_ASSERT( index_value->storage() == STORAGE_UNIFORM );
-    REYES_ASSERT( color->size() == value->size() );
-
-    const int size = color->size();
-    vec3* colors = color->vec3_values();
-    const float* values = value->float_values();
-    int index = int(index_value->float_value());
-
+    vec3* color = reinterpret_cast<vec3*>( arguments[1] );
+    int index = int( *reinterpret_cast<float*>(arguments[2]) );
+    const float* value = reinterpret_cast<float*>( arguments[3] );
+    const int size = grid.size();
     switch ( index )
     {
         case 0:
             for ( int i = 0; i < size; ++i )
             {
-                colors[i].x = values[i];
+                color[i].x = value[i];
             }
             break;
 
         case 1:
             for ( int i = 0; i < size; ++i )
             {
-                colors[i].y = values[i];
+                color[i].y = value[i];
             }
             break;
 
@@ -93,25 +79,26 @@ void setcomp( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_pt
         default:
             for ( int i = 0; i < size; ++i )
             {
-                colors[i].z = values[i];
+                color[i].z = value[i];
             }
             break;
     }
 }
 
-void ctransform_function( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> fromspace, std::shared_ptr<Value> color )
+void ctransform_function( const Renderer& /*renderer*/, const Grid& grid, int /*dispatch*/, void** arguments )
 {
-    REYES_ASSERT( result );
-    REYES_ASSERT( fromspace );
-    REYES_ASSERT( fromspace->type() == TYPE_STRING );
-    REYES_ASSERT( color );    
-    result->reset( TYPE_COLOR, color->storage(), color->size() );
+    vec3* result = reinterpret_cast<vec3*>( arguments[0] );
+    string fromspace = *reinterpret_cast<string*>( arguments[1] );
+    const vec3* color = reinterpret_cast<const vec3*>( arguments[2] );
+    // The dispatch and fromspace parameters need to be calculated correctly.
+    assert( false );    
     ctransform( 
-        color->size() == 1 ? DISPATCH_U3 : DISPATCH_V3,
-        result->vec3_values(),
-        fromspace->string_value().c_str(),
-        color->vec3_values(),
-        color->size()
+        // color->size() == 1 ? DISPATCH_U3 : DISPATCH_V3,
+        DISPATCH_V3,
+        result,
+        fromspace.c_str(),
+        color,
+        grid.size()
     );
 }
 

@@ -5,7 +5,6 @@
 
 #include <reyes/Grid.hpp>
 #include <reyes/Texture.hpp>
-#include <reyes/Value.hpp>
 #include <reyes/VirtualMachine.hpp>
 #include <reyes/Light.hpp>
 #include <reyes/Renderer.hpp>
@@ -14,6 +13,7 @@
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
 #include <algorithm>
+#include <string.h>
 
 using std::min;
 using std::max;
@@ -24,65 +24,47 @@ using namespace math;
 namespace reyes
 {
 
-void ambient( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Value> color )
+void ambient( const Renderer& /*renderer*/, const Grid& grid, int /*dispatch*/, void** arguments )
 {
-    REYES_ASSERT( color );
-    
-    color->reset( TYPE_COLOR, STORAGE_VARYING, grid.size() );
-    color->zero();
+    math::vec3* color = reinterpret_cast<math::vec3*>( arguments[0] );
 
+    memset( color, 0, sizeof(vec3) * grid.size() );
     const vector<shared_ptr<Light>>& lights = grid.lights();
     for ( vector<shared_ptr<Light>>::const_iterator i = lights.begin(); i != lights.end(); ++i )
     {
         Light* light = i->get();
-        REYES_ASSERT( light );
-        
+        REYES_ASSERT( light );        
         if ( light->type() == LIGHT_AMBIENT )
         {
-            const std::shared_ptr<Value>& light_color = light->color();
+            const math::vec3* light_color = light->color();
             REYES_ASSERT( light_color );
-            
-            vec3* color_values = color->vec3_values();
-            const vec3* light_color_values = light_color->vec3_values();
-            for ( unsigned int i = 0; i < color->size(); ++i )
+            for ( int i = 0; i < grid.size(); ++i )
             {
-                color_values[i] += light_color_values[min(i, light_color->size() - 1)];
+                color[i] += light_color[i];
             }
         }
     }
 }
 
-void diffuse( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Value> color, std::shared_ptr<Value> normal )
+void diffuse( const Renderer& /*renderer*/, const Grid& grid, int /*dispatch*/, void** arguments )
 {
-    REYES_ASSERT( color );
-    REYES_ASSERT( normal );
-    REYES_ASSERT( int(normal->size()) == grid.size() );
-    
-    color->reset( TYPE_COLOR, STORAGE_VARYING, grid.size() );
-    color->zero();
+    math::vec3* color = reinterpret_cast<math::vec3*>( arguments[0] );
+    const math::vec3* position = grid.vec3_value( "P" );
+    const math::vec3* normal = reinterpret_cast<const math::vec3*>( arguments[1] );
 
-    std::shared_ptr<Value> P = grid.find_value( "P" );
-    REYES_ASSERT( P );
-    REYES_ASSERT( P->type() == TYPE_POINT );
-    REYES_ASSERT( P->storage() == STORAGE_VARYING );
-    REYES_ASSERT( P->size() == color->size() );
-
-    const vector<std::shared_ptr<Light> >& lights = grid.lights();
-    for ( vector<std::shared_ptr<Light> >::const_iterator i = lights.begin(); i != lights.end(); ++i )
+    memset( color, 0, sizeof(vec3) * grid.size() );
+    const vector<std::shared_ptr<Light>>& lights = grid.lights();
+    for ( vector<std::shared_ptr<Light>>::const_iterator i = lights.begin(); i != lights.end(); ++i )
     {
         Light* light = i->get();
         REYES_ASSERT( light );
         
         if ( light->type() != LIGHT_AMBIENT )
         {
-            const std::shared_ptr<Value>& light_color = light->color();
+            const math::vec3* light_color = light->color();
             REYES_ASSERT( light_color );
             
-            vec3* colors = color->vec3_values();
-            const vec3* positions = P->vec3_values();
-            const vec3* normals = normal->vec3_values();
-            const vec3* light_colors = light_color->vec3_values();
-            const int size = color->size();
+            const int size = grid.size();
 
             switch ( light->type() )
             {
@@ -95,11 +77,11 @@ void diffuse( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Va
                         for ( int i = 0; i < size; ++i )
                         {
                             const vec3& L = light_direction;
-                            const vec3& N = normals[i];
+                            const vec3& N = normal[i];
                             if ( dot(N, L) >= 0.0f )
                             {
-                                const vec3& Cl = light_colors[i];
-                                colors[i] +=  Cl * dot( N, normalize(L) );
+                                const vec3& Cl = light_color[i];
+                                color[i] +=  Cl * dot( N, normalize(L) );
                             }                    
                         }
                     }
@@ -110,11 +92,11 @@ void diffuse( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Va
                         for ( int i = 0; i < size; ++i )
                         {
                             const vec3& L = light_direction;
-                            const vec3& N = normals[i];
+                            const vec3& N = normal[i];
                             if ( dot(N, L) >= 0.0f && dot(light_axis, -N) >= light_angle_cosine )
                             {
-                                const vec3& Cl = light_colors[i];
-                                colors[i] +=  Cl * dot( N, normalize(L) );
+                                const vec3& Cl = light_color[i];
+                                color[i] +=  Cl * dot( N, normalize(L) );
                             }                    
                         }
                     }
@@ -126,12 +108,12 @@ void diffuse( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Va
                     const vec3& light_position = light->position();
                     for ( int i = 0; i < size; ++i )
                     {
-                        const vec3 L = normalize( light_position - positions[i] );
-                        const vec3& N = normals[i];
+                        const vec3 L = normalize( light_position - position[i] );
+                        const vec3& N = normal[i];
                         if ( dot(N, L) >= 0.0f )
                         {
-                            const vec3& Cl = light_colors[i];
-                            colors[i] +=  Cl * dot( N, normalize(L) );
+                            const vec3& Cl = light_color[i];
+                            color[i] +=  Cl * dot( N, normalize(L) );
                         }                    
                     }
                     break;
@@ -144,12 +126,12 @@ void diffuse( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Va
                     const float light_angle_cosine = cosf( light->angle() );
                     for ( int i = 0; i < size; ++i )
                     {
-                        const vec3 L = normalize( light_position - positions[i] );
-                        const vec3& N = normals[i];
+                        const vec3 L = normalize( light_position - position[i] );
+                        const vec3& N = normal[i];
                         if ( dot(N, L) >= 0.0f && dot(light_axis, -L) >= light_angle_cosine )
                         {
-                            const vec3& Cl = light_colors[i];
-                            colors[i] +=  Cl * dot( N, L );
+                            const vec3& Cl = light_color[i];
+                            color[i] +=  Cl * dot( N, L );
                         }                    
                     }
                     break;
@@ -162,35 +144,24 @@ void diffuse( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Va
     }    
 }
 
-void specular( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Value> color, std::shared_ptr<Value> normal, std::shared_ptr<Value> view, std::shared_ptr<Value> roughness_value )
+void specular( const Renderer& /*renderer*/, const Grid& grid, int /*dispatch*/, void** arguments )
 {
-    REYES_ASSERT( color );
-    REYES_ASSERT( normal );
-    REYES_ASSERT( view );
-    REYES_ASSERT( roughness_value );
-    
-    color->reset( TYPE_COLOR, STORAGE_VARYING, grid.size() );
-    color->zero();
-    
-    std::shared_ptr<Value> P = grid.find_value( "P" );
-    REYES_ASSERT( P );
-    REYES_ASSERT( P->type() == TYPE_POINT );
-    REYES_ASSERT( P->storage() == STORAGE_VARYING );
-    REYES_ASSERT( P->size() == color->size() );
-    
-    const vector<std::shared_ptr<Light> >& lights = grid.lights();
-    for ( vector<std::shared_ptr<Light> >::const_iterator i = lights.begin(); i != lights.end(); ++i )
+    vec3* color = reinterpret_cast<vec3*>( arguments[0] );
+    const vec3* position = grid.vec3_value( "P" );
+    const vec3* normal = reinterpret_cast<const vec3*>( arguments[1] );
+    const vec3* view = reinterpret_cast<const vec3*>( arguments[2] );
+    const float* roughness = reinterpret_cast<const float*>( arguments[3] );
+
+    memset( color, 0, sizeof(vec3) * grid.size() );    
+    const vector<std::shared_ptr<Light>>& lights = grid.lights();
+    for ( vector<std::shared_ptr<Light>>::const_iterator i = lights.begin(); i != lights.end(); ++i )
     {
         Light* light = i->get();
         REYES_ASSERT( light );
         
-        vec3* colors = color->vec3_values();
-        const vec3* positions = P->vec3_values();
-        const vec3* normals = normal->vec3_values();
-        const vec3* views = view->vec3_values();
-        const float roughness = roughness_value->float_value();
-        const vec3* light_colors = light->color()->vec3_values();
-        const int size = color->size();
+        const vec3* light_color = light->color();
+        const int size = grid.size();
+        const float gloss = 1.0f / roughness[0];
 
         switch ( light->type() )
         {
@@ -203,13 +174,13 @@ void specular( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<V
                     for ( int i = 0; i < size; ++i )
                     {
                         const vec3& L = light_direction;
-                        const vec3& N = normals[i];
+                        const vec3& N = normal[i];
                         if ( dot(N, L) >= 0.0f )
                         {
-                            const vec3& Cl = light_colors[i];
-                            const vec3& V = views[i];
+                            const vec3& Cl = light_color[i];
+                            const vec3& V = view[i];
                             vec3 H = normalize( L + V );
-                            colors[i] += Cl * powf( std::max(0.0f, dot(N, H)), 1.0f / roughness );
+                            color[i] += Cl * powf( std::max(0.0f, dot(N, H)), gloss );
                         }                    
                     }
                 }
@@ -220,13 +191,13 @@ void specular( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<V
                     for ( int i = 0; i < size; ++i )
                     {
                         const vec3& L = light_direction;
-                        const vec3& N = normals[i];
+                        const vec3& N = normal[i];
                         if ( dot(N, L) >= 0.0f && dot(light_axis, -N) >= light_angle_cosine )
                         {
-                            const vec3& Cl = light_colors[i];
-                            const vec3& V = views[i];
+                            const vec3& Cl = light_color[i];
+                            const vec3& V = view[i];
                             vec3 H = normalize( L + V );
-                            colors[i] += Cl * powf( std::max(0.0f, dot(N, H)), 1.0f / roughness );
+                            color[i] += Cl * powf( std::max(0.0f, dot(N, H)), gloss );
                         }                    
                     }
                 }
@@ -238,14 +209,14 @@ void specular( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<V
                 const vec3& light_position = light->position();
                 for ( int i = 0; i < size; ++i )
                 {
-                    const vec3 L = normalize( light_position - positions[i] );
-                    const vec3& N = normals[i];
+                    const vec3 L = normalize( light_position - position[i] );
+                    const vec3& N = normal[i];
                     if ( dot(N, L) >= 0.0f )
                     {
-                        const vec3& Cl = light_colors[i];
-                        const vec3& V = views[i];
+                        const vec3& Cl = light_color[i];
+                        const vec3& V = view[i];
                         vec3 H = normalize( L + V );
-                        colors[i] += Cl * powf( std::max(0.0f, dot(N, H)), 1.0f / roughness );
+                        color[i] += Cl * powf( std::max(0.0f, dot(N, H)), gloss );
                     }                    
                 }
                 break;
@@ -258,14 +229,14 @@ void specular( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<V
                 const float light_angle_cosine = cosf( light->angle() );
                 for ( int i = 0; i < size; ++i )
                 {
-                    const vec3 L = normalize( light_position - positions[i] );
-                    const vec3& N = normals[i];
+                    const vec3 L = normalize( light_position - position[i] );
+                    const vec3& N = normal[i];
                     if ( dot(N, L) >= 0.0f && dot(light_axis, -L) >= light_angle_cosine )
                     {
-                        const vec3& Cl = light_colors[i];
-                        const vec3& V = views[i];
+                        const vec3& Cl = light_color[i];
+                        const vec3& V = view[i];
                         vec3 H = normalize( L + V );
-                        colors[i] += Cl * powf( std::max(0.0f, dot(N, H)), 1.0f / roughness );
+                        color[i] += Cl * powf( std::max(0.0f, dot(N, H)), gloss );
                     }                    
                 }
                 break;
@@ -277,61 +248,42 @@ void specular( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<V
     }
 }
 
-void specularbrdf( const Renderer& /*renderer*/, const Grid& /*grid*/, std::shared_ptr<Value> result, std::shared_ptr<Value> l, std::shared_ptr<Value> n, std::shared_ptr<Value> v, std::shared_ptr<Value> roughness_value )
+void specularbrdf( const Renderer& /*renderer*/, const Grid& grid, int /*dispatch*/, void** arguments )
 {
-    REYES_ASSERT( result );
-    REYES_ASSERT( l );
-    REYES_ASSERT( n );
-    REYES_ASSERT( v );
-    REYES_ASSERT( roughness_value );
-    REYES_ASSERT( roughness_value->type() == TYPE_FLOAT );
-    REYES_ASSERT( roughness_value->storage() == STORAGE_CONSTANT || roughness_value->storage() == STORAGE_UNIFORM );
-    
-    const vec3* lights = l->vec3_values();
-    const vec3* normals = n->vec3_values();
-    const vec3* views = v->vec3_values();
-    const float roughness = roughness_value->float_value();
-    const int size = l->size();
+    math::vec3* color = reinterpret_cast<math::vec3*>( arguments[0] );
+    const math::vec3* light_direction = reinterpret_cast<const math::vec3*>( arguments[1] );
+    const math::vec3* normal = reinterpret_cast<const math::vec3*>( arguments[2] );
+    const math::vec3* view = reinterpret_cast<const math::vec3*>( arguments[3] );
+    const float* roughness = reinterpret_cast<const float*>( arguments[4] );
+    const float gloss = 1.0f / roughness[5];
+    const int size = grid.size();
 
-    result->reset( TYPE_COLOR, STORAGE_VARYING, size );
-    vec3* colors = result->vec3_values();
-    
+    memset( color, 0, sizeof(vec3) * grid.size() );    
     for ( int i = 0; i < size; ++i )
     {
-        float alpha = powf( max(0.0f, dot(normals[i], normalize(lights[i] + views[i]))), 1.0f / roughness );
-        colors[i] = vec3( alpha, alpha, alpha );
+        float alpha = powf( max(0.0f, dot(normal[i], normalize(light_direction[i] + view[i]))), gloss );
+        color[i] = vec3( alpha, alpha, alpha );
     }
 }
 
-void phong( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> normal, std::shared_ptr<Value> view, std::shared_ptr<Value> power_value )
+void phong( const Renderer& /*renderer*/, const Grid& grid, int /*dispatch*/, void** arguments )
 {
-    REYES_ASSERT( result );
-    REYES_ASSERT( normal );
-    REYES_ASSERT( view );
-    REYES_ASSERT( power_value );
-    
-    result->reset( TYPE_COLOR, STORAGE_VARYING, grid.size() );
-    result->zero();
-    
-    std::shared_ptr<Value> P = grid.find_value( "P" );
-    REYES_ASSERT( P );
-    REYES_ASSERT( P->type() == TYPE_POINT );
-    REYES_ASSERT( P->storage() == STORAGE_VARYING );
-    REYES_ASSERT( P->size() == result->size() );
-    
-    const vector<std::shared_ptr<Light> >& lights = grid.lights();
-    for ( vector<std::shared_ptr<Light> >::const_iterator i = lights.begin(); i != lights.end(); ++i )
+    math::vec3* color = reinterpret_cast<math::vec3*>( arguments[0] );
+    const math::vec3* position = grid.vec3_value( "P" );
+    const math::vec3* normal = reinterpret_cast<const math::vec3*>( arguments[1] );
+    const math::vec3* view = reinterpret_cast<const math::vec3*>( arguments[2] );
+    const float* power = reinterpret_cast<const float*>( arguments[3] );
+
+    memset( color, 0, sizeof(vec3) * grid.size() );
+    const vector<std::shared_ptr<Light>>& lights = grid.lights();
+    for ( vector<std::shared_ptr<Light>>::const_iterator i = lights.begin(); i != lights.end(); ++i )
     {
         Light* light = i->get();
         REYES_ASSERT( light );
         
-        vec3* colors = result->vec3_values();
-        const vec3* positions = P->vec3_values();
-        const vec3* normals = normal->vec3_values();
-        const vec3* views = view->vec3_values();
-        const float power = power_value->float_value();
-        const vec3* light_colors = light->color()->vec3_values();
-        const int size = result->size();
+        const vec3* light_color = light->color();
+        const float power_ = power[0];
+        const int size = grid.size();
 
         switch ( light->type() )
         {
@@ -344,13 +296,13 @@ void phong( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Valu
                     const vec3 L = normalize( light_direction );
                     for ( int i = 0; i < size; ++i )
                     {
-                        const vec3 N = normalize( normals[i] );
+                        const vec3 N = normalize( normal[i] );
                         if ( dot(N, L) >= 0.0f )
                         {
-                            const vec3& Cl = light_colors[i];
-                            const vec3& V = views[i];
+                            const vec3& Cl = light_color[i];
+                            const vec3& V = view[i];
                             const vec3 R = -V - 2.0f * dot(-V, N) * N;
-                            colors[i] += Cl * powf( max(0.0f, dot(R, L)), power );
+                            color[i] += Cl * powf( max(0.0f, dot(R, L)), power_ );
                         }                    
                     }
                 }
@@ -361,13 +313,13 @@ void phong( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Valu
                     const float light_angle_cosine = cosf( light->angle() );                    
                     for ( int i = 0; i < size; ++i )
                     {
-                        const vec3 N = normalize( normals[i] );
+                        const vec3 N = normalize( normal[i] );
                         if ( dot(N, L) >= 0.0f && dot(light_axis, -N) >= light_angle_cosine )
                         {
-                            const vec3& Cl = light_colors[i];
-                            const vec3& V = views[i];
+                            const vec3& Cl = light_color[i];
+                            const vec3& V = view[i];
                             const vec3 R = -V - 2.0f * dot(-V, N) * N;
-                            colors[i] += Cl * powf( max(0.0f, dot(R, L)), power );
+                            color[i] += Cl * powf( max(0.0f, dot(R, L)), power_ );
                         }                    
                     }
                 }
@@ -379,14 +331,14 @@ void phong( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Valu
                 const vec3& light_position = light->position();
                 for ( int i = 0; i < size; ++i )
                 {
-                    const vec3 L = normalize( light_position - positions[i] );
-                    const vec3 N = normalize( normals[i] );
+                    const vec3 L = normalize( light_position - position[i] );
+                    const vec3 N = normalize( normal[i] );
                     if ( dot(N, L) >= 0.0f )
                     {
-                        const vec3& Cl = light_colors[i];
-                        const vec3& V = views[i];
+                        const vec3& Cl = light_color[i];
+                        const vec3& V = view[i];
                         const vec3 R = -V - 2.0f * dot(-V, N) * N;
-                        colors[i] += Cl * powf( max(0.0f, dot(R, L)), power );
+                        color[i] += Cl * powf( max(0.0f, dot(R, L)), power_ );
                     }                    
                 }
                 break;
@@ -399,14 +351,14 @@ void phong( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Valu
                 const float light_angle_cosine = cosf( light->angle() );
                 for ( int i = 0; i < size; ++i )
                 {
-                    const vec3 L = normalize( light_position - positions[i] );
-                    const vec3 N = normalize( normals[i] );
+                    const vec3 L = normalize( light_position - position[i] );
+                    const vec3 N = normalize( normal[i] );
                     if ( dot(N, L) >= 0.0f && dot(light_axis, -L) >= light_angle_cosine )
                     {
-                        const vec3& Cl = light_colors[i];
-                        const vec3& V = views[i];
+                        const vec3& Cl = light_color[i];
+                        const vec3& V = view[i];
                         const vec3 R = -V - 2.0f * dot(-V, N) * N;
-                        colors[i] += Cl * powf( max(0.0f, dot(R, L)), power );
+                        color[i] += Cl * powf( max(0.0f, dot(R, L)), power_ );
                     }                    
                 }
                 break;
@@ -418,11 +370,12 @@ void phong( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Valu
     }
 }
 
-void trace( const Renderer& /*renderer*/, const Grid& grid, std::shared_ptr<Value> result, std::shared_ptr<Value> /*point*/, std::shared_ptr<Value> /*reflection*/ )
+void trace( const Renderer& /*renderer*/, const Grid& grid, int /*dispatch*/, void** arguments )
 {
-    REYES_ASSERT( result );
-    result->reset( TYPE_COLOR, STORAGE_VARYING, grid.size() );
-    result->zero();
+    math::vec3* color = reinterpret_cast<math::vec3*>( arguments[0] );
+    // const math::vec3* point = reinterpret_cast<const math::vec3*>( arguments[1] );
+    // const math::vec3* reflection = reinterpret_cast<const math::vec3*>( arguments[2] );
+    memset( color, 0, sizeof(vec3) * grid.size() );
 }
 
 }

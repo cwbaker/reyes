@@ -7,7 +7,6 @@
 #include "Sampler.hpp"
 #include "SampleBuffer.hpp"
 #include "Grid.hpp"
-#include "Value.hpp"
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
 #include <math/vec4.ipp>
@@ -24,45 +23,34 @@ using namespace reyes;
 
 static const int MAXIMUM_SAMPLES = 4096;
 
-Sampler::Sampler( float width, float height, int maximum_vertices, const math::vec4& crop_window )
-: width_( width ),
-  height_( height ),
-  maximum_vertices_( maximum_vertices ),
-  x0_( floorf(crop_window.x * width) ),
-  x1_( floorf(crop_window.y * width) + 1 ),
-  y0_( floorf(crop_window.z * height) ),
-  y1_( floorf(crop_window.w * height) + 1),
-  raster_positions_( NULL ),
-  origins_and_edges_( NULL ),
-  indices_( NULL ),
-  polygons_( 0 ),
-  samples_( NULL )
+Sampler::Sampler( float width, float height, const math::vec4& crop_window )
+: width_( width )
+, height_( height )
+, maximum_vertices_( 0 )
+, x0_( floorf(crop_window.x * width) )
+, x1_( floorf(crop_window.y * width) + 1 )
+, y0_( floorf(crop_window.z * height) )
+, y1_( floorf(crop_window.w * height) + 1)
+, origins_and_edges_( nullptr )
+, indices_( nullptr )
+, polygons_( 0 )
+, samples_( nullptr )
+, raster_positions_( nullptr )
 {
-    const unsigned int MAXIMUM_VERTICES = maximum_vertices_;
     const unsigned int MAXIMUM_TRIANGLES = 2 * 63 * 63;
-    raster_positions_ = reinterpret_cast<vec3*>( malloc(sizeof(vec3) * MAXIMUM_VERTICES) );
     origins_and_edges_ = reinterpret_cast<vec3*>( malloc(3 * sizeof(vec3) * MAXIMUM_TRIANGLES) );
     indices_ = reinterpret_cast<int*>( malloc(3 * sizeof(int) * MAXIMUM_TRIANGLES) );
-    bounds_ = reinterpret_cast<int*>( malloc(4 * sizeof(int) * MAXIMUM_TRIANGLES) );    
+    bounds_ = reinterpret_cast<int*>( malloc(4 * sizeof(int) * MAXIMUM_TRIANGLES) );
     samples_ = reinterpret_cast<Sample*>( malloc(sizeof(Sample) * MAXIMUM_SAMPLES) );
 }
 
 Sampler::~Sampler()
 {
+    reset();
     free( samples_ );
-    samples_ = NULL;
-
     free( bounds_ );
-    bounds_ = NULL;
-
     free( indices_ );
-    indices_ = NULL;
-    
     free( origins_and_edges_ );
-    origins_and_edges_ = NULL;
-    
-    free( raster_positions_ );
-    raster_positions_ = NULL;
 }
 
 void Sampler::sample( const math::mat4x4& screen_transform, const Grid& grid, bool matte, bool two_sided, bool left_handed, SampleBuffer* sample_buffer )
@@ -71,15 +59,36 @@ void Sampler::sample( const math::mat4x4& screen_transform, const Grid& grid, bo
 
     polygons_ = 0;
 
-    const vec3* colors = !matte ? grid["Ci"].vec3_values() : NULL;
-    const vec3* opacities = !matte ? grid["Oi"].vec3_values() : NULL;
-    const vec3* positions = grid["P"].vec3_values();
+    const vec3* colors = !matte ? grid.vec3_value( "Ci" ) : nullptr;
+    const vec3* opacities = !matte ? grid.vec3_value( "Oi" ) : nullptr;
+    const vec3* positions = grid.vec3_value( "P" );
     const int vertices = grid.size();
     
+    reserve( grid.maximum_vertices() );
     calculate_raster_positions( screen_transform, positions, vertices );
     calculate_indices_origins_and_edges( grid, two_sided, left_handed );
     calculate_bounds( sample_buffer->width(), sample_buffer->height(), polygons_ );
     calculate_samples( colors, opacities, matte, polygons_, sample_buffer );
+}
+
+void Sampler::reset()
+{
+    if ( raster_positions_ )
+    {
+        free( raster_positions_ );
+        raster_positions_ = nullptr;
+    }    
+}
+
+void Sampler::reserve( int maximum_vertices )
+{
+    REYES_ASSERT( grid.maximum_vertices() > 0 );
+    if ( maximum_vertices > maximum_vertices_ )
+    {
+        reset();
+        raster_positions_ = reinterpret_cast<vec3*>( malloc(sizeof(vec3) * maximum_vertices) );
+        maximum_vertices_ = maximum_vertices;
+    }
 }
 
 void Sampler::calculate_raster_positions( const math::mat4x4& screen_transform, const vec3* positions, int vertices )

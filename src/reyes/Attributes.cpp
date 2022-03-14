@@ -5,14 +5,14 @@
 
 #include "stdafx.hpp"
 #include "Attributes.hpp"
-#include "Value.hpp"
 #include "Grid.hpp"
 #include "Shader.hpp"
 #include "VirtualMachine.hpp"
+#include "assert.hpp"
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
 #include <math/mat4x4.ipp>
-#include "assert.hpp"
+#include <string.h>
 
 using std::map;
 using std::pair;
@@ -33,20 +33,20 @@ Attributes::Attributes( VirtualMachine* virtual_machine )
   geometry_left_handed_( true ),
   color_( 0.0f, 0.0f, 0.0f ),
   opacity_( 1.0f, 1.0f, 1.0f ),
-  u_basis_( NULL ),
-  v_basis_( NULL ),
-  displacement_parameters_( NULL ),
-  displacement_shader_( NULL ),
-  surface_parameters_( NULL ),
-  surface_shader_( NULL ),
+  u_basis_( nullptr ),
+  v_basis_( nullptr ),
+  displacement_grid_( nullptr ),
+  displacement_shader_( nullptr ),
+  surface_grid_( nullptr ),
+  surface_shader_( nullptr ),
   light_shaders_(),
   active_light_shaders_(),
   transforms_(),
   named_transforms_()
 {
     REYES_ASSERT( virtual_machine_ );
-    displacement_parameters_ = new Grid();
-    surface_parameters_ = new Grid();
+    displacement_grid_ = new Grid();
+    surface_grid_ = new Grid();
 
     const unsigned int LIGHT_SHADERS_RESERVE = 32;
     light_shaders_.reserve( LIGHT_SHADERS_RESERVE );
@@ -67,9 +67,9 @@ Attributes::Attributes( const Attributes& attributes )
   opacity_( attributes.opacity_ ),
   u_basis_( attributes.u_basis_ ),
   v_basis_( attributes.v_basis_ ),
-  displacement_parameters_( NULL ),
+  displacement_grid_( nullptr ),
   displacement_shader_( attributes.displacement_shader_ ),
-  surface_parameters_( NULL ),
+  surface_grid_( nullptr ),
   surface_shader_( attributes.surface_shader_ ),
   light_shaders_( attributes.light_shaders_ ),
   active_light_shaders_( attributes.active_light_shaders_ ),
@@ -77,17 +77,17 @@ Attributes::Attributes( const Attributes& attributes )
   named_transforms_( attributes.named_transforms_ )
 {
     REYES_ASSERT( virtual_machine_ );
-    displacement_parameters_ = new Grid( *attributes.displacement_parameters_ );
-    surface_parameters_ = new Grid( *attributes.surface_parameters_ );
+    displacement_grid_ = new Grid( *attributes.displacement_grid_ );
+    surface_grid_ = new Grid( *attributes.surface_grid_ );
 }
 
 Attributes::~Attributes()
 {
-    delete surface_parameters_;
-    surface_parameters_ = NULL;
+    delete surface_grid_;
+    surface_grid_ = nullptr;
     
-    delete displacement_parameters_;
-    displacement_parameters_ = NULL;
+    delete displacement_grid_;
+    displacement_grid_ = nullptr;
 }
 
 float Attributes::shading_rate() const
@@ -188,25 +188,36 @@ void Attributes::displacement_shade( Grid& grid )
     if ( displacement_shader_ )
     {
         grid.generate_normals( geometry_left_handed() );
+
+        displacement_grid_->resize( grid.width(), grid.height() );
+        memcpy( displacement_grid_->vec3_value("P"), grid.vec3_value("P"), sizeof(vec3) * displacement_grid_->size() );
+        memcpy( displacement_grid_->vec3_value("N"), grid.vec3_value("N"), sizeof(vec3) * displacement_grid_->size() );
+        memcpy( displacement_grid_->vec3_value("I"), grid.vec3_value("I"), sizeof(vec3) * displacement_grid_->size() );
+        memcpy( displacement_grid_->float_value("s"), grid.float_value("s"), sizeof(float) * displacement_grid_->size() );
+        memcpy( displacement_grid_->float_value("t"), grid.float_value("t"), sizeof(float) * displacement_grid_->size() );
+
         add_coordinate_system( "current", math::identity() );
-        add_coordinate_system( "shader", displacement_parameters_->get_transform() );
-        virtual_machine_->shade( grid, *displacement_parameters_, *displacement_shader_ );
+        add_coordinate_system( "shader", displacement_grid_->get_transform() );
+        virtual_machine_->shade( *displacement_grid_, *displacement_shader_ );
         remove_coordinate_system( "shader" );
         remove_coordinate_system( "current" );
-        grid.generate_normals(  geometry_left_handed(), true );
+
+        memcpy( grid.vec3_value("P"), displacement_grid_->vec3_value("P"), sizeof(vec3) * grid.size() );
+        grid.generate_normals( geometry_left_handed(), true );
     }
 }
 
 void Attributes::set_displacement_shader( Shader* displacement_shader, const math::mat4x4& camera_transform )
 {
-    displacement_parameters_->clear();
+    displacement_grid_->clear();
     displacement_shader_ = displacement_shader;
     if ( displacement_shader_ )
     {
-        displacement_parameters_->set_transform( camera_transform * transforms_.back() );
+        displacement_grid_->set_shader( displacement_shader_ );
+        displacement_grid_->set_transform( camera_transform * transforms_.back() );
         add_coordinate_system( "current", math::identity() );
-        add_coordinate_system( "shader", displacement_parameters_->get_transform() );
-        virtual_machine_->initialize( *displacement_parameters_, *displacement_shader_ );
+        add_coordinate_system( "shader", displacement_grid_->get_transform() );
+        virtual_machine_->initialize( *displacement_grid_, *displacement_shader_ );
         remove_coordinate_system( "shader" );
         remove_coordinate_system( "current" );
     }
@@ -219,7 +230,7 @@ Shader* Attributes::displacement_shader() const
 
 Grid& Attributes::displacement_parameters() const
 {
-    return *displacement_parameters_;
+    return *displacement_grid_;
 }
 
 void Attributes::surface_shade( Grid& grid )
@@ -229,37 +240,33 @@ void Attributes::surface_shade( Grid& grid )
         grid.generate_normals( geometry_left_handed() );
         light_shade( grid );
 
-        Value& incident_color = grid.value( "Ci", TYPE_COLOR );
-        incident_color.zero();
+        vec3* incident_color = grid.vec3_value( "Ci" );
+        REYES_ASSERT( incident_color );
+        memset( incident_color, 0, sizeof(vec3) * grid.size() );
 
-        Value& incident_opacity = grid.value( "Oi", TYPE_COLOR );
-        incident_opacity.zero();
+        vec3* incident_opacity = grid.vec3_value( "Oi" );
+        REYES_ASSERT( incident_opacity );
+        memset( incident_opacity, 0, sizeof(vec3) * grid.size() );
 
         // @todo
         //  Adjust the 'I' value in a surface shader if 'P' is not in eye space.
-        if ( !grid.find_value("I") )
-        {
-            grid.insert_value( "I", grid.find_value("P") );
-        }
+        const vec3* position = grid.vec3_value( "P" );
+        REYES_ASSERT( position );
+        vec3* incident = grid.vec3_value( "I" );
+        REYES_ASSERT( incident );
+        memcpy( incident, position, sizeof(vec3) * grid.size() );
         
-        Value& P = grid["P"];
-        Value& Os = grid.value( "Os", TYPE_COLOR );
-        vec3* values = Os.vec3_values();
-        for ( unsigned int i = 0; i < P.size(); ++i )
+        vec3* colors = grid.vec3_value( "Cs" );
+        vec3* opacities = grid.vec3_value( "Os" );
+        for ( unsigned int i = 0; i < grid.size(); ++i )
         {
-            values[i] = opacity_;
-        }
-
-        Value& Cs = grid.value( "Cs", TYPE_COLOR );
-        values = Cs.vec3_values();
-        for ( unsigned int i = 0; i < P.size(); ++i )
-        {
-            values[i] = color_;
+            colors[i] = color_;
+            opacities[i] = opacity_;
         }
 
         add_coordinate_system( "current", math::identity() );
-        add_coordinate_system( "shader", surface_parameters_->get_transform() );        
-        virtual_machine_->shade( grid, *surface_parameters_, *surface_shader_ );                
+        add_coordinate_system( "shader", surface_grid_->get_transform() );        
+        virtual_machine_->shade( *surface_grid_, *surface_shader_ );                
         remove_coordinate_system( "shader" );
         remove_coordinate_system( "current" );
     }
@@ -267,14 +274,15 @@ void Attributes::surface_shade( Grid& grid )
 
 void Attributes::set_surface_shader( Shader* surface_shader, const math::mat4x4& camera_transform )
 {
-    surface_parameters_->clear();
+    surface_grid_->clear();
     surface_shader_ = surface_shader;
     if ( surface_shader_ )
     {
-        surface_parameters_->set_transform( camera_transform * transforms_.back() );
+        surface_grid_->set_shader( surface_shader );
+        surface_grid_->set_transform( camera_transform * transforms_.back() );
         add_coordinate_system( "current", math::identity() );
-        add_coordinate_system( "shader", surface_parameters_->get_transform() );
-        virtual_machine_->initialize( *surface_parameters_, *surface_shader_ );
+        add_coordinate_system( "shader", surface_grid_->get_transform() );
+        virtual_machine_->initialize( *surface_grid_, *surface_shader_ );
         remove_coordinate_system( "shader" );
         remove_coordinate_system( "current" );
     }
@@ -287,32 +295,37 @@ Shader* Attributes::surface_shader() const
 
 Grid& Attributes::surface_parameters() const
 {
-    return *surface_parameters_;
+    return *surface_grid_;
 }
 
 void Attributes::light_shade( Grid& grid )
 {
-    grid.reserve_lights( light_shaders_.size() );    
+    grid.clear_lights();
+    grid.reserve_lights( light_shaders_.size() );
     for ( vector<Grid*>::const_iterator i = active_light_shaders_.begin(); i != active_light_shaders_.end(); ++i )
     {
-        Grid* light_parameters = *i;
-        REYES_ASSERT( light_parameters );
+        Grid* light_grid = *i;
+        REYES_ASSERT( light_grid );
+        light_grid->clear_lights();
+        light_grid->resize( grid.width(), grid.height() );
     
-        Shader* shader = light_parameters->shader();
+        Shader* shader = light_grid->shader();
         REYES_ASSERT( shader );
         
-        Grid light_grid;
-        light_grid.resize( grid.width(), grid.height() );
-        light_grid.insert_value( "Ps", grid.find_value("P") );
+        vec3* Ps = light_grid->vec3_value( "Ps" );
+        REYES_ASSERT( Ps );
+        const vec3* P = grid.vec3_value( "P" );
+        REYES_ASSERT( P );
+        memcpy( Ps, P, sizeof(vec3) * light_grid->size() );
         
         add_coordinate_system( "current", math::identity() );
-        add_coordinate_system( "shader", light_parameters->get_transform() );
-        virtual_machine_->shade( light_grid, *light_parameters, *shader );
+        add_coordinate_system( "shader", light_grid->get_transform() );
+        virtual_machine_->shade( *light_grid, *shader );
         remove_coordinate_system( "shader" );
         remove_coordinate_system( "current" );
         
-        const vector<shared_ptr<Light> >& lights = light_grid.lights();
-        for ( vector<shared_ptr<Light> >::const_iterator i = lights.begin(); i != lights.end(); ++i )
+        const vector<shared_ptr<Light>>& lights = light_grid->lights();
+        for ( vector<shared_ptr<Light>>::const_iterator i = lights.begin(); i != lights.end(); ++i )
         {
             const shared_ptr<Light>& light = *i;      
             grid.add_light( light );
@@ -338,16 +351,17 @@ Grid& Attributes::add_light_shader( Shader* light_shader, const math::mat4x4& ca
     return *light_parameters;
 }
 
-void Attributes::activate_light_shader( const Grid& grid )
+void Attributes::activate_light_shader( Grid& grid )
 {
     vector<Grid*>::iterator i = find_active_light_shader_by_grid( grid );
     if ( i == active_light_shaders_.end() )
     {  
-        active_light_shaders_.push_back( const_cast<Grid*>(&grid) );
+        grid.clear_lights();
+        active_light_shaders_.push_back( &grid );
     }
 }
 
-void Attributes::deactivate_light_shader( const Grid& grid )
+void Attributes::deactivate_light_shader( Grid& grid )
 {
     vector<Grid*>::iterator i = find_active_light_shader_by_grid( grid );
     if ( i != active_light_shaders_.end() )
@@ -355,6 +369,7 @@ void Attributes::deactivate_light_shader( const Grid& grid )
         REYES_ASSERT( *i == &grid );
         swap( *i, active_light_shaders_.back() );
         active_light_shaders_.pop_back();
+        grid.clear_lights();
     }
 }
 

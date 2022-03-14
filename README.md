@@ -26,7 +26,6 @@
 
 ~~~c++
 #include <reyes/Grid.hpp>
-#include <reyes/Value.hpp>
 #include <reyes/Options.hpp>
 #include <reyes/Renderer.hpp>
 #include <math/vec3.ipp>
@@ -37,7 +36,7 @@ using namespace math;
 using namespace reyes;
 
 void render_wavy_sphere_example()
-{  
+{
     Options options;
     options.set_gamma( 1.0f / 2.2f );
     options.set_resolution( 640, 480, 1.0f );
@@ -53,7 +52,7 @@ void render_wavy_sphere_example()
     renderer.begin_world();
 
     Grid& ambientlight = renderer.light_shader( SHADERS_PATH "ambientlight.sl" );
-    ambientlight["intensity"] = 0.4f;
+    ambientlight["intensity"] = 0.2f;
     ambientlight["lightcolor"] = vec3( 1.0f, 1.0f, 1.0f );
 
     Grid& pointlight = renderer.light_shader( SHADERS_PATH "pointlight.sl" );
@@ -65,13 +64,13 @@ void render_wavy_sphere_example()
     wavy["Km"] = 0.2f;
     wavy["sfreq"] = 24.0f;
     wavy["tfreq"] = 32.0f;
-    
+
     Grid& plastic = renderer.surface_shader( SHADERS_PATH "plastic.sl" );
-    plastic["Ka"] = 0.5f;
+    plastic["Ka"] = 0.2f;
     plastic["Kd"] = 0.4f;
     plastic["Ks"] = 0.4f;
     plastic["roughness"] = 0.05f;
-    
+
     renderer.identity();
     renderer.translate( vec3(0.0f, 0.0f, 0.0f) );
     renderer.rotate( 0.5f * float(M_PI), 1.0f, 0.0f, 0.0f );
@@ -148,7 +147,7 @@ forge variant=release
 
 *Reyes* is a C++ library that generates images from geometry, textures, and shaders based on the architecture described in the original REYES paper and [the RenderMan Interface Specification](https://en.wikipedia.org/wiki/RenderMan_Interface_Specification) v3.2.1 from Pixar. 
 
-The *Renderer*, *Grid*, *Value*, and *Options* classes form the public interface to the renderer.  The *Renderer* class provides the main interface to the library for application code.  The *Options* class allows application code to override the default per-frame options used by the renderer.  The *Grid* and *Value* classes are used to provide a collection of values that is used to represent the parameters passed to shaders and the vertices in a piece of diced geometry.
+The *Renderer*, *Grid*, and *Options* classes form the public interface to the renderer.  The *Renderer* class provides the main interface to the library for application code.  The *Options* class allows application code to override the default per-frame options used by the renderer.  The *Grid* class provides a collection of values representing the parameters passed to shaders and the vertices in a piece of diced geometry.
 
 Other classes are used behind the scenes to represent geometry as it is passed through the bound and split phase of the renderer (*Cone*, *CubicPatch*, *Cylinder*, *Disk*, *Hyperboloid*, *LinearPatch*, *Paraboloid*, *Sphere*, *Torus*, and *Geometry*); to support compilation and execution of shaders (*ShaderParser*, *SemanticAnalyzer*, *CodeGenerator*, *SymbolTable*, *Symbol*, *SyntaxNode*, and *VirtualMacine*); to represent a level of hierarchical graphics state (*Attributes*); to represent sample and image buffers (*SampleBuffer* and *ImageBuffer*); to handle sampling a diced grid into a sample buffer (*Sampler*); and to dump out various information that is useful when debugging the renderer (*Debugger*).
 

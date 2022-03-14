@@ -1,6 +1,5 @@
 
 #include <reyes/Grid.hpp>
-#include <reyes/Value.hpp>
 #include <reyes/Options.hpp>
 #include <reyes/Renderer.hpp>
 #include <reyes/Texture.hpp>
@@ -9,6 +8,7 @@
 #include <math/vec3.ipp>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <assert.h>
 
 using namespace math;
 using namespace reyes;
@@ -97,7 +97,7 @@ void render_shaders_example()
     renderer.push_attributes();
     renderer.texture( REYES_EXAMPLES_PATH "bumpy.jpg" );
     renderer.color( vec3(1.0f, 1.0f, 1.0f) );
-    Grid& paintedplastic = renderer.surface_shader( SHADERS_PATH "paintedplastic.sl" );    
+    Grid& paintedplastic = renderer.surface_shader( SHADERS_PATH "paintedplastic.sl" );
     paintedplastic["texturename"] = REYES_EXAMPLES_PATH "bumpy.jpg";
     for ( int i = 0; i < 8; ++i )
     {
@@ -128,7 +128,7 @@ void render_shaders_example()
         renderer.color( rgb_from_hsv(vec3(360.0f * float(i) / 8.0f, 0.95f, 0.75f)) );
         renderer.sphere( 1.0f );
     }
-    renderer.pop_attributes();    
+    renderer.pop_attributes();
 
     y = HEIGHT / 2.0f - HEIGHT / DOWN * float(6);
     renderer.push_attributes();
@@ -147,7 +147,7 @@ void render_shaders_example()
         renderer.color( rgb_from_hsv(vec3(360.0f * float(i) / 8.0f, 0.95f, 0.75f)) );
         renderer.sphere( 1.0f );
     }
-    renderer.pop_attributes();    
+    renderer.pop_attributes();
 
     renderer.end_world();
     renderer.end();

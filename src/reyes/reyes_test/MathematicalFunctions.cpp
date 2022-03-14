@@ -3,9 +3,9 @@
 #include <reyes/Renderer.hpp>
 #include <reyes/VirtualMachine.hpp>
 #include <reyes/SymbolTable.hpp>
+#include <reyes/Scope.hpp>
 #include <reyes/Shader.hpp>
 #include <reyes/Grid.hpp>
-#include <reyes/Value.hpp>
 #include <reyes/assert.hpp>
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -23,57 +23,60 @@ SUITE( MathematicalFunctions )
     struct MathematicalFunctionTest
     {
         Renderer renderer;
-        Grid grid;
-        float* x;
-        float* y;
-        vec3* P;
-        vec3* N;
-        vec3* Ci;
+        float x [4];
+        float y [4];
+        vec3 P [4];
+        vec3 N [4];
+        vec3 Ci [4];
      
         MathematicalFunctionTest()
-        : grid(),
-          x( NULL ),
-          y( NULL ),
-          P( NULL ),
-          N( NULL ),
-          Ci( NULL )
+        : renderer()
+        , x{}
+        , y{}
+        , P{}
+        , N{}
+        , Ci{}
         {
             renderer.begin();
             renderer.perspective( float(float(M_PI)) / 2.0f );
             renderer.projection();
             renderer.begin_world();
-
-            grid.resize( 2, 2 );
-            shared_ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
-            x_value->zero();
-            x = x_value->float_values();
-            
-            shared_ptr<Value> y_value = grid.add_value( "y", TYPE_FLOAT );
-            y_value->zero();
-            y = y_value->float_values();
-
-            shared_ptr<Value> P_value = grid.add_value( "P", TYPE_POINT );
-            P_value->zero();
-            P = P_value->vec3_values();
-
-            shared_ptr<Value> N_value = grid.add_value( "N", TYPE_NORMAL );
-            N_value->zero();
-            N = N_value->vec3_values();
-
-            shared_ptr<Value> Ci_value = grid.add_value( "Ci", TYPE_COLOR );
-            Ci_value->zero();
-            Ci = Ci_value->vec3_values();
         }
         
         void test( const char* source )
         {
-            renderer.symbol_table().add_symbols()
+            SymbolTable symbol_table;
+            symbol_table.add_symbols()
                 ( "x", TYPE_FLOAT )
                 ( "y", TYPE_FLOAT )
             ;
-            Shader shader( source, source + strlen(source), renderer.symbol_table(), renderer.error_policy() );
-            renderer.surface_shader( &shader );
-            renderer.surface_shade( grid );
+
+            Shader shader;
+            shader.load_memory( source, source + strlen(source), symbol_table, renderer.error_policy() );
+
+            Grid& grid = renderer.surface_shader( &shader );
+            grid.resize( 2, 2 );
+            grid.zero();
+
+            float* xx = grid.float_value( "x" );
+            float* yy = grid.float_value( "y" );
+            vec3* positions = grid.vec3_value( "P" );
+            vec3* normals = grid.vec3_value( "N" );
+            vec3* colors = grid.vec3_value( "Ci" );
+            if ( xx && yy && positions && normals && colors )
+            {
+                memcpy( xx, x, sizeof(float) * grid.size() );
+                memcpy( yy, y, sizeof(float) * grid.size() );
+                memcpy( positions, P, sizeof(vec3) * grid.size() );
+                memcpy( normals, N, sizeof(vec3) * grid.size() );
+                memcpy( colors, Ci, sizeof(vec3) * grid.size() );
+                renderer.surface_shade( grid );
+                memcpy( x, xx, sizeof(float) * grid.size() );
+                memcpy( y, yy, sizeof(float) * grid.size() );
+                memcpy( P, positions, sizeof(vec3) * grid.size() );
+                memcpy( N, normals, sizeof(vec3) * grid.size() );
+                memcpy( Ci, colors, sizeof(vec3) * grid.size() );
+            }            
         }
         
         float radians( float degrees ) const
@@ -90,7 +93,7 @@ SUITE( MathematicalFunctions )
     TEST_FIXTURE( MathematicalFunctionTest, radians_constant )
     {
         test(
-            "surface radians_uniform() { \n"
+            "surface radians_constant() { \n"
             "   y = radians( 3.14159 ); \n"
             "}"
         );

@@ -3,6 +3,7 @@
 
 #include "ValueType.hpp"
 #include "ValueStorage.hpp"
+#include "Segment.hpp"
 #include <vector>
 #include <memory>
 
@@ -22,20 +23,24 @@ class SymbolTable;
 class AddSymbolHelper
 {
     SymbolTable* symbol_table_; ///< The SymbolTable to add Symbols to.
+    Segment segment_; ///< The Segment to add symbols to.
     std::shared_ptr<Symbol> symbol_; ///< The most recently added Symbol.
 
 public:
-    AddSymbolHelper( SymbolTable* symbol_table );
+    AddSymbolHelper( SymbolTable* symbol_table, Segment segment );
     AddSymbolHelper& operator()( const char* identifier, ValueType type, ValueStorage storage = STORAGE_VARYING );
-    AddSymbolHelper& operator()( const char* identifier, void (*function)(const Renderer&, const Grid&), ValueType type, ValueStorage storage = STORAGE_VARYING );
-    AddSymbolHelper& operator()( const char* identifier, void (*function)(const Renderer&, const Grid&, std::shared_ptr<Value> a0), ValueType type, ValueStorage storage = STORAGE_VARYING );
-    AddSymbolHelper& operator()( const char* identifier, void (*function)(const Renderer&, const Grid&, std::shared_ptr<Value> a0, std::shared_ptr<Value> a1), ValueType type, ValueStorage storage = STORAGE_VARYING );
-    AddSymbolHelper& operator()( const char* identifier, void (*function)(const Renderer&, const Grid&, std::shared_ptr<Value> a0, std::shared_ptr<Value> a1, std::shared_ptr<Value> a2), ValueType type, ValueStorage storage = STORAGE_VARYING );
-    AddSymbolHelper& operator()( const char* identifier, void (*function)(const Renderer&, const Grid&, std::shared_ptr<Value> a0, std::shared_ptr<Value> a1, std::shared_ptr<Value> a2, std::shared_ptr<Value> a3), ValueType type, ValueStorage storage = STORAGE_VARYING );
-    AddSymbolHelper& operator()( const char* identifier, void (*function)(const Renderer&, const Grid&, std::shared_ptr<Value> a0, std::shared_ptr<Value> a1, std::shared_ptr<Value> a2, std::shared_ptr<Value> a3, std::shared_ptr<Value> a4), ValueType type, ValueStorage storage = STORAGE_VARYING );
-    AddSymbolHelper& operator()( const char* identifier, void (*function)(const Renderer&, const Grid&, std::shared_ptr<Value> a0, std::shared_ptr<Value> a1, std::shared_ptr<Value> a2, std::shared_ptr<Value> a3, std::shared_ptr<Value> a4, std::shared_ptr<Value> a5), ValueType type, ValueStorage storage = STORAGE_VARYING );
+    AddSymbolHelper& operator()( const char* identifier, void (*function)(const Renderer&, const Grid&, int, void**), ValueType type, ValueStorage storage = STORAGE_VARYING );
     AddSymbolHelper& operator()( ValueType type, ValueStorage storage = STORAGE_VARYING );
     AddSymbolHelper& operator()( const char* identifier, float value );
+    AddSymbolHelper& add_symbols( Segment segment = SEGMENT_GRID );
+    AddSymbolHelper& add_default_symbols();
+    AddSymbolHelper& add_surface_symbols();
+    AddSymbolHelper& add_light_symbols();
+    AddSymbolHelper& add_volume_symbols();
+    AddSymbolHelper& add_displacement_symbols();
+    AddSymbolHelper& add_imager_symbols();
+    AddSymbolHelper& add_illuminance_symbols();
+    AddSymbolHelper& add_lighting_symbols();
 };
 
 }

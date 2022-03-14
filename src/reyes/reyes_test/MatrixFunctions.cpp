@@ -5,9 +5,9 @@
 #include <reyes/Renderer.hpp>
 #include <reyes/VirtualMachine.hpp>
 #include <reyes/SymbolTable.hpp>
+#include <reyes/Scope.hpp>
 #include <reyes/Shader.hpp>
 #include <reyes/Grid.hpp>
-#include <reyes/Value.hpp>
 #include <reyes/assert.hpp>
 #include <math/vec3.ipp>
 #include <math/mat4x4.ipp>
@@ -27,43 +27,45 @@ SUITE( MatrixFunctions )
     struct MatrixFunctionTest
     {
         Renderer renderer;
-        Grid grid;
-        mat4x4* M;
-        float* x;
+        mat4x4 M [4];
+        float x [4];
      
         MatrixFunctionTest()
-        : grid(),
-          M( NULL ),
-          x( NULL )
+        : renderer()
+        , M{}
+        , x{}
         {
             renderer.begin();
             renderer.perspective( float(M_PI) / 2.0f );
             renderer.projection();
             renderer.begin_world();
-
-            grid.resize( 2, 2 );
-            
-            shared_ptr<Value> M_value = grid.add_value( "M", TYPE_MATRIX, STORAGE_UNIFORM );
-            M_value->zero();
-            M = M_value->mat4x4_values();
-            
-            shared_ptr<Value> P_value = grid.add_value( "P", TYPE_POINT );
-            P_value->zero();
-            
-            shared_ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
-            x_value->zero();
-            x = x_value->float_values();
         }
         
         void test( const char* source )
         {
-            renderer.symbol_table().add_symbols()
+            SymbolTable symbol_table;
+            symbol_table.add_symbols()
                 ( "M", TYPE_MATRIX, STORAGE_UNIFORM )
                 ( "x", TYPE_FLOAT )
             ;
-            Shader shader( source, source + strlen(source), renderer.symbol_table(), renderer.error_policy() );
-            renderer.surface_shader( &shader );
-            renderer.surface_shade( grid );
+
+            Shader shader;
+            shader.load_memory( source, source + strlen(source), symbol_table, renderer.error_policy() );
+
+            Grid& grid = renderer.surface_shader( &shader );
+            grid.resize( 2, 2 );
+            grid.zero();
+
+            mat4x4* matrices = grid.mat4x4_value( "M" );
+            float* xx = grid.float_value( "x" );
+            if ( matrices && xx )
+            {
+                memcpy( matrices, M, sizeof(mat4x4) * grid.size() );
+                memcpy( xx, x, sizeof(float) * grid.size() );
+                renderer.surface_shade( grid );
+                memcpy( M, matrices, sizeof(mat4x4) * grid.size() );
+                memcpy( x, xx, sizeof(float) * grid.size() );
+            }
         }
     };
 

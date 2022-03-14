@@ -35,22 +35,34 @@ void Encoder::clear()
 void Encoder::instruction( int instruction )
 {
     REYES_ASSERT( instruction >= INSTRUCTION_NULL && instruction < INSTRUCTION_COUNT );
-    word( instruction );
-    word( 0 );
+    quad( instruction );
 }
 
-void Encoder::instruction( int instruction, int type, int storage )
+void Encoder::instruction( int instruction, ValueType type, ValueStorage storage )
 {
     REYES_ASSERT( instruction >= INSTRUCTION_NULL && instruction < INSTRUCTION_COUNT );
-    word( instruction );
-    word( dispatch_by_type_and_storage(type, storage) );
+    byte( instruction );
+    byte( dispatch(type, storage) );
+    byte( 0 );
+    byte( 0 );
 }
 
-void Encoder::instruction( int instruction, int type, int storage, int other_type, int other_storage )
+void Encoder::instruction( int instruction, ValueType type0, ValueStorage storage0, ValueType type1, ValueStorage storage1 )
 {
     REYES_ASSERT( instruction >= INSTRUCTION_NULL && instruction < INSTRUCTION_COUNT );
-    word( instruction );
-    word( (dispatch_by_type_and_storage(type, storage) << 8) | dispatch_by_type_and_storage(other_type, other_storage) );
+    byte( instruction );
+    byte( dispatch(type1, storage1) );
+    byte( dispatch(type0, storage0) );
+    byte( 0 );
+}
+
+void Encoder::instruction( int instruction, ValueType type0, ValueStorage storage0, ValueType type1, ValueStorage storage1, ValueType type2, ValueStorage storage2 )
+{
+    REYES_ASSERT( instruction >= INSTRUCTION_NULL && instruction < INSTRUCTION_COUNT );
+    byte( instruction );
+    byte( dispatch(type0, storage0) );
+    byte( dispatch(type1, storage1) );
+    byte( dispatch(type2, storage2) );
 }
 
 void Encoder::argument( int argument )
@@ -101,7 +113,7 @@ int Encoder::address()
     return code_.size();
 }
 
-unsigned int Encoder::dispatch_by_type_and_storage( int type, int storage ) const
+unsigned int Encoder::dispatch( ValueType type, ValueStorage storage, int shift ) const
 {
     unsigned int dispatch_by_type = 0;
     switch ( type )
@@ -133,5 +145,22 @@ unsigned int Encoder::dispatch_by_type_and_storage( int type, int storage ) cons
     }
 
     unsigned int dispatch_by_storage = storage == STORAGE_VARYING ? DISPATCH_VARYING : DISPATCH_UNIFORM;
-    return dispatch_by_storage | dispatch_by_type;
+    return (dispatch_by_storage | dispatch_by_type) << shift;
+}
+
+unsigned int Encoder::dispatch( ValueType type0, ValueStorage storage0, ValueType type1, ValueStorage storage1 ) const
+{
+    return 
+        dispatch( type0, storage0, 8 ) |
+        dispatch( type1, storage1, 0 )
+    ;
+}
+
+unsigned int Encoder::dispatch( ValueType type0, ValueStorage storage0, ValueType type1, ValueStorage storage1, ValueType type2, ValueStorage storage2 ) const
+{
+    return 
+        dispatch( type0, storage0, 16 ) |
+        dispatch( type1, storage1, 8 ) |
+        dispatch( type2, storage2, 0 )
+    ;
 }

@@ -26,24 +26,26 @@ class Sampler
 
     const float width_;
     const float height_;
-    const int maximum_vertices_;
+    int maximum_vertices_;
     int x0_;
     int x1_;
     int y0_;
     int y1_;
-    math::vec3* raster_positions_;
     math::vec3* origins_and_edges_;
     int* indices_;
     int* bounds_;
     int polygons_;
     Sample* samples_;
+    math::vec3* raster_positions_;
     
 public:
-    Sampler( float width, float height, int maximum_vertices, const math::vec4& crop_window );
+    Sampler( float width, float height, const math::vec4& crop_window );
     ~Sampler();    
     void sample( const math::mat4x4& screen_transform, const Grid& grid, bool matte, bool two_sided, bool left_handed, SampleBuffer* sample_buffer );
     
 private:
+    void reset();
+    void reserve( int maximum_vertices );
     void calculate_raster_positions( const math::mat4x4& screen_transform, const math::vec3* positions, int vertices );
     void calculate_indices_origins_and_edges( const Grid& grid, bool two_sided, bool left_handed );
     void calculate_indices_origins_and_edges_two_sided( const Grid& grid );

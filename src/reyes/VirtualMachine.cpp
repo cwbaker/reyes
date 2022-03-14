@@ -6,7 +6,8 @@
 #include "stdafx.hpp"
 #include "VirtualMachine.hpp"
 #include "Renderer.hpp"
-#include "Value.hpp"
+#include "SymbolTable.hpp"
+#include "Scope.hpp"
 #include "Shader.hpp"
 #include "Symbol.hpp"
 #include "Texture.hpp"
@@ -24,6 +25,8 @@
 #include <reyes/reyes_virtual_machine/not_equal.hpp>
 #include <reyes/reyes_virtual_machine/greater.hpp>
 #include <reyes/reyes_virtual_machine/greater_equal.hpp>
+#include <reyes/reyes_virtual_machine/illuminance_illuminate.hpp>
+#include <reyes/reyes_virtual_machine/illuminance_solar.hpp>
 #include <reyes/reyes_virtual_machine/less.hpp>
 #include <reyes/reyes_virtual_machine/less_equal.hpp>
 #include <reyes/reyes_virtual_machine/logical_and.hpp>
@@ -48,6 +51,7 @@
 #include "assert.hpp"
 #include <algorithm>
 #include <limits.h>
+#include <string.h>
 
 using std::max;
 using std::swap;
@@ -60,77 +64,82 @@ using namespace math;
 using namespace reyes;
 
 VirtualMachine::VirtualMachine()
-: renderer_( NULL ),
-  grid_( NULL ),
-  shader_( NULL ),
-  values_(),
-  registers_(),
-  register_index_( 0 ),
-  light_index_( INT_MAX ),
-  code_begin_( NULL ),
-  code_end_( NULL ),
-  masks_(),
-  code_( NULL )
+: renderer_( nullptr )
+, symbol_table_( nullptr )
+, grid_( nullptr )
+, shader_( nullptr )
+, light_index_( INT_MAX )
+, length_( 0 )
+, constant_memory_size_( 0 )
+, constant_memory_( nullptr )
+, grid_memory_size_( 0 )
+, grid_memory_( nullptr )
+, temporary_memory_size_( 0 )
+, temporary_memory_( nullptr )
+, code_begin_( nullptr )
+, code_end_( nullptr )
+, masks_()
+, code_( nullptr )
 {
+    symbol_table_ = new SymbolTable;
 }
 
 VirtualMachine::VirtualMachine( const Renderer& renderer )
-: renderer_( &renderer ),
-  grid_( NULL ),
-  shader_( NULL ),
-  values_(),
-  registers_(),
-  register_index_( 0 ),
-  light_index_( INT_MAX ),
-  code_begin_( NULL ),
-  code_end_( NULL ),
-  masks_(),
-  code_( NULL )
+: renderer_( &renderer )
+, symbol_table_( nullptr )
+, grid_( nullptr )
+, shader_( nullptr )
+, light_index_( INT_MAX )
+, length_( 0 )
+, constant_memory_size_( 0 )
+, constant_memory_( nullptr )
+, grid_memory_size_( 0 )
+, grid_memory_( nullptr )
+, temporary_memory_size_( 0 )
+, temporary_memory_( nullptr )
+, code_begin_( nullptr )
+, code_end_( nullptr )
+, masks_()
+, code_( nullptr )
 {
+    symbol_table_ = new SymbolTable;
 }
 
-void VirtualMachine::initialize( Grid& parameters, Shader& shader )
+VirtualMachine::~VirtualMachine()
 {
-    // @todo
-    //  It's not really correct to set VirtualMachine::grid_ to the address of
-    //  the parameters Grid passed to VirtualMachine::initialize() but it's 
-    //  done at least for now to hopefully prevent crashes in the 
-    //  VirtualMachine when it refers to grid_.
-    grid_ = &parameters;
-    shader_ = &shader;
-
-    const vector<shared_ptr<Symbol>>& symbols = shader.symbols();
-    for ( int i = 0; i < shader.parameters(); ++i )
+    if ( temporary_memory_ )
     {
-        const shared_ptr<Symbol>& symbol = symbols[i];
-        REYES_ASSERT( symbol );
-        parameters.add_value( symbol->identifier(), symbol->type() );
+        free( temporary_memory_ );
+        temporary_memory_ = nullptr;
     }
 
-    construct( shader.initialize_address(), shader.shade_address() );
-    initialize_registers( parameters );
-    execute();
-    
-    shader_ = NULL;
-    grid_ = NULL;
+    delete symbol_table_;
+    symbol_table_ = nullptr;
 }
 
-void VirtualMachine::shade( Grid& globals, Grid& parameters, Shader& shader )
-{   
-    grid_ = &globals;
+void VirtualMachine::initialize( Grid& grid, Shader& shader )
+{
+    grid_ = &grid;
     shader_ = &shader;
-    
-    construct( shader.shade_address(), shader.end_address() );
-    initialize_registers( parameters );
-    initialize_registers( globals );
+    construct( shader.initialize_address(), shader.shade_address() );
     execute();
-    
-    shader_ = NULL;
-    grid_ = NULL;
+    shader_ = nullptr;
+    grid_ = nullptr;
+}
+
+void VirtualMachine::shade( Grid& grid, Shader& shader )
+{   
+    grid_ = &grid;
+    shader_ = &shader;
+    construct( shader.shade_address(), shader.end_address() );
+    execute();
+    shader_ = nullptr;
+    grid_ = nullptr;
 }
 
 void VirtualMachine::construct( int start, int finish )
 {
+    REYES_ASSERT( grid_ );
     REYES_ASSERT( shader_ );
     REYES_ASSERT( !shader_->code().empty() );
     REYES_ASSERT( start >= 0 && start <= int(shader_->code().size()) );
@@ -139,35 +148,26 @@ void VirtualMachine::construct( int start, int finish )
 
     code_begin_ = &shader_->code().front() + start;
     code_end_ = &shader_->code().front() + finish;
-    register_index_ = shader_->permanent_registers();
-    
-    values_.reserve( shader_->registers() );
-    while ( values_.size() < shader_->registers() )
-    {
-        shared_ptr<Value> value( new Value() );
-        values_.push_back( value );
-    }
-    
-    registers_.clear();
-    registers_.reserve( shader_->registers() );
-    registers_.insert( registers_.end(), max(shader_->registers() - int(registers_.size()), 0), shared_ptr<Value>() );
+    length_ = grid_->size();
 
-    // Initialize registers for constants.
-    REYES_ASSERT( shader_->constants() == int(shader_->values().size()) );
-    unsigned int register_index = 0;
-    while ( register_index < shader_->values().size() )
+    int capacity = shader_->temporary_memory_size();
+    if ( capacity > temporary_memory_size_ )
     {
-        shared_ptr<Value>& value = values_[register_index];
-        registers_[register_index] = shader_->values()[register_index];
-        ++register_index;
+        if ( temporary_memory_ )
+        {
+            free( temporary_memory_ );
+            temporary_memory_ = nullptr;
+            temporary_memory_size_ = 0;
+        }
+        temporary_memory_ = reinterpret_cast<unsigned char*>( malloc(capacity) );
+        temporary_memory_size_ = capacity;
     }
-       
-    // Initialize registers for global, local, and temporary values.
-    while ( register_index < shader_->registers() )
-    {
-        registers_[register_index] = values_[register_index];
-        ++register_index;
-    }
+
+    constant_memory_size_ = shader_->constant_memory_size();
+    constant_memory_ = shader_->constant( 0 );
+
+    grid_memory_size_ = shader_->grid_memory_size();
+    grid_memory_ = grid_->memory();
 
     // @todo
     //  The number of masks reserved implicitly limits the number of nested
@@ -176,19 +176,6 @@ void VirtualMachine::construct( int start, int finish )
     //  or code generation.
     const unsigned int MASKS_RESERVE = 8;
     masks_.reserve( MASKS_RESERVE );
-}
-
-void VirtualMachine::initialize_registers( Grid& grid )
-{
-    const map<string, shared_ptr<Value>>& values = grid.values_by_identifier();
-    for ( map<string, shared_ptr<Value>>::const_iterator i = values.begin(); i != values.end(); ++i )
-    {
-        Symbol* symbol = shader_->find_symbol( i->first ).get();
-        if ( symbol )
-        {
-            registers_[symbol->register_index()] = i->second;
-        }
-    }
 }
 
 void VirtualMachine::execute()
@@ -206,10 +193,6 @@ void VirtualMachine::execute()
                 execute_halt();
                 break;                
 
-            case INSTRUCTION_RESET:
-                execute_reset();
-                break;
-                
             case INSTRUCTION_CLEAR_MASK:
                 execute_clear_mask();
                 break;
@@ -326,10 +309,6 @@ void VirtualMachine::execute()
                 execute_assign();
                 break;
                         
-            case INSTRUCTION_ASSIGN_STRING:
-                execute_assign_string();
-                break;
-            
             case INSTRUCTION_ADD_ASSIGN:
                 execute_add_assign();
                 break;
@@ -362,30 +341,10 @@ void VirtualMachine::execute()
                 execute_shadow();
                 break;
                 
-            case INSTRUCTION_CALL_0:
-                execute_call_0();
+            case INSTRUCTION_CALL:
+                execute_call();
                 break;
                 
-            case INSTRUCTION_CALL_1:
-                execute_call_1();
-                break;
-                
-            case INSTRUCTION_CALL_2:
-                execute_call_2();
-                break;
-            
-            case INSTRUCTION_CALL_3:
-                execute_call_3();
-                break;
-
-            case INSTRUCTION_CALL_4:
-                execute_call_4();
-                break;
-
-            case INSTRUCTION_CALL_5:
-                execute_call_5();                
-                break;
-
             case INSTRUCTION_AMBIENT:
                 execute_ambient();
                 break;
@@ -447,7 +406,12 @@ void VirtualMachine::jump( int distance )
 
 int VirtualMachine::instruction()
 {
-    return word();
+    return byte();
+}
+
+int VirtualMachine::dispatch()
+{
+    return byte() | (byte() << 8) | (byte() << 16);
 }
 
 int VirtualMachine::argument()
@@ -455,11 +419,21 @@ int VirtualMachine::argument()
     return quad();
 }
 
+int VirtualMachine::byte()
+{
+    REYES_ASSERT( code_ );
+    REYES_ASSERT( code_end_ );
+    REYES_ASSERT( code_ + 1 <= code_end_ );
+    int value = *(const char*) code_;
+    code_ += sizeof(char);
+    return value;
+}
+
 int VirtualMachine::word()
 {
     REYES_ASSERT( code_ );
     REYES_ASSERT( code_end_ );
-    REYES_ASSERT( code_ < code_end_ );
+    REYES_ASSERT( code_ + sizeof(short) <= code_end_ );
     int value = *(const short*) code_;
     code_ += sizeof(short);
     return value;
@@ -469,7 +443,7 @@ int VirtualMachine::quad()
 {
     REYES_ASSERT( code_ );
     REYES_ASSERT( code_end_ );
-    REYES_ASSERT( code_ < code_end_ );
+    REYES_ASSERT( code_ + sizeof(int) <= code_end_ );
     int value = *(const int*) code_;
     code_ += sizeof(int);
     return value;
@@ -480,35 +454,28 @@ void VirtualMachine::execute_halt()
     code_ = code_end_;
 }
 
-void VirtualMachine::execute_reset()
-{
-    word();
-    int index = argument();
-    reset_register( index );
-}
-
 void VirtualMachine::execute_clear_mask()
 {
-    word();
+    dispatch();
     pop_mask();
 }
 
 void VirtualMachine::execute_generate_mask()
 {
-    word();
-    int mask = argument();
-    push_mask( registers_[mask] );
+    dispatch();
+    float* mask = lookup_float( quad() );
+    push_mask( mask, length_ );
 }
 
 void VirtualMachine::execute_invert_mask()
 {
-    word();
+    dispatch();
     invert_mask();
 }
 
 void VirtualMachine::execute_jump_empty()
 {
-    word();
+    dispatch();
     int distance = argument();
     if ( mask_empty() )
     {
@@ -519,7 +486,7 @@ void VirtualMachine::execute_jump_empty()
 
 void VirtualMachine::execute_jump_not_empty()
 {
-    word();
+    dispatch();
     int distance = argument();
     if ( !mask_empty() )
     {
@@ -529,323 +496,308 @@ void VirtualMachine::execute_jump_not_empty()
 
 void VirtualMachine::execute_jump_illuminance()
 {
-    word();
+    dispatch();
     int distance = argument();
     jump_illuminance( distance );
 }
 
 void VirtualMachine::execute_jump()
 {
-    word();
+    dispatch();
     int distance = argument();
     jump( distance );
 }
 
 void VirtualMachine::execute_transform_point()
 {
-    int dispatch = word();
-    const shared_ptr<Value>& result = registers_[allocate_register()];
-    const shared_ptr<Value>& fromspace = registers_[argument()];
-    const shared_ptr<Value>& point = registers_[argument()];
+    int dispatch = VirtualMachine::dispatch();
+    vec3* result = lookup_vec3( quad() );
+    const char* fromspace = lookup_string( quad() );
+    const vec3* point = lookup_vec3( quad() );
     REYES_ASSERT( renderer_ );
-    result->reset( point->type(), point->storage(), point->size() );
     transform( 
         dispatch,
-        result->vec3_values(),
-        renderer_->transform_from( fromspace->string_value() ),
-        point->vec3_values(),
-        point->size()
+        result,
+        renderer_->transform_from( fromspace ),
+        point,
+        length_
     );
 }
 
 void VirtualMachine::execute_transform_vector()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    const shared_ptr<Value>& fromspace = registers_[argument()];
-    const shared_ptr<Value>& vector = registers_[argument()];
+    int dispatch = VirtualMachine::dispatch();
+    vec3* result = lookup_vec3( quad() );
+    const char* fromspace = lookup_string( quad() );
+    const vec3* vector = lookup_vec3( quad() );
     REYES_ASSERT( renderer_ );
-    result->reset( vector->type(), vector->storage(), vector->size() );
     vtransform( 
         dispatch,
-        result->vec3_values(),
-        renderer_->transform_from( fromspace->string_value() ),
-        vector->vec3_values(),
-        vector->size()
+        result,
+        renderer_->transform_from( fromspace ),
+        vector,
+        length_
     );
 }
 
 void VirtualMachine::execute_transform_normal()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    const shared_ptr<Value>& fromspace = registers_[argument()];
-    const shared_ptr<Value>& normal = registers_[argument()];
+    int dispatch = VirtualMachine::dispatch();
+    vec3* result = lookup_vec3( quad() );
+    const char* fromspace = lookup_string( quad() );
+    const vec3* normal = lookup_vec3( quad() );
     REYES_ASSERT( renderer_ );
-    result->reset( normal->type(), normal->storage(), normal->size() );
     ntransform( 
         dispatch,
-        result->vec3_values(),
-        renderer_->transform_from(fromspace->string_value()),
-        normal->vec3_values(),
-        normal->size()
+        result,
+        renderer_->transform_from( fromspace ),
+        normal,
+        length_
     );
 }
 
 void VirtualMachine::execute_transform_color()
 {
-    int dispatch = word();
-    const shared_ptr<Value>& result = registers_[allocate_register()];
-    const shared_ptr<Value>& fromspace = registers_[argument()];
-    const shared_ptr<Value>& color = registers_[argument()];
-    result->reset( TYPE_COLOR, color->storage(), color->size() );
+    int dispatch = VirtualMachine::dispatch();
+    vec3* result = lookup_vec3( quad() );
+    const char* fromspace = lookup_string( quad() );
+    const vec3* color = lookup_vec3( quad() );
     ctransform( 
-        color->size() == 1 ? DISPATCH_U3 : DISPATCH_V3,
-        result->vec3_values(),
-        fromspace->string_value().c_str(),
-        color->vec3_values(),
-        color->size()
+        dispatch,
+        result,
+        fromspace,
+        color,
+        length_
     );
 }
 
 void VirtualMachine::execute_transform_matrix()
 {
-    int dispatch = word();
-    const shared_ptr<Value>& result = registers_[allocate_register()];
-    const shared_ptr<Value>& tospace = registers_[argument()];
-    const shared_ptr<Value>& matrix = registers_[argument()];
+    int dispatch = VirtualMachine::dispatch();
+    mat4x4* result = lookup_mat4x4( quad() );
+    const char* tospace = lookup_string( quad() );
+    const mat4x4* matrix = lookup_mat4x4( quad() );
     REYES_ASSERT( renderer_ );
-    result->reset( TYPE_MATRIX, matrix->storage(), matrix->size() );
     mtransform( 
         dispatch,
-        result->mat4x4_values(),
-        renderer_->transform_to(tospace->string_value()),
-        matrix->mat4x4_values(),
-        matrix->size()
+        result,
+        renderer_->transform_to( tospace ),
+        matrix,
+        length_
     );
 }
 
 void VirtualMachine::execute_dot()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    const shared_ptr<Value>& lhs = registers_[argument()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    const unsigned int length = max( lhs->size(), rhs->size() );
-    result->reset( TYPE_FLOAT, max(lhs->storage(), rhs->storage()), length );
+    int dispatch = VirtualMachine::dispatch();
+    float* result = lookup_float( quad() );
+    const float* lhs = lookup_float( quad() );
+    const float* rhs = lookup_float( quad() );
     dot( 
         dispatch, 
-        reinterpret_cast<float*>(result->values()),
-        reinterpret_cast<const float*>(lhs->values()),
-        reinterpret_cast<const float*>(rhs->values()),
-        length
+        result,
+        lhs,
+        rhs,
+        length_
     );
 }
 
 void VirtualMachine::execute_multiply()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    const shared_ptr<Value>& lhs = registers_[argument()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    result->reset( lhs->type(), max(lhs->storage(), rhs->storage()), lhs->size() );
+    int dispatch = VirtualMachine::dispatch();
+    float* result = lookup_float( quad() );
+    const float* lhs = lookup_float( quad() );
+    const float* rhs = lookup_float( quad() );
     multiply( 
         dispatch, 
-        reinterpret_cast<float*>(result->values()),
-        reinterpret_cast<const float*>(lhs->values()),
-        reinterpret_cast<const float*>(rhs->values()),
-        lhs->size()
+        result,
+        lhs,
+        rhs,
+        length_
     );
 }
 
 void VirtualMachine::execute_divide()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    const shared_ptr<Value>& lhs = registers_[argument()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    result->reset( lhs->type(), max(lhs->storage(), rhs->storage()), lhs->size() );
+    int dispatch = VirtualMachine::dispatch();
+    float* result = lookup_float( quad() );
+    const float* lhs = lookup_float( quad() );
+    const float* rhs = lookup_float( quad() );
     divide( 
         dispatch, 
-        reinterpret_cast<float*>(result->values()), 
-        reinterpret_cast<const float*>(lhs->values()),
-        reinterpret_cast<const float*>(rhs->values()),
-        lhs->size()
+        result, 
+        lhs,
+        rhs,
+        length_
     );
 }
 
 void VirtualMachine::execute_add()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    const shared_ptr<Value>& lhs = registers_[argument()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    result->reset( lhs->type(), max(lhs->storage(), rhs->storage()), lhs->size() );
+    int dispatch = VirtualMachine::dispatch();
+    float* result = lookup_float( quad() );
+    const float* lhs = lookup_float( quad() );
+    const float* rhs = lookup_float( quad() );
     add( 
         dispatch, 
-        reinterpret_cast<float*>(result->values()),
-        reinterpret_cast<const float*>(lhs->values()),
-        reinterpret_cast<const float*>(rhs->values()),
-        lhs->size()
+        result,
+        lhs,
+        rhs,
+        length_
     );
 }
 
 void VirtualMachine::execute_subtract()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    const shared_ptr<Value>& lhs = registers_[argument()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    result->reset( lhs->type(), max(lhs->storage(), rhs->storage()), lhs->size() );
+    int dispatch = VirtualMachine::dispatch();
+    float* result = lookup_float( quad() );
+    const float* lhs = lookup_float( quad() );
+    const float* rhs = lookup_float( quad() );
     subtract( 
         dispatch,
-        reinterpret_cast<float*>(result->values()),
-        reinterpret_cast<const float*>(lhs->values()),
-        reinterpret_cast<const float*>(rhs->values()),
-        lhs->size()
+        result,
+        lhs,
+        rhs,
+        length_
     );
 }
 
 void VirtualMachine::execute_greater()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    const shared_ptr<Value>& lhs = registers_[argument()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    result->reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), lhs->size() );
+    int dispatch = VirtualMachine::dispatch();
+    int* result = lookup_int( quad() );
+    const float* lhs = lookup_float( quad() );
+    const float* rhs = lookup_float( quad() );
     greater(
         dispatch,
-        reinterpret_cast<int*>(result->values()),
-        reinterpret_cast<const float*>(lhs->values()),
-        reinterpret_cast<const float*>(rhs->values()),
-        lhs->size() 
+        result,
+        lhs,
+        rhs,
+        length_ 
     );
 }
 
 void VirtualMachine::execute_greater_equal()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    const shared_ptr<Value>& lhs = registers_[argument()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    result->reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), lhs->size() );
+    int dispatch = VirtualMachine::dispatch();
+    int* result = lookup_int( quad() );
+    const float* lhs = lookup_float( quad() );
+    const float* rhs = lookup_float( quad() );
     greater_equal(
         dispatch,
-        reinterpret_cast<int*>(result->values()),
-        reinterpret_cast<const float*>(lhs->values()),
-        reinterpret_cast<const float*>(rhs->values()),
-        lhs->size() 
+        result,
+        lhs,
+        rhs,
+        length_ 
     );
 }
 
 void VirtualMachine::execute_less()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    const shared_ptr<Value>& lhs = registers_[argument()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    result->reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), lhs->size() );
+    int dispatch = VirtualMachine::dispatch();
+    int* result = lookup_int( quad() );
+    const float* lhs = lookup_float( quad() );
+    const float* rhs = lookup_float( quad() );
     less(
         dispatch,
-        reinterpret_cast<int*>(result->values()),
-        reinterpret_cast<const float*>(lhs->values()),
-        reinterpret_cast<const float*>(rhs->values()),
-        lhs->size() 
+        result,
+        lhs,
+        rhs,
+        length_ 
     );
 }
 
 void VirtualMachine::execute_less_equal()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    const shared_ptr<Value>& lhs = registers_[argument()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    result->reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), lhs->size() );
+    int dispatch = VirtualMachine::dispatch();
+    int* result = lookup_int( quad() );
+    const float* lhs = lookup_float( quad() );
+    const float* rhs = lookup_float( quad() );
     less_equal(
         dispatch,
-        reinterpret_cast<int*>(result->values()),
-        reinterpret_cast<const float*>(lhs->values()),
-        reinterpret_cast<const float*>(rhs->values()),
-        lhs->size() 
+        result,
+        lhs,
+        rhs,
+        length_ 
     );
 }
 
 void VirtualMachine::execute_and()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    const shared_ptr<Value>& lhs = registers_[argument()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    result->reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), lhs->size() );
+    int dispatch = VirtualMachine::dispatch();
+    int* result = lookup_int( quad() );
+    const int* lhs = lookup_int( quad() );
+    const int* rhs = lookup_int( quad() );
     logical_and( 
         dispatch,
-        reinterpret_cast<int*>(result->values()),
-        reinterpret_cast<const int*>(lhs->values()),
-        reinterpret_cast<const int*>(rhs->values()),
-        lhs->size()
+        result,
+        lhs,
+        rhs,
+        length_
     );
 }
 
 void VirtualMachine::execute_or()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    const shared_ptr<Value>& lhs = registers_[argument()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    result->reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), lhs->size() );
+    int dispatch = VirtualMachine::dispatch();
+    int* result = lookup_int( quad() );
+    const int* lhs = lookup_int( quad() );
+    const int* rhs = lookup_int( quad() );
     logical_or( 
         dispatch,
-        reinterpret_cast<int*>(result->values()),
-        reinterpret_cast<const int*>(lhs->values()),
-        reinterpret_cast<const int*>(rhs->values()),
-        lhs->size()
+        result,
+        lhs,
+        rhs,
+        length_
     );
 }
 
 void VirtualMachine::execute_equal()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    const shared_ptr<Value>& lhs = registers_[argument()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    result->reset( lhs->type(), max(lhs->storage(), rhs->storage()), lhs->size() );
+    int dispatch = VirtualMachine::dispatch();
+    int* result = lookup_int( quad() );
+    const float* lhs = lookup_float( quad() );
+    const float* rhs = lookup_float( quad() );
     equal(
         dispatch,
-        reinterpret_cast<int*>(result->values()),
-        reinterpret_cast<const float*>(lhs->values()),
-        reinterpret_cast<const float*>(rhs->values()),
-        lhs->size()
+        result,
+        lhs,
+        rhs,
+        length_
     );
 }
 
 void VirtualMachine::execute_not_equal()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    const shared_ptr<Value>& lhs = registers_[argument()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    result->reset( TYPE_INTEGER, max(lhs->storage(), rhs->storage()), lhs->size() );
+    int dispatch = VirtualMachine::dispatch();
+    int* result = lookup_int( quad() );
+    const float* lhs = lookup_float( quad() );
+    const float* rhs = lookup_float( quad() );
     not_equal( 
         dispatch,
-        reinterpret_cast<int*>(result->values()),
-        reinterpret_cast<const float*>(lhs->values()),
-        reinterpret_cast<const float*>(rhs->values()),
-        lhs->size()
+        result,
+        lhs,
+        rhs,
+        length_
     );
 }
 
 void VirtualMachine::execute_negate()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    const shared_ptr<Value>& value = registers_[argument()];
-    result->reset( value->type(), value->storage(), value->size() );
-    negate( dispatch, reinterpret_cast<float*>(result->values()), reinterpret_cast<const float*>(value->values()), value->size() );
+    int dispatch = VirtualMachine::dispatch();
+    float* result = lookup_float( quad() );
+    const float* value = lookup_float( quad() );
+    negate(
+        dispatch,
+        result,
+        value,
+        length_
+    );
 }
 
 void VirtualMachine::execute_convert()
 {
-    int dispatch = word();
+    int dispatch = VirtualMachine::dispatch();
     ValueType type = TYPE_NULL;
     switch ( dispatch >> 8 )
     {
@@ -868,518 +820,417 @@ void VirtualMachine::execute_convert()
             break;
     }    
 
-    shared_ptr<Value> result = registers_[allocate_register()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    result->reset( type, rhs->storage(), rhs->size() );
+    float* result = lookup_float( quad() );
+    const float* rhs = lookup_float( quad() );
     convert( 
         dispatch,
-        reinterpret_cast<float*>(result->values()),
-        reinterpret_cast<const float*>(rhs->values()),
-        rhs->size()
+        result,
+        rhs,
+        length_
     );
 }
 
 void VirtualMachine::execute_promote()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    result->reset( rhs->type(), STORAGE_VARYING, grid_->size() );
+    int dispatch = VirtualMachine::dispatch();
+    float* result = lookup_float( quad() );
+    const float* rhs = lookup_float( quad() );
     promote( 
         dispatch,
-        reinterpret_cast<float*>(result->values()),
-        reinterpret_cast<const float*>(rhs->values()),
-        grid_->size()
+        result,
+        rhs,
+        length_
     );
 }
 
 void VirtualMachine::execute_assign()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[argument()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    const unsigned char* mask = rhs->storage() == STORAGE_VARYING ? get_mask() : NULL;
-    result->reset( rhs->type(), rhs->storage(), rhs->size() );
+    int dispatch = VirtualMachine::dispatch();
+    float* result = lookup_float( quad() );
+    const float* rhs = lookup_float( quad() );
+    const unsigned char* mask = VirtualMachine::mask( dispatch );
     assign(
         dispatch,
-        reinterpret_cast<float*>(result->values()),
-        reinterpret_cast<const float*>(rhs->values()),
+        result,
+        rhs,
         mask,
-        rhs->size()
+        length_
     );
-}
-
-void VirtualMachine::execute_assign_string()
-{
-    word();
-    shared_ptr<Value> result = registers_[argument()];
-    shared_ptr<Value> value = registers_[argument()];
-    const unsigned char* mask = value->storage() == STORAGE_VARYING ? get_mask() : NULL;
-    result->assign_string( value, mask );
 }
 
 void VirtualMachine::execute_add_assign()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[argument()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    const unsigned char* mask = rhs->storage() == STORAGE_VARYING ? get_mask() : NULL;
+    int dispatch = VirtualMachine::dispatch();
+    float* result = lookup_float( quad() );
+    const float* rhs = lookup_float( quad() );
+    const unsigned char* mask = VirtualMachine::mask( dispatch );
     add_assign( 
         dispatch, 
-        reinterpret_cast<float*>(result->values()),
-        reinterpret_cast<const float*>(rhs->values()),
+        result,
+        rhs,
         mask,
-        rhs->size()
+        length_
     );
 }
 
 void VirtualMachine::execute_subtract_assign()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[argument()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    const unsigned char* mask = rhs->storage() == STORAGE_VARYING ? get_mask() : NULL;
+    int dispatch = VirtualMachine::dispatch();
+    float* result = lookup_float( quad() );
+    const float* rhs = lookup_float( quad() );
+    const unsigned char* mask = VirtualMachine::mask( dispatch );
     subtract_assign( 
         dispatch, 
-        reinterpret_cast<float*>(result->values()),
-        reinterpret_cast<const float*>(rhs->values()),
+        result,
+        rhs,
         mask,
-        rhs->size()
+        length_
     );
 }
 
 void VirtualMachine::execute_multiply_assign()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[argument()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    const unsigned char* mask = rhs->storage() == STORAGE_VARYING ? get_mask() : NULL;
+    int dispatch = VirtualMachine::dispatch();
+    float* result = lookup_float( quad() );
+    const float* rhs = lookup_float( quad() );
+    const unsigned char* mask = VirtualMachine::mask( dispatch );
     multiply_assign( 
         dispatch, 
-        reinterpret_cast<float*>(result->values()),
-        reinterpret_cast<const float*>(rhs->values()),
+        result,
+        rhs,
         mask,
-        rhs->size()
+        length_
     );
 }
 
 void VirtualMachine::execute_divide_assign()
 {
-    int dispatch = word();
-    shared_ptr<Value> result = registers_[argument()];
-    const shared_ptr<Value>& rhs = registers_[argument()];
-    const unsigned char* mask = rhs->storage() == STORAGE_VARYING ? get_mask() : NULL;
+    int dispatch = VirtualMachine::dispatch();
+    float* result = lookup_float( quad() );
+    const float* rhs = lookup_float( quad() );
+    const unsigned char* mask = VirtualMachine::mask( dispatch );
+    assert( false );
     divide_assign( 
         dispatch, 
-        reinterpret_cast<float*>(result->values()),
-        reinterpret_cast<const float*>(rhs->values()),
+        result,
+        rhs,
         mask,
-        rhs->size()
+        length_
     );
 }
 
 void VirtualMachine::execute_float_texture()
 {
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    int texturename = argument();
-    int s = argument();
-    int t = argument();
+    dispatch();
+    float* result = lookup_float( quad() );
+    const char* texturename = lookup_string( quad() );
+    const float* s = lookup_float( quad() );
+    const float* t = lookup_float( quad() );
     REYES_ASSERT( renderer_ );
-    float_texture( *renderer_, result, registers_[texturename], registers_[s], registers_[t] );
+    float_texture( *renderer_, result, texturename, s, t, length_ );
 }
 
 void VirtualMachine::execute_vec3_texture()
 {
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    int texturename = argument();
-    int s = argument();
-    int t = argument();
+    dispatch();
+    vec3* result = lookup_vec3( quad() );
+    const char* texturename = lookup_string( quad() );
+    const float* s = lookup_float( quad() );
+    const float* t = lookup_float( quad() );
     REYES_ASSERT( renderer_ );
-    vec3_texture( *renderer_, result, registers_[texturename], registers_[s], registers_[t] );
+    vec3_texture( *renderer_, result, texturename, s, t, length_ );
 }
 
 void VirtualMachine::execute_float_environment()
 {
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    int texturename = argument();
-    int direction = argument();
+    dispatch();
+    float* result = lookup_float( quad() );
+    const char* texturename = lookup_string( quad() );
+    const vec3* direction = lookup_vec3( quad() );
     REYES_ASSERT( renderer_ );
-    float_environment( *renderer_, result, registers_[texturename], registers_[direction] );
+    float_environment( *renderer_, result, texturename, direction, length_ );
 }
 
 void VirtualMachine::execute_vec3_environment()
 {
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    int texturename = argument();
-    int direction = argument();
+    dispatch();
+    vec3* result = lookup_vec3( quad() );
+    const char* texturename = lookup_string( quad() );
+    const vec3* direction = lookup_vec3( quad() );
     REYES_ASSERT( renderer_ );
-    vec3_environment( *renderer_, result, registers_[texturename], registers_[direction] );
+    vec3_environment( *renderer_, result, texturename, direction, length_ );
 }
 
 void VirtualMachine::execute_shadow()
 {
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    int texturename = argument();
-    int position = argument();
-    int bias = argument();
+    dispatch();
+    float* result = lookup_float( quad() );
+    const char* texturename = lookup_string( quad() );
+    const vec3* position = lookup_vec3( quad() );
+    const float* bias = lookup_float( quad() );
     REYES_ASSERT( renderer_ );
-    shadow( *renderer_, result, registers_[texturename], registers_[position], registers_[bias] );
+    shadow( *renderer_, result, texturename, position, bias, length_ );
 }
 
-void VirtualMachine::execute_call_0()
+void VirtualMachine::execute_call()
 {
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    shared_ptr<Symbol> symbol = shader_->symbols()[argument()];
+    const int MAXIMUM_ARGUMENTS = 16;
+    int dispatch = VirtualMachine::dispatch();
+    int index = argument();
+    int length = argument();
+    void* arguments [MAXIMUM_ARGUMENTS + 1] = {};
+    arguments[0] = lookup( argument() );
+    for ( int i = 0; i < length; ++i )
+    {
+        arguments[i + 1] = lookup( argument() );
+    }
+
+    typedef void (*FunctionType)( const Renderer&, const Grid&, int, void** );
+    const Symbol* symbol = symbol_table_->global_scope()->symbol( index );
+    REYES_ASSERT( symbol );
     REYES_ASSERT( symbol->function() );
-    typedef void (*FunctionType)( const Renderer&, const Grid&, shared_ptr<Value> );
     FunctionType function = reinterpret_cast<FunctionType>( symbol->function() );
     REYES_ASSERT( renderer_ );
-    (*function)( *renderer_, *grid_, result );
-}
-
-void VirtualMachine::execute_call_1()
-{
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    shared_ptr<Symbol> symbol = shader_->symbols()[argument()];
-    shared_ptr<Value> arg0 = registers_[argument()];
-    typedef void (*FunctionType)( const Renderer&, const Grid&, shared_ptr<Value>, shared_ptr<Value> );
-    FunctionType function = reinterpret_cast<FunctionType>( symbol->function() );
-    REYES_ASSERT( renderer_ );
-    (*function)( *renderer_, *grid_, result, arg0 );
-}
-
-void VirtualMachine::execute_call_2()
-{
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    shared_ptr<Symbol> symbol = shader_->symbols()[argument()];
-    shared_ptr<Value> arg0 = registers_[argument()];
-    shared_ptr<Value> arg1 = registers_[argument()];
-    typedef void (*FunctionType)( const Renderer&, const Grid&, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value> );
-    FunctionType function = reinterpret_cast<FunctionType>( symbol->function() );
-    REYES_ASSERT( renderer_ );
-    (*function)( *renderer_, *grid_, result, arg0, arg1 );
-}
-
-void VirtualMachine::execute_call_3()
-{
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    shared_ptr<Symbol> symbol = shader_->symbols()[argument()];
-    shared_ptr<Value> arg0 = registers_[argument()];
-    shared_ptr<Value> arg1 = registers_[argument()];
-    shared_ptr<Value> arg2 = registers_[argument()];
-    typedef void (*FunctionType)( const Renderer&, const Grid&, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value> );
-    FunctionType function = reinterpret_cast<FunctionType>( symbol->function() );
-    REYES_ASSERT( renderer_ );
-    (*function)( *renderer_, *grid_, result, arg0, arg1, arg2 );
-}
-
-void VirtualMachine::execute_call_4()
-{
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    shared_ptr<Symbol> symbol = shader_->symbols()[argument()];
-    shared_ptr<Value> arg0 = registers_[argument()];
-    shared_ptr<Value> arg1 = registers_[argument()];
-    shared_ptr<Value> arg2 = registers_[argument()];
-    shared_ptr<Value> arg3 = registers_[argument()];
-    typedef void (*FunctionType)( const Renderer&, const Grid&, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value> );
-    FunctionType function = reinterpret_cast<FunctionType>( symbol->function() );
-    REYES_ASSERT( renderer_ );
-    (*function)( *renderer_, *grid_, result, arg0, arg1, arg2, arg3 );
-}
-
-void VirtualMachine::execute_call_5()
-{
-    word();
-    shared_ptr<Value> result = registers_[allocate_register()];
-    shared_ptr<Symbol> symbol = shader_->symbols()[argument()];
-    shared_ptr<Value> arg0 = registers_[argument()];
-    shared_ptr<Value> arg1 = registers_[argument()];
-    shared_ptr<Value> arg2 = registers_[argument()];
-    shared_ptr<Value> arg3 = registers_[argument()];
-    shared_ptr<Value> arg4 = registers_[argument()];
-    typedef void (*FunctionType)( const Renderer&, const Grid&, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value>, shared_ptr<Value> );
-    FunctionType function = reinterpret_cast<FunctionType>( symbol->function() );
-    REYES_ASSERT( renderer_ );
-    (*function)( *renderer_, *grid_, result, arg0, arg1, arg2, arg3, arg4 );
+    (*function)( *renderer_, *grid_, dispatch, arguments );
 }
 
 void VirtualMachine::execute_ambient()
 {
-    int dispatch = word();
+    int dispatch = VirtualMachine::dispatch();
     (void) dispatch;
-
-    shared_ptr<Value>& light_color = registers_[argument()];
-    shared_ptr<Value>& light_opacity = registers_[argument()];
-
-    light_color.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
-    light_color->zero();    
-    light_opacity.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
-    light_opacity->zero();
-    
+    vec3* light_color = lookup_vec3( quad() );
+    float* light_opacity = lookup_float( quad() );
+    memset( light_color, 0, sizeof(vec3) * length_ );
+    memset( light_opacity, 0, sizeof(float) * length_ );    
     shared_ptr<Light> light( new Light(LIGHT_AMBIENT, light_color, light_opacity, vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 0.0f), 0.0f) );
     grid_->add_light( light );                
 }
 
 void VirtualMachine::execute_solar_axis_angle()
 {
-    int dispatch = word();
+    int dispatch = VirtualMachine::dispatch();
     (void) dispatch;
 
-    const shared_ptr<Value>& axis = registers_[argument()];
-    const shared_ptr<Value>& angle = registers_[argument()];    
-    shared_ptr<Value>& light_color = registers_[argument()];
-    shared_ptr<Value>& light_opacity = registers_[argument()];
+    const math::vec3* axis = lookup_vec3( quad() );
+    const float* angle = lookup_float( quad() );
+    math::vec3* light_color = lookup_vec3( quad() );
+    float* light_opacity = lookup_float( quad() );
 
-    light_color.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
-    light_color->zero();
-    light_opacity.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
-    light_opacity->zero();
+    memset( light_color, 0, sizeof(vec3) * length_ );
+    memset( light_opacity, 0, sizeof(float) * length_ );
 
-    shared_ptr<Light> light( new Light(LIGHT_SOLAR_AXIS_ANGLE, light_color, light_opacity, axis->vec3_value(), axis->vec3_value(), angle->float_value()) );
+    shared_ptr<Light> light( new Light(LIGHT_SOLAR_AXIS_ANGLE, light_color, light_opacity, axis[0], axis[0], angle[0]) );
     grid_->add_light( light );             
 }
 
 void VirtualMachine::execute_illuminate()
 {
-    int dispatch = word();
+    int dispatch = VirtualMachine::dispatch();
     (void) dispatch;
 
-    const shared_ptr<Value>& P = registers_[argument()];
-    const shared_ptr<Value>& Ps = registers_[argument()];
-    const shared_ptr<Value>& L = registers_[argument()];
-    shared_ptr<Value>& light_color = registers_[argument()];
-    shared_ptr<Value>& light_opacity = registers_[argument()];
+    const math::vec3* P = lookup_vec3( quad() );
+    const math::vec3* Ps = lookup_vec3( quad() );
+    math::vec3* L = lookup_vec3( quad() );
+    math::vec3* light_color = lookup_vec3( quad() );
+    float* light_opacity = lookup_float( quad() );
 
-    L->light_to_surface_vector( Ps, P->vec3_value() );
-    light_color.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
-    light_color->zero();
-    light_opacity.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
-    light_opacity->zero();
+    vec3 light_position = P[0];
+    for ( int i = 0; i < length_; ++i )
+    {
+        L[i] = Ps[i] - light_position;
+    }
 
-    shared_ptr<Light> light( new Light(LIGHT_ILLUMINATE, light_color, light_opacity, P->vec3_value(), vec3(0.0f, 0.0f, 0.0f), 0.0f) );
+    memset( light_color, 0, sizeof(vec3) * length_ );
+    memset( light_opacity, 0, sizeof(float) * length_ );
+
+    shared_ptr<Light> light( new Light(LIGHT_ILLUMINATE, light_color, light_opacity, P[0], vec3(0.0f, 0.0f, 0.0f), 0.0f) );
     grid_->add_light( light );
 }
 
 void VirtualMachine::execute_illuminate_axis_angle()
 {
-    int dispatch = word();
+    int dispatch = VirtualMachine::dispatch();
     (void) dispatch;
 
-    const shared_ptr<Value>& P = registers_[argument()];
-    const shared_ptr<Value>& axis = registers_[argument()];
-    const shared_ptr<Value>& angle = registers_[argument()];                
-    const shared_ptr<Value>& Ps = registers_[argument()];
-    const shared_ptr<Value>& L = registers_[argument()];
-    shared_ptr<Value>& light_color = registers_[argument()];
-    shared_ptr<Value>& light_opacity = registers_[argument()];
+    const vec3* P = lookup_vec3( quad() );
+    const vec3* axis = lookup_vec3( quad() );
+    const float* angle = lookup_float( quad() );
+    const vec3* Ps = lookup_vec3( quad() );
+    vec3* L = lookup_vec3( quad() );
+    vec3* light_color = lookup_vec3( quad() );
+    float* light_opacity = lookup_float( quad() );
 
-    L->light_to_surface_vector( Ps, P->vec3_value() );
-    light_color.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
-    light_color->zero();
-    light_opacity.reset( new Value(TYPE_COLOR, STORAGE_VARYING, grid_->size()) );
-    light_opacity->zero();
+    vec3 light_position = P[0];
+    for ( int i = 0; i < length_; ++i )
+    {
+        L[i] = Ps[i] - light_position;
+    }
 
-    shared_ptr<Light> light( new Light(LIGHT_ILLUMINATE_AXIS_ANGLE, light_color, light_opacity, P->vec3_value(), axis->vec3_value(), angle->float_value()) );
+    memset( light_color, 0, sizeof(vec3) * length_ );
+    memset( light_opacity, 0, sizeof(float) * length_ );
+
+    shared_ptr<Light> light( new Light(LIGHT_ILLUMINATE_AXIS_ANGLE, light_color, light_opacity, P[0], axis[0], angle[0]) );
     grid_->add_light( light );
 }
 
 void VirtualMachine::execute_illuminance_axis_angle()
 {
-    int dispatch = word();
-    (void) dispatch;
+    int dispatch = VirtualMachine::dispatch();
+    const vec3* P = lookup_vec3( quad() );
+    const vec3* axis = lookup_vec3( quad() );
+    const float* angle = lookup_float( quad() );
+    vec3* L = lookup_vec3( quad() );
+    vec3* light_color = lookup_vec3( quad() );
+    float* light_opacity = lookup_float( quad() );
+    int* mask = lookup_int( quad() );
 
-    const shared_ptr<Value>& P = registers_[argument()];
-    const shared_ptr<Value>& axis = registers_[argument()];
-    const shared_ptr<Value>& angle = registers_[argument()];
-    const shared_ptr<Value>& L = registers_[argument()];
-    const shared_ptr<Value>& light_color = registers_[argument()];
-    const shared_ptr<Value>& light_opacity = registers_[argument()];                
-    const shared_ptr<Value>& result = registers_[allocate_register()];
+    const Light* light = grid_->get_light( light_index_ );
+    const math::vec3& light_position = light->position();
+    switch ( light->type() )
+    {
+        case LIGHT_SOLAR_AXIS:
+        case LIGHT_SOLAR_AXIS_ANGLE:
+            illuminance_solar( dispatch, mask, &light_position, axis, angle, length_ );
+            break;
 
-    const Light* light = grid_->get_light( light_index_ );                
-    result->illuminance_axis_angle( P, axis, angle, light );
-    L->surface_to_light_vector( P, light );
-    light_color->reset( TYPE_COLOR, STORAGE_VARYING, grid_->size() );
-    assign( DISPATCH_V3V3, (float*) light_color->values(), (const float*) light->color()->values(), nullptr, grid_->size() );
-    light_opacity->reset( TYPE_COLOR, STORAGE_VARYING, grid_->size() );
-    assign( DISPATCH_V3V3, (float*) light_opacity->values(), (const float*) light->opacity()->values(), nullptr, grid_->size() );
+        case LIGHT_ILLUMINATE:
+        case LIGHT_ILLUMINATE_AXIS_ANGLE:
+            illuminance_illuminate( dispatch, mask, &light_position, P, axis, angle, length_ );
+            break;
+    }
+    light->surface_to_light_vector( P, L, length_ );
+
+    assign( DISPATCH_V3V3, (float*) light_color, (const float*) light->color(), nullptr, length_ );
+    assign( DISPATCH_V3V3, light_opacity, light->opacity(), nullptr, length_ );
 }
 
 
-void VirtualMachine::float_texture( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> s, std::shared_ptr<Value> t ) const
+void VirtualMachine::float_texture( const Renderer& renderer, float* result, const char* texturename, const float* s, const float* t, int length ) const
 {
     REYES_ASSERT( result );
-    REYES_ASSERT( texturename );
-    REYES_ASSERT( texturename->type() == TYPE_STRING );
     REYES_ASSERT( s );
-    REYES_ASSERT( s->type() == TYPE_FLOAT );
-    REYES_ASSERT( s->storage() == STORAGE_VARYING );
     REYES_ASSERT( t );
-    REYES_ASSERT( t->type() == TYPE_FLOAT );
-    REYES_ASSERT( t->storage() == STORAGE_VARYING );
-    REYES_ASSERT( s->size() == t->size() );
+    REYES_ASSERT( length >= 0 );
 
-    result->reset( TYPE_FLOAT, STORAGE_VARYING, s->size() );
-
-    const Texture* texture = renderer.find_texture( texturename->string_value().c_str() );
+    const Texture* texture = renderer.find_texture( texturename );
     if ( texture && texture->valid() )
     {
-        const float* s_values = s->float_values();    
-        const float* t_values = t->float_values();
-        float* values = result->float_values();
-        for ( unsigned int i = 0; i < s->size(); ++i )
+        for ( unsigned int i = 0; i < length; ++i )
         {
-            values[i] = texture->color( s_values[i], t_values[i] ).x;
+            result[i] = texture->color( s[i], t[i] ).x;
         }
     }
     else
     {
-        result->zero();
+        memset( result, 0, sizeof(float) * length );
     }
 }
 
-void VirtualMachine::vec3_texture( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> s, std::shared_ptr<Value> t ) const
+void VirtualMachine::vec3_texture( const Renderer& renderer, math::vec3* result, const char* texturename, const float* s, const float* t, int length ) const
 {
     REYES_ASSERT( result );
     REYES_ASSERT( texturename );
-    REYES_ASSERT( texturename->type() == TYPE_STRING );
     REYES_ASSERT( s );
-    REYES_ASSERT( s->type() == TYPE_FLOAT );
-    REYES_ASSERT( s->storage() == STORAGE_VARYING );
     REYES_ASSERT( t );
-    REYES_ASSERT( t->type() == TYPE_FLOAT );
-    REYES_ASSERT( t->storage() == STORAGE_VARYING );
-    REYES_ASSERT( s->size() == t->size() );
+    REYES_ASSERT( length >= 0 );
 
-    result->reset( TYPE_COLOR, STORAGE_VARYING, s->size() );
-
-    const Texture* texture = renderer.find_texture( texturename->string_value().c_str() );
+    const Texture* texture = renderer.find_texture( texturename );
     if ( texture && texture->valid() )
     {
-        const float* s_values = s->float_values();    
-        const float* t_values = t->float_values();    
-        vec3* values = result->vec3_values();
-        for ( unsigned int i = 0; i < s->size(); ++i )
+        for ( unsigned int i = 0; i < length; ++i )
         {
-            values[i] = vec3( texture->color(s_values[i], t_values[i]) );
+            result[i] = vec3( texture->color(s[i], t[i]) );
         }    
     }
     else
     {
-        result->zero();
+        memset( result, 0, sizeof(vec3) * length );
     }
 }
 
-void VirtualMachine::float_environment( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> direction ) const
+void VirtualMachine::float_environment( const Renderer& renderer, float* result, const char* texturename, const math::vec3* direction, int length ) const
 {
     REYES_ASSERT( result );
     REYES_ASSERT( texturename );
-    REYES_ASSERT( texturename->type() == TYPE_STRING );
     REYES_ASSERT( direction );
-    REYES_ASSERT( direction->storage() == STORAGE_VARYING  );
+    REYES_ASSERT( length >= 0 );
 
-    result->reset( TYPE_FLOAT, STORAGE_VARYING, direction->size() );
-
-    const Texture* texture = renderer.find_texture( texturename->string_value().c_str() );
+    const Texture* texture = renderer.find_texture( texturename );
     if ( texture && texture->valid() )
     {
-        const vec3* directions = direction->vec3_values();    
-        float* values = result->float_values();
-        for ( unsigned int i = 0; i < direction->size(); ++i )
+        for ( unsigned int i = 0; i < length; ++i )
         {
-            values[i] = texture->environment( math::normalize(directions[i]) ).x;
+            result[i] = texture->environment( normalize(direction[i]) ).x;
         }
     }
     else
     {
-        result->zero();
+        memset( result, 0, sizeof(float) * length );
     }
 }
 
-void VirtualMachine::vec3_environment( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> direction ) const
+void VirtualMachine::vec3_environment( const Renderer& renderer, math::vec3* result, const char* texturename, const math::vec3* direction, int length ) const
 {
     REYES_ASSERT( result );
     REYES_ASSERT( texturename );
-    REYES_ASSERT( texturename->type() == TYPE_STRING );
     REYES_ASSERT( direction );
-    REYES_ASSERT( direction->storage() == STORAGE_VARYING  );
+    REYES_ASSERT( length >= 0 );
 
-    result->reset( TYPE_COLOR, STORAGE_VARYING, direction->size() );
-
-    const Texture* texture = renderer.find_texture( texturename->string_value().c_str() );
+    const Texture* texture = renderer.find_texture( texturename );
     if ( texture && texture->valid() )
     {
-        const vec3* directions = direction->vec3_values();    
-        vec3* values = result->vec3_values();
-        for ( unsigned int i = 0; i < direction->size(); ++i )
+        for ( unsigned int i = 0; i < length; ++i )
         {
-            values[i] = vec3( texture->environment(math::normalize(directions[i])) );
+            result[i] = vec3( texture->environment(normalize(direction[i])) );
         }
     }
     else
     {
-        result->zero();
+        memset( result, 0, sizeof(vec3) * length );
     }
 }
 
-void VirtualMachine::shadow( const Renderer& renderer, std::shared_ptr<Value> result, std::shared_ptr<Value> texturename, std::shared_ptr<Value> position, std::shared_ptr<Value> bias ) const
+void VirtualMachine::shadow( const Renderer& renderer, float* result, const char* texturename, const math::vec3* position, const float* bias, int length ) const
 {
     REYES_ASSERT( result );
     REYES_ASSERT( texturename );
-    REYES_ASSERT( texturename->type() == TYPE_STRING );
     REYES_ASSERT( position );
-    REYES_ASSERT( position->type() == TYPE_POINT );
-    REYES_ASSERT( position->storage() == STORAGE_VARYING );
     REYES_ASSERT( bias );
-    REYES_ASSERT( bias->type() == TYPE_FLOAT );
+    REYES_ASSERT( length >= 0 );
 
-    result->reset( TYPE_FLOAT, STORAGE_VARYING, position->size() );
-
-    const Texture* texture = renderer.find_texture( texturename->string_value().c_str() );
+    const Texture* texture = renderer.find_texture( texturename );
     if ( texture && texture->valid() )
     {
         const mat4x4 world = inverse( renderer.camera_transform() );
-        const float bias_value = *bias->float_values();
-        const vec3* position_values = position->vec3_values();
-        float* values = result->float_values();
-        for ( unsigned int i = 0; i < position->size(); ++i )
+        const float bias_ = bias[0];
+        for ( unsigned int i = 0; i < length; ++i )
         {
-            values[i] = texture->shadow( world * vec4(position_values[i], 1.0f), bias_value );
+            result[i] = texture->shadow( world * vec4(position[i], 1.0f), bias_ );
         }
     }
     else
     {
-        result->zero();
+        memset( result, 0, sizeof(float) * length );
     }
 }
 
-void VirtualMachine::push_mask( std::shared_ptr<Value> value )
+void VirtualMachine::push_mask( const float* values, int length )
 {
-    REYES_ASSERT( value );
-    REYES_ASSERT( value->type() == TYPE_INTEGER );
+    REYES_ASSERT( values );
+    REYES_ASSERT( length >= 0 );
 
     if ( masks_.empty() )
     {
         REYES_ASSERT( masks_.capacity() > masks_.size() );
         masks_.push_back( ConditionMask() );
-        masks_.back().generate( value );
+        masks_.back().generate( values, length );
     }
     else
     {    
         REYES_ASSERT( masks_.capacity() > masks_.size() );
         ConditionMask& existing_mask = masks_.back();
         masks_.push_back( ConditionMask() );
-        masks_.back().generate( existing_mask, value );
+        masks_.back().generate( existing_mask, values, length );
     }
 }
 
@@ -1408,19 +1259,72 @@ bool VirtualMachine::mask_empty() const
     return masks_.back().empty();
 }
 
-const unsigned char* VirtualMachine::get_mask() const
+const unsigned char* VirtualMachine::mask( unsigned int dispatch ) const
 {
-    return !masks_.empty() ? &masks_.back().mask()[0] : NULL;
+    if ( (dispatch & DISPATCH_VARYING) != 0 && !masks_.empty() )
+    {
+        return &masks_.back().mask()[0];
+    }
+    return nullptr;
 }
 
-void VirtualMachine::reset_register( int index )
+void* VirtualMachine::lookup( Address address )
 {
-    REYES_ASSERT( shader_ );
-    REYES_ASSERT( index >= shader_->permanent_registers() );
-    register_index_ = index;
+    void* result = nullptr;
+    switch ( address.segment() )
+    {
+        case SEGMENT_CONSTANT:
+            result = const_cast<unsigned char*>( shader_->constant(address.offset()) );
+            break;
+
+        case SEGMENT_TEMPORARY:
+            result = temporary_memory_ + address.offset();
+            break;
+
+        case SEGMENT_GRID:
+            result = grid_memory_ + address.offset();
+            break;
+
+        case SEGMENT_LIGHT:
+            break;
+
+        case SEGMENT_STRING:
+            result = grid_->string_value( address.offset() );
+            break;
+
+        case SEGMENT_NULL:
+        default:
+            break;
+    }
+    return result;
 }
 
-int VirtualMachine::allocate_register()
+const char* VirtualMachine::lookup_string( Address address )
 {
-    return register_index_++;
+    return reinterpret_cast<const char*>( lookup(address) );
+}
+
+float* VirtualMachine::lookup_float( Address address )
+{
+    return reinterpret_cast<float*>( lookup(address) );
+}
+
+int* VirtualMachine::lookup_int( Address address )
+{
+    return reinterpret_cast<int*>( lookup_float(address) );
+}
+
+math::vec3* VirtualMachine::lookup_vec3( Address address )
+{
+    return reinterpret_cast<math::vec3*>( lookup_float(address) );
+}
+
+math::vec4* VirtualMachine::lookup_vec4( Address address )
+{
+    return reinterpret_cast<math::vec4*>( lookup_float(address) );
+}
+
+math::mat4x4* VirtualMachine::lookup_mat4x4( Address address )
+{
+    return reinterpret_cast<math::mat4x4*>( lookup_float(address) );
 }

@@ -32,9 +32,9 @@ class Attributes
     math::vec3 opacity_; ///< The current opacity.
     const math::vec4 *u_basis_; ///< The 4 rows that define the cubic basis in the u direction for patches.
     const math::vec4 *v_basis_; ///< The 4 rows that define the cubic basis in the u direction for patches.
-    Grid* displacement_parameters_; ///< The parameters for the currently active displacement shader.
+    Grid* displacement_grid_; ///< The grid for the currently active displacement shader.
     Shader* displacement_shader_; ///< The currently active displacement shader or null if there is no displacement shader.
-    Grid* surface_parameters_; ///< The parameters for the currently active surface shader.
+    Grid* surface_grid_; ///< The grid for the currently active surface shader.
     Shader* surface_shader_; ///< The currently active surface shader or null if there is no surface shader.
     std::vector<std::pair<Shader*, std::shared_ptr<Grid> > > light_shaders_; ///< The currently allocated light shaders.
     std::vector<Grid*> active_light_shaders_; ///< The currently active light shaders.
@@ -80,8 +80,8 @@ public:
 
     void light_shade( Grid& grid );
     Grid& add_light_shader( Shader* light_shader, const math::mat4x4& camera_transform );
-    void activate_light_shader( const Grid& grid );
-    void deactivate_light_shader( const Grid& grid );
+    void activate_light_shader( Grid& grid );
+    void deactivate_light_shader( Grid& grid );
     std::vector<Grid*>::iterator find_active_light_shader_by_grid( const Grid& grid );
     
     void push_transform();

@@ -4,7 +4,6 @@
 //
 
 #include "ConditionMask.hpp"
-#include <reyes/Value.hpp>
 #include <reyes/assert.hpp>
 
 using namespace reyes;
@@ -30,44 +29,41 @@ bool ConditionMask::empty() const
     return processed_ == 0;
 }
 
-void ConditionMask::generate( std::shared_ptr<Value> value )
+void ConditionMask::generate( const float* values, int length )
 {
-    REYES_ASSERT( value );
-    REYES_ASSERT( value->type() == TYPE_INTEGER );
+    REYES_ASSERT( values );
+    REYES_ASSERT( length >= 0 );
     
-    const unsigned int size = value->size();
-    const int* values = value->int_values();
-
-    mask_.insert( mask_.end(), size, 0 );
-    processed_ = 0;
+    mask_.insert( mask_.end(), length, 0 );
+    int processed = 0;
     unsigned char* mask = &mask_[0];
-    for ( unsigned int i = 0; i < size; ++i )
+    for ( int i = 0; i < length; ++i )
     {
-        int process = values[i];
-        mask[i] = process != 0;
-        processed_ += process != 0;
+        bool process = values[i] != 0.0f;
+        mask[i] = process;
+        processed += process ? 1 : 0;
     }
+    processed_ = processed;
 }
 
-void ConditionMask::generate( const ConditionMask& condition_mask, std::shared_ptr<Value> value )
+void ConditionMask::generate( const ConditionMask& condition_mask, const float* values, int length )
 {
-    REYES_ASSERT( value );
-    REYES_ASSERT( value->type() == TYPE_INTEGER );
-    REYES_ASSERT( condition_mask.mask_.size() == value->size() );
+    REYES_ASSERT( values );
+    REYES_ASSERT( length >= 0 );
+    REYES_ASSERT( condition_mask.mask_.size() == length );
     
-    const unsigned int size = value->size();
-    const int* values = value->int_values();
     const unsigned char* existing_mask = &condition_mask.mask_[0];
 
-    mask_.insert( mask_.end(), size, 0 );
-    processed_ = 0;
+    mask_.insert( mask_.end(), length, 0 );
+    int processed = 0;
     unsigned char* mask = &mask_[0];
-    for ( unsigned int i = 0; i < size; ++i )
+    for ( int i = 0; i < length; ++i )
     {
-        int process = values[i] && existing_mask[i];
-        mask[i] = process != 0;
-        processed_ += process != 0;
+        bool process = values[i] != 0.0f && existing_mask[i];
+        mask[i] = process;
+        processed += process ? 1 : 0;
     }
+    processed_ = processed;
 }
 
 void ConditionMask::invert()

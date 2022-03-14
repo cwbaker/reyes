@@ -2,9 +2,9 @@
 #include <UnitTest++/UnitTest++.h>
 #include <reyes/Renderer.hpp>
 #include <reyes/SymbolTable.hpp>
+#include <reyes/Scope.hpp>
 #include <reyes/Shader.hpp>
 #include <reyes/Grid.hpp>
-#include <reyes/Value.hpp>
 #include <math/vec3.ipp>
 #include <reyes/assert.hpp>
 #define _USE_MATH_DEFINES
@@ -33,19 +33,19 @@ SUITE( IlluminanceStatements )
     {
         Renderer renderer;
         Shader light_shader;
-        Grid grid;
-        vec3* P;
-        vec3* N;
-        vec3* Ci;
+        vec3 P [8];
+        vec3 N [8];
+        vec3 Ci [8];
      
         IlluminanceStatementTest()
-        : renderer(),
-          light_shader( LIGHT_SHADER_SOURCE, LIGHT_SHADER_SOURCE + strlen(LIGHT_SHADER_SOURCE), renderer.symbol_table(), renderer.error_policy() ),
-          grid(),
-          P( NULL ),
-          N( NULL ),
-          Ci( NULL )
-        {       
+        : renderer()
+        , light_shader()
+        , P{}
+        , N{}
+        , Ci{}
+        {
+            light_shader.load_memory( LIGHT_SHADER_SOURCE, LIGHT_SHADER_SOURCE + strlen(LIGHT_SHADER_SOURCE), renderer.error_policy() );
+
             renderer.begin();
             renderer.perspective( float(M_PI) / 2.0f );
             renderer.projection();
@@ -54,27 +54,32 @@ SUITE( IlluminanceStatements )
             Grid& light = renderer.light_shader( &light_shader );
             light["from"] = vec3( 0.0f, 1.0f, 0.0f );
             light["lightcolor"] = vec3( 0.0f, 1.0f, 0.0f );
-                       
-            grid.resize( 2, 4 );
-
-            shared_ptr<Value> P_value = grid.add_value( "P", TYPE_POINT );
-            P_value->zero();
-            P = P_value->vec3_values();
-
-            shared_ptr<Value> N_value = grid.add_value( "N", TYPE_NORMAL );
-            N_value->zero();
-            N = N_value->vec3_values();
-
-            shared_ptr<Value> Ci_value = grid.add_value( "Ci", TYPE_COLOR );
-            Ci_value->zero();
-            Ci = Ci_value->vec3_values();
         }
         
         void test( const char* source )
         {
-            Shader shader( source, source + strlen(source), renderer.symbol_table(), renderer.error_policy() );
-            renderer.surface_shader( &shader );
-            renderer.surface_shade( grid );
+            Shader shader;
+            shader.load_memory( source, source + strlen(source), renderer.error_policy() );
+
+            Grid& grid = renderer.surface_shader( &shader );
+            grid.resize( 2, 4 );
+            grid.set_normals_generated( true );
+
+            vec3* positions = grid.vec3_value( "P" );
+            vec3* normals = grid.vec3_value( "N" );
+            vec3* colors = grid.vec3_value( "Ci" );
+            if ( positions && normals && colors )
+            {
+                const bool geometry_left_handed = true;
+                grid.generate_normals( geometry_left_handed );
+                memcpy( positions, P, sizeof(vec3) * grid.size() );
+                memcpy( normals, N, sizeof(vec3) * grid.size() );
+                memcpy( colors, Ci, sizeof(vec3) * grid.size() );
+                renderer.surface_shade( grid );
+                memcpy( P, positions, sizeof(vec3) * grid.size() );
+                memcpy( N, normals, sizeof(vec3) * grid.size() );
+                memcpy( Ci, colors, sizeof(vec3) * grid.size() );
+            }
         }
     };
 

@@ -21,8 +21,9 @@ SyntaxNode::SyntaxNode()
 : node_type_( SHADER_NODE_NULL ),
   lexeme_(),
   nodes_(),
+  scope_( nullptr ),
   symbol_(),
-  constant_index_( REGISTER_NULL ),
+  address_(),
   expected_type_( TYPE_NULL ),
   original_type_( TYPE_NULL ),
   type_( TYPE_NULL ),
@@ -38,8 +39,9 @@ SyntaxNode::SyntaxNode( SyntaxNodeType node_type, int line )
 : node_type_( node_type ),
   lexeme_(),
   nodes_(),
+  scope_( nullptr ),
   symbol_(),
-  constant_index_( REGISTER_NULL ),
+  address_(),
   expected_type_( TYPE_NULL ),
   original_type_( TYPE_NULL ),
   type_( TYPE_NULL ),
@@ -55,8 +57,9 @@ SyntaxNode::SyntaxNode( SyntaxNodeType node_type, int line, const char* lexeme )
 : node_type_( node_type ),
   lexeme_(),
   nodes_(),
+  scope_( nullptr ),
   symbol_(),
-  constant_index_( REGISTER_NULL ),
+  address_(),
   expected_type_( TYPE_NULL ),
   original_type_( TYPE_NULL ),
   type_( TYPE_NULL ),
@@ -76,8 +79,9 @@ SyntaxNode::SyntaxNode( SyntaxNodeType node_type, int line, const std::string& l
 : node_type_( node_type ),
   lexeme_( lexeme ),
   nodes_(),
+  scope_( nullptr ),
   symbol_(),
-  constant_index_( REGISTER_NULL ),
+  address_(),
   expected_type_( TYPE_NULL ),
   original_type_( TYPE_NULL ),
   type_( TYPE_NULL ),
@@ -159,14 +163,19 @@ const std::vector<std::shared_ptr<SyntaxNode>>& SyntaxNode::nodes() const
     return nodes_;
 }
 
-std::shared_ptr<Symbol> SyntaxNode::symbol() const
+Scope* SyntaxNode::scope() const
+{
+    return scope_;
+}
+
+const std::shared_ptr<Symbol>& SyntaxNode::symbol() const
 {
     return symbol_;
 }
 
-int SyntaxNode::constant_index() const
+Address SyntaxNode::address() const
 {
-    return constant_index_;
+    return address_;
 }
 
 ValueType SyntaxNode::expected_type() const
@@ -199,6 +208,16 @@ ValueStorage SyntaxNode::original_storage() const
     return original_storage_;
 }
 
+bool SyntaxNode::is_uniform() const
+{
+    return storage() == STORAGE_UNIFORM;
+}
+
+bool SyntaxNode::is_varying() const
+{
+    return storage() == STORAGE_VARYING;
+}
+
 Instruction SyntaxNode::instruction() const
 {
     return instruction_;
@@ -228,6 +247,16 @@ bool SyntaxNode::operator==( const SyntaxNode& node ) const
     ;
 }
 
+int SyntaxNode::count_by_type( SyntaxNodeType type ) const
+{
+    int count = node_type_ == type ? 1 : 0;
+    for ( const shared_ptr<SyntaxNode>& node : nodes_ )
+    {
+        count += node->count_by_type( type );
+    }
+    return count;    
+}
+
 void SyntaxNode::set_node_type( SyntaxNodeType node_type )
 {
     node_type_ = node_type;
@@ -255,14 +284,19 @@ void SyntaxNode::add_nodes_at_end( const std::vector<std::shared_ptr<SyntaxNode>
     nodes_.insert( nodes_.end(), begin, end );
 }
 
+void SyntaxNode::set_scope( Scope* scope )
+{
+    scope_ = scope;
+}
+
 void SyntaxNode::set_symbol( std::shared_ptr<Symbol> symbol )
 {
     symbol_ = symbol;
 }
 
-void SyntaxNode::set_constant_index( int index )
+void SyntaxNode::set_address( Address address )
 {
-    constant_index_ = index;
+    address_ = address;    
 }
 
 void SyntaxNode::set_expected_type( ValueType type )

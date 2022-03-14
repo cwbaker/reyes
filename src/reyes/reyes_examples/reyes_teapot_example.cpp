@@ -1,6 +1,5 @@
 
 #include <reyes/Grid.hpp>
-#include <reyes/Value.hpp>
 #include <reyes/Options.hpp>
 #include <reyes/Renderer.hpp>
 #include <math/vec2.ipp>

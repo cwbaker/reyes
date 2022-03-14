@@ -4,6 +4,7 @@
 #include "SyntaxNodeType.hpp"
 #include "ValueType.hpp"
 #include "ValueStorage.hpp"
+#include "Address.hpp"
 #include <reyes/reyes_virtual_machine/Instruction.hpp>
 #include <math/vec3.hpp>
 #include <math/mat4x4.hpp>
@@ -14,6 +15,7 @@
 namespace reyes
 {
 
+class Scope;
 class Symbol;
 
 /**
@@ -21,15 +23,12 @@ class Symbol;
 */
 class SyntaxNode
 {
-public:
-    static const int REGISTER_NULL = ~0; ///< Indicates that no register has been assigned.
-
-private:
     SyntaxNodeType node_type_; ///< The node type of this SyntaxNode.
     std::string lexeme_; ///< The lexeme at this SyntaxNode.
     std::vector<std::shared_ptr<SyntaxNode>> nodes_; ///< The SyntaxNodes that are children of this SyntaxNode.
+    Scope* scope_; ///< The scope at this node (possibly null).
     std::shared_ptr<Symbol> symbol_; ///< The Symbol at this SyntaxNode (or null if there is no Symbol at this SyntaxNode).
-    int constant_index_; ///< The index of the register that this SyntaxNode's constant value is stored in (or REGISTER_NULL if this SyntaxNode is not a constant).
+    Address address_; ///< The address that this SyntaxNode's constant value is stored in (or 0 if this SyntaxNode is not a constant).
     ValueType expected_type_; ///< The type that is expected at this SyntaxNode by other SyntaxNodes above it in the syntax tree (or TYPE_NULL if there is no expectation of type).
     ValueType original_type_; ///< The type of the expression at this SyntaxNode before conversion (or TYPE_NULL if this SyntaxNode is not type converted).
     ValueType type_; ///< The type of the expression at this SyntaxNode after conversion (or TYPE_NULL if this SyntaxNode is not an expression).
@@ -55,24 +54,29 @@ public:
     math::mat4x4 mat4x4() const;
     SyntaxNode* node( int index ) const;
     const std::vector<std::shared_ptr<SyntaxNode>>& nodes() const;
-    std::shared_ptr<Symbol> symbol() const;
-    int constant_index() const;
+    Scope* scope() const;
+    const std::shared_ptr<Symbol>& symbol() const;
+    Address address() const;
     ValueType expected_type() const;
     ValueType type() const;
     ValueType original_type() const;
     ValueStorage expected_storage() const;
     ValueStorage storage() const;
     ValueStorage original_storage() const;
+    bool is_uniform() const;
+    bool is_varying() const;
     Instruction instruction() const;
     bool operator==( const SyntaxNode& node ) const;
+    int count_by_type( SyntaxNodeType type ) const;
     
     void set_node_type( SyntaxNodeType type );
     void set_lexeme( const std::string& lexeme );
     void add_node( std::shared_ptr<SyntaxNode> node );
     void add_node_at_front( std::shared_ptr<SyntaxNode> node );
     void add_nodes_at_end( const std::vector<std::shared_ptr<SyntaxNode>>::const_iterator begin, const std::vector<std::shared_ptr<SyntaxNode>>::const_iterator end );   
+    void set_scope( Scope* scope );
     void set_symbol( std::shared_ptr<Symbol> symbol );    
-    void set_constant_index( int index );    
+    void set_address( Address address );    
     void set_expected_type( ValueType type );    
     void set_type( ValueType type );
     void set_type_for_conversion( ValueType type );    

@@ -5,9 +5,9 @@
 #include <reyes/Renderer.hpp>
 #include <reyes/VirtualMachine.hpp>
 #include <reyes/SymbolTable.hpp>
+#include <reyes/Scope.hpp>
 #include <reyes/Shader.hpp>
 #include <reyes/Grid.hpp>
-#include <reyes/Value.hpp>
 #include <reyes/ErrorCode.hpp>
 #include <math/vec2.ipp>
 #include <math/vec3.ipp>
@@ -27,50 +27,51 @@ SUITE( ColorFunctions )
 {
     struct ColorFunctionTest
     {
-        Renderer renderer;
-        Grid grid;
-        vec3* C;
-        vec3* Ci;
-        float* x;
+        vec3 C [4];
+        vec3 Ci [4];
+        float x [4];
      
         ColorFunctionTest()
-        : grid(),
-          C( NULL ),
-          Ci( NULL ),
-          x( NULL )
+        : C{}
+        , Ci{}
+        , x{}
         {
+        }
+        
+        void test( const char* source )
+        {
+            Renderer renderer;
             renderer.begin();
             renderer.perspective( float(M_PI) / 2.0f );
             renderer.projection();
             renderer.begin_world();
 
-            grid.resize( 2, 2 );
-            
-            shared_ptr<Value> P_value = grid.add_value( "P", TYPE_POINT );
-            P_value->zero();
-            
-            shared_ptr<Value> C_value = grid.add_value( "C", TYPE_COLOR );
-            C_value->zero();
-            C = C_value->vec3_values();
-            
-            shared_ptr<Value> Ci_value = grid.add_value( "Ci", TYPE_COLOR );
-            Ci_value->zero();
-            Ci = Ci_value->vec3_values();
-            
-            shared_ptr<Value> x_value = grid.add_value( "x", TYPE_FLOAT );
-            x_value->zero();
-            x = x_value->float_values();
-        }
-        
-        void test( const char* source )
-        {
-            renderer.symbol_table().add_symbols()
+            SymbolTable symbol_table;
+            symbol_table.add_symbols()
                 ( "C", TYPE_COLOR )
                 ( "x", TYPE_FLOAT )
             ;
-            Shader shader( source, source + strlen(source), renderer.symbol_table(), renderer.error_policy() );
-            renderer.surface_shader( &shader );
-            renderer.surface_shade( grid );
+
+            Shader shader;
+            shader.load_memory( source, source + strlen(source), symbol_table, renderer.error_policy() );
+
+            Grid& grid = renderer.surface_shader( &shader );
+            grid.resize( 2, 2 );
+            grid.zero();
+
+            vec3* cc = grid.vec3_value( "C" );
+            vec3* cci = grid.vec3_value( "Ci" );
+            float* xx = grid.float_value( "x" );
+            if ( cc && cci && xx )
+            {
+                memcpy( cc, C, sizeof(vec3) * grid.size() );
+                memcpy( cci, Ci, sizeof(vec3) * grid.size() );
+                memcpy( xx, x, sizeof(float) * grid.size() );
+                renderer.surface_shade( grid );
+                memcpy( C, cc, sizeof(vec3) * grid.size() );
+                memcpy( Ci, cci, sizeof(vec3) * grid.size() );
+                memcpy( x, xx, sizeof(float) * grid.size() );
+            }
         }
     };
 
@@ -292,6 +293,7 @@ SUITE( ColorFunctions )
         CHECK_CLOSE( 1.0f, Ci[3].z, TOLERANCE );
     }
     
+    /*
     TEST_FIXTURE( ColorFunctionTest, hsv_to_rgb_typecast )
     {
         const int HUES = 4;
@@ -427,4 +429,5 @@ SUITE( ColorFunctions )
             }
         }    
     }
+    */
 }
