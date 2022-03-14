@@ -24,8 +24,6 @@ Shader::Shader()
 , code_()
 , initialize_address_( 0 )
 , shade_address_( 0 )
-, parameters_( 0 )
-, variables_( 0 )
 , maximum_vertices_( 0 )
 , constant_memory_size_( 0 )
 , grid_memory_size_( 0 )
@@ -39,8 +37,6 @@ Shader::Shader( const char* filename, ErrorPolicy& error_policy )
 , code_()
 , initialize_address_( 0 )
 , shade_address_( 0 )
-, parameters_( 0 )
-, variables_( 0 )
 , maximum_vertices_( 0 )
 , constant_memory_size_( 0 )
 , grid_memory_size_( 0 )
@@ -55,8 +51,6 @@ Shader::Shader( const char* filename, SymbolTable& symbol_table, ErrorPolicy& er
 , code_()
 , initialize_address_( 0 )
 , shade_address_( 0 )
-, parameters_( 0 )
-, variables_( 0 )
 , maximum_vertices_( 0 )
 , constant_memory_size_( 0 )
 , grid_memory_size_( 0 )
@@ -67,11 +61,10 @@ Shader::Shader( const char* filename, SymbolTable& symbol_table, ErrorPolicy& er
 
 Shader::Shader( const char* start, const char* finish, ErrorPolicy& error_policy )
 : symbols_()
+, constants_()
 , code_()
 , initialize_address_( 0 )
 , shade_address_( 0 )
-, parameters_( 0 )
-, variables_( 0 )
 , maximum_vertices_( 0 )
 , constant_memory_size_( 0 )
 , grid_memory_size_( 0 )
@@ -82,11 +75,10 @@ Shader::Shader( const char* start, const char* finish, ErrorPolicy& error_policy
 
 Shader::Shader( const char* start, const char* finish, SymbolTable& symbol_table, ErrorPolicy& error_policy )
 : symbols_()
+, constants_()
 , code_()
 , initialize_address_( 0 )
 , shade_address_( 0 )
-, parameters_( 0 )
-, variables_( 0 )
 , maximum_vertices_( 0 )
 , constant_memory_size_( 0 )
 , grid_memory_size_( 0 )
@@ -130,16 +122,6 @@ int Shader::shade_address() const
 int Shader::end_address() const
 {
     return int(code_.size());
-}
-
-int Shader::parameters() const
-{
-    return parameters_;
-}
-
-int Shader::variables() const
-{
-    return variables_;
 }
 
 int Shader::maximum_vertices() const
@@ -197,11 +179,8 @@ void Shader::load_file( const char* filename, SymbolTable& symbol_table, ErrorPo
     symbols_.swap( code_generator.symbols() );
     constants_ = code_generator.constant_data();
     code_ = code_generator.code();
-
     initialize_address_ = code_generator.initialize_address();
     shade_address_ = code_generator.shade_address();
-    parameters_ = code_generator.parameters();
-    variables_ = code_generator.variables();
     maximum_vertices_ = code_generator.maximum_vertices();
     constant_memory_size_ = code_generator.constant_memory_size();
     grid_memory_size_ = code_generator.grid_memory_size();
@@ -232,11 +211,8 @@ void Shader::load_memory( const char* start, const char* finish, SymbolTable& sy
     constants_ = code_generator.constant_data();
     symbols_.swap( code_generator.symbols() );
     code_ = code_generator.code();
-
     initialize_address_ = code_generator.initialize_address();
     shade_address_ = code_generator.shade_address();
-    parameters_ = code_generator.parameters();
-    variables_ = code_generator.variables();
     maximum_vertices_ = code_generator.maximum_vertices();
     constant_memory_size_ = code_generator.constant_memory_size();
     grid_memory_size_ = code_generator.grid_memory_size();

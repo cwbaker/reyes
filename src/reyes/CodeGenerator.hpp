@@ -44,8 +44,6 @@ class CodeGenerator
     int maximum_vertices_; ///< The maximum number of values in a varying variable.
     int initialize_address_; ///< The index in the code at which initialize code begins (always 0).
     int shade_address_; ///< The index in the code at which the shade code begins.
-    int parameters_; ///< The number of parameters to the shader.
-    int variables_; ///< The number of variables in the shader.
     int grid_memory_size_; ///< The amount of memory used by grid variables.
     int temporary_memory_size_; ///< The amount of memory used by temporary variables.
     int errors_; ///< The number of errors detected during code generation.
@@ -63,11 +61,8 @@ public:
 
     std::shared_ptr<Symbol> find_symbol( const std::string& identifier ) const;
     std::shared_ptr<Symbol> get_symbol( int index ) const;
-
     int initialize_address() const;
     int shade_address() const;
-    int parameters() const;
-    int variables() const;
     int maximum_vertices() const;
     int constant_memory_size() const;
     int grid_memory_size() const;

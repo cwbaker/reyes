@@ -24,12 +24,10 @@ class Shader
     std::vector<unsigned char> code_; ///< The byte code generated for the shader.
     int initialize_address_; ///< The index of the start of the initialize code fragment.
     int shade_address_; ///< The index of the start of the shade code fragment.
-    int parameters_; ///< The number of parameters to the shader.
-    int variables_; ///< The number of variables in the shader.
     int maximum_vertices_; ///< The maximum number of values in a varying variable.
-    int constant_memory_size_;
-    int grid_memory_size_;
-    int temporary_memory_size_;
+    int constant_memory_size_; ///< The size of constant memory used by this shader.
+    int grid_memory_size_; ///< The size of grid memory used by this shader.
+    int temporary_memory_size_; ///< The size of temporary memory used by this shader.
 
 public:
     Shader();
@@ -45,8 +43,6 @@ public:
     int initialize_address() const;
     int shade_address() const;
     int end_address() const;
-    int parameters() const;
-    int variables() const;
     int maximum_vertices() const;
     int constant_memory_size() const;
     int grid_memory_size() const;

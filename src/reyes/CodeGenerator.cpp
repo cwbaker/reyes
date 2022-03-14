@@ -61,8 +61,6 @@ CodeGenerator::CodeGenerator( ErrorPolicy* error_policy )
 , maximum_vertices_( 16 * 16 )
 , initialize_address_( 0 )
 , shade_address_( 0 )
-, parameters_( 0 )
-, variables_( 0 )
 , grid_memory_size_( 0 )
 , temporary_memory_size_( 0 )
 , errors_( 0 )
@@ -90,8 +88,6 @@ void CodeGenerator::generate( SyntaxNode* node, const char* name )
 {
     REYES_ASSERT( name );
     
-    parameters_ = 0;
-    variables_ = 0;
     grid_memory_size_ = 0;
     temporary_memory_size_ = 0;
     symbols_.clear();
@@ -108,8 +104,6 @@ void CodeGenerator::generate( SyntaxNode* node, const char* name )
 
         const SyntaxNode* list_node = node;
         const vector<shared_ptr<SyntaxNode>>& parameters = list_node->nodes();
-        parameters_ = int(parameters.size());
-        variables_ = int(symbols_.size()) - parameters_;
 
         initialize_address_ = encoder_->size();
         generate_code_for_list( *node->node(0)->node(0) );
@@ -158,16 +152,6 @@ int CodeGenerator::initialize_address() const
 int CodeGenerator::shade_address() const
 {
     return shade_address_;
-}
-
-int CodeGenerator::parameters() const
-{
-    return parameters_;
-}
-
-int CodeGenerator::variables() const
-{
-    return variables_;
 }
 
 int CodeGenerator::maximum_vertices() const
@@ -236,8 +220,6 @@ void CodeGenerator::error( bool condition, int /*line*/, const char* format, ...
 
 void CodeGenerator::generate_code_in_case_of_errors()
 {
-    parameters_ = 0;
-    variables_ = 0;
     symbols_.clear();
     loops_.clear();
     encoder_->clear();

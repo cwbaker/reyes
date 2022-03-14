@@ -156,11 +156,9 @@ void Debugger::dump_syntax_tree( const SyntaxNode* node, int level ) const
 
 void Debugger::dump_shader( Shader& shader ) const
 {
-    printf( "initialize=%d, shade=%d, parameters=%d, variables=%d, constant_memory_size=%d, grid_memory_size=%d, temporary_memory_size=%d\n", 
+    printf( "initialize=%d, shade=%d, constant_memory_size=%d, grid_memory_size=%d, temporary_memory_size=%d\n", 
         shader.initialize_address(),
         shader.shade_address(),
-        shader.parameters(),
-        shader.variables(),
         shader.constant_memory_size(),
         shader.grid_memory_size(),
         shader.temporary_memory_size()
