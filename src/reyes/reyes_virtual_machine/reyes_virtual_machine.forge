@@ -1,11 +1,11 @@
 
-for _, toolset in toolsets('cc_.*') do
-    toolset:StaticLibrary '${lib}/reyes_virtual_machine_${platform}_${architecture}' {
-        toolset:Cxx '${obj}/%1' {
+for _, cc in toolsets('^cc_.*') do
+    cc:StaticLibrary '${lib}/reyes_virtual_machine_${platform}_${architecture}' {
+        cc:Cxx '${obj}/%1' {
             'ConditionMask.cpp';
         };
 
-        toolset:Cxx '${obj}/%1' {
+        cc:Cxx '${obj}/%1' {
             'add.cpp';
             'assign.cpp';
             'add_assign.cpp';
@@ -36,7 +36,7 @@ for _, toolset in toolsets('cc_.*') do
             'vtransform.cpp';
         };
 
-        toolset:Cxx '${obj}/%1' {
+        cc:Cxx '${obj}/%1' {
             'color_functions.cpp';
             'geometric_functions.cpp';
             'mathematical_functions.cpp';

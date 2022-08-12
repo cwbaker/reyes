@@ -9,8 +9,9 @@ package.path = table.concat( paths, ';' );
 variant = lower( variant or 'debug' );
 version = version or ('%s %s %s'):format( os.date('%Y.%m.%d %H:%M:%S'), platform, variant );
 
-local cc = require 'forge.cc' {
-    identifier = 'cc_${platform}';
+local forge = require( 'forge' ):load( variant );
+
+local cc = forge.Toolset 'cc_${platform}' {
     platform = operating_system();
     bin = root( ('%s/bin'):format(variant) );
     lib = root( ('%s/lib'):format(variant) );
@@ -52,8 +53,8 @@ local cc = require 'forge.cc' {
     warnings_as_errors = true;
 };
 
-local lalr = require 'forge.lalr';
-cc:install( lalr );
+cc:install( 'forge.cc' );
+cc:install( 'forge.lalr' );
 
 buildfile 'src/jpeg/jpeg.forge';
 buildfile 'src/lalr/lalr.forge';

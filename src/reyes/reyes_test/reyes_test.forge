@@ -1,7 +1,7 @@
 
-for _, toolset in toolsets('cc_.*') do
-    toolset:all {
-        toolset:Executable '${bin}/reyes_test' {
+for _, cc in toolsets('^cc_.*') do
+    cc:all {
+        cc:Executable '${bin}/reyes_test' {
             '${lib}/reyes_${platform}_${architecture}';
             '${lib}/reyes_virtual_machine_${platform}_${architecture}';
             '${lib}/jpeg_${platform}_${architecture}';
@@ -10,11 +10,11 @@ for _, toolset in toolsets('cc_.*') do
             '${lib}/libpng_${platform}_${architecture}';
             '${lib}/zlib_${platform}_${architecture}';
 
-            toolset:Cxx '${obj}/%1' {
+            cc:Cxx '${obj}/%1' {
                 'CaptureErrorPolicy.cpp';
             };
 
-            toolset:Cxx '${obj}/%1' {
+            cc:Cxx '${obj}/%1' {
                 defines = {
                     ('SHADERS_PATH=\\"%s/\\"'):format( absolute('../shaders') );
                 };
